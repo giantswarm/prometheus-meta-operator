@@ -1,6 +1,8 @@
 package controller
 
 import (
+	// If your operator watches a CRD import it here.
+	// "github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
 	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -31,6 +33,9 @@ func NewTODO(config TODOConfig) (*TODO, error) {
 	var operatorkitController *controller.Controller
 	{
 		c := controller.Config{
+			// If your operator watches a CRD add it here.
+			// CRD:       v1alpha1.NewAppCRD(),
+			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
 			ResourceSets: resourceSets,
 			NewRuntimeObjectFunc: func() runtime.Object {
