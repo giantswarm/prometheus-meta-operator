@@ -8,13 +8,13 @@ func NewVersionBundle() versionbundle.Bundle {
 	return versionbundle.Bundle{
 		Changelogs: []versionbundle.Changelog{
 			{
-				Component:   "template-operator",
+				Component:   "prometheus-meta-operator",
 				Description: "TODO",
 				Kind:        versionbundle.KindChanged,
 			},
 		},
 		Components: []versionbundle.Component{},
-		Name:       "template-operator",
+		Name:       "prometheus-meta-operator",
 		Version:    BundleVersion(),
 	}
 }

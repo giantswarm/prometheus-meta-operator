@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/operatorkit/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/resource/wrapper/retryresource"
 
-	"github.com/giantswarm/template-operator/service/controller/resource/test"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/test"
 )
 
 type todoResourceSetConfig struct {

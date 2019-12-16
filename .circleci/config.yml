@@ -31,7 +31,7 @@ jobs:
     - persist_to_workspace:
         root: .
         paths:
-        - ./template-operator
+        - ./prometheus-meta-operator
 
     - save_cache:
         key: go-cache-v1-{{ checksum "/tmp/year" }}-{{ checksum "/tmp/month" }}-{{ checksum "/tmp/day" }}
@@ -47,8 +47,8 @@ workflows:
               only: /^v.*/
 
       - architect/push-to-docker:
-          name: push-template-operator-to-quay
-          image: "quay.io/giantswarm/template-operator"
+          name: push-prometheus-meta-operator-to-quay
+          image: "quay.io/giantswarm/prometheus-meta-operator"
           username_envar: "QUAY_USERNAME"
           password_envar: "QUAY_PASSWORD"
           requires:
@@ -58,7 +58,7 @@ workflows:
             tags:
               only: /^v.*/
 
-      - hold-push-template-operator-to-aliyun-pr:
+      - hold-push-prometheus-meta-operator-to-aliyun-pr:
           type: approval
           requires:
             - build
@@ -68,13 +68,13 @@ workflows:
               ignore: master
 
       - architect/push-to-docker:
-          name: push-template-operator-to-aliyun-pr
-          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/template-operator"
+          name: push-prometheus-meta-operator-to-aliyun-pr
+          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/prometheus-meta-operator"
           username_envar: "ALIYUN_USERNAME"
           password_envar: "ALIYUN_PASSWORD"
           # Push to Aliyun should execute for non-master branches only once manually approved.
           requires:
-            - hold-push-template-operator-to-aliyun-pr
+            - hold-push-prometheus-meta-operator-to-aliyun-pr
           # Needed to prevent job being triggered for master branch.
           filters:
             branches:
@@ -82,8 +82,8 @@ workflows:
 
       # Push to Aliyun should execute without manual approval on master.
       - architect/push-to-docker:
-          name: push-template-operator-to-aliyun-master
-          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/template-operator"
+          name: push-prometheus-meta-operator-to-aliyun-master
+          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/prometheus-meta-operator"
           username_envar: "ALIYUN_USERNAME"
           password_envar: "ALIYUN_PASSWORD"
           requires:
@@ -94,12 +94,12 @@ workflows:
               only: master
 
       - architect/push-to-app-catalog:
-          name: push-template-operator-to-app-catalog
+          name: push-prometheus-meta-operator-to-app-catalog
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
-          chart: "template-operator"
+          chart: "prometheus-meta-operator"
           requires:
-            - push-template-operator-to-quay
+            - push-prometheus-meta-operator-to-quay
           # Needed to trigger job also on git tag.
           filters:
             tags:
