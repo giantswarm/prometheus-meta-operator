@@ -1,6 +1,6 @@
 image:
   registry: "quay.io"
-  name: "giantswarm/template-operator"
+  name: "giantswarm/prometheus-meta-operator"
   tag: "[[ .Version ]]"
 pod:
   user:
@@ -8,7 +8,7 @@ pod:
   group:
     id: 1000
 project:
-  name: "template-operator"
+  name: "prometheus-meta-operator"
   version: "[[ .Version ]]"
 # Resource names are truncated to 47 characters.
 #

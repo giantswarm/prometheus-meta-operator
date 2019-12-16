@@ -1,4 +1,3 @@
 *.swp
 TODO
-prometheus-meta-operator
 !vendor/**
