@@ -34,5 +34,6 @@ workflows:
           name: app-collection
           app_name: "prometheus-meta-operator"
           app_collection_repo: "operator-week-app-collection"
+          app_catalog: "control-plane-test-catalog"
           requires:
             - app-catalog
