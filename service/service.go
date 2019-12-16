@@ -15,9 +15,11 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 
+	infrastructurev1alpha2 "github.com/giantswarm/apiextensions/pkg/apis/infrastructure/v1alpha2"
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller"
+	apiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
 // Config represents the configuration used to create a new service.
@@ -79,6 +81,10 @@ func New(config Config) (*Service, error) {
 			Logger: config.Logger,
 
 			RestConfig: restConfig,
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				apiv1alpha2.AddToScheme,
+				infrastructurev1alpha2.AddToScheme,
+			},
 		}
 
 		k8sClient, err = k8sclient.NewClients(c)
