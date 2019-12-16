@@ -36,10 +36,7 @@ func NewTODO(config TODOConfig) (*TODO, error) {
 			NewRuntimeObjectFunc: func() runtime.Object {
 				return new(corev1.Pod)
 			},
-
-			// Name is used to compute finalizer names. This here results in something
-			// like operatorkit.giantswarm.io/prometheus-meta-operator-todo-controller.
-			Name: project.Name() + "-todo-controller",
+			Name: project.Name() + "-controller",
 		}
 
 		operatorkitController, err = controller.New(c)
@@ -60,12 +57,12 @@ func newTODOResourceSets(config TODOConfig) ([]*controller.ResourceSet, error) {
 
 	var resourceSet *controller.ResourceSet
 	{
-		c := todoResourceSetConfig{
+		c := resourceSetConfig{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 		}
 
-		resourceSet, err = newTODOResourceSet(c)
+		resourceSet, err = newResourceSet(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

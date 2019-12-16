@@ -12,12 +12,12 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/test"
 )
 
-type todoResourceSetConfig struct {
+type resourceSetConfig struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 }
 
-func newTODOResourceSet(config todoResourceSetConfig) (*controller.ResourceSet, error) {
+func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 	var err error
 
 	var testResource resource.Interface
