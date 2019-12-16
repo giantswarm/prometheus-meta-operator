@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/operatorkit/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/resource/wrapper/retryresource"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/test"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 )
 
 type resourceSetConfig struct {
@@ -20,21 +20,21 @@ type resourceSetConfig struct {
 func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 	var err error
 
-	var testResource resource.Interface
+	var namespaceResource resource.Interface
 	{
-		c := test.Config{
+		c := namespace.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 		}
 
-		testResource, err = test.New(c)
+		namespaceResource, err = namespace.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 	}
 
 	resources := []resource.Interface{
-		testResource,
+		namespaceResource,
 	}
 
 	{
@@ -58,8 +58,7 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 	}
 
 	handlesFunc := func(obj interface{}) bool {
-
-		return false
+		return true
 	}
 
 	var resourceSet *controller.ResourceSet
