@@ -17,7 +17,6 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/collector"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller"
 )
 
@@ -32,9 +31,8 @@ type Config struct {
 type Service struct {
 	Version *version.Service
 
-	bootOnce          sync.Once
-	todoController    *controller.TODO
-	operatorCollector *collector.Set
+	bootOnce       sync.Once
+	todoController *controller.TODO
 }
 
 // New creates a new configured service object.
@@ -103,19 +101,6 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var operatorCollector *collector.Set
-	{
-		c := collector.SetConfig{
-			K8sClient: k8sClient.K8sClient(),
-			Logger:    config.Logger,
-		}
-
-		operatorCollector, err = collector.NewSet(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var versionService *version.Service
 	{
 		c := version.Config{
@@ -136,9 +121,8 @@ func New(config Config) (*Service, error) {
 	s := &Service{
 		Version: versionService,
 
-		bootOnce:          sync.Once{},
-		todoController:    todoController,
-		operatorCollector: operatorCollector,
+		bootOnce:       sync.Once{},
+		todoController: todoController,
 	}
 
 	return s, nil
@@ -146,7 +130,6 @@ func New(config Config) (*Service, error) {
 
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
-		go s.operatorCollector.Boot(ctx)
 
 		go s.todoController.Boot(ctx)
 	})
