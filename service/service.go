@@ -15,10 +15,11 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 
+	infrastructurev1alpha2 "github.com/giantswarm/apiextensions/pkg/apis/infrastructure/v1alpha2"
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/collector"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller"
+	apiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
 // Config represents the configuration used to create a new service.
@@ -32,9 +33,8 @@ type Config struct {
 type Service struct {
 	Version *version.Service
 
-	bootOnce          sync.Once
-	todoController    *controller.TODO
-	operatorCollector *collector.Set
+	bootOnce       sync.Once
+	todoController *controller.TODO
 }
 
 // New creates a new configured service object.
@@ -81,6 +81,10 @@ func New(config Config) (*Service, error) {
 			Logger: config.Logger,
 
 			RestConfig: restConfig,
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				apiv1alpha2.AddToScheme,
+				infrastructurev1alpha2.AddToScheme,
+			},
 		}
 
 		k8sClient, err = k8sclient.NewClients(c)
@@ -98,19 +102,6 @@ func New(config Config) (*Service, error) {
 		}
 
 		todoController, err = controller.NewTODO(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var operatorCollector *collector.Set
-	{
-		c := collector.SetConfig{
-			K8sClient: k8sClient.K8sClient(),
-			Logger:    config.Logger,
-		}
-
-		operatorCollector, err = collector.NewSet(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -136,9 +127,8 @@ func New(config Config) (*Service, error) {
 	s := &Service{
 		Version: versionService,
 
-		bootOnce:          sync.Once{},
-		todoController:    todoController,
-		operatorCollector: operatorCollector,
+		bootOnce:       sync.Once{},
+		todoController: todoController,
 	}
 
 	return s, nil
@@ -146,7 +136,6 @@ func New(config Config) (*Service, error) {
 
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
-		go s.operatorCollector.Boot(ctx)
 
 		go s.todoController.Boot(ctx)
 	})
