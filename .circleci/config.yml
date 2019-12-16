@@ -9,9 +9,15 @@ workflows:
       - architect/go-build:
           name: build
           binary: prometheus-meta-operator
+          filters:
+            tags:
+              only: /^v.*/
 
       - architect/go-test:
           name: test
+          filters:
+            tags:
+              only: /^v.*/
 
       - architect/push-to-docker:
           name: docker
@@ -21,6 +27,9 @@ workflows:
           requires:
             - build
             - test
+          filters:
+            tags:
+              only: /^v.*/
 
       - architect/push-to-app-catalog:
           name: app-catalog
@@ -29,11 +38,18 @@ workflows:
           chart: "prometheus-meta-operator"
           requires:
             - docker
+          filters:
+            tags:
+              only: /^v.*/
 
       - architect/push-to-app-collection:
           name: app-collection
           app_name: "prometheus-meta-operator"
           app_collection_repo: "operator-week-app-collection"
-          app_catalog: "control-plane-test-catalog"
           requires:
             - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
