@@ -6,6 +6,7 @@ import (
 	"context"
 	"sync"
 
+	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/k8sclient/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
@@ -93,12 +94,21 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var prometheusClient promclient.Interface
+	{
+		prometheusClient, err = promclient.NewForConfig(restConfig)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var prometheusController *controller.Controller
 	{
 
 		c := controller.ControllerConfig{
-			K8sClient: k8sClient,
-			Logger:    config.Logger,
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
 		}
 
 		prometheusController, err = controller.NewController(c)
