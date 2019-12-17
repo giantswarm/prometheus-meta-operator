@@ -69,7 +69,7 @@ func toSourceSecret(v interface{}) (*corev1.Secret, error) {
 
 	secret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("%s-prometheus", cluster.GetName),
+			Name:      fmt.Sprintf("%s-prometheus", cluster.GetName()),
 			Namespace: "default",
 		},
 	}
