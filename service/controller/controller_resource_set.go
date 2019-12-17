@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/operatorkit/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/resource/wrapper/retryresource"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 )
@@ -36,6 +37,19 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 		}
 	}
 
+	var certificatesResource resource.Interface
+	{
+		c := certificates.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		certificatesResource, err = certificates.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
@@ -51,6 +65,7 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
+		certificatesResource,
 		prometheusResource,
 	}
 
