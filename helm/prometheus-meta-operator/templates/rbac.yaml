@@ -29,6 +29,7 @@ rules:
       - get
       - list
       - update
+      - patch
   - apiGroups:
       - extensions
     resources:
