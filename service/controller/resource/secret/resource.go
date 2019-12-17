@@ -1,4 +1,4 @@
-package namespace
+package secret
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Name = "namespace"
+	Name = "secret"
 )
 
 type Config struct {
