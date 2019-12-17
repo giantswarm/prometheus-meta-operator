@@ -33,8 +33,8 @@ type Config struct {
 type Service struct {
 	Version *version.Service
 
-	bootOnce       sync.Once
-	todoController *controller.TODO
+	bootOnce   sync.Once
+	controller *controller.Controller
 }
 
 // New creates a new configured service object.
@@ -93,15 +93,15 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var todoController *controller.TODO
+	var prometheusController *controller.Controller
 	{
 
-		c := controller.TODOConfig{
+		c := controller.ControllerConfig{
 			K8sClient: k8sClient,
 			Logger:    config.Logger,
 		}
 
-		todoController, err = controller.NewTODO(c)
+		prometheusController, err = controller.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -127,8 +127,8 @@ func New(config Config) (*Service, error) {
 	s := &Service{
 		Version: versionService,
 
-		bootOnce:       sync.Once{},
-		todoController: todoController,
+		bootOnce:   sync.Once{},
+		controller: prometheusController,
 	}
 
 	return s, nil
@@ -137,6 +137,6 @@ func New(config Config) (*Service, error) {
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 
-		go s.todoController.Boot(ctx)
+		go s.controller.Boot(ctx)
 	})
 }
