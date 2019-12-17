@@ -1,14 +1,12 @@
 package namespace
 
 import (
-	"fmt"
-
 	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
 const (
@@ -46,20 +44,14 @@ func (r *Resource) Name() string {
 }
 
 func toNamespace(v interface{}) (*corev1.Namespace, error) {
-	if v == nil {
-		return nil, nil
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
-
-	cluster, ok := v.(*v1alpha2.Cluster)
-	if !ok {
-		return nil, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &corev1.Namespace{}, v)
-	}
-
-	name := cluster.GetName()
 
 	namespace := &corev1.Namespace{
 		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-prometheus", name),
+			Name: key.Namespace(cluster),
 		},
 	}
 
