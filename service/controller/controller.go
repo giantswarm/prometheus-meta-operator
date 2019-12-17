@@ -3,6 +3,8 @@ package controller
 import (
 	// If your operator watches a CRD import it here.
 	// "github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
+
+	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -14,8 +16,9 @@ import (
 )
 
 type ControllerConfig struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
 }
 
 type Controller struct {
@@ -63,8 +66,9 @@ func newControllerResourceSets(config ControllerConfig) ([]*controller.ResourceS
 	var resourceSet *controller.ResourceSet
 	{
 		c := resourceSetConfig{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			K8sClient:        config.K8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: config.PrometheusClient,
 		}
 
 		resourceSet, err = newResourceSet(c)

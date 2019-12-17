@@ -1,6 +1,7 @@
 package controller
 
 import (
+	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -10,11 +11,13 @@ import (
 	"github.com/giantswarm/operatorkit/resource/wrapper/retryresource"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 )
 
 type resourceSetConfig struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
 }
 
 func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
@@ -33,8 +36,22 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 		}
 	}
 
+	var prometheusResource resource.Interface
+	{
+		c := prometheus.Config{
+			PrometheusClient: config.PrometheusClient,
+			Logger:           config.Logger,
+		}
+
+		prometheusResource, err = prometheus.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
+		prometheusResource,
 	}
 
 	{
