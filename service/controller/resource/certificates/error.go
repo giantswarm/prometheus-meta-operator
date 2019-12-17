@@ -1,4 +1,4 @@
-package secret
+package certificates
 
 import (
 	"github.com/giantswarm/microerror"

@@ -19,3 +19,7 @@ func ToCluster(obj interface{}) (*v1alpha2.Cluster, error) {
 func Namespace(cluster *v1alpha2.Cluster) string {
 	return fmt.Sprintf("%s-prometheus", cluster.GetName())
 }
+
+func Secret() string {
+	return "cluster-certificates"
+}
