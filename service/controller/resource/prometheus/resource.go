@@ -82,7 +82,6 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 					"cluster_id": name,
 				},
 			},
-			ServiceAccountName: "prometheus",
 		},
 	}
 
