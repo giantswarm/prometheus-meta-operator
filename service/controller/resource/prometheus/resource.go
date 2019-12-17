@@ -7,6 +7,7 @@ import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
@@ -61,21 +62,21 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("prometheus-%s", name),
-			Namespace: fmt.Sprintf("%s-prometheus", name),
+			Name:      name,
+			Namespace: key.Namespace(cluster),
 		},
 		Spec: promv1.PrometheusSpec{
 			Replicas: &replicas,
 			APIServerConfig: &promv1.APIServerConfig{
 				Host: fmt.Sprintf("https://master.%s", name),
 				TLSConfig: &promv1.TLSConfig{
-					CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s-prometheus/ca", name),
-					CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s-prometheus/crt", name),
-					KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s-prometheus/key", name),
+					CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+					CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+					KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
 				},
 			},
 			Secrets: []string{
-				fmt.Sprintf("%s-prometheus", name),
+				key.Secret(),
 			},
 			ServiceMonitorSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
