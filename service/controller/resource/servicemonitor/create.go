@@ -8,12 +8,12 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	services, err := toServiceMonitors(obj)
+	serviceMonitors, err := toServiceMonitors(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	for _, service := range services {
+	for _, service := range serviceMonitors {
 		_, err = r.prometheusClient.MonitoringV1().ServiceMonitors(service.GetNamespace()).Create(service)
 		if apierrors.IsAlreadyExists(err) {
 			// fall through
