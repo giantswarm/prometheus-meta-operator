@@ -2,7 +2,7 @@
 
 # prometheus-meta-operator
 
-The prometheus-meta-operator watches Cluster CR and creates [prometheus-operator] CR. It is implemented
+The prometheus-meta-operator watches Cluster CRs and creates [prometheus-operator] CRs. It is implemented
 using [operatorkit].
 
 ## Getting Project
