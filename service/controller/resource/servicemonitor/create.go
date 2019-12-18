@@ -1,4 +1,4 @@
-package certificates
+package servicemonitor
 
 import (
 	"context"

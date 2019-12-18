@@ -1,4 +1,4 @@
-package certificates
+package servicemonitor
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	Name = "certificates"
+	Name = "servicemonitor"
 )
 
 type Config struct {
