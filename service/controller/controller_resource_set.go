@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/operatorkit/resource/wrapper/retryresource"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/frontend"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 )
@@ -63,10 +64,24 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 		}
 	}
 
+	var frontendResource resource.Interface
+	{
+		c := frontend.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		frontendResource, err = frontend.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		certificatesResource,
 		prometheusResource,
+		frontendResource,
 	}
 
 	{

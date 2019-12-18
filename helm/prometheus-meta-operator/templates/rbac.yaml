@@ -33,6 +33,7 @@ rules:
   - apiGroups:
       - extensions
     resources:
+      - deployments
       - ingress
     verbs:
       - create
