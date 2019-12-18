@@ -109,6 +109,8 @@ func New(config Config) (*Service, error) {
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
+
+			BaseDomain: config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 		}
 
 		prometheusController, err = controller.NewController(c)

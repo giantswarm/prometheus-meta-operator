@@ -19,3 +19,5 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
+      prometheus:
+        baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
