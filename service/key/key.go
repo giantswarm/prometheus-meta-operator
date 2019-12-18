@@ -23,3 +23,11 @@ func Namespace(cluster *v1alpha2.Cluster) string {
 func Secret() string {
 	return "cluster-certificates"
 }
+
+func ServiceMonitorLabelKey() string {
+	return "cluster_id"
+}
+
+func ServiceMonitorLabelValue(cluster *v1alpha2.Cluster) string {
+	return cluster.GetName()
+}

@@ -26,6 +26,9 @@ func apiServer(cluster *v1alpha2.Cluster) *promv1.ServiceMonitor {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("kubernetes-apiserver-%s", cluster.GetName()),
 			Namespace: key.Namespace(cluster),
+			Labels: map[string]string{
+				key.ServiceMonitorLabelKey(): key.ServiceMonitorLabelValue(cluster),
+			},
 		},
 		Spec: promv1.ServiceMonitorSpec{
 			Selector: metav1.LabelSelector{
