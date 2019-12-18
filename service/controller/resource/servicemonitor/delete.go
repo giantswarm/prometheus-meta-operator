@@ -9,16 +9,18 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	secret, err := toTargetSecret(obj)
+	services, err := toServiceMonitors(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	err = r.k8sClient.K8sClient().CoreV1().Secrets(secret.GetNamespace()).Delete(secret.GetName(), &metav1.DeleteOptions{})
-	if apierrors.IsNotFound(err) {
-		// fall through
-	} else if err != nil {
-		return microerror.Mask(err)
+	for _, service := range services {
+		err := r.prometheusClient.MonitoringV1().ServiceMonitors(service.GetNamespace()).Delete(service.GetName(), &metav1.DeleteOptions{})
+		if apierrors.IsNotFound(err) {
+			// fall through
+		} else if err != nil {
+			return microerror.Mask(err)
+		}
 	}
 
 	return nil
