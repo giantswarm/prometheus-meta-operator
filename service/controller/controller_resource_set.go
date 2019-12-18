@@ -13,6 +13,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 )
 
 type resourceSetConfig struct {
@@ -63,10 +64,24 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 		}
 	}
 
+	var serviceMonitorResource resource.Interface
+	{
+		c := servicemonitor.Config{
+			PrometheusClient: config.PrometheusClient,
+			Logger:           config.Logger,
+		}
+
+		serviceMonitorResource, err = servicemonitor.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		certificatesResource,
 		prometheusResource,
+		serviceMonitorResource,
 	}
 
 	{
