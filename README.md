@@ -2,13 +2,21 @@
 
 # prometheus-meta-operator
 
-This is a template repository containing files for a giantswarm
-operator repository.
+The prometheus-meta-operator watches Cluster CRs and creates [prometheus-operator] CRs. It is implemented
+using [operatorkit].
 
-To use it just hit `Use this template` button or [this
-link][generate].
+## Getting Project
 
-After creating your repository replace all instances of
-`prometheus-meta-operator` in this code base with your new repository name.
+Clone the git repository: https://github.com/giantswarm/prometheus-meta-operator.git
 
-[generate]: https://github.com/giantswarm/prometheus-meta-operator/generate
+### How to build
+
+Build it using the standard `go build` command.
+
+```
+go build github.com/giantswarm/prometheus-meta-operator
+```
+
+
+[operatorkit]: https://github.com/giantswarm/operatorkit
+[prometheus-operator]: https://github.com/coreos/prometheus-operator

@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/operatorkit/resource/wrapper/retryresource"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
@@ -20,6 +21,8 @@ type resourceSetConfig struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
+
+	BaseDomain string
 }
 
 func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
@@ -64,6 +67,21 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 		}
 	}
 
+	var ingressResource resource.Interface
+	{
+		c := ingress.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			BaseDomain: config.BaseDomain,
+		}
+
+		ingressResource, err = ingress.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var serviceMonitorResource resource.Interface
 	{
 		c := servicemonitor.Config{
@@ -81,6 +99,7 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 		namespaceResource,
 		certificatesResource,
 		prometheusResource,
+		ingressResource,
 		serviceMonitorResource,
 	}
 

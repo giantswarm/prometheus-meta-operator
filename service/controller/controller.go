@@ -19,6 +19,8 @@ type ControllerConfig struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
+
+	BaseDomain string
 }
 
 type Controller struct {
@@ -69,6 +71,8 @@ func newControllerResourceSets(config ControllerConfig) ([]*controller.ResourceS
 			K8sClient:        config.K8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: config.PrometheusClient,
+
+			BaseDomain: config.BaseDomain,
 		}
 
 		resourceSet, err = newResourceSet(c)
