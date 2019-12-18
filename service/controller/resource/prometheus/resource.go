@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 )
@@ -66,13 +67,19 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 			Namespace: key.Namespace(cluster),
 		},
 		Spec: promv1.PrometheusSpec{
-			Replicas: &replicas,
 			APIServerConfig: &promv1.APIServerConfig{
 				Host: fmt.Sprintf("https://master.%s", name),
 				TLSConfig: &promv1.TLSConfig{
 					CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
 					CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
 					KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+				},
+			},
+			Replicas: &replicas,
+			Resources: corev1.ResourceRequirements{
+				Requests: corev1.ResourceList{
+					corev1.ResourceCPU:    resource.MustParse("1000m"),
+					corev1.ResourceMemory: resource.MustParse("1Gi"),
 				},
 			},
 			Secrets: []string{
