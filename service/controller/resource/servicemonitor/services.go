@@ -44,9 +44,10 @@ func apiServer(cluster *v1alpha2.Cluster) *promv1.ServiceMonitor {
 					Port:   "https",
 					Scheme: "https",
 					TLSConfig: &promv1.TLSConfig{
-						CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-						CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-						KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+						CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+						CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+						KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+						InsecureSkipVerify: true,
 					},
 				},
 			},
