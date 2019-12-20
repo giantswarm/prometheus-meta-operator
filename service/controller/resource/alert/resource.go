@@ -1,4 +1,4 @@
-package servicemonitor
+package alert
 
 import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	Name = "servicemonitor"
+	Name = "alert"
 )
 
 type Config struct {

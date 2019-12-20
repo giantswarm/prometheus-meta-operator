@@ -1,4 +1,4 @@
-package servicemonitor
+package alert
 
 import (
 	"github.com/giantswarm/microerror"
