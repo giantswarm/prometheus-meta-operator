@@ -9,13 +9,13 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	serviceMonitors, err := toServiceMonitors(obj)
+	prometheusRules, err := toPrometheusRules(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	for _, serviceMonitor := range serviceMonitors {
-		err := r.prometheusClient.MonitoringV1().ServiceMonitors(serviceMonitor.GetNamespace()).Delete(serviceMonitor.GetName(), &metav1.DeleteOptions{})
+	for _, prometheusRule := range prometheusRules {
+		err := r.prometheusClient.MonitoringV1().ServiceMonitors(prometheusRule.GetNamespace()).Delete(prometheusRule.GetName(), &metav1.DeleteOptions{})
 		if apierrors.IsNotFound(err) {
 			// fall through
 		} else if err != nil {
