@@ -1,8 +1,6 @@
 package alert
 
 import (
-	"fmt"
-
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -10,44 +8,42 @@ import (
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
-func toServiceMonitors(obj interface{}) ([]*promv1.ServiceMonitor, error) {
+func toPrometheusRules(obj interface{}) ([]*promv1.PrometheusRule, error) {
 	cluster, err := key.ToCluster(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	return []*promv1.ServiceMonitor{
-		apiServer(cluster),
-	}, nil
+	rules := []*promv1.PrometheusRule{
+		apiServer(),
+	}
+
+	return rules, nil
 }
 
-func apiServer(cluster *v1alpha2.Cluster) *promv1.ServiceMonitor {
-	return &promv1.ServiceMonitor{
+func apiServer(cluster *v1alpha2.Cluster) *promv1.PrometheusRule {
+	return &promv1.PrometheusRule{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("kubernetes-apiserver-%s", cluster.GetName()),
+			Name:      "alerts",
 			Namespace: key.Namespace(cluster),
 			Labels: map[string]string{
 				key.ServiceMonitorLabelKey(): key.ServiceMonitorLabelValue(cluster),
 			},
 		},
-		Spec: promv1.ServiceMonitorSpec{
-			Selector: metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"component": "apiserver",
-				},
-			},
-			NamespaceSelector: promv1.NamespaceSelector{
-				Any: true,
-			},
-			Endpoints: []promv1.Endpoint{
-				promv1.Endpoint{
-					Port:   "https",
-					Scheme: "https",
-					TLSConfig: &promv1.TLSConfig{
-						CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-						CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-						KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
-						InsecureSkipVerify: true,
+		Spec: promv1.PrometheusRuleSpec{
+			Groups: []promv1.RuleGroup{
+				promv1.RuleGroup{
+					Name:     "",
+					Interval: "",
+					Rules: []promv1.Rules{
+						promv1.Rule{
+							Record:      "",
+							Alert:       "",
+							Expr:        "",
+							For:         "",
+							Labels:      "",
+							Annotations: "",
+						},
 					},
 				},
 			},
