@@ -5,6 +5,7 @@ import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert/rules"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -49,7 +50,7 @@ func toPrometheusRules(obj interface{}) ([]*promv1.PrometheusRule, error) {
 	}
 
 	rules := []*promv1.PrometheusRule{
-		rules.APIServer(),
+		rules.APIServer(cluster),
 	}
 
 	return rules, nil
