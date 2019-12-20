@@ -66,7 +66,6 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 			Namespace: key.Namespace(cluster),
 		},
 		Spec: promv1.PrometheusSpec{
-			Replicas: &replicas,
 			APIServerConfig: &promv1.APIServerConfig{
 				Host: fmt.Sprintf("https://master.%s", name),
 				TLSConfig: &promv1.TLSConfig{
@@ -75,6 +74,7 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 					KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
 				},
 			},
+			Replicas: &replicas,
 			Secrets: []string{
 				key.Secret(),
 			},
