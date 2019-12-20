@@ -1,33 +1,26 @@
-package ingress
+package service
 
 import (
-	"fmt"
-
 	"github.com/giantswarm/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
-	"k8s.io/api/extensions/v1beta1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
 const (
-	Name = "ingress"
+	Name = "service"
 )
 
 type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
-
-	BaseDomain string
 }
 
 type Resource struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
-
-	baseDomain string
 }
 
 func New(config Config) (*Resource, error) {
@@ -38,15 +31,9 @@ func New(config Config) (*Resource, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
-	if config.BaseDomain == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.BaseDomain must not be empty", config)
-	}
-
 	r := &Resource{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
-
-		baseDomain: config.BaseDomain,
 	}
 
 	return r, nil
@@ -56,40 +43,30 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) toIngress(v interface{}) (*v1beta1.Ingress, error) {
+func toService(v interface{}) (*corev1.Service, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	host := fmt.Sprintf("%s-%s", cluster.GetName(), r.baseDomain)
-
-	ingress := &v1beta1.Ingress{
+	service := &corev1.Service{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      cluster.GetName(),
+			Name:      "prometheus",
 			Namespace: key.Namespace(cluster),
 		},
-		Spec: v1beta1.IngressSpec{
-			Rules: []v1beta1.IngressRule{
+		Spec: corev1.ServiceSpec{
+			Ports: []corev1.ServicePort{
 				{
-					Host: host,
-					IngressRuleValue: v1beta1.IngressRuleValue{
-						HTTP: &v1beta1.HTTPIngressRuleValue{
-							Paths: []v1beta1.HTTPIngressPath{
-								{
-									Path: "/",
-									Backend: v1beta1.IngressBackend{
-										ServiceName: "prometheus",
-										ServicePort: intstr.FromInt(9091),
-									},
-								},
-							},
-						},
-					},
+					Name:     "prometheus",
+					Port:     int32(9091),
+					Protocol: "TCP",
 				},
+			},
+			Selector: map[string]string{
+				"app": "frontend",
 			},
 		},
 	}
 
-	return ingress, nil
+	return service, nil
 }
