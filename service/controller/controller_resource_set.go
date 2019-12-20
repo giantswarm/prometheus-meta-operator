@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/operatorkit/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/resource/wrapper/retryresource"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
@@ -95,12 +96,26 @@ func newResourceSet(config resourceSetConfig) (*controller.ResourceSet, error) {
 		}
 	}
 
+	var alertResource resource.Interface
+	{
+		c := alert.Config{
+			PrometheusClient: config.PrometheusClient,
+			Logger:           config.Logger,
+		}
+
+		alertResource, err = alert.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		certificatesResource,
 		prometheusResource,
 		ingressResource,
 		serviceMonitorResource,
+		alertResource,
 	}
 
 	{
