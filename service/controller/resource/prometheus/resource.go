@@ -80,7 +80,12 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 			},
 			ServiceMonitorSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					key.ServiceMonitorLabelKey(): key.ServiceMonitorLabelValue(cluster),
+					key.ClusterIDKey(): key.ClusterID(cluster),
+				},
+			},
+			RuleSelector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					key.ClusterIDKey(): key.ClusterID(cluster),
 				},
 			},
 		},

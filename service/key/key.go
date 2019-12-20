@@ -24,10 +24,10 @@ func Secret() string {
 	return "cluster-certificates"
 }
 
-func ServiceMonitorLabelKey() string {
+func ClusterIDKey() string {
 	return "cluster_id"
 }
 
-func ServiceMonitorLabelValue(cluster *v1alpha2.Cluster) string {
+func ClusterID(cluster *v1alpha2.Cluster) string {
 	return cluster.GetName()
 }
