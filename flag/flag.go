@@ -2,6 +2,7 @@ package flag
 
 import (
 	"github.com/giantswarm/microkit/flag"
+
 	"github.com/giantswarm/prometheus-meta-operator/flag/service"
 )
 
