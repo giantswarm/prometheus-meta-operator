@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
-	github.com/coreos/prometheus-operator v0.34.0
+	github.com/coreos/prometheus-operator v0.38.0
 	github.com/giantswarm/apiextensions v0.0.0-20191213075442-71155aa0f5b7
 	github.com/giantswarm/backoff v0.0.0-20190913091243-4dd491125192 // indirect
 	github.com/giantswarm/k8sclient v0.0.0-20191213144452-f75fead2ae06
