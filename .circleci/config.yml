@@ -47,6 +47,7 @@ workflows:
 
       - architect/push-to-app-catalog:
           name: app-catalog
+          context: "architect"
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
           chart: "prometheus-meta-operator"
