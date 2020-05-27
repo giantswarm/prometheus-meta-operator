@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@0.4.5
+  architect: giantswarm/architect@0.8.18
 
 workflows:
   build:
@@ -20,10 +20,24 @@ workflows:
               only: /^v.*/
 
       - architect/push-to-docker:
-          name: docker
+          name: push-to-quay
+          context: "architect"
           image: "quay.io/giantswarm/prometheus-meta-operator"
           username_envar: "QUAY_USERNAME"
           password_envar: "QUAY_PASSWORD"
+          requires:
+            - build
+            - test
+          filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-docker:
+          name: push-to-aliyun
+          context: "architect"
+          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/prometheus-meta-operator"
+          username_envar: "ALIYUN_USERNAME"
+          password_envar: "ALIYUN_PASSWORD"
           requires:
             - build
             - test
@@ -37,15 +51,49 @@ workflows:
           app_catalog_test: "control-plane-test-catalog"
           chart: "prometheus-meta-operator"
           requires:
-            - docker
+            - push-to-quay
+            - push-to-aliyun
           filters:
             tags:
               only: /^v.*/
 
       - architect/push-to-app-collection:
-          name: app-collection
+          name: aws-app-collection
+          context: "architect"
           app_name: "prometheus-meta-operator"
-          app_collection_repo: "operator-week-app-collection"
+          app_namespace: "monitoring"
+          app_collection_repo: "aws-app-collection"
+          unique: "true"
+          requires:
+            - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          name: azure-app-collection
+          context: "architect"
+          app_name: "prometheus-meta-operator"
+          app_namespace: "monitoring"
+          app_collection_repo: "azure-app-collection"
+          unique: "true"
+          requires:
+            - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          name: kvm-app-collection
+          context: "architect"
+          app_name: "prometheus-meta-operator"
+          app_namespace: "monitoring"
+          app_collection_repo: "kvm-app-collection"
+          unique: "true"
           requires:
             - app-catalog
           filters:
