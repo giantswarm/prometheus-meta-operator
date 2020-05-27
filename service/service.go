@@ -17,10 +17,11 @@ import (
 	"k8s.io/client-go/rest"
 
 	infrastructurev1alpha2 "github.com/giantswarm/apiextensions/pkg/apis/infrastructure/v1alpha2"
+	apiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
+
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller"
-	apiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
 // Config represents the configuration used to create a new service.

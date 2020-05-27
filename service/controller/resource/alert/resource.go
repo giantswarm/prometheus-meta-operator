@@ -5,6 +5,7 @@ import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert/rules"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
