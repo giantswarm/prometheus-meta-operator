@@ -67,13 +67,7 @@ func newControllerResourceSets(config ControllerConfig) ([]*controller.ResourceS
 
 	var resourceSet *controller.ResourceSet
 	{
-		c := resourceSetConfig{
-			K8sClient:        config.K8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: config.PrometheusClient,
-
-			BaseDomain: config.BaseDomain,
-		}
+		c := resourceSetConfig(config)
 
 		resourceSet, err = newResourceSet(c)
 		if err != nil {
