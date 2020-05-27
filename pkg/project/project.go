@@ -6,7 +6,7 @@ var (
 	gitSHA        = "n/a"
 	name          = "prometheus-meta-operator"
 	source        = "https://github.com/giantswarm/prometheus-meta-operator"
-	version       = "n/a"
+	version       = "0.1.0"
 )
 
 func BundleVersion() string {
