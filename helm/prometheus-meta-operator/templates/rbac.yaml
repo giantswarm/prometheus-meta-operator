@@ -53,20 +53,20 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ tpl .Values.resource.default.name  . }}
+  name: {{ include "resource.default.name" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ tpl .Values.resource.default.name  . }}
-    namespace: {{ tpl .Values.resource.default.namespace  . }}
+    name: {{ include "resource.default.name" . }}
+    namespace: {{ include "resource.default.namespace" . }}
 roleRef:
   kind: ClusterRole
-  name: {{ tpl .Values.resource.default.name  . }}
+  name: {{ include "resource.default.name" . }}
   apiGroup: rbac.authorization.k8s.io
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: {{ tpl .Values.resource.psp.name . }}
+  name: {{ include "resource.psp.name" . }}
 rules:
   - apiGroups:
       - extensions
@@ -75,17 +75,17 @@ rules:
     verbs:
       - use
     resourceNames:
-      - {{ tpl .Values.resource.psp.name . }}
+      - {{ include "resource.psp.name" . }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: {{ tpl .Values.resource.psp.name . }}
+  name: {{ include "resource.psp.name" . }}
 subjects:
   - kind: ServiceAccount
-    name: {{ tpl .Values.resource.default.name  . }}
-    namespace: {{ tpl .Values.resource.default.namespace  . }}
+    name: {{ include "resource.default.name" . }}
+    namespace: {{ include "resource.default.namespace" . }}
 roleRef:
   kind: ClusterRole
-  name: {{ tpl .Values.resource.psp.name . }}
+  name: {{ include "resource.psp.name" . }}
   apiGroup: rbac.authorization.k8s.io
