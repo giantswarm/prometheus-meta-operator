@@ -5,9 +5,10 @@ import (
 
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
+
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 func toServiceMonitors(obj interface{}) ([]*promv1.ServiceMonitor, error) {

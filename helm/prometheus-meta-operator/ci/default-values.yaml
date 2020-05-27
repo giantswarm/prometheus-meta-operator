@@ -1,0 +1,12 @@
+---
+Installation:
+  V1:
+    Monitoring:
+      Prometheus:
+        Host: ""
+    Registry:
+      Domain: ""
+    Secret:
+      Registry:
+        PullSecret:
+          DockerConfigJSON: ""
