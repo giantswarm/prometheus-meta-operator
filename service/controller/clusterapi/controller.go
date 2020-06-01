@@ -1,4 +1,4 @@
-package controller
+package clusterapi
 
 import (
 	// If your operator watches a CRD import it here.
@@ -14,6 +14,7 @@ import (
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
+	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
 )
 
 type ControllerConfig struct {
@@ -31,16 +32,19 @@ type Controller struct {
 func NewController(config ControllerConfig) (*Controller, error) {
 	var err error
 
-	resources, err := newControllerResources(config)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	var resources []resource.Interface
+	{
+		c := controllerresource.Config(config)
+
+		resources, err = controllerresource.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	var operatorkitController *controller.Controller
 	{
 		c := controller.Config{
-			// If your operator watches a CRD add it here.
-			// CRD:       v1alpha1.NewAppCRD(),
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Name:      project.Name() + "-controller",
@@ -61,15 +65,4 @@ func NewController(config ControllerConfig) (*Controller, error) {
 	}
 
 	return c, nil
-}
-
-func newControllerResources(config ControllerConfig) ([]resource.Interface, error) {
-	c := resourcesConfig(config)
-
-	resources, err := newResources(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return resources, nil
 }

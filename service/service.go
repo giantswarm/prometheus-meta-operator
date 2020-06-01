@@ -21,7 +21,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
 )
 
 // Config represents the configuration used to create a new service.
@@ -35,8 +35,8 @@ type Config struct {
 type Service struct {
 	Version *version.Service
 
-	bootOnce   sync.Once
-	controller *controller.Controller
+	bootOnce             sync.Once
+	clusterapiController *clusterapi.Controller
 }
 
 // New creates a new configured service object.
@@ -103,10 +103,10 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var prometheusController *controller.Controller
+	var clusterapiController *clusterapi.Controller
 	{
 
-		c := controller.ControllerConfig{
+		c := clusterapi.ControllerConfig{
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
@@ -114,7 +114,7 @@ func New(config Config) (*Service, error) {
 			BaseDomain: config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 		}
 
-		prometheusController, err = controller.NewController(c)
+		clusterapiController, err = clusterapi.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -140,8 +140,8 @@ func New(config Config) (*Service, error) {
 	s := &Service{
 		Version: versionService,
 
-		bootOnce:   sync.Once{},
-		controller: prometheusController,
+		bootOnce:             sync.Once{},
+		clusterapiController: clusterapiController,
 	}
 
 	return s, nil
@@ -150,6 +150,6 @@ func New(config Config) (*Service, error) {
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 
-		go s.controller.Boot(ctx)
+		go s.clusterapiController.Boot(ctx)
 	})
 }
