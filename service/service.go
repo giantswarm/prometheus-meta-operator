@@ -21,6 +21,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/awsconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
 )
 
@@ -36,6 +37,7 @@ type Service struct {
 	Version *version.Service
 
 	bootOnce             sync.Once
+	awsconfigController  *awsconfig.Controller
 	clusterapiController *clusterapi.Controller
 }
 
@@ -105,16 +107,27 @@ func New(config Config) (*Service, error) {
 
 	var clusterapiController *clusterapi.Controller
 	{
-
 		c := clusterapi.ControllerConfig{
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
-
-			BaseDomain: config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 		}
-
 		clusterapiController, err = clusterapi.NewController(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var awsconfigController *awsconfig.Controller
+	{
+		c := awsconfig.ControllerConfig{
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+		}
+		awsconfigController, err = awsconfig.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -141,6 +154,7 @@ func New(config Config) (*Service, error) {
 		Version: versionService,
 
 		bootOnce:             sync.Once{},
+		awsconfigController:  awsconfigController,
 		clusterapiController: clusterapiController,
 	}
 
@@ -150,6 +164,7 @@ func New(config Config) (*Service, error) {
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 
+		go s.awsconfigController.Boot(ctx)
 		go s.clusterapiController.Boot(ctx)
 	})
 }
