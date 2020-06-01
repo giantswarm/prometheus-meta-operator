@@ -6,7 +6,6 @@ import (
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -22,7 +21,7 @@ func toServiceMonitors(obj interface{}) ([]*promv1.ServiceMonitor, error) {
 	}, nil
 }
 
-func apiServer(cluster *v1alpha2.Cluster) *promv1.ServiceMonitor {
+func apiServer(cluster metav1.Object) *promv1.ServiceMonitor {
 	return &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("kubernetes-apiserver-%s", cluster.GetName()),
