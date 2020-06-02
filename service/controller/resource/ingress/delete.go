@@ -14,14 +14,14 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "deleting ingress")
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting ingress")
 	err = r.k8sClient.K8sClient().ExtensionsV1beta1().Ingresses(ingress.GetNamespace()).Delete(ingress.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
-	r.logger.LogCtx(ctx, "deleted ingress")
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted ingress")
 
 	return nil
 }

@@ -14,7 +14,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "deleting servicemonitor")
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting servicemonitor")
 	for _, serviceMonitor := range serviceMonitors {
 		err := r.prometheusClient.MonitoringV1().ServiceMonitors(serviceMonitor.GetNamespace()).Delete(serviceMonitor.GetName(), &metav1.DeleteOptions{})
 		if apierrors.IsNotFound(err) {
@@ -23,7 +23,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 	}
-	r.logger.LogCtx(ctx, "deleted servicemonitor")
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted servicemonitor")
 
 	return nil
 }
