@@ -57,7 +57,7 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 	}
 
 	name := cluster.GetName()
-	var replicas int32 = 2
+	var replicas int32 = 1
 
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: metav1.ObjectMeta{
