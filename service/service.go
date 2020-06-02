@@ -164,7 +164,7 @@ func New(config Config) (*Service, error) {
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 
-		//go s.awsconfigController.Boot(ctx)
+		go s.awsconfigController.Boot(ctx)
 		go s.clusterapiController.Boot(ctx)
 	})
 }
