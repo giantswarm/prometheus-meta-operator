@@ -23,6 +23,13 @@ rules:
       - delete
       - get
   - apiGroups:
+      - apps
+    resources:
+      - deployments
+    verbs:
+      - create
+      - delete
+  - apiGroups:
       - cluster.x-k8s.io
     resources:
       - clusters
@@ -35,7 +42,6 @@ rules:
   - apiGroups:
       - extensions
     resources:
-      - deployments
       - ingresses
     verbs:
       - create
