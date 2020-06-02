@@ -13,7 +13,6 @@ import (
 	"github.com/giantswarm/operatorkit/resource"
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
 )
 
@@ -47,7 +46,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		c := controller.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
-			Name:      project.Name() + "-controller",
+			Name:      "awsconfig-controller",
 			NewRuntimeObjectFunc: func() runtime.Object {
 				return new(v1alpha1.AWSConfig)
 			},
