@@ -4,8 +4,8 @@ import (
 	"github.com/giantswarm/k8sclient/v3/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-	"k8s.io/api/extensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -45,7 +45,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toFrontend(v interface{}) (*v1beta1.Deployment, error) {
+func toFrontend(v interface{}) (*v1.Deployment, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -53,12 +53,12 @@ func toFrontend(v interface{}) (*v1beta1.Deployment, error) {
 
 	var replicas int32 = 2
 
-	deployment := &v1beta1.Deployment{
+	deployment := &v1.Deployment{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "frontend",
 			Namespace: key.Namespace(cluster),
 		},
-		Spec: v1beta1.DeploymentSpec{
+		Spec: v1.DeploymentSpec{
 			Replicas: &replicas,
 			Selector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{

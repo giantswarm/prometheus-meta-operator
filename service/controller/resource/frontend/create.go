@@ -13,7 +13,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	_, err = r.k8sClient.K8sClient().ExtensionsV1beta1().Deployments(frontend.GetNamespace()).Create(frontend)
+	_, err = r.k8sClient.K8sClient().AppsV1().Deployments(frontend.GetNamespace()).Create(frontend)
 	if apierrors.IsAlreadyExists(err) {
 		// fall through
 	} else if err != nil {
