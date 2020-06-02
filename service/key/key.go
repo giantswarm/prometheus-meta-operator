@@ -4,19 +4,19 @@ import (
 	"fmt"
 
 	"github.com/giantswarm/microerror"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func ToCluster(obj interface{}) (*v1alpha2.Cluster, error) {
-	cluster, ok := obj.(*v1alpha2.Cluster)
+func ToCluster(obj interface{}) (metav1.Object, error) {
+	clusterMetaObject, ok := obj.(metav1.Object)
 	if !ok {
-		return nil, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &v1alpha2.Cluster{}, obj)
+		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements '%T'", obj, clusterMetaObject)
 	}
 
-	return cluster, nil
+	return clusterMetaObject, nil
 }
 
-func Namespace(cluster *v1alpha2.Cluster) string {
+func Namespace(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-prometheus", cluster.GetName())
 }
 
@@ -28,6 +28,6 @@ func ClusterIDKey() string {
 	return "cluster_id"
 }
 
-func ClusterID(cluster *v1alpha2.Cluster) string {
+func ClusterID(cluster metav1.Object) string {
 	return cluster.GetName()
 }

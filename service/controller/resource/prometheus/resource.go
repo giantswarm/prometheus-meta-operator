@@ -7,9 +7,7 @@ import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -53,9 +51,9 @@ func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
 		return nil, nil
 	}
 
-	cluster, ok := v.(*v1alpha2.Cluster)
-	if !ok {
-		return nil, microerror.Maskf(wrongTypeError, "expected '%T', got '%T'", &corev1.Namespace{}, v)
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
 
 	name := cluster.GetName()

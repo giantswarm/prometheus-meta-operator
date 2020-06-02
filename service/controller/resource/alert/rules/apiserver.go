@@ -4,12 +4,11 @@ import (
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func APIServer(cluster *v1alpha2.Cluster) *promv1.PrometheusRule {
+func APIServer(cluster metav1.Object) *promv1.PrometheusRule {
 	return &promv1.PrometheusRule{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "apiserver-rules",
