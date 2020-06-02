@@ -15,7 +15,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	}
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting frontend")
-	err = r.k8sClient.K8sClient().ExtensionsV1beta1().Deployments(frontend.GetNamespace()).Delete(frontend.GetName(), &metav1.DeleteOptions{})
+	err = r.k8sClient.K8sClient().AppsV1().Deployments(frontend.GetNamespace()).Delete(frontend.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {
