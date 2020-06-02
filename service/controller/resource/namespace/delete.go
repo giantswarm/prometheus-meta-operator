@@ -14,12 +14,14 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "deleting namespace")
 	err = r.k8sClient.K8sClient().CoreV1().Namespaces().Delete(namespace.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.LogCtx(ctx, "deleted namespace")
 
 	return nil
 }

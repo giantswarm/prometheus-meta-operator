@@ -13,6 +13,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "creating alert rules")
 	for _, prometheusRule := range prometheusRules {
 		_, err = r.prometheusClient.MonitoringV1().PrometheusRules(prometheusRule.GetNamespace()).Create(prometheusRule)
 		if apierrors.IsAlreadyExists(err) {
@@ -21,6 +22,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 	}
+	r.logger.LogCtx(ctx, "created alert rules")
 
 	return nil
 }

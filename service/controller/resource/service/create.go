@@ -13,12 +13,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "creating service")
 	_, err = r.k8sClient.K8sClient().CoreV1().Services(service.GetNamespace()).Create(service)
 	if apierrors.IsAlreadyExists(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.LogCtx(ctx, "created service")
 
 	return nil
 }

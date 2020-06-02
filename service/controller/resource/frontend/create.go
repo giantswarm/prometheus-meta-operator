@@ -13,12 +13,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "creating frontend")
 	_, err = r.k8sClient.K8sClient().AppsV1().Deployments(frontend.GetNamespace()).Create(frontend)
 	if apierrors.IsAlreadyExists(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.LogCtx(ctx, "created frontend")
 
 	return nil
 }
