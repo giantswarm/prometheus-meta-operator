@@ -21,8 +21,8 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/awsconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/legacy"
 )
 
 // Config represents the configuration used to create a new service.
@@ -37,7 +37,7 @@ type Service struct {
 	Version *version.Service
 
 	bootOnce             sync.Once
-	awsconfigController  *awsconfig.Controller
+	legacyController     *legacy.Controller
 	clusterapiController *clusterapi.Controller
 }
 
@@ -119,15 +119,16 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var awsconfigController *awsconfig.Controller
+	var legacyController *legacy.Controller
 	{
-		c := awsconfig.ControllerConfig{
+		c := legacy.ControllerConfig{
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
-			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 		}
-		awsconfigController, err = awsconfig.NewController(c)
+		legacyController, err = legacy.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -154,7 +155,7 @@ func New(config Config) (*Service, error) {
 		Version: versionService,
 
 		bootOnce:             sync.Once{},
-		awsconfigController:  awsconfigController,
+		legacyController:     legacyController,
 		clusterapiController: clusterapiController,
 	}
 
@@ -164,7 +165,7 @@ func New(config Config) (*Service, error) {
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 
-		go s.awsconfigController.Boot(ctx)
+		go s.legacyController.Boot(ctx)
 		go s.clusterapiController.Boot(ctx)
 	})
 }
