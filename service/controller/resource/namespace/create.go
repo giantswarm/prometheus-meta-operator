@@ -13,12 +13,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "creating namespace")
 	_, err = r.k8sClient.K8sClient().CoreV1().Namespaces().Create(namespace)
 	if apierrors.IsAlreadyExists(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.LogCtx(ctx, "level", "debug", "message", "created namespace")
 
 	return nil
 }

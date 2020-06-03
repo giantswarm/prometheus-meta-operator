@@ -14,12 +14,14 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting prometheus")
 	err = r.prometheusClient.MonitoringV1().Prometheuses(prometheus.GetNamespace()).Delete(prometheus.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted prometheus")
 
 	return nil
 }

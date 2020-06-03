@@ -19,6 +19,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "creating certificates")
 	_, err = r.k8sClient.K8sClient().CoreV1().Secrets(targetSecret.GetNamespace()).Get(targetSecret.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		sourceSecret, err := r.k8sClient.K8sClient().CoreV1().Secrets(sourceSecret.GetNamespace()).Get(sourceSecret.GetName(), metav1.GetOptions{})
@@ -34,6 +35,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.LogCtx(ctx, "level", "debug", "message", "created certificates")
 
 	return nil
 }

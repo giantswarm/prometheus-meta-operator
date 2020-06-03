@@ -13,6 +13,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "creating servicemonitor")
 	for _, serviceMonitor := range serviceMonitors {
 		_, err = r.prometheusClient.MonitoringV1().ServiceMonitors(serviceMonitor.GetNamespace()).Create(serviceMonitor)
 		if apierrors.IsAlreadyExists(err) {
@@ -21,6 +22,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 	}
+	r.logger.LogCtx(ctx, "level", "debug", "message", "created servicemonitor")
 
 	return nil
 }

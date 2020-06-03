@@ -1,4 +1,4 @@
-package controller
+package resource
 
 import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
@@ -19,7 +19,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 )
 
-type resourcesConfig struct {
+type Config struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
@@ -27,7 +27,7 @@ type resourcesConfig struct {
 	BaseDomain string
 }
 
-func newResources(config resourcesConfig) ([]resource.Interface, error) {
+func New(config Config) ([]resource.Interface, error) {
 	var err error
 
 	var namespaceResource resource.Interface

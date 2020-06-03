@@ -14,6 +14,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting alert rules")
 	for _, prometheusRule := range prometheusRules {
 		err := r.prometheusClient.MonitoringV1().ServiceMonitors(prometheusRule.GetNamespace()).Delete(prometheusRule.GetName(), &metav1.DeleteOptions{})
 		if apierrors.IsNotFound(err) {
@@ -22,6 +23,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 	}
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted alert rules")
 
 	return nil
 }

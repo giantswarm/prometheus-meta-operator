@@ -16,12 +16,13 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 
-	infrastructurev1alpha2 "github.com/giantswarm/apiextensions/pkg/apis/infrastructure/v1alpha2"
-	apiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
+	"github.com/giantswarm/apiextensions/pkg/apis/provider/v1alpha1"
+	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/awsconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
 )
 
 // Config represents the configuration used to create a new service.
@@ -35,8 +36,9 @@ type Config struct {
 type Service struct {
 	Version *version.Service
 
-	bootOnce   sync.Once
-	controller *controller.Controller
+	bootOnce             sync.Once
+	awsconfigController  *awsconfig.Controller
+	clusterapiController *clusterapi.Controller
 }
 
 // New creates a new configured service object.
@@ -84,8 +86,8 @@ func New(config Config) (*Service, error) {
 
 			RestConfig: restConfig,
 			SchemeBuilder: k8sclient.SchemeBuilder{
-				apiv1alpha2.AddToScheme,
-				infrastructurev1alpha2.AddToScheme,
+				v1alpha1.AddToScheme,
+				v1alpha2.AddToScheme,
 			},
 		}
 
@@ -103,18 +105,29 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var prometheusController *controller.Controller
+	var clusterapiController *clusterapi.Controller
 	{
-
-		c := controller.ControllerConfig{
+		c := clusterapi.ControllerConfig{
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
-
-			BaseDomain: config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 		}
+		clusterapiController, err = clusterapi.NewController(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
 
-		prometheusController, err = controller.NewController(c)
+	var awsconfigController *awsconfig.Controller
+	{
+		c := awsconfig.ControllerConfig{
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+		}
+		awsconfigController, err = awsconfig.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -140,8 +153,9 @@ func New(config Config) (*Service, error) {
 	s := &Service{
 		Version: versionService,
 
-		bootOnce:   sync.Once{},
-		controller: prometheusController,
+		bootOnce:             sync.Once{},
+		awsconfigController:  awsconfigController,
+		clusterapiController: clusterapiController,
 	}
 
 	return s, nil
@@ -150,6 +164,7 @@ func New(config Config) (*Service, error) {
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 
-		go s.controller.Boot(ctx)
+		go s.awsconfigController.Boot(ctx)
+		go s.clusterapiController.Boot(ctx)
 	})
 }

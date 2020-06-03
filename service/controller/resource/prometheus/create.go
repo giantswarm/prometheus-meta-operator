@@ -13,12 +13,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "creating prometheus")
 	_, err = r.prometheusClient.MonitoringV1().Prometheuses(prometheus.GetNamespace()).Create(prometheus)
 	if apierrors.IsAlreadyExists(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
+	r.logger.LogCtx(ctx, "level", "debug", "message", "created prometheus")
 
 	return nil
 }
