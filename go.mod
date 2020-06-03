@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/coreos/prometheus-operator v0.34.0
-	github.com/giantswarm/apiextensions v0.3.9
+	github.com/giantswarm/apiextensions v0.4.6
 	github.com/giantswarm/k8sclient/v3 v3.1.0
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.2.0
