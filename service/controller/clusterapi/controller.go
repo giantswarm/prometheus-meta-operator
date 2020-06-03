@@ -14,11 +14,10 @@ import (
 )
 
 type ControllerConfig struct {
+	BaseDomain       string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
-
-	BaseDomain string
 }
 
 type Controller struct {

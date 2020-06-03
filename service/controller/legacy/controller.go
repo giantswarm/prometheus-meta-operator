@@ -57,7 +57,6 @@ func NewController(config ControllerConfig) (*Controller, error) {
 			default:
 				return nil, microerror.Maskf(invalidProviderError, "provider: %q", config.Provider)
 			}
-
 		}
 
 		c := controller.Config{
