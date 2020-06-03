@@ -23,6 +23,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/awsconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
+	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
 )
 
 // Config represents the configuration used to create a new service.
@@ -112,6 +113,13 @@ func New(config Config) (*Service, error) {
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Security: controllerresource.Security{
+				LetsEncryptEnabled: config.Viper.GetBool(config.Flag.Service.Prometheus.Security.LetsEncrypt.Enabled),
+				Whitelisting: controllerresource.SecurityWhitelisting{
+					Enabled:   config.Viper.GetBool(config.Flag.Service.Prometheus.Security.Whitelisting.Enabled),
+					SourceIPs: config.Viper.GetString(config.Flag.Service.Prometheus.Security.Whitelisting.SourceIPs),
+				},
+			},
 		}
 		clusterapiController, err = clusterapi.NewController(c)
 		if err != nil {
@@ -126,6 +134,13 @@ func New(config Config) (*Service, error) {
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Security: controllerresource.Security{
+				LetsEncryptEnabled: config.Viper.GetBool(config.Flag.Service.Prometheus.Security.LetsEncrypt.Enabled),
+				Whitelisting: controllerresource.SecurityWhitelisting{
+					Enabled:   config.Viper.GetBool(config.Flag.Service.Prometheus.Security.Whitelisting.Enabled),
+					SourceIPs: config.Viper.GetString(config.Flag.Service.Prometheus.Security.Whitelisting.SourceIPs),
+				},
+			},
 		}
 		awsconfigController, err = awsconfig.NewController(c)
 		if err != nil {

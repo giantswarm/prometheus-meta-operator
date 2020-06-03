@@ -20,6 +20,14 @@ func Namespace(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-prometheus", cluster.GetName())
 }
 
+func TenantClusterSecret(cluster metav1.Object) string {
+	return fmt.Sprintf("%s-prometheus-secret", cluster.GetName())
+}
+
+func TenantClusterHost(cluster metav1.Object, baseDomain string) string {
+	return fmt.Sprintf("%s.prometheus.%s", cluster.GetName(), baseDomain)
+}
+
 func Secret() string {
 	return "cluster-certificates"
 }

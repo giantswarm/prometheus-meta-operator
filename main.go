@@ -110,6 +110,9 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.CrtFile, "", "Certificate file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.KeyFile, "", "Key file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.BaseDomain, "", "Base domain to create Prometheus Ingress resources under.")
+	daemonCommand.PersistentFlags().Bool(f.Service.Prometheus.Security.LetsEncrypt.Enabled, false, "Whether lets Encrypt be used to generate prometheus certificates.")
+	daemonCommand.PersistentFlags().Bool(f.Service.Prometheus.Security.Whitelisting.Enabled, false, "Whether the access to the prometheuses should be whitelisted.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Security.Whitelisting.SourceIPs, "", "List of ips to whitelist.")
 
 	err = newCommand.CobraCommand().Execute()
 	if err != nil {

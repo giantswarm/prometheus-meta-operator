@@ -1,4 +1,4 @@
-package ingress
+package oauth2proxy
 
 import (
 	"fmt"
@@ -14,27 +14,21 @@ import (
 )
 
 const (
-	Name = "ingress"
+	Name = "oauth2proxy"
 )
 
 type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	BaseDomain            string
-	LetsEncryptEnabled    bool
-	WhitelistingEnabled   bool
-	WhitelistingSourceIPs string
+	BaseDomain string
 }
 
 type Resource struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 
-	baseDomain            string
-	letsEncryptEnabled    bool
-	whitelistingEnabled   bool
-	whitelistingSourceIPs string
+	baseDomain string
 }
 
 func New(config Config) (*Resource, error) {
@@ -53,10 +47,7 @@ func New(config Config) (*Resource, error) {
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
-		baseDomain:            config.BaseDomain,
-		letsEncryptEnabled:    config.LetsEncryptEnabled,
-		whitelistingEnabled:   config.WhitelistingEnabled,
-		whitelistingSourceIPs: config.WhitelistingSourceIPs,
+		baseDomain: config.BaseDomain,
 	}
 
 	return r, nil
@@ -72,22 +63,9 @@ func (r *Resource) toIngress(v interface{}) (*v1beta1.Ingress, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	host := key.TenantClusterHost(cluster, r.baseDomain)
 	secretName := key.TenantClusterSecret(cluster)
-	ingressName := fmt.Sprintf("%s-prometheus", cluster.GetName())
-
-	annotations := map[string]string{
-		"kubernetes.io/ingress.class":             "nginx",
-		"nginx.ingress.kubernetes.io/auth-signin": fmt.Sprintf("https://%s/oauth2/start", host),
-		"nginx.ingress.kubernetes.io/auth-url":    fmt.Sprintf("https://%s/oauth2/start", host),
-	}
-
-	if r.letsEncryptEnabled {
-		annotations["kubernetes.io/tls-acme"] = "true"
-	}
-	if r.whitelistingEnabled {
-		annotations["nginx.ingress.kubernetes.io/whitelist-source-range"] = r.whitelistingSourceIPs
-	}
+	host := key.TenantClusterHost(cluster, r.baseDomain)
+	ingressName := fmt.Sprintf("%s-prometheus-oauth2-proxy", cluster.GetName())
 
 	ingress := &v1beta1.Ingress{
 		ObjectMeta: metav1.ObjectMeta{
@@ -96,7 +74,6 @@ func (r *Resource) toIngress(v interface{}) (*v1beta1.Ingress, error) {
 			Labels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),
 			},
-			Annotations: annotations,
 		},
 		Spec: v1beta1.IngressSpec{
 			Rules: []v1beta1.IngressRule{
@@ -106,10 +83,10 @@ func (r *Resource) toIngress(v interface{}) (*v1beta1.Ingress, error) {
 						HTTP: &v1beta1.HTTPIngressRuleValue{
 							Paths: []v1beta1.HTTPIngressPath{
 								{
-									Path: "/",
+									Path: "/oauth2",
 									Backend: v1beta1.IngressBackend{
-										ServiceName: cluster.GetName(),
-										ServicePort: intstr.FromInt(9090),
+										ServiceName: "oauth2-proxy",
+										ServicePort: intstr.FromInt(4180),
 									},
 								},
 							},

@@ -23,3 +23,9 @@ data:
           keyFile: ''
       prometheus:
         baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+        security:
+          letsEncrypt:
+            enabled: {{ .Values.Installation.V1.Monitoring.Prometheus.Letsencrypt }}
+          whitelisting:
+            enabled:  {{ .Values.Installation.V1.Security.RestrictAccess.Enabled }}
+            sourceIPs: {{ .Values.Installation.V1.Security.Subnet.VPN }}

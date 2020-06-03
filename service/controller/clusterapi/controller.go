@@ -22,6 +22,7 @@ type ControllerConfig struct {
 	PrometheusClient promclient.Interface
 
 	BaseDomain string
+	Security   controllerresource.Security
 }
 
 type Controller struct {

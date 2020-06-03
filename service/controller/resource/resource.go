@@ -14,6 +14,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/frontend"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/oauth2proxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/service"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
@@ -25,6 +26,7 @@ type Config struct {
 	PrometheusClient promclient.Interface
 
 	BaseDomain string
+	Security   Security
 }
 
 func New(config Config) ([]resource.Interface, error) {
@@ -101,10 +103,28 @@ func New(config Config) ([]resource.Interface, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 
-			BaseDomain: config.BaseDomain,
+			BaseDomain:            config.BaseDomain,
+			LetsEncryptEnabled:    config.Security.LetsEncryptEnabled,
+			WhitelistingEnabled:   config.Security.Whitelisting.Enabled,
+			WhitelistingSourceIPs: config.Security.Whitelisting.SourceIPs,
 		}
 
 		ingressResource, err = ingress.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var oauth2ProxyResource resource.Interface
+	{
+		c := oauth2proxy.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			BaseDomain: config.BaseDomain,
+		}
+
+		oauth2ProxyResource, err = oauth2proxy.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -143,6 +163,7 @@ func New(config Config) ([]resource.Interface, error) {
 		frontendResource,
 		serviceResource,
 		ingressResource,
+		oauth2ProxyResource,
 		serviceMonitorResource,
 		alertResource,
 	}
