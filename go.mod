@@ -13,12 +13,12 @@ require (
 	github.com/giantswarm/operatorkit v1.0.0
 	github.com/giantswarm/versionbundle v0.2.0
 	github.com/spf13/viper v1.6.2
-	k8s.io/api v0.16.6
-	k8s.io/apimachinery v0.16.6
+	k8s.io/api v0.16.7
+	k8s.io/apimachinery v0.16.7
 	k8s.io/client-go v12.0.0+incompatible
 	sigs.k8s.io/cluster-api v0.2.8
 )
 
-replace k8s.io/client-go => k8s.io/client-go v0.16.4
+replace k8s.io/client-go => k8s.io/client-go v0.16.7
 
 replace github.com/giantswarm/operatorkit => ./operatorkit
