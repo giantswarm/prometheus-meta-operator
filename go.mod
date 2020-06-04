@@ -20,5 +20,3 @@ require (
 )
 
 replace k8s.io/client-go => k8s.io/client-go v0.16.7
-
-replace github.com/giantswarm/operatorkit => ./operatorkit
