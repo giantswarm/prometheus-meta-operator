@@ -45,28 +45,32 @@ func NewController(config ControllerConfig) (*Controller, error) {
 
 	var operatorkitController *controller.Controller
 	{
-		var runtimeObject runtime.Object
+		var runtimeFunc func() runtime.Object
 		{
 			switch config.Provider {
 			case "aws":
-				runtimeObject = new(v1alpha1.AWSConfig)
+				runtimeFunc = func() runtime.Object {
+					return new(v1alpha1.AWSConfig)
+				}
 			case "azure":
-				runtimeObject = new(v1alpha1.AzureConfig)
+				runtimeFunc = func() runtime.Object {
+					return new(v1alpha1.AzureConfig)
+				}
 			case "kvm":
-				runtimeObject = new(v1alpha1.KVMConfig)
+				runtimeFunc = func() runtime.Object {
+					return new(v1alpha1.KVMConfig)
+				}
 			default:
 				return nil, microerror.Maskf(invalidProviderError, "provider: %q", config.Provider)
 			}
 		}
 
 		c := controller.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-			Name:      "legacy-controller",
-			NewRuntimeObjectFunc: func() runtime.Object {
-				return runtimeObject
-			},
-			Resources: resources,
+			K8sClient:            config.K8sClient,
+			Logger:               config.Logger,
+			Name:                 "legacy-controller",
+			NewRuntimeObjectFunc: runtimeFunc,
+			Resources:            resources,
 		}
 
 		operatorkitController, err = controller.New(c)
