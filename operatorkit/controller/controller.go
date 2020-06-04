@@ -378,11 +378,6 @@ func (c *Controller) reconcile(ctx context.Context, req reconcile.Request) (reco
 		return reconcile.Result{}, microerror.Mask(err)
 	}
 
-	ctx, err = c.initCtx(ctx, obj)
-	if err != nil {
-		return reconcile.Result{}, microerror.Mask(err)
-	}
-
 	var m metav1.Object
 	{
 		m, err = meta.Accessor(obj)
