@@ -391,6 +391,7 @@ func (c *Controller) reconcile(ctx context.Context, req reconcile.Request) (reco
 		}
 	}
 
+	c.logger.LogCtx(ctx, "level", "error", "message", fmt.Sprintf("reconcile %s/%s deletionTimestamp=%v", m.GetName(), m.GetNamespace(), m.GetDeletionTimestamp()))
 	if m.GetDeletionTimestamp() != nil {
 		event := "delete"
 
