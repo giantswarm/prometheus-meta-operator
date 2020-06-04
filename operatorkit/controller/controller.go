@@ -345,6 +345,7 @@ func (c *Controller) deleteFunc(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 	if !hasFinalizer {
+		c.logger.LogCtx(ctx, "level", "error", "message", "deleting no finalizer")
 		return nil
 	}
 
@@ -434,6 +435,7 @@ func (c *Controller) updateFunc(ctx context.Context, obj interface{}) error {
 	if ok {
 		// A finalizer was added, this causes a new update event, so we stop
 		// reconciling here and will pick up the new event.
+		c.logger.LogCtx(ctx, "level", "error", "message", "updating finalizer added")
 		return nil
 	}
 
