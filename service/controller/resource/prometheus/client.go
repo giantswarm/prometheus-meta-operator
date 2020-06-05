@@ -2,6 +2,8 @@ package prometheus
 
 import (
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
+	monv1 "github.com/coreos/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type wrappedClient struct {

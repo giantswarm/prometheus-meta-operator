@@ -2,7 +2,8 @@ package namespace
 
 import (
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/client-go/deprecated/typed/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	v1 "k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
 type wrappedClient struct {
