@@ -13,8 +13,9 @@ rules:
       - services
     verbs:
       - create
-      - update
       - delete
+      - get
+      - update
   - apiGroups:
       - ""
     resources:
@@ -56,6 +57,7 @@ rules:
     verbs:
       - create
       - delete
+      - get
       - update
   - apiGroups:
       - provider.giantswarm.io
