@@ -16,8 +16,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	r.logger.LogCtx(ctx, "level", "debug", "message", "creating")
 	_, err = r.client.Create(cr)
 	if apierrors.IsAlreadyExists(err) {
-		// fall through
-	} else if err != nil {
+		_, err = r.client.Update(cr)
+	}
+
+	if err != nil {
 		return microerror.Mask(err)
 	}
 	r.logger.LogCtx(ctx, "level", "debug", "message", "created")
