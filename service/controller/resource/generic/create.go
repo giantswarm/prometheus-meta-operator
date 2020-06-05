@@ -23,7 +23,8 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	if apierrors.IsNotFound(err) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "creating create")
 		_, err = c.Create(desired)
-	} else if err != nil {
+	}
+	if err != nil {
 		return microerror.Mask(err)
 	}
 
