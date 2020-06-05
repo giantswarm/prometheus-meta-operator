@@ -5,10 +5,12 @@ import (
 
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
+	monv1 "github.com/coreos/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -21,32 +23,44 @@ type Config struct {
 	Logger           micrologger.Logger
 }
 
-type Resource struct {
-	prometheusClient promclient.Interface
-	logger           micrologger.Logger
+type wrappedClient struct {
+	client monv1.PrometheusInterface
 }
 
-func New(config Config) (*Resource, error) {
-	if config.PrometheusClient == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.PrometheusClient must not be empty", config)
-	}
-	if config.Logger == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
+func (c wrappedClient) Create(o metav1.Object) (metav1.Object, error) {
+	return c.client.Create(o.(*promv1.Prometheus))
+}
+func (c wrappedClient) Update(o metav1.Object) (metav1.Object, error) {
+	return c.client.Update(o.(*promv1.Prometheus))
+}
+func (c wrappedClient) Get(name string, options metav1.GetOptions) (metav1.Object, error) {
+	return c.client.Get(name, options)
+}
+func (c wrappedClient) Delete(name string, options *metav1.DeleteOptions) error {
+	return c.client.Delete(name, options)
+}
+
+func New(config Config) (*generic.Resource, error) {
+	clientFunc := func(namespace string) generic.Interface {
+		c := config.PrometheusClient.MonitoringV1().Prometheuses(namespace)
+		return wrappedClient{client: c}
 	}
 
-	r := &Resource{
-		prometheusClient: config.PrometheusClient,
-		logger:           config.Logger,
+	c := generic.Config{
+		ClientFunc: clientFunc,
+		Logger:     config.Logger,
+		Name:       Name,
+		ToCR:       toPrometheus,
+	}
+	r, err := generic.New(c)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
 
 	return r, nil
 }
 
-func (r *Resource) Name() string {
-	return Name
-}
-
-func toPrometheus(v interface{}) (*promv1.Prometheus, error) {
+func toPrometheus(v interface{}) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
 	}
