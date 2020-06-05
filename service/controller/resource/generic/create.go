@@ -23,17 +23,15 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	if apierrors.IsNotFound(err) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "creating create")
 		_, err = c.Create(desired)
-	} else if apierrors.IsAlreadyExists(err) {
-		resetMeta(current)
-		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
-		if !reflect.DeepEqual(current, desired) {
-			r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
-			_, err = c.Update(desired)
-		}
+	} else if err != nil {
+		return microerror.Mask(err)
 	}
 
-	if err != nil {
-		return microerror.Mask(err)
+	resetMeta(current)
+	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
+	if !reflect.DeepEqual(current, desired) {
+		r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
+		_, err = c.Update(desired)
 	}
 	r.logger.LogCtx(ctx, "level", "debug", "message", "created")
 
