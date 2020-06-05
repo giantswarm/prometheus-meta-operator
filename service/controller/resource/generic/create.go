@@ -48,8 +48,6 @@ func resetMeta(o metav1.Object) {
 		time metav1.Time
 	)
 
-	o.SetNamespace("")
-	o.SetName("")
 	o.SetGenerateName("")
 	o.SetUID(uid)
 	o.SetResourceVersion("")
