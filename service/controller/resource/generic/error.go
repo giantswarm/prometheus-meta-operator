@@ -1,4 +1,4 @@
-package prometheus
+package generic
 
 import (
 	"github.com/giantswarm/microerror"

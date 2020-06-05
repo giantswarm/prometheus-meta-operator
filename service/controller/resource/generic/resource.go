@@ -7,8 +7,8 @@ import (
 )
 
 type Interface interface {
-	Create(interface{}) (metav1.Object, error)
-	Update(interface{}) (metav1.Object, error)
+	Create(metav1.Object) (metav1.Object, error)
+	Update(metav1.Object) (metav1.Object, error)
 	Get(name string, options metav1.GetOptions) (metav1.Object, error)
 	Delete(name string, options *metav1.DeleteOptions) error
 }
@@ -36,7 +36,7 @@ func New(config Config) (*Resource, error) {
 	if config.Name == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Name must not be empty", config)
 	}
-	if config.ToCR == "" {
+	if config.ToCR == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ToCR must not be empty", config)
 	}
 
