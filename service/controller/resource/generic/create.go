@@ -23,6 +23,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		resetMeta(current)
 		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
 		if !reflect.DeepEqual(current, desired) {
+			r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
 			_, err = r.client.Update(desired)
 		}
 	}
