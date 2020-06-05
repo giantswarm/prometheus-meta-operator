@@ -20,11 +20,10 @@ import (
 )
 
 type Config struct {
+	BaseDomain       string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
-
-	BaseDomain string
 }
 
 func New(config Config) ([]resource.Interface, error) {

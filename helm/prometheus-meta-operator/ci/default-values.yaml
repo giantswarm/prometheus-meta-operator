@@ -4,6 +4,8 @@ Installation:
     Monitoring:
       Prometheus:
         Host: ""
+    Provider:
+      Kind: ""
     Registry:
       Domain: ""
     Secret:

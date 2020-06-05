@@ -59,6 +59,8 @@ rules:
       - provider.giantswarm.io
     resources:
       - awsconfigs
+      - azureconfigs
+      - kvmconfigs
     verbs:
       - watch
       - get

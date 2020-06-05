@@ -1,9 +1,6 @@
 package clusterapi
 
 import (
-	// If your operator watches a CRD import it here.
-	// "github.com/giantswarm/apiextensions/pkg/apis/application/v1alpha1"
-
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/k8sclient/v3/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -17,11 +14,10 @@ import (
 )
 
 type ControllerConfig struct {
+	BaseDomain       string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
-
-	BaseDomain string
 }
 
 type Controller struct {

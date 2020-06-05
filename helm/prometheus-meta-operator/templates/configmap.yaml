@@ -23,3 +23,5 @@ data:
           keyFile: ''
       prometheus:
         baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+      provider:
+        kind: {{ .Values.Installation.V1.Provider.Kind }}
