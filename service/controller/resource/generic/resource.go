@@ -42,9 +42,10 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		logger: config.Logger,
-		name:   config.Name,
-		toCR:   config.ToCR,
+		clientFunc: config.ClientFunc,
+		logger:     config.Logger,
+		name:       config.Name,
+		toCR:       config.ToCR,
 	}
 
 	return r, nil
