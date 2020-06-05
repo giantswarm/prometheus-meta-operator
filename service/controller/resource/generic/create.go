@@ -18,13 +18,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "creating")
-	current, err := r.client.Create(desired)
+	c := r.clientFunc(desired.GetNamespace())
+	current, err := c.Create(desired)
 	if apierrors.IsAlreadyExists(err) {
 		resetMeta(current)
 		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
 		if !reflect.DeepEqual(current, desired) {
 			r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
-			_, err = r.client.Update(desired)
+			_, err = c.Update(desired)
 		}
 	}
 

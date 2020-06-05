@@ -39,11 +39,16 @@ func (c wrappedClient) Delete(name string, options *metav1.DeleteOptions) error 
 }
 
 func New(config Config) (*generic.Resource, error) {
+	clientFunc := func(namespace string) generic.Interface {
+		c := config.K8sClient.K8sClient().CoreV1().Namespaces()
+		return wrappedClient{client: c}
+	}
+
 	c := generic.Config{
-		Client: wrappedClient{client: config.K8sClient.K8sClient().CoreV1().Namespaces()},
-		Logger: config.Logger,
-		Name:   Name,
-		ToCR:   toNamespace,
+		ClientFunc: clientFunc,
+		Logger:     config.Logger,
+		Name:       Name,
+		ToCR:       toNamespace,
 	}
 	r, err := generic.New(c)
 	if err != nil {
