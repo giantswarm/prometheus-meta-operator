@@ -5,7 +5,6 @@ import (
 
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
-	monv1 "github.com/coreos/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,23 +20,6 @@ const (
 type Config struct {
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
-}
-
-type wrappedClient struct {
-	client monv1.PrometheusInterface
-}
-
-func (c wrappedClient) Create(o metav1.Object) (metav1.Object, error) {
-	return c.client.Create(o.(*promv1.Prometheus))
-}
-func (c wrappedClient) Update(o metav1.Object) (metav1.Object, error) {
-	return c.client.Update(o.(*promv1.Prometheus))
-}
-func (c wrappedClient) Get(name string, options metav1.GetOptions) (metav1.Object, error) {
-	return c.client.Get(name, options)
-}
-func (c wrappedClient) Delete(name string, options *metav1.DeleteOptions) error {
-	return c.client.Delete(name, options)
 }
 
 func New(config Config) (*generic.Resource, error) {
