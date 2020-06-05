@@ -33,6 +33,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	if !reflect.DeepEqual(current, desired) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
 		_, err = c.Update(desired)
+		if err != nil {
+			return microerror.Mask(err)
+		}
 	}
 	r.logger.LogCtx(ctx, "level", "debug", "message", "created")
 
