@@ -12,6 +12,7 @@ type Interface interface {
 	Get(name string, options metav1.GetOptions) (metav1.Object, error)
 	Delete(name string, options *metav1.DeleteOptions) error
 }
+
 type Config struct {
 	Client Interface
 	Logger micrologger.Logger
