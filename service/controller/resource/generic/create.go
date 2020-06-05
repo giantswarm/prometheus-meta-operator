@@ -2,6 +2,7 @@ package generic
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/microerror"
@@ -20,6 +21,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	current, err := r.client.Create(desired)
 	if apierrors.IsAlreadyExists(err) {
 		resetMeta(current)
+		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
 		if !reflect.DeepEqual(current, desired) {
 			_, err = r.client.Update(desired)
 		}
