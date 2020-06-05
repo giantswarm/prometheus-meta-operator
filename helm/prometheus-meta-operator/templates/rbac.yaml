@@ -13,6 +13,7 @@ rules:
       - services
     verbs:
       - create
+      - update
       - delete
   - apiGroups:
       - ""
