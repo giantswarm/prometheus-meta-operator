@@ -7,7 +7,6 @@ import (
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/types"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
@@ -27,10 +26,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	resetMeta(current)
 	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
 	if r.hasChangedFunc(current, desired) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
+		updateMeta(current, desired)
 		_, err = c.Update(desired)
 		if err != nil {
 			return microerror.Mask(err)
@@ -41,24 +40,19 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	return nil
 }
 
-func resetMeta(o metav1.Object) {
-	var (
-		uid  types.UID
-		time metav1.Time
-	)
-
-	o.SetGenerateName("")
-	o.SetUID(uid)
-	o.SetResourceVersion("")
-	o.SetGeneration(0)
-	o.SetSelfLink("")
-	o.SetCreationTimestamp(time)
-	o.SetDeletionTimestamp(nil)
-	o.SetDeletionGracePeriodSeconds(nil)
-	o.SetLabels(nil)
-	o.SetAnnotations(nil)
-	o.SetFinalizers(nil)
-	o.SetOwnerReferences(nil)
-	o.SetClusterName("")
-	o.SetManagedFields(nil)
+func updateMeta(c, d metav1.Object) {
+	d.SetGenerateName(c.GetGenerateName())
+	d.SetUID(c.GetUID())
+	d.SetResourceVersion(c.GetResourceVersion())
+	d.SetGeneration(c.GetGeneration())
+	d.SetSelfLink(c.GetSelfLink())
+	d.SetCreationTimestamp(c.GetCreationTimestamp())
+	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
+	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
+	d.SetLabels(c.GetLabels())
+	d.SetAnnotations(c.GetAnnotations())
+	d.SetFinalizers(c.GetFinalizers())
+	d.SetOwnerReferences(c.GetOwnerReferences())
+	d.SetClusterName(c.GetClusterName())
+	d.SetManagedFields(c.GetManagedFields())
 }
