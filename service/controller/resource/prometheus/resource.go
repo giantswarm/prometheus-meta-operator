@@ -2,6 +2,7 @@ package prometheus
 
 import (
 	"fmt"
+	"reflect"
 
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
@@ -29,10 +30,11 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
-		ToCR:       toPrometheus,
+		ClientFunc:     clientFunc,
+		Logger:         config.Logger,
+		Name:           Name,
+		ToCR:           toPrometheus,
+		HasChangedFunc: hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {
@@ -87,4 +89,11 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 	}
 
 	return prometheus, nil
+}
+
+func hasChanged(current, desired metav1.Object) bool {
+	c := current.(*promv1.Prometheus)
+	d := desired.(*promv1.Prometheus)
+
+	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
