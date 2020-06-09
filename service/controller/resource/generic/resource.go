@@ -14,17 +14,19 @@ type Interface interface {
 }
 
 type Config struct {
-	ClientFunc func(string) Interface
-	Logger     micrologger.Logger
-	Name       string
-	ToCR       func(interface{}) (metav1.Object, error)
+	ClientFunc     func(string) Interface
+	Logger         micrologger.Logger
+	Name           string
+	ToCR           func(interface{}) (metav1.Object, error)
+	HasChangedFunc func(metav1.Object, metav1.Object) bool
 }
 
 type Resource struct {
-	clientFunc func(string) Interface
-	logger     micrologger.Logger
-	name       string
-	toCR       func(interface{}) (metav1.Object, error)
+	clientFunc     func(string) Interface
+	logger         micrologger.Logger
+	name           string
+	toCR           func(interface{}) (metav1.Object, error)
+	hasChangedFunc func(metav1.Object, metav1.Object) bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -40,12 +42,16 @@ func New(config Config) (*Resource, error) {
 	if config.ToCR == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ToCR must not be empty", config)
 	}
+	if config.HasChangedFunc == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.HasChangedFunc must not be empty", config)
+	}
 
 	r := &Resource{
-		clientFunc: config.ClientFunc,
-		logger:     config.Logger,
-		name:       config.Name,
-		toCR:       config.ToCR,
+		clientFunc:     config.ClientFunc,
+		logger:         config.Logger,
+		name:           config.Name,
+		toCR:           config.ToCR,
+		hasChangedFunc: config.HasChangedFunc,
 	}
 
 	return r, nil

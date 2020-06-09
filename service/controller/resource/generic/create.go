@@ -3,7 +3,6 @@ package generic
 import (
 	"context"
 	"fmt"
-	"reflect"
 
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -30,7 +29,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	resetMeta(current)
 	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
-	if !reflect.DeepEqual(current, desired) {
+	if r.hasChangedFunc(current, desired) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
 		_, err = c.Update(desired)
 		if err != nil {
