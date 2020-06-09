@@ -55,3 +55,7 @@ func toNamespace(v interface{}) (metav1.Object, error) {
 
 	return namespace, nil
 }
+
+func hasChanged(current, desired metav1.Object) bool {
+	return false
+}
