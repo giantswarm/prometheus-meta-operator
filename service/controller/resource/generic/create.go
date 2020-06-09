@@ -2,7 +2,6 @@ package generic
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -19,16 +18,13 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	c := r.clientFunc(desired.GetNamespace())
 	current, err := c.Get(desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "creating create")
 		_, err = c.Create(desired)
 	}
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("comparing\n%v\nAND\n%v\n", current, desired))
 	if r.hasChangedFunc(current, desired) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "creating update")
 		updateMeta(current, desired)
 		_, err = c.Update(desired)
 		if err != nil {
