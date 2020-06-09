@@ -1,4 +1,4 @@
-package namespace
+package generic
 
 import (
 	"context"
@@ -9,19 +9,20 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	namespace, err := toNamespace(obj)
+	desired, err := r.toCR(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting namespace")
-	err = r.k8sClient.K8sClient().CoreV1().Namespaces().Delete(namespace.GetName(), &metav1.DeleteOptions{})
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting")
+	c := r.clientFunc(desired.GetNamespace())
+	err = c.Delete(desired.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
-	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted namespace")
+	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted")
 
 	return nil
 }
