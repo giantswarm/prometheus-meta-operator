@@ -1,6 +1,8 @@
 package servicemonitor
 
 import (
+	"reflect"
+
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
@@ -52,4 +54,8 @@ func toServiceMonitors(obj interface{}) ([]*promv1.ServiceMonitor, error) {
 	return []*promv1.ServiceMonitor{
 		service.APIServer(cluster),
 	}, nil
+}
+
+func hasChanged(current, desired *promv1.ServiceMonitor) bool {
+	return !reflect.DeepEqual(current.Spec, desired.Spec)
 }
