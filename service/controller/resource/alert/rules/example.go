@@ -8,10 +8,10 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func APIServer(cluster metav1.Object) *promv1.PrometheusRule {
+func ExampleRule(cluster metav1.Object) *promv1.PrometheusRule {
 	return &promv1.PrometheusRule{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      "apiserver-rules",
+			Name:      "example-rules",
 			Namespace: key.Namespace(cluster),
 			Labels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),
