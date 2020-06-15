@@ -1,27 +1,15 @@
-package servicemonitor
+package service
 
 import (
 	"fmt"
 
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
-	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func toServiceMonitors(obj interface{}) ([]*promv1.ServiceMonitor, error) {
-	cluster, err := key.ToCluster(obj)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return []*promv1.ServiceMonitor{
-		apiServer(cluster),
-	}, nil
-}
-
-func apiServer(cluster metav1.Object) *promv1.ServiceMonitor {
+func APIServer(cluster metav1.Object) *promv1.ServiceMonitor {
 	return &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("kubernetes-apiserver-%s", cluster.GetName()),
