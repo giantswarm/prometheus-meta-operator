@@ -23,11 +23,6 @@ type Config struct {
 	Logger           micrologger.Logger
 }
 
-type Resource struct {
-	prometheusClient promclient.Interface
-	logger           micrologger.Logger
-}
-
 func New(config Config) (*generic.Resource, error) {
 	if config.PrometheusClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.PrometheusClient must not be empty", config)
@@ -54,10 +49,6 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	return r, nil
-}
-
-func (r *Resource) Name() string {
-	return Name
 }
 
 func toPrometheusRule(obj interface{}) (metav1.Object, error) {
