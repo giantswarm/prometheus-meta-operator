@@ -1,12 +1,16 @@
 package alert
 
 import (
+	"reflect"
+
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert/rules"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -24,7 +28,7 @@ type Resource struct {
 	logger           micrologger.Logger
 }
 
-func New(config Config) (*Resource, error) {
+func New(config Config) (*generic.Resource, error) {
 	if config.PrometheusClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.PrometheusClient must not be empty", config)
 	}
@@ -32,9 +36,21 @@ func New(config Config) (*Resource, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
-	r := &Resource{
-		prometheusClient: config.PrometheusClient,
-		logger:           config.Logger,
+	clientFunc := func(namespace string) generic.Interface {
+		c := config.PrometheusClient.MonitoringV1().PrometheusRules(namespace)
+		return wrappedClient{client: c}
+	}
+
+	c := generic.Config{
+		ClientFunc:     clientFunc,
+		Logger:         config.Logger,
+		Name:           Name,
+		ToCR:           toPrometheusRule,
+		HasChangedFunc: hasChanged,
+	}
+	r, err := generic.New(c)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
 
 	return r, nil
@@ -44,15 +60,18 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toPrometheusRules(obj interface{}) ([]*promv1.PrometheusRule, error) {
+func toPrometheusRule(obj interface{}) (metav1.Object, error) {
 	cluster, err := key.ToCluster(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	rules := []*promv1.PrometheusRule{
-		rules.APIServer(cluster),
-	}
+	return rules.ExampleRule(cluster), nil
+}
 
-	return rules, nil
+func hasChanged(current, desired metav1.Object) bool {
+	c := current.(*promv1.PrometheusRule)
+	d := desired.(*promv1.PrometheusRule)
+
+	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
