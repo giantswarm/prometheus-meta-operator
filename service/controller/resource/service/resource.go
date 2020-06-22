@@ -58,7 +58,7 @@ func New(config Config) (*generic.Resource, error) {
 			},
 		}
 
-		current, err := clientFunc(cluster.GetNamespace()).Get("prometheus", metav1.GetOptions{})
+		current, err := clientFunc(key.Namespace(cluster)).Get("prometheus", metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
 			// fall through
 		} else if err != nil {
