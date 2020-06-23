@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed service resource as this is no longer needed (it was used for cortex frontend)
+
 ## [0.1.1] - 2020-05-27
 
 ### Added
