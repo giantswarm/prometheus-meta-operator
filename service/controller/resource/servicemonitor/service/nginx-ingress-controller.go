@@ -21,7 +21,7 @@ func NginxIngressController(cluster metav1.Object) *promv1.ServiceMonitor {
 		Spec: promv1.ServiceMonitorSpec{
 			Selector: metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"k8s-app": "nginx-ingress-controller",
+					"app.kubernetes.io/name": "nginx-ingress-controller",
 				},
 			},
 			NamespaceSelector: promv1.NamespaceSelector{
