@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed service resource as this is no longer needed (it was used for cortex frontend)
 
+### Fixed
+
+- Fix an error during alert update: metadata.resourceVersion: Invalid value
+
 ## [0.1.1] - 2020-05-27
 
 ### Added
