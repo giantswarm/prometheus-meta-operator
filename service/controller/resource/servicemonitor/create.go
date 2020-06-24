@@ -18,7 +18,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	for _, desired := range serviceMonitors {
 		current, err := r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Get(desired.GetName(), metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			_, err = r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Create(desired)
+			current, err = r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Create(desired)
 		}
 		if err != nil {
 			return microerror.Mask(err)
