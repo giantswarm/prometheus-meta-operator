@@ -29,8 +29,28 @@ func NginxIngressController(cluster metav1.Object) *promv1.ServiceMonitor {
 			},
 			Endpoints: []promv1.Endpoint{
 				promv1.Endpoint{
-					Port:   "10254",
-					Scheme: "http",
+					Port:   "https",
+					Scheme: "https",
+					RelabelConfigs: []*promv1.RelabelConfig{
+						&promv1.RelabelConfig{
+							Regex:        ".*",
+							Replacement:  fmt.Sprintf("master.%d:443", key.ClusterID(cluster)),
+							SourceLabels: []string{"__address__"},
+							TargetLabel:  "__address__",
+						},
+						&promv1.RelabelConfig{
+							Regex:        "(nginx-ingress-controller.*)",
+							Replacement:  "/api/v1/namespaces/kube-system/pods/${1}:10254/proxy/metrics",
+							SourceLabels: []string{"__meta_kubernetes_pod_name"},
+							TargetLabel:  "__metrics_path__",
+						},
+					},
+					TLSConfig: &promv1.TLSConfig{
+						CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+						CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+						KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+						InsecureSkipVerify: true,
+					},
 				},
 			},
 		},
