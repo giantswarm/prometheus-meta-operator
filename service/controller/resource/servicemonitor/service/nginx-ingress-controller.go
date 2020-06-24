@@ -29,7 +29,7 @@ func NginxIngressController(cluster metav1.Object) *promv1.ServiceMonitor {
 			},
 			Endpoints: []promv1.Endpoint{
 				promv1.Endpoint{
-					Port:   "http",
+					Port:   "10254",
 					Scheme: "http",
 				},
 			},
