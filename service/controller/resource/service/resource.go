@@ -1,15 +1,12 @@
 package service
 
 import (
-	"reflect"
-
 	"github.com/giantswarm/k8sclient/v3/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -22,34 +19,32 @@ type Config struct {
 	Logger    micrologger.Logger
 }
 
-func New(config Config) (*generic.Resource, error) {
+type Resource struct {
+	k8sClient k8sclient.Interface
+	logger    micrologger.Logger
+}
+
+func New(config Config) (*Resource, error) {
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().CoreV1().Services(namespace)
-		return wrappedClient{client: c}
-	}
 
-	c := generic.Config{
-		ClientFunc:     clientFunc,
-		Logger:         config.Logger,
-		Name:           Name,
-		ToCR:           toService,
-		HasChangedFunc: hasChanged,
-	}
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	r := &Resource{
+		k8sClient: config.K8sClient,
+		logger:    config.Logger,
 	}
 
 	return r, nil
 }
 
-func toService(v interface{}) (metav1.Object, error) {
+func (r *Resource) Name() string {
+	return Name
+}
+
+func toService(v interface{}) (*corev1.Service, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -75,11 +70,4 @@ func toService(v interface{}) (metav1.Object, error) {
 	}
 
 	return service, nil
-}
-
-func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*corev1.Service)
-	d := desired.(*corev1.Service)
-
-	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
