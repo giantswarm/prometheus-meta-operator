@@ -18,7 +18,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	c := r.clientFunc(desired.GetNamespace())
 	current, err := c.Get(desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		_, err = c.Create(desired)
+		current, err = c.Create(desired)
 	}
 	if err != nil {
 		return microerror.Mask(err)
