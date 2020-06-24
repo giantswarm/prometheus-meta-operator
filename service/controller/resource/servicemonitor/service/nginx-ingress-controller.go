@@ -34,7 +34,7 @@ func NginxIngressController(cluster metav1.Object) *promv1.ServiceMonitor {
 					RelabelConfigs: []*promv1.RelabelConfig{
 						&promv1.RelabelConfig{
 							Regex:        ".*",
-							Replacement:  fmt.Sprintf("master.%d:443", key.ClusterID(cluster)),
+							Replacement:  fmt.Sprintf("master.%s:443", key.ClusterID(cluster)),
 							SourceLabels: []string{"__address__"},
 							TargetLabel:  "__address__",
 						},
