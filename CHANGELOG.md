@@ -8,13 +8,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2020-06-29
+
 ### Added
 
 - Add service monitor for nginx-ingress-controller
+- Also reconcile legacy cluster CRs (AWSConfig, AzureConfig, KVMConfig) in order to support legacy clusters
+
+### Changed
+
+- Reduced prometheus server replicas to one (#45)
+- Reduced default prometheus-meta-operator replicas to zero as having both this and previous (g8s-prometheus) solutions on at the same time is overloading some control planes
 
 ### Removed
 
-- Removed service resource as this is no longer needed (it was used for cortex frontend)
+- Removed cortex frontend as it's an optimisation that's not currently needed
+- Removed service and ingress resources as they are no longer needed (they were used for the cortex frontend)
 
 ### Fixed
 
@@ -33,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/aws-operator/compare/v0.1.1...HEAD
+[Unreleased]: https://github.com/giantswarm/aws-operator/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/giantswarm/aws-operator/releases/tag/v0.2.0
 [0.1.1]: https://github.com/giantswarm/aws-operator/releases/tag/v0.1.1
 [0.1.0]: https://github.com/giantswarm/aws-operator/releases/tag/v0.1.0
