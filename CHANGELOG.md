@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add service monitor for nginx-ingress-controller
-- Also reconcile legacy cluster CRs (AWSConfig, AzureConfig, KVMConfig) in order to support legacy clusters
+- Reconcile CAPI (Cluster) and legacy cluster CRs (AWSConfig, AzureConfig, KVMConfig)
 
 ### Changed
 
