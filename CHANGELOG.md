@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Set prometheus request/limits (cpu: 100m, memory: 100Mi)
+
 ## [0.2.1] - 2020-07-01
 
 ### Fixed
