@@ -8,6 +8,8 @@ import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
@@ -72,6 +74,20 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 				},
 			},
 			Replicas: &replicas,
+			Resources: corev1.ResourceRequirements{
+				Limits: corev1.ResourceList{
+					// cpu: 100m
+					corev1.ResourceCPU: *resource.NewMilliQuantity(100, resource.DecimalSI),
+					// memory: 100Mi
+					corev1.ResourceMemory: *resource.NewQuantity(100*1024*1024, resource.BinarySI),
+				},
+				Requests: corev1.ResourceList{
+					// cpu: 100m
+					corev1.ResourceCPU: *resource.NewMilliQuantity(100, resource.DecimalSI),
+					// memory: 100Mi
+					corev1.ResourceMemory: *resource.NewQuantity(100*1024*1024, resource.BinarySI),
+				},
+			},
 			Secrets: []string{
 				key.Secret(),
 			},
