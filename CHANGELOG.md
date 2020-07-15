@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Scale prometheus-meta-operator replicas back to one.
+
 ### Added
 
 - Set prometheus request/limits (cpu: 100m, memory: 100Mi)
