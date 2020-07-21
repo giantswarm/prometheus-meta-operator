@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -59,6 +60,10 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 	name := cluster.GetName()
 	var replicas int32 = 1
 
+	var uid int64 = 1000
+	var gid int64 = 65534
+	var fsGroup int64 = 2000
+	var runAsNonRoot bool = true
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -106,6 +111,24 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 					Name: key.PrometheusAdditionalScrapeConfigsSecretName(),
 				},
 				Key: key.PrometheusAdditionalScrapeConfigsName(),
+			},
+			SecurityContext: &v1.PodSecurityContext{
+				RunAsUser:    &uid,
+				RunAsGroup:   &gid,
+				RunAsNonRoot: &runAsNonRoot,
+				FSGroup:      &fsGroup,
+			},
+			Storage: &promv1.StorageSpec{
+				VolumeClaimTemplate: v1.PersistentVolumeClaim{
+					Spec: corev1.PersistentVolumeClaimSpec{
+						AccessModes: []corev1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
+						Resources: corev1.ResourceRequirements{
+							Requests: corev1.ResourceList{
+								corev1.ResourceStorage: resource.MustParse("20Gi"),
+							},
+						},
+					},
+				},
 			},
 		},
 	}

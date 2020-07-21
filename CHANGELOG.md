@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Moved prometheus storage from `emptyDir` to a `persistentVolumeClaim`
+
 ## [0.3.2] - 2020-07-24
 
 ### Changed
