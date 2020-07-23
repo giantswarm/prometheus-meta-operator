@@ -79,7 +79,7 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 					// cpu: 100m
 					corev1.ResourceCPU: *resource.NewMilliQuantity(100, resource.DecimalSI),
 					// memory: 100Mi
-					corev1.ResourceMemory: *resource.NewQuantity(200*1024*1024, resource.BinarySI),
+					corev1.ResourceMemory: *resource.NewQuantity(1*1024*1024*1024, resource.BinarySI),
 				},
 				Requests: corev1.ResourceList{
 					// cpu: 100m
