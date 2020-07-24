@@ -31,3 +31,11 @@ func ClusterIDKey() string {
 func ClusterID(cluster metav1.Object) string {
 	return cluster.GetName()
 }
+
+func PrometheusAdditionalScrapeConfigsSecretName() string {
+	return "additional-scrape-configs"
+}
+
+func PrometheusAdditionalScrapeConfigsName() string {
+	return "prometheus-additional.yaml"
+}

@@ -101,6 +101,12 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 					key.ClusterIDKey(): key.ClusterID(cluster),
 				},
 			},
+			AdditionalScrapeConfigs: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: key.PrometheusAdditionalScrapeConfigsSecretName(),
+				},
+				Key: key.PrometheusAdditionalScrapeConfigsName(),
+			},
 		},
 	}
 
