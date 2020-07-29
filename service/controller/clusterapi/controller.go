@@ -14,10 +14,12 @@ import (
 )
 
 type ControllerConfig struct {
-	BaseDomain       string
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
+	BaseDomain                string
+	SupportsPersistentStorage bool
+	StorageSize               string
+	K8sClient                 k8sclient.Interface
+	Logger                    micrologger.Logger
+	PrometheusClient          promclient.Interface
 }
 
 type Controller struct {

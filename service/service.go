@@ -108,10 +108,12 @@ func New(config Config) (*Service, error) {
 	var clusterapiController *clusterapi.Controller
 	{
 		c := clusterapi.ControllerConfig{
-			K8sClient:        k8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: prometheusClient,
-			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			K8sClient:                 k8sClient,
+			Logger:                    config.Logger,
+			PrometheusClient:          prometheusClient,
+			BaseDomain:                config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			SupportsPersistentStorage: config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.IsPersistent),
+			StorageSize:               config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
 		}
 		clusterapiController, err = clusterapi.NewController(c)
 		if err != nil {
@@ -122,11 +124,13 @@ func New(config Config) (*Service, error) {
 	var legacyController *legacy.Controller
 	{
 		c := legacy.ControllerConfig{
-			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			K8sClient:        k8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: prometheusClient,
-			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			BaseDomain:                config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			SupportsPersistentStorage: config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.IsPersistent),
+			StorageSize:               config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			K8sClient:                 k8sClient,
+			Logger:                    config.Logger,
+			PrometheusClient:          prometheusClient,
+			Provider:                  config.Viper.GetString(config.Flag.Service.Provider.Kind),
 		}
 		legacyController, err = legacy.NewController(c)
 		if err != nil {

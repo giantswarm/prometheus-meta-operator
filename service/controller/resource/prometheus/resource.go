@@ -24,6 +24,9 @@ const (
 type Config struct {
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
+
+	SupportsPersistentStorage bool
+	StorageSize               string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -33,10 +36,12 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc:     clientFunc,
-		Logger:         config.Logger,
-		Name:           Name,
-		ToCR:           toPrometheus,
+		ClientFunc: clientFunc,
+		Logger:     config.Logger,
+		Name:       Name,
+		ToCR: func(v interface{}) (metav1.Object, error) {
+			return toPrometheus(v, config.SupportsPersistentStorage, resource.MustParse(config.StorageSize))
+		},
 		HasChangedFunc: hasChanged,
 	}
 	r, err := generic.New(c)
@@ -47,7 +52,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func toPrometheus(v interface{}) (metav1.Object, error) {
+func toPrometheus(v interface{}, supportsPersistentStorage bool, storageSize resource.Quantity) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -59,11 +64,33 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 
 	name := cluster.GetName()
 	var replicas int32 = 1
-
 	var uid int64 = 1000
 	var gid int64 = 65534
 	var fsGroup int64 = 2000
 	var runAsNonRoot bool = true
+
+	var storage promv1.StorageSpec
+	if supportsPersistentStorage {
+		storage = promv1.StorageSpec{
+			VolumeClaimTemplate: v1.PersistentVolumeClaim{
+				Spec: corev1.PersistentVolumeClaimSpec{
+					AccessModes: []corev1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
+					Resources: corev1.ResourceRequirements{
+						Requests: corev1.ResourceList{
+							corev1.ResourceStorage: storageSize,
+						},
+					},
+				},
+			},
+		}
+	} else {
+		storage = promv1.StorageSpec{
+			EmptyDir: &v1.EmptyDirVolumeSource{
+				SizeLimit: &storageSize,
+			},
+		}
+	}
+
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -118,18 +145,7 @@ func toPrometheus(v interface{}) (metav1.Object, error) {
 				RunAsNonRoot: &runAsNonRoot,
 				FSGroup:      &fsGroup,
 			},
-			Storage: &promv1.StorageSpec{
-				VolumeClaimTemplate: v1.PersistentVolumeClaim{
-					Spec: corev1.PersistentVolumeClaimSpec{
-						AccessModes: []corev1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
-						Resources: corev1.ResourceRequirements{
-							Requests: corev1.ResourceList{
-								corev1.ResourceStorage: resource.MustParse("20Gi"),
-							},
-						},
-					},
-				},
-			},
+			Storage: &storage,
 		},
 	}
 

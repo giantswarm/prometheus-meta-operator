@@ -14,11 +14,13 @@ import (
 )
 
 type ControllerConfig struct {
-	BaseDomain       string
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
-	Provider         string
+	BaseDomain                string
+	SupportsPersistentStorage bool
+	StorageSize               string
+	K8sClient                 k8sclient.Interface
+	Logger                    micrologger.Logger
+	PrometheusClient          promclient.Interface
+	Provider                  string
 }
 
 type Controller struct {
@@ -31,10 +33,12 @@ func NewController(config ControllerConfig) (*Controller, error) {
 	var resources []resource.Interface
 	{
 		c := controllerresource.Config{
-			BaseDomain:       config.BaseDomain,
-			K8sClient:        config.K8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: config.PrometheusClient,
+			BaseDomain:                config.BaseDomain,
+			SupportsPersistentStorage: config.SupportsPersistentStorage,
+			StorageSize:               config.StorageSize,
+			K8sClient:                 config.K8sClient,
+			Logger:                    config.Logger,
+			PrometheusClient:          config.PrometheusClient,
 		}
 
 		resources, err = controllerresource.New(c)
