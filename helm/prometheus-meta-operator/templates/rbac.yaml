@@ -22,6 +22,7 @@ rules:
       - secrets
     verbs:
       - create
+      - update # Needed to update the additionalScrapeConfigs
       - delete
       - get
   - apiGroups:

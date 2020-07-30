@@ -1,0 +1,190 @@
+# Additional scrape configuration for the tenant clusters components
+# Add scrape configuration for docker 
+- job_name: {{ .ClusterID }}-prometheus/docker-{{ .ClusterID }}/0
+  honor_timestamps: false
+  scrape_interval: 1m
+  scrape_timeout: 1m
+  scheme: https
+  kubernetes_sd_configs:
+  - api_server: https://{{ .APIServerURL }}
+    role: node
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:9323/proxy/metrics
+  - target_label: app
+    replacement: docker
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: {{ .Provider }}
+  # Add ip label.
+  - target_label: ip
+    source_labels: [__meta_kubernetes_node_address_InternalIP]
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
+  metric_relabel_configs:
+  - source_labels: [__name__]
+    regex: (process_virtual_memory_bytes|process_resident_memory_bytes)
+    action: keep
+# Add scrape configuration for cadvisor    
+- job_name: {{ .ClusterID }}-prometheus/cadvisor-{{ .ClusterID }}/0
+  honor_timestamps: false
+  scrape_interval: 1m
+  scrape_timeout: 1m
+  scheme: https
+  kubernetes_sd_configs:
+  - api_server: https://{{ .APIServerURL }}
+    role: node
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
+  - target_label: app
+    replacement: cadvisor
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: {{ .Provider }}
+  - source_labels: [__meta_kubernetes_node_address_InternalIP]
+    target_label: ip
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
+  metric_relabel_configs:
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|vault-exporter)
+    action: keep
+  - source_labels: [__name__]
+    regex: container_network_.*
+    action: drop
+- job_name: {{ .ClusterID }}-prometheus/calico-node-{{ .ClusterID }}/0
+  honor_timestamps: false
+  scrape_interval: 1m
+  scrape_timeout: 1m
+  scheme: https
+  kubernetes_sd_configs:
+  - api_server: https://{{ .APIServerURL }}
+    role: pod
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (calico-node.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:9091/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;calico-node.*
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: {{ .Provider }}
+{{ if eq .Provider "aws" }}
+- job_name: {{ .ClusterID }}-prometheus/aws-node-{{ .ClusterID }}/0
+  honor_timestamps: false
+  scrape_interval: 1m
+  scrape_timeout: 1m
+  scheme: https
+  kubernetes_sd_configs:
+  - api_server: https://{{ .APIServerURL }}
+    role: pod
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (aws-node.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:61678/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;aws-node.*
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: {{ .Provider }}
+{{ end }}

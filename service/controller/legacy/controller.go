@@ -17,10 +17,10 @@ type ControllerConfig struct {
 	BaseDomain       string
 	CreatePVC        bool
 	StorageSize      string
+	Provider         string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
-	Provider         string
 }
 
 type Controller struct {
@@ -36,6 +36,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 			BaseDomain:       config.BaseDomain,
 			CreatePVC:        config.CreatePVC,
 			StorageSize:      config.StorageSize,
+			Provider:         config.Provider,
 			K8sClient:        config.K8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: config.PrometheusClient,

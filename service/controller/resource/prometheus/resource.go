@@ -105,6 +105,10 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 					KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
 				},
 			},
+			ExternalLabels: map[string]string{
+				key.ClusterIDKey(): key.ClusterID(cluster),
+				"cluster_type":     "tenant_cluster",
+			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
 				Limits: corev1.ResourceList{

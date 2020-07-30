@@ -9,10 +9,10 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func NginxIngressController(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
+func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
 	return &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("nginx-ingress-controller-%s", cluster.GetName()),
+			Name:      fmt.Sprintf("cluster-autoscaler-%s", cluster.GetName()),
 			Namespace: key.Namespace(cluster),
 			Labels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),
@@ -21,7 +21,7 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 		Spec: promv1.ServiceMonitorSpec{
 			Selector: metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"app.kubernetes.io/name": "nginx-ingress-controller",
+					"app": "cluster-autoscaler",
 				},
 			},
 			NamespaceSelector: promv1.NamespaceSelector{
@@ -29,7 +29,7 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:          "https",
+					Port:          "metrics",
 					Scheme:        "https",
 					ScrapeTimeout: "1m",
 					Interval:      "1m",
@@ -40,7 +40,7 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 							TargetLabel:  "__address__",
 						},
 						{
-							Replacement:  "/api/v1/namespaces/kube-system/pods/${1}:10254/proxy/metrics",
+							Replacement:  "/api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics",
 							SourceLabels: []string{"__meta_kubernetes_pod_name"},
 							TargetLabel:  "__metrics_path__",
 						},

@@ -17,6 +17,7 @@ type ControllerConfig struct {
 	BaseDomain       string
 	CreatePVC        bool
 	StorageSize      string
+	Provider         string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
