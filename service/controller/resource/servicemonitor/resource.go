@@ -55,6 +55,7 @@ func toServiceMonitors(obj interface{}) ([]*promv1.ServiceMonitor, error) {
 	return []*promv1.ServiceMonitor{
 		service.APIServer(cluster),
 		service.NginxIngressController(cluster),
+		service.SimpleService(cluster),
 	}, nil
 }
 
