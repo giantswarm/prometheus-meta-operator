@@ -52,7 +52,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func toPrometheus(v interface{}, CreatePVC bool, storageSize resource.Quantity) (metav1.Object, error) {
+func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -70,7 +70,7 @@ func toPrometheus(v interface{}, CreatePVC bool, storageSize resource.Quantity) 
 	var runAsNonRoot bool = true
 
 	var storage promv1.StorageSpec
-	if CreatePVC {
+	if createPVC {
 		storage = promv1.StorageSpec{
 			VolumeClaimTemplate: v1.PersistentVolumeClaim{
 				Spec: corev1.PersistentVolumeClaimSpec{
