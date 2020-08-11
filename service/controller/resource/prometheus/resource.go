@@ -64,10 +64,13 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 
 	name := cluster.GetName()
 	var replicas int32 = 1
+	// Configured following https://github.com/prometheus-operator/prometheus-operator/issues/541#issuecomment-451884171
+	// as the volume could not mount otherwise
 	var uid int64 = 1000
-	var gid int64 = 65534
 	var fsGroup int64 = 2000
 	var runAsNonRoot bool = true
+	// Prometheus default image runs using the nobody user (65534)
+	var gid int64 = 65534
 
 	var storage promv1.StorageSpec
 	if createPVC {
