@@ -2,8 +2,6 @@
 # Add scrape configuration for docker 
 - job_name: {{ .ClusterID }}-prometheus/docker-{{ .ClusterID }}/0
   honor_timestamps: false
-  scrape_interval: 1m
-  scrape_timeout: 1m
   scheme: https
   kubernetes_sd_configs:
   - api_server: https://{{ .APIServerURL }}
@@ -52,8 +50,6 @@
 # Add scrape configuration for cadvisor    
 - job_name: {{ .ClusterID }}-prometheus/cadvisor-{{ .ClusterID }}/0
   honor_timestamps: false
-  scrape_interval: 1m
-  scrape_timeout: 1m
   scheme: https
   kubernetes_sd_configs:
   - api_server: https://{{ .APIServerURL }}
@@ -102,8 +98,6 @@
     action: drop
 - job_name: {{ .ClusterID }}-prometheus/calico-node-{{ .ClusterID }}/0
   honor_timestamps: false
-  scrape_interval: 1m
-  scrape_timeout: 1m
   scheme: https
   kubernetes_sd_configs:
   - api_server: https://{{ .APIServerURL }}
@@ -146,8 +140,6 @@
 {{ if eq .Provider "aws" }}
 - job_name: {{ .ClusterID }}-prometheus/aws-node-{{ .ClusterID }}/0
   honor_timestamps: false
-  scrape_interval: 1m
-  scrape_timeout: 1m
   scheme: https
   kubernetes_sd_configs:
   - api_server: https://{{ .APIServerURL }}

@@ -29,10 +29,8 @@ func APIServer(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:          "https",
-					Scheme:        "https",
-					ScrapeTimeout: "1m",
-					Interval:      "1m",
+					Port:   "https",
+					Scheme: "https",
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
 							SourceLabels: []string{"__meta_kubernetes_service_name"},

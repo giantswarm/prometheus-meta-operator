@@ -14,7 +14,7 @@ func TestRender(t *testing.T) {
 	}{"myvalue"}
 	expected := "some string <myvalue> another string"
 
-	actual, err := templates.Render([]string{tpl}, d)
+	actual, err := templates.Render(tpl, d)
 	if err != nil {
 		t.Errorf("unexpected error %v", err)
 	}

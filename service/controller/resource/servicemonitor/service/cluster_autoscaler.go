@@ -29,10 +29,8 @@ func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMo
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:          "metrics",
-					Scheme:        "https",
-					ScrapeTimeout: "1m",
-					Interval:      "1m",
+					Port:   "metrics",
+					Scheme: "https",
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
 							Replacement:  fmt.Sprintf("master.%s:443", key.ClusterID(cluster)),

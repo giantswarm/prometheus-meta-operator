@@ -7,15 +7,13 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-func Render(templates []string, data interface{}) (string, error) {
+func Render(content string, data interface{}) (string, error) {
 	var err error
 
 	main := template.New("main")
-	for _, t := range templates {
-		main, err = main.Parse(t)
-		if err != nil {
-			return "", microerror.Mask(err)
-		}
+	main, err = main.Parse(content)
+	if err != nil {
+		return "", microerror.Mask(err)
 	}
 
 	var b bytes.Buffer

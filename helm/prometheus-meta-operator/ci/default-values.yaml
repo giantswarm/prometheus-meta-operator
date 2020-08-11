@@ -4,9 +4,6 @@ Installation:
     Monitoring:
       Prometheus:
         Host: ""
-        Storage:
-          Enabled: true
-          CreatePVC: true
     Provider:
       Kind: ""
     Registry:

@@ -22,8 +22,6 @@ import (
 
 type Config struct {
 	BaseDomain       string
-	CreatePVC        bool
-	StorageSize      string
 	Provider         string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
@@ -64,8 +62,6 @@ func New(config Config) ([]resource.Interface, error) {
 		c := prometheus.Config{
 			PrometheusClient: config.PrometheusClient,
 			Logger:           config.Logger,
-			CreatePVC:        config.CreatePVC,
-			StorageSize:      config.StorageSize,
 		}
 
 		prometheusResource, err = prometheus.New(c)

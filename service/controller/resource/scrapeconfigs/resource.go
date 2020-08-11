@@ -95,9 +95,10 @@ func renderTemplate(clusterID string, provider string) (string, error) {
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
+
 	template := string(content)
 
-	scrapeConfigs, err := templates.Render([]string{template}, templateData)
+	scrapeConfigs, err := templates.Render(template, templateData)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}

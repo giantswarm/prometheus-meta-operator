@@ -29,10 +29,8 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:          "https",
-					Scheme:        "https",
-					ScrapeTimeout: "1m",
-					Interval:      "1m",
+					Port:   "https",
+					Scheme: "https",
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
 							Replacement:  fmt.Sprintf("master.%s:443", key.ClusterID(cluster)),
