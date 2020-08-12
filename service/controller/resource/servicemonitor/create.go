@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	serviceMonitors, err := toServiceMonitors(obj)
+	serviceMonitors, err := toServiceMonitors(obj, r.provider)
 	if err != nil {
 		return microerror.Mask(err)
 	}

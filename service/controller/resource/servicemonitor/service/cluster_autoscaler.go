@@ -9,10 +9,10 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func APIServer(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
+func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
 	return &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      fmt.Sprintf("kubernetes-apiserver-%s", cluster.GetName()),
+			Name:      fmt.Sprintf("cluster-autoscaler-%s", cluster.GetName()),
 			Namespace: key.Namespace(cluster),
 			Labels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),
@@ -21,17 +21,27 @@ func APIServer(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
 		Spec: promv1.ServiceMonitorSpec{
 			Selector: metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"component": "apiserver",
+					"app": "cluster-autoscaler",
 				},
 			},
 			NamespaceSelector: promv1.NamespaceSelector{
-				Any: true,
+				MatchNames: []string{"kube-system"},
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:   "https",
+					Port:   "metrics",
 					Scheme: "https",
 					RelabelConfigs: []*promv1.RelabelConfig{
+						{
+							Replacement:  fmt.Sprintf("master.%s:443", key.ClusterID(cluster)),
+							SourceLabels: []string{"__address__"},
+							TargetLabel:  "__address__",
+						},
+						{
+							Replacement:  "/api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics",
+							SourceLabels: []string{"__meta_kubernetes_pod_name"},
+							TargetLabel:  "__metrics_path__",
+						},
 						{
 							SourceLabels: []string{"__meta_kubernetes_service_name"},
 							TargetLabel:  "app",

@@ -112,6 +112,7 @@ func New(config Config) (*Service, error) {
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			CreatePVC:        config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
 			StorageSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
 		}
@@ -125,12 +126,12 @@ func New(config Config) (*Service, error) {
 	{
 		c := legacy.ControllerConfig{
 			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			CreatePVC:        config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
 			StorageSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
-			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 		}
 		legacyController, err = legacy.NewController(c)
 		if err != nil {

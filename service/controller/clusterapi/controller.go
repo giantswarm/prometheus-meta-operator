@@ -15,6 +15,7 @@ import (
 
 type ControllerConfig struct {
 	BaseDomain       string
+	Provider         string
 	CreatePVC        bool
 	StorageSize      string
 	K8sClient        k8sclient.Interface
