@@ -16,6 +16,8 @@ import (
 type ControllerConfig struct {
 	BaseDomain       string
 	Provider         string
+	CreatePVC        bool
+	StorageSize      string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
@@ -33,6 +35,8 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		c := controllerresource.Config{
 			BaseDomain:       config.BaseDomain,
 			Provider:         config.Provider,
+			CreatePVC:        config.CreatePVC,
+			StorageSize:      config.StorageSize,
 			K8sClient:        config.K8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: config.PrometheusClient,
