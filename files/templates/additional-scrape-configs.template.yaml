@@ -181,7 +181,7 @@
     replacement: {{ .Provider }}
 {{ end }}
 # Add etcd confgiration
-- job_name: {{ .ClusterID }}-etcd
+- job_name: {{ .ClusterID }}-prometheus/etcd-{{ .ClusterID }}/0
   honor_timestamps: false
   scheme: https
   static_configs:
