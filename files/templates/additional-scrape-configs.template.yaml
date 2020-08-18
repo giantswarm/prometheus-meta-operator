@@ -180,3 +180,34 @@
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
+# Add kubelet configuration
+- job_name: {{ .ClusterID }}-kubelet
+  honor_timestamps: false
+  scheme: https
+  kubernetes_sd_configs:
+  - api_server: https://{{ .APIServerURL }}
+    role: node
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;aws-node.*
+    action: keep
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: {{ .Provider }}
+{{ end }}
