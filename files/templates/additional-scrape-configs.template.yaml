@@ -196,7 +196,7 @@
     ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
     cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
     key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
+    insecure_skip_verify: true
   relabel_configs:
   # Add cluster_id label.
   - target_label: cluster_id
