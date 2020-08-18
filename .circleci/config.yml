@@ -42,6 +42,8 @@ workflows:
             - build
             - test
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
 
