@@ -51,9 +51,6 @@ workflows:
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
           chart: "prometheus-meta-operator"
-          requires:
-            - push-to-quay
-            - push-to-aliyun
           filters:
             tags:
               only: /^v.*/
@@ -66,6 +63,8 @@ workflows:
           app_collection_repo: "aws-app-collection"
           unique: "true"
           requires:
+            - push-to-quay
+            - push-to-aliyun
             - app-catalog
           filters:
             branches:
@@ -81,6 +80,8 @@ workflows:
           app_collection_repo: "azure-app-collection"
           unique: "true"
           requires:
+            - push-to-quay
+            - push-to-aliyun
             - app-catalog
           filters:
             branches:
@@ -96,6 +97,8 @@ workflows:
           app_collection_repo: "kvm-app-collection"
           unique: "true"
           requires:
+            - push-to-quay
+            - push-to-aliyun
             - app-catalog
           filters:
             branches:
