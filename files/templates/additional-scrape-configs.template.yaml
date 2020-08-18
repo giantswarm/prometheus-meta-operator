@@ -210,4 +210,3 @@
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
-{{ end }}
