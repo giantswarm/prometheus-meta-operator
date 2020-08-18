@@ -181,7 +181,7 @@
     replacement: {{ .Provider }}
 {{ end }}
 # Add kubelet configuration
-- job_name: {{ .ClusterID }}-kubelet
+- job_name: {{ .ClusterID }}-prometheus/kubelet-{{ .ClusterID }}/0
   honor_timestamps: false
   scheme: https
   kubernetes_sd_configs:
