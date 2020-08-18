@@ -2,12 +2,12 @@ package legacy
 
 import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
-	"github.com/giantswarm/apiextensions/pkg/apis/provider/v1alpha1"
-	"github.com/giantswarm/k8sclient/v3/pkg/k8sclient"
+	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
+	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/operatorkit/controller"
-	"github.com/giantswarm/operatorkit/resource"
+	"github.com/giantswarm/operatorkit/v2/pkg/controller"
+	"github.com/giantswarm/operatorkit/v2/pkg/resource"
 	"k8s.io/apimachinery/pkg/runtime"
 
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"

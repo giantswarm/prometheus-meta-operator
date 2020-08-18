@@ -16,9 +16,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "creating servicemonitor")
 	for _, desired := range serviceMonitors {
-		current, err := r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Get(desired.GetName(), metav1.GetOptions{})
+		current, err := r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			current, err = r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Create(desired)
+			current, err = r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 		}
 		if err != nil {
 			return microerror.Mask(err)
@@ -26,7 +26,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		if hasChanged(current, desired) {
 			desired.ObjectMeta = current.ObjectMeta
-			_, err = r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Update(desired)
+			_, err = r.prometheusClient.MonitoringV1().ServiceMonitors(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}

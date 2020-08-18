@@ -1,10 +1,11 @@
 package certificates
 
 import (
+	"context"
 	"fmt"
 	"reflect"
 
-	"github.com/giantswarm/k8sclient/v3/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
@@ -65,7 +66,7 @@ func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	sourceSecret, err := sc.getSource(v)
+	sourceSecret, err := sc.getSource(context.TODO(), v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -82,14 +83,14 @@ func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
 }
 
 // getSource returns the Secret to be copied, i.e. default/$CLUSTER_ID-prometheus
-func (sc *secretCopier) getSource(v interface{}) (*corev1.Secret, error) {
+func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (*corev1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 	secretName := fmt.Sprintf("%s-prometheus", cluster.GetName())
 
-	s, err := sc.clientFunc("default").Get(secretName, metav1.GetOptions{})
+	s, err := sc.clientFunc("default").Get(ctx, secretName, metav1.GetOptions{})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

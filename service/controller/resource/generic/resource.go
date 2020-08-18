@@ -1,16 +1,18 @@
 package generic
 
 import (
+	"context"
+
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type Interface interface {
-	Create(metav1.Object) (metav1.Object, error)
-	Update(metav1.Object) (metav1.Object, error)
-	Get(name string, options metav1.GetOptions) (metav1.Object, error)
-	Delete(name string, options *metav1.DeleteOptions) error
+	Create(ctx context.Context, object metav1.Object, options metav1.CreateOptions) (metav1.Object, error)
+	Update(ctx context.Context, object metav1.Object, options metav1.UpdateOptions) (metav1.Object, error)
+	Get(ctx context.Context, name string, options metav1.GetOptions) (metav1.Object, error)
+	Delete(ctx context.Context, name string, options *metav1.DeleteOptions) error
 }
 
 type Config struct {

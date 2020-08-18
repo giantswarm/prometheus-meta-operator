@@ -64,7 +64,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 
 	name := cluster.GetName()
 	var replicas int32 = 1
-	// Configured following https://github.com/prometheus-operator/prometheus-operator/issues/541#issuecomment-451884171
+	// Configured following https://github.com/coreos/prometheus-operator/issues/541#issuecomment-451884171
 	// as the volume could not mount otherwise
 	var uid int64 = 1000
 	var fsGroup int64 = 2000
@@ -75,7 +75,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 	var storage promv1.StorageSpec
 	if createPVC {
 		storage = promv1.StorageSpec{
-			VolumeClaimTemplate: v1.PersistentVolumeClaim{
+			VolumeClaimTemplate: promv1.EmbeddedPersistentVolumeClaim{
 				Spec: corev1.PersistentVolumeClaimSpec{
 					AccessModes: []corev1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
 					Resources: corev1.ResourceRequirements{
