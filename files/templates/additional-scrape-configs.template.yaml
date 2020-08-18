@@ -180,7 +180,7 @@
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
-# Add etcd confgiration
+# Add etcd configuration
 - job_name: {{ .ClusterID }}-prometheus/etcd-{{ .ClusterID }}/0
   honor_timestamps: false
   scheme: https
