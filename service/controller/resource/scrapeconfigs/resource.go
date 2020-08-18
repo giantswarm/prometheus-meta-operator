@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/templates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
@@ -29,6 +30,7 @@ type Config struct {
 
 type TemplateData struct {
 	APIServerURL string
+	ETCD         string
 	Provider     string
 	ClusterID    string
 	SecretName   string
@@ -45,7 +47,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:     config.Logger,
 		Name:       Name,
 		ToCR: func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config.Provider)
+			return toSecret(v, config.Provider, config.K8sClient)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -57,14 +59,18 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func toSecret(v interface{}, provider string) (*corev1.Secret, error) {
+func toSecret(v interface{}, provider string, clients k8sclient.Interface) (*corev1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	var clusterID = cluster.GetName()
-	scrapeConfigs, err := renderTemplate(clusterID, provider)
+	templateData, err := getTemplateData(cluster, provider, clients)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	scrapeConfigs, err := renderTemplate(*templateData)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -83,14 +89,33 @@ func toSecret(v interface{}, provider string) (*corev1.Secret, error) {
 	return scrapeConfigsSecret, nil
 }
 
-func renderTemplate(clusterID string, provider string) (string, error) {
-	var templateData = TemplateData{
+func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.Interface) (*TemplateData, error) {
+	c, ok := cluster.(*v1alpha2.Cluster)
+	if !ok {
+		return nil, microerror.Mask(fmt.Errorf("invalid v1alpha2.Cluster %T", cluster))
+	}
+
+	infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(c.Spec.InfrastructureRef.Namespace).Get(c.Spec.InfrastructureRef.Name, metav1.GetOptions{})
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	clusterID := key.ClusterID(cluster)
+	domain := infra.Spec.Cluster.DNS.Domain
+	etcd := fmt.Sprintf("etcd.%s.k8s.%s:2379", key.ClusterID(cluster), domain)
+
+	d := &TemplateData{
 		APIServerURL: fmt.Sprintf("master.%s", clusterID),
 		ClusterID:    clusterID,
 		Provider:     provider,
 		SecretName:   key.Secret(),
+		ETCD:         etcd,
 	}
 
+	return d, nil
+}
+
+func renderTemplate(templateData TemplateData) (string, error) {
 	content, err := ioutil.ReadFile(templatePath)
 	if err != nil {
 		return "", microerror.Mask(err)
