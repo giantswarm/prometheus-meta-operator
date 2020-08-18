@@ -198,6 +198,8 @@
     key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
     insecure_skip_verify: true
   relabel_configs:
+  - target_label: app
+    replacement: kubelet
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
