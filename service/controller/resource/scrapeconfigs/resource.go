@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"reflect"
 
+	"github.com/giantswarm/apiextensions/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v3/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -90,19 +91,22 @@ func toSecret(v interface{}, provider string, clients k8sclient.Interface) (*cor
 }
 
 func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.Interface) (*TemplateData, error) {
-	c, ok := cluster.(*v1alpha2.Cluster)
-	if !ok {
-		return nil, microerror.Mask(fmt.Errorf("invalid v1alpha2.Cluster %T", cluster))
-	}
+	var etcd string
+	switch v := cluster.(type) {
+	case *v1alpha2.Cluster:
+		infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(c.Spec.InfrastructureRef.Name, metav1.GetOptions{})
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(c.Spec.InfrastructureRef.Namespace).Get(c.Spec.InfrastructureRef.Name, metav1.GetOptions{})
-	if err != nil {
-		return nil, microerror.Mask(err)
+		etcd = fmt.Sprintf("etcd.%s.k8s.%s:2379", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain)
+	case *v1alpha1.AWSConfig:
+		etcd = fmt.Sprintf("%s:2379", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
+	default:
+		return nil, microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", cluster))
 	}
 
 	clusterID := key.ClusterID(cluster)
-	domain := infra.Spec.Cluster.DNS.Domain
-	etcd := fmt.Sprintf("etcd.%s.k8s.%s:2379", key.ClusterID(cluster), domain)
 
 	d := &TemplateData{
 		APIServerURL: fmt.Sprintf("master.%s", clusterID),
