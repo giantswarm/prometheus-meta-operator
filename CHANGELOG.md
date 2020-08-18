@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Scraping of etcd (#81)
 - Scraping of legacy docker, calico-node, cluster-autoscaler, aws-node and cadvisor (#78)
 
 ### Changed
