@@ -198,9 +198,6 @@
     key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
     insecure_skip_verify: false
   relabel_configs:
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
-    regex: kube-system;aws-node.*
-    action: keep
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
