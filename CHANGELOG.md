@@ -11,11 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Scraping of etcd (#81)
+- Scraping of kubelet (#82)
 - Scraping of legacy docker, calico-node, cluster-autoscaler, aws-node and cadvisor (#78)
 
 ### Changed
 
 - Moved prometheus storage from `emptyDir` to a `persistentVolumeClaim`
+- Remove tenant cluster prometheus limits
+- Updated backward incompatible Kubernetes dependencies to v1.18.5.
 
 ## [0.3.2] - 2020-07-24
 

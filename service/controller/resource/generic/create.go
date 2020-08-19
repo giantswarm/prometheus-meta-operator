@@ -16,9 +16,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "creating")
 	c := r.clientFunc(desired.GetNamespace())
-	current, err := c.Get(desired.GetName(), metav1.GetOptions{})
+	current, err := c.Get(ctx, desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		current, err = c.Create(desired)
+		current, err = c.Create(ctx, desired, metav1.CreateOptions{})
 	}
 	if err != nil {
 		return microerror.Mask(err)
@@ -26,7 +26,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	if r.hasChangedFunc(current, desired) {
 		updateMeta(current, desired)
-		_, err = c.Update(desired)
+		_, err = c.Update(ctx, desired, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
