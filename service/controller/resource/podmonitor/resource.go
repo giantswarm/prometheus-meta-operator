@@ -8,6 +8,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/podmonitor/pod"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -57,7 +58,9 @@ func toPodMonitors(obj interface{}, provider string) ([]*promv1.PodMonitor, erro
 		return nil, microerror.Mask(err)
 	}
 
-	podMonitors := []*promv1.PodMonitor{}
+	podMonitors := []*promv1.PodMonitor{
+		pod.KubeControllerManager(cluster, provider),
+	}
 
 	return podMonitors, nil
 }
