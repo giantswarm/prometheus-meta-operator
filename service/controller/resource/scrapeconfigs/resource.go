@@ -1,6 +1,7 @@
 package scrapeconfigs
 
 import (
+	"context"
 	"fmt"
 	"io/ioutil"
 	"reflect"
@@ -94,7 +95,8 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 	var etcd string
 	switch v := cluster.(type) {
 	case *v1alpha2.Cluster:
-		infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
+		ctx := context.Background()
+		infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
