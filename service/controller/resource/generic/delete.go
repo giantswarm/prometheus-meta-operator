@@ -16,7 +16,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting")
 	c := r.clientFunc(desired.GetNamespace())
-	err = c.Delete(desired.GetName(), &metav1.DeleteOptions{})
+	err = c.Delete(ctx, desired.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {
