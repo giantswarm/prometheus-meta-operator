@@ -52,6 +52,7 @@ rules:
   - apiGroups:
       - monitoring.coreos.com
     resources:
+      - podmonitors
       - prometheuses
       - prometheusrules
       - servicemonitors
