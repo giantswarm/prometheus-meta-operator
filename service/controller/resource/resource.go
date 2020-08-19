@@ -14,6 +14,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/frontend"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/podmonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/service"
@@ -128,6 +129,19 @@ func New(config Config) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
+	var podMonitorResource resource.Interface
+	{
+		c := podmonitor.Config{
+			PrometheusClient: config.PrometheusClient,
+			Logger:           config.Logger,
+			Provider:         config.Provider,
+		}
+
+		podMonitorResource, err = podmonitor.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
 
 	var alertResource resource.Interface
 	{
@@ -164,6 +178,7 @@ func New(config Config) ([]resource.Interface, error) {
 		serviceResource,
 		ingressResource,
 		serviceMonitorResource,
+		podMonitorResource,
 		alertResource,
 		scrapeConfigResource,
 	}
