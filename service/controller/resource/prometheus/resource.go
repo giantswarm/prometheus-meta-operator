@@ -124,6 +124,11 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 			Secrets: []string{
 				key.Secret(),
 			},
+			PodMonitorSelector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					key.ClusterIDKey(): key.ClusterID(cluster),
+				},
+			},
 			ServiceMonitorSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					key.ClusterIDKey(): key.ClusterID(cluster),
