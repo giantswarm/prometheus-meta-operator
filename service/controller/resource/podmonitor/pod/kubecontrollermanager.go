@@ -62,11 +62,6 @@ func KubeControllerManager(cluster metav1.Object, provider string) *promv1.PodMo
 							TargetLabel: "provider",
 							Replacement: provider,
 						},
-						{
-							SourceLabels: []string{"__meta_kubernetes_service_label_giantswarm_io_monitoring"},
-							Regex:        "true",
-							Action:       "drop",
-						},
 					},
 				},
 			},
