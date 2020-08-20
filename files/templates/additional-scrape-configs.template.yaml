@@ -268,8 +268,8 @@
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: controller-manager
     action: keep
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: app
+  - target_label: app
+    replacement: kube-controller-manager
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
   - target_label: cluster_type
