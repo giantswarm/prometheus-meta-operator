@@ -178,7 +178,6 @@ func New(config Config) ([]resource.Interface, error) {
 		serviceResource,
 		ingressResource,
 		serviceMonitorResource,
-		podMonitorResource,
 		alertResource,
 		scrapeConfigResource,
 	}
