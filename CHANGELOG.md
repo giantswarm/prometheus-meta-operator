@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Scraping of kube-proxy (#88)
 - Scraping of kube-scheduler (#87)
 - Scraping of kube-controller-manager (#85)
 - Scraping of etcd (#81)
