@@ -243,3 +243,45 @@
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
+# Add kube-proxy configuration
+- job_name: {{ .ClusterID }}-prometheus/kube-proxy-{{ .ClusterID }}/0
+  honor_timestamps: false
+  scheme: https
+  kubernetes_sd_configs:
+  - api_server: https://{{ .APIServerURL }}
+    role: pod
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (kube-proxy.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10256/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;kube-proxy.*
+    action: keep
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name  
+  - target_label: app
+    replacement: kube-proxy
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: {{ .Provider }}
