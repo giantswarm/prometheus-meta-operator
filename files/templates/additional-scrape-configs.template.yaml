@@ -269,7 +269,7 @@
     regex: scheduler
     action: keep
   - target_label: __address__
-    replacement: {{ .APIServerURL }}:10521
+    replacement: {{ .APIServerURL }}:10251
   - target_label: app
     replacement: kube-scheduler
   - target_label: cluster_id
