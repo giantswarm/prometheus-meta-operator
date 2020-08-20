@@ -268,6 +268,8 @@
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: controller-manager
     action: keep
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:10252
   - target_label: app
     replacement: kube-controller-manager
   - target_label: cluster_id
