@@ -255,10 +255,15 @@
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: true
+      insecure_skip_verify: false
     namespaces:
       names:
       - kube-system
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: controller-manager
