@@ -269,7 +269,11 @@
     regex: controller-manager
     action: keep
   - target_label: __address__
-    replacement: {{ .APIServerURL }}:10252
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (k8s-controller-manager.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
   - target_label: cluster_id
