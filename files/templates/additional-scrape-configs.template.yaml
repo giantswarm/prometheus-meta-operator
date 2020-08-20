@@ -268,8 +268,8 @@
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: scheduler
     action: keep
-  - source_labels: app
-    target_label: kube-scheduler
+  - target_label: app
+    replacement: kube-scheduler
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
   - target_label: cluster_type
