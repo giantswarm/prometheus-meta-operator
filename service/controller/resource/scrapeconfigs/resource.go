@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"reflect"
 
-	"github.com/giantswarm/apiextensions/pkg/apis/provider/v1alpha1"
+	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -103,11 +103,13 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 
 		etcd = fmt.Sprintf("etcd.%s.k8s.%s:2379", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain)
 	case *v1alpha1.AWSConfig:
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
 	case *v1alpha1.AzureConfig:
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
 	case *v1alpha1.KVMConfig:
 		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
 	default:
-		return nil, microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", cluster))
+		return nil, microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
 	}
 
 	clusterID := key.ClusterID(cluster)
