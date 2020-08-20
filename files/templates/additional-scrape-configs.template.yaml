@@ -356,11 +356,11 @@
     target_label: pod_name
   - target_label: app
     replacement: kube-proxy
-    regex: (k8s-controller-manager.*)
+    regex: (kube-proxy.*)
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
-    replacement: kube-controller-manager
+    replacement: kube-proxy
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
   - target_label: cluster_type
