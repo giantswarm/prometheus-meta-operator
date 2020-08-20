@@ -274,6 +274,8 @@
     regex: (kube-proxy.*)
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10249/proxy/metrics
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
   - target_label: app
     replacement: kube-proxy
   - target_label: cluster_id
