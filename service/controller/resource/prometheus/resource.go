@@ -101,12 +101,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 		},
 		Spec: promv1.PrometheusSpec{
 			APIServerConfig: &promv1.APIServerConfig{
-				Host: fmt.Sprintf("https://master.%s", name),
-				TLSConfig: &promv1.TLSConfig{
-					CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-					CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-					KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
-				},
+				Host: key.APIUrl(cluster),
 			},
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),
@@ -148,6 +143,14 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 			},
 			Storage: &storage,
 		},
+	}
+
+	if !key.IsInCluster(cluster) {
+		prometheus.Spec.APIServerConfig.TLSConfig = &promv1.TLSConfig{
+			CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+			CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+			KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+		}
 	}
 
 	return prometheus, nil
