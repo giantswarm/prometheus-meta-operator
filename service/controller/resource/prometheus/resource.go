@@ -101,7 +101,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 		},
 		Spec: promv1.PrometheusSpec{
 			APIServerConfig: &promv1.APIServerConfig{
-				Host: key.APIUrl(cluster),
+				Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			},
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),

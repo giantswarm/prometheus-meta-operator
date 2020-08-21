@@ -115,7 +115,7 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
-		APIServerURL: fmt.Sprintf("master.%s", clusterID),
+		APIServerURL: key.APIUrl(cluster),
 		ClusterID:    clusterID,
 		Provider:     provider,
 		SecretName:   key.Secret(),
