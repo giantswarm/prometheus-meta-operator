@@ -3,6 +3,7 @@ package resource
 import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v4/pkg/k8srestconfig"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/operatorkit/v2/pkg/resource"
@@ -28,6 +29,7 @@ type Config struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
+	TLS              k8srestconfig.ConfigTLS
 }
 
 func New(config Config) ([]resource.Interface, error) {
@@ -51,6 +53,7 @@ func New(config Config) ([]resource.Interface, error) {
 		c := certificates.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
+			TLS:       config.TLS,
 		}
 
 		certificatesResource, err = certificates.New(c)
