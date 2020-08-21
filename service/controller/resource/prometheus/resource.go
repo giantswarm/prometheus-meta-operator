@@ -116,9 +116,6 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 					corev1.ResourceMemory: *resource.NewQuantity(100*1024*1024, resource.BinarySI),
 				},
 			},
-			Secrets: []string{
-				key.Secret(),
-			},
 			ServiceMonitorSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					key.ClusterIDKey(): key.ClusterID(cluster),
@@ -150,6 +147,10 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 			CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
 			CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
 			KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+		}
+
+		prometheus.Spec.Secrets = []string{
+			key.Secret(),
 		}
 	}
 
