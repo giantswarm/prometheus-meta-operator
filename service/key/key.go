@@ -46,15 +46,15 @@ func PrometheusAdditionalScrapeConfigsName() string {
 func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
 	case *v1alpha2.Cluster:
-		return fmt.Sprintf("https://master.%s", v.GetName())
+		return fmt.Sprintf("master.%s", v.GetName())
 	case *v1alpha1.AWSConfig:
-		return fmt.Sprintf("https://master.%s", v.GetName())
+		return fmt.Sprintf("master.%s", v.GetName())
 	case *v1alpha1.AzureConfig:
-		return fmt.Sprintf("https://master.%s", v.GetName())
+		return fmt.Sprintf("master.%s", v.GetName())
 	case *v1alpha1.KVMConfig:
-		return fmt.Sprintf("https://master.%s", v.GetName())
+		return fmt.Sprintf("master.%s", v.GetName())
 	case *v1.Service:
-		return fmt.Sprintf("https://%s", v.Spec.ClusterIP)
+		return v.Spec.ClusterIP
 	}
 
 	return ""
