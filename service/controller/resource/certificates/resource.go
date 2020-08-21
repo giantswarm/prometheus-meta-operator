@@ -47,7 +47,7 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	var data map[string]string
-	if config.TLS != nil {
+	if config.TLS.CAFile != "" && config.TLS.CrtFile != "" && config.TLS.KeyFile != "" {
 		data = map[string]string{
 			"ca":  config.TLS.CAFile,
 			"crt": config.TLS.CrtFile,
