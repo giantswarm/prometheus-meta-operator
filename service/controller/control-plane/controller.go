@@ -41,6 +41,8 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
+
+		resources = removeResourceByName(resources, "certificates")
 	}
 
 	var selector controller.Selector
@@ -75,4 +77,16 @@ func NewController(config ControllerConfig) (*Controller, error) {
 	}
 
 	return c, nil
+}
+
+func removeResourceByName(resources []resource.Interface, name string) []resource.Interface {
+	var newresources []resource.Interface
+
+	for _, r := range resources {
+		if r.Name() != name {
+			newresources = append(newresources, r)
+		}
+	}
+
+	return newresources
 }
