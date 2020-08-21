@@ -10,7 +10,7 @@ import (
 )
 
 func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
-	return &promv1.ServiceMonitor{
+	serviceMonitor := &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("cluster-autoscaler-%s", cluster.GetName()),
 			Namespace: key.Namespace(cluster),
@@ -76,14 +76,19 @@ func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMo
 							Action:       "drop",
 						},
 					},
-					TLSConfig: &promv1.TLSConfig{
-						CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-						CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-						KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
-						InsecureSkipVerify: true,
-					},
 				},
 			},
 		},
 	}
+
+	if !key.IsInCluster(cluster) {
+		serviceMonitor.Spec.Endpoints[0].TLSConfig = &promv1.TLSConfig{
+			CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+			CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+			KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+			InsecureSkipVerify: true,
+		}
+	}
+
+	return serviceMonitor
 }
