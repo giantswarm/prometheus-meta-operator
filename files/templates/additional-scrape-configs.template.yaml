@@ -362,3 +362,41 @@
     replacement: tenant_cluster
   - target_label: provider
     replacement: {{ .Provider }}
+# app-operator
+- job_name: {{ .ClusterID }}-prometheus/app-operator-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - api_server: https://{{ .APIServerURL }}
+    role: service
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+    namespaces:
+      names:
+      - giantswarm
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: app-operator
+    action: keep
+  - source_labels: [__meta_kubernetes_service_port_name]
+    regex: http
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: app
+    replacement: kube-proxy
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  - target_label: provider
+    replacement: {{ .Provider }}
