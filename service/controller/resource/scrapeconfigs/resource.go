@@ -36,6 +36,7 @@ type TemplateData struct {
 	Provider     string
 	ClusterID    string
 	SecretName   string
+	IsInCluster  bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -120,6 +121,7 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 		Provider:     provider,
 		SecretName:   key.Secret(),
 		ETCD:         etcd,
+		IsInCluster:  key.IsInCluster(cluster),
 	}
 
 	return d, nil
