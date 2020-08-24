@@ -4,9 +4,9 @@
   honor_timestamps: false
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: node
+  - role: node
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
@@ -54,9 +54,9 @@
   honor_timestamps: false
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: node
+  - role: node
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
@@ -104,9 +104,9 @@
   honor_timestamps: false
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: pod
+  - role: pod
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
@@ -148,9 +148,9 @@
   honor_timestamps: false
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: pod
+  - role: pod
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
@@ -229,9 +229,9 @@
   honor_timestamps: false
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: node
+  - role: node
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
@@ -261,12 +261,12 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: pod
+  - role: pod
     namespaces:
       names:
       - kube-system
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
@@ -302,12 +302,12 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: pod
+  - role: pod
     namespaces:
       names:
       - kube-system
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
@@ -343,12 +343,12 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - api_server: https://{{ .APIServerURL }}
-    role: pod
+  - role: pod
     namespaces:
       names:
       - kube-system
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
