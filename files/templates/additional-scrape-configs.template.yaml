@@ -169,12 +169,14 @@
     insecure_skip_verify: false
 {{ end }}
   relabel_configs:
+{{ if not .IsInCluster }}
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (aws-node.*)
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:61678/proxy/metrics
+{{ end }}
   - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
     regex: kube-system;aws-node.*
     action: keep
