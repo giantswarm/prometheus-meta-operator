@@ -11,6 +11,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
 
+	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
 )
 
