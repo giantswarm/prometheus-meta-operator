@@ -56,7 +56,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		c := controller.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
-			Name:      "control-plane-controller",
+			Name:      project.Name() + "-control-plane-controller",
 			NewRuntimeObjectFunc: func() runtime.Object {
 				return new(v1.Service)
 			},
