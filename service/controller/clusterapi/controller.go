@@ -32,15 +32,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 
 	var resources []resource.Interface
 	{
-		c := controllerresource.Config{
-			BaseDomain:       config.BaseDomain,
-			Provider:         config.Provider,
-			CreatePVC:        config.CreatePVC,
-			StorageSize:      config.StorageSize,
-			K8sClient:        config.K8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: config.PrometheusClient,
-		}
+		c := controllerresource.Config(config)
 
 		resources, err = controllerresource.New(c)
 		if err != nil {

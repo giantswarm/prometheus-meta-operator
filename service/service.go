@@ -144,16 +144,11 @@ func New(config Config) (*Service, error) {
 	var controlplaneController *controlplane.Controller
 	{
 		c := controlplane.ControllerConfig{
-			BaseDomain:  config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Provider:    config.Viper.GetString(config.Flag.Service.Provider.Kind),
-			CreatePVC:   config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize: config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			K8sClient:   k8sClient,
-			TLS: k8srestconfig.ConfigTLS{
-				CAFile:  config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.CAFile),
-				CrtFile: config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.CrtFile),
-				KeyFile: config.Viper.GetString(config.Flag.Service.Kubernetes.TLS.KeyFile),
-			},
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			CreatePVC:        config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			StorageSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 		}

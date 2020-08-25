@@ -6,7 +6,6 @@ import (
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
-	"github.com/giantswarm/k8sclient/v4/pkg/k8srestconfig"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
@@ -23,14 +22,12 @@ const (
 type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
-	TLS       k8srestconfig.ConfigTLS
 }
 
 // secretCopier provides a `ToCR` method which copies data from the source
 // cluster secret CR
 type secretCopier struct {
 	clientFunc func(string) generic.Interface
-	data       map[string]string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -46,15 +43,7 @@ func New(config Config) (*generic.Resource, error) {
 		return wrappedClient{client: c}
 	}
 
-	var data map[string]string
-	if config.TLS.CAFile != "" && config.TLS.CrtFile != "" && config.TLS.KeyFile != "" {
-		data = map[string]string{
-			"ca":  config.TLS.CAFile,
-			"crt": config.TLS.CrtFile,
-			"key": config.TLS.KeyFile,
-		}
-	}
-	sc := secretCopier{clientFunc: clientFunc, data: data}
+	sc := secretCopier{clientFunc: clientFunc}
 
 	c := generic.Config{
 		ClientFunc:     clientFunc,
@@ -77,22 +66,17 @@ func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	sourceSecret, err := sc.getSource(context.TODO(), v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	secret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      key.Secret(),
 			Namespace: key.Namespace(cluster),
 		},
-	}
-
-	if sc.data != nil {
-		secret.StringData = sc.data
-	} else {
-		sourceSecret, err := sc.getSource(context.TODO(), v)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		secret.Data = sourceSecret.Data
+		Data: sourceSecret.Data,
 	}
 
 	return secret, nil
