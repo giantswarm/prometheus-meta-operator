@@ -76,3 +76,11 @@ func ClusterType(obj interface{}) string {
 
 	return "tenant_cluster"
 }
+
+func ControlPlaneBearerToken() string {
+	return "/var/run/secrets/kubernetes.io/serviceaccount/token"
+}
+
+func ControlPlaneCAFile() string {
+	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+}
