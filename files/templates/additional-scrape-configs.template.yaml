@@ -865,6 +865,293 @@
     replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
+# giantswarm-api
+- job_name: {{ .ClusterID }}-prometheus/giantswarm-api-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: service
+    namespaces:
+      names:
+      - giantswarm
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: api
+    action: keep  
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# tokend
+- job_name: {{ .ClusterID }}-prometheus/tokend-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: service
+    namespaces:
+      names:
+      - giantswarm
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: tokend
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# companyd
+- job_name: {{ .ClusterID }}-prometheus/companyd-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: service
+    namespaces:
+      names:
+      - giantswarm
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: companyd
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# userd
+- job_name: {{ .ClusterID }}-prometheus/userd-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: service
+    namespaces:
+      names:
+      - giantswarm
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: userd
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# kubernetesd
+- job_name: {{ .ClusterID }}-prometheus/kubernetesd-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: service
+    namespaces:
+      names:
+      - giantswarm
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: kubernetesd
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# credentiald
+- job_name: {{ .ClusterID }}-prometheus/credentiald-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: service
+    namespaces:
+      names:
+      - giantswarm
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: credentiald
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# cluster-service
+- job_name: {{ .ClusterID }}-prometheus/cluster-service-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: service
+    namespaces:
+      names:
+      - giantswarm
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    regex: cluster-service
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
 {{ if eq .Provider "aws" }}
 # aws-operator
 - job_name: {{ .ClusterID }}-prometheus/aws-operator-{{ .ClusterID }}/0

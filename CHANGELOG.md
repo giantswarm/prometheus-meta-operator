@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+<<<<<<< HEAD
 - Scraping of the control plane operators
     - aws-operator
     - azure-operator
@@ -23,6 +24,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - prometheus-meta-operator
     - rbac-operator
     - draughtsman
+=======
+- Scraping of the control plane apis
+  - tokend
+  - companyd
+  - userd
+  - api
+  - kubernetesd
+  - credentiald
+  - cluster-service
+>>>>>>> 30cebd3... Add Scraping for API services
 - New control-plane controller, reconciling kubernetes api service (#92)
 
 ## [1.0.1] - 2020-08-25
