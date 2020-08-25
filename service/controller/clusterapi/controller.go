@@ -10,6 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
+	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
 )
 
@@ -45,7 +46,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		c := controller.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
-			Name:      "clusterapi-controller",
+			Name:      project.Name() + "-cluster-api-controller",
 			NewRuntimeObjectFunc: func() runtime.Object {
 				return new(v1alpha2.Cluster)
 			},
