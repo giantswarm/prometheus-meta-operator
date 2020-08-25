@@ -68,3 +68,11 @@ func IsInCluster(obj interface{}) bool {
 		return false
 	}
 }
+
+func ClusterType(obj interface{}) string {
+	if IsInCluster(obj) {
+		return "control_plane"
+	}
+
+	return "tenant_cluster"
+}

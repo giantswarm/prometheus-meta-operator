@@ -33,7 +33,7 @@
     replacement: {{ .ClusterID }}
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
@@ -85,7 +85,7 @@
     replacement: {{ .ClusterID }}
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
@@ -145,7 +145,7 @@
     replacement: {{ .ClusterID }}
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
@@ -191,7 +191,7 @@
     replacement: {{ .ClusterID }}
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
@@ -218,7 +218,7 @@
     replacement: {{ .ClusterID }}
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
@@ -259,7 +259,7 @@
     replacement: {{ .ClusterID }}
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
@@ -303,7 +303,7 @@
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
 # kube-scheduler
@@ -346,7 +346,7 @@
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
 # kube-proxy
@@ -391,6 +391,6 @@
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}

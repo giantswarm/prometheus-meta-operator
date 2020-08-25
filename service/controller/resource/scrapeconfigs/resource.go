@@ -35,6 +35,7 @@ type TemplateData struct {
 	ETCD         string
 	Provider     string
 	ClusterID    string
+	ClusterType  string
 	SecretName   string
 	IsInCluster  bool
 }
@@ -121,6 +122,7 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 	d := &TemplateData{
 		APIServerURL: key.APIUrl(cluster),
 		ClusterID:    clusterID,
+		ClusterType:  key.ClusterType(cluster),
 		Provider:     provider,
 		SecretName:   key.Secret(),
 		ETCD:         etcd,

@@ -64,7 +64,7 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 						},
 						{
 							TargetLabel: "cluster_type",
-							Replacement: "tenant_cluster",
+							Replacement: key.ClusterType(cluster),
 						},
 						{
 							TargetLabel: "provider",
