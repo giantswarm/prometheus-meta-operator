@@ -61,6 +61,7 @@ func toClusterRole(v interface{}) (*v1beta1.ClusterRole, error) {
 					"services",
 					"endpoints",
 					"pods",
+					"pods/proxy",
 				},
 				Verbs: []string{
 					"get",
