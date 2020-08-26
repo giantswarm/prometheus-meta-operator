@@ -445,6 +445,8 @@
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
+  scrape_timeout: 1m
+  scrape_interval: 1m
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -498,6 +500,8 @@
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
+  scrape_timeout: 1m
+  scrape_interval: 1m
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -563,6 +567,8 @@
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
+  scrape_timeout: 1m
+  scrape_interval: 1m
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -626,6 +632,8 @@
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
+  scrape_timeout: 1m
+  scrape_interval: 1m
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -752,6 +760,8 @@
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
+  scrape_timeout: 1m
+  scrape_interval: 1m
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
