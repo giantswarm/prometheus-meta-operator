@@ -916,14 +916,17 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - giantswarm
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app]
     regex: api
-    action: keep  
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    regex: true
+    action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -957,13 +960,16 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - giantswarm
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app]
     regex: tokend
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    regex: true
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
@@ -998,14 +1004,17 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - giantswarm
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app]
     regex: companyd
     action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    regex: true
+    action: keep  
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -1039,13 +1048,16 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - giantswarm
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app]
     regex: userd
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    regex: true
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
@@ -1080,13 +1092,16 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - giantswarm
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app]
     regex: kubernetesd
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    regex: true
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
@@ -1121,13 +1136,16 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - giantswarm
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app]
     regex: credentiald
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    regex: true
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
@@ -1162,13 +1180,16 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - giantswarm
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app]
     regex: cluster-service
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
+    regex: true
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
