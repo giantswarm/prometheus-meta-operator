@@ -95,6 +95,7 @@ func toSecret(v interface{}, provider string, clients k8sclient.Interface) (*cor
 
 func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.Interface) (*TemplateData, error) {
 	var etcd string
+	var etcdPort int = 2379
 	switch v := cluster.(type) {
 	case *v1alpha2.Cluster:
 		ctx := context.Background()
@@ -103,12 +104,21 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 			return nil, microerror.Mask(err)
 		}
 
-		etcd = fmt.Sprintf("etcd.%s.k8s.%s:2379", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain)
+		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain, etcdPort)
 	case *v1alpha1.AWSConfig:
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
+		if v.Spec.Cluster.Etcd.Port != 0 {
+			etcdPort = v.Spec.Cluster.Etcd.Port
+		}
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
 	case *v1alpha1.AzureConfig:
+		if v.Spec.Cluster.Etcd.Port != 0 {
+			etcdPort = v.Spec.Cluster.Etcd.Port
+		}
 		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
 	case *v1alpha1.KVMConfig:
+		if v.Spec.Cluster.Etcd.Port != 0 {
+			etcdPort = v.Spec.Cluster.Etcd.Port
+		}
 		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
 	case *corev1.Service:
 		// TODO: find a way to compute etcd url.
