@@ -958,7 +958,7 @@
 - job_name: {{ .ClusterID }}-prometheus/tokend-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -1002,7 +1002,7 @@
 - job_name: {{ .ClusterID }}-prometheus/companyd-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -1046,7 +1046,7 @@
 - job_name: {{ .ClusterID }}-prometheus/userd-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -1090,7 +1090,7 @@
 - job_name: {{ .ClusterID }}-prometheus/kubernetesd-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -1134,7 +1134,7 @@
 - job_name: {{ .ClusterID }}-prometheus/credentiald-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
@@ -1178,7 +1178,7 @@
 - job_name: {{ .ClusterID }}-prometheus/cluster-service-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
