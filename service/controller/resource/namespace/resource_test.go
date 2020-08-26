@@ -6,11 +6,13 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
-	"strconv"
 	"testing"
 
 	"github.com/ghodss/yaml"
+	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/google/go-cmp/cmp"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
@@ -23,44 +25,57 @@ func TestNamespace(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	for i, file := range files {
-		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			o := filepath.Join(root, file.Name())
-			inputFile, err := ioutil.ReadFile(o)
-			if err != nil {
-				t.Fatal(err)
-			}
+	for _, file := range files {
+		t.Run(file.Name(), func(t *testing.T) {
+			var input runtime.Object
+			{
+				inputFile := filepath.Join(root, file.Name())
+				inputData, err := ioutil.ReadFile(inputFile)
+				if err != nil {
+					t.Fatal(err)
+				}
 
-			var obj *v1alpha2.Cluster
-			err = yaml.Unmarshal(inputFile, &obj)
-			if err != nil {
-				t.Fatal(err)
-			}
-			namespace, err := toNamespace(obj)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			data, err := yaml.Marshal(namespace)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			p := filepath.Join("output", file.Name())
-
-			if *update {
-				err := ioutil.WriteFile(p, data, 0644)
+				scheme := runtime.NewScheme()
+				v1alpha2.AddToScheme(scheme)
+				v1alpha1.AddToScheme(scheme)
+				codecs := serializer.NewCodecFactory(scheme)
+				deserializer := codecs.UniversalDeserializer()
+				input, err = runtime.Decode(deserializer, inputData)
 				if err != nil {
 					t.Fatal(err)
 				}
 			}
-			outputFile, err := ioutil.ReadFile(p)
+
+			namespace, err := toNamespace(input)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			if !bytes.Equal(data, outputFile) {
-				t.Fatalf("\n\n%s\n", cmp.Diff(string(outputFile), string(data)))
+			var testResult []byte
+			{
+				testResult, err = yaml.Marshal(namespace)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			var expectedOutput []byte
+			{
+				outputFile := filepath.Join("output", file.Name())
+				if *update {
+					err := ioutil.WriteFile(outputFile, testResult, 0644)
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+				expectedOutput, err = ioutil.ReadFile(outputFile)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			if !bytes.Equal(testResult, expectedOutput) {
+				t.Fatalf("\n\n%s\n", cmp.Diff(string(expectedOutput), string(testResult)))
 			}
 		})
 	}
