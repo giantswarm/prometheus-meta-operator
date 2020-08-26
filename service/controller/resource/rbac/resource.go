@@ -57,6 +57,7 @@ func toClusterRole(v interface{}) (*v1beta1.ClusterRole, error) {
 				Resources: []string{
 					"nodes",
 					"nodes/metrics",
+					"nodes/proxy",
 					"services",
 					"endpoints",
 					"pods",
