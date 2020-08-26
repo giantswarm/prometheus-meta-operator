@@ -63,7 +63,7 @@ func toServiceMonitors(obj interface{}, provider string) ([]*promv1.ServiceMonit
 		service.NginxIngressController(cluster, provider),
 	}
 
-	if provider == "aws" || provider == "azure" {
+	if (provider == "aws" || provider == "azure") && key.ClusterType(cluster) == "tenant_cluster" {
 		serviceMonitors = append(serviceMonitors, service.ClusterAutoscaler(cluster, provider))
 	}
 

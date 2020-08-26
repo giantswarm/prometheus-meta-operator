@@ -10,6 +10,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Scraping of the control plane operators
+    - aws-operator
+    - azure-operator
+    - kvm-operator
+    - chart-operator
+    - cluster-operator
+    - etcd-backup-operator
+    - node-operator
+    - release-operator
+    - organization-operator
+    - prometheus-meta-operator
+    - rbac-operator
+    - draughtsman
 - New control-plane controller, reconciling kubernetes api service (#92)
 
 ## [1.0.1] - 2020-08-25

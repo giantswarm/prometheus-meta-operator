@@ -78,6 +78,12 @@ func APIServer(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
 			KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
 			InsecureSkipVerify: true,
 		}
+	} else {
+		serviceMonitor.Spec.Endpoints[0].TLSConfig = &promv1.TLSConfig{
+			CAFile:             key.ControlPlaneCAFile(),
+			InsecureSkipVerify: true,
+		}
+		serviceMonitor.Spec.Endpoints[0].BearerTokenFile = key.ControlPlaneBearerToken()
 	}
 
 	return serviceMonitor

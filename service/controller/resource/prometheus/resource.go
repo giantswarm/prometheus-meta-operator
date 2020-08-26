@@ -102,7 +102,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 		Spec: promv1.PrometheusSpec{
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),
-				"cluster_type":     "tenant_cluster",
+				"cluster_type":     key.ClusterType(cluster),
 			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
@@ -151,6 +151,15 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 
 		prometheus.Spec.Secrets = []string{
 			key.Secret(),
+		}
+	} else {
+		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
+			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
+			BearerTokenFile: key.ControlPlaneBearerToken(),
+			TLSConfig: &promv1.TLSConfig{
+				CAFile:             key.ControlPlaneCAFile(),
+				InsecureSkipVerify: true,
+			},
 		}
 	}
 
