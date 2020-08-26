@@ -84,7 +84,3 @@ func ControlPlaneBearerToken() string {
 func ControlPlaneCAFile() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 }
-
-func EtcdPort(obj interface{}) int {
-	v.Spec.Cluster.Etcd.Port
-}
