@@ -10,6 +10,17 @@ import (
 )
 
 func NginxIngressController(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
+	var labelSelectors map[string]string
+	if key.ClusterType(cluster) == "control_plane" {
+		labelSelectors = map[string]string{
+			"k8s-app": "nginx-ingress-controller",
+		}
+	} else {
+		labelSelectors = map[string]string{
+			"app.kubernetes.io/name": "nginx-ingress-controller",
+		}
+	}
+
 	serviceMonitor := &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("nginx-ingress-controller-%s", cluster.GetName()),
@@ -20,9 +31,7 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 		},
 		Spec: promv1.ServiceMonitorSpec{
 			Selector: metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"app.kubernetes.io/name": "nginx-ingress-controller",
-				},
+				MatchLabels: labelSelectors,
 			},
 			NamespaceSelector: promv1.NamespaceSelector{
 				MatchNames: []string{"kube-system"},
@@ -33,7 +42,7 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 					Scheme: "https",
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
-							Replacement:  fmt.Sprintf("master.%s:443", key.ClusterID(cluster)),
+							Replacement:  key.APIUrl(cluster),
 							SourceLabels: []string{"__address__"},
 							TargetLabel:  "__address__",
 						},

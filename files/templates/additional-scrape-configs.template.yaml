@@ -437,10 +437,24 @@
     namespaces:
       names:
       - giantswarm
+{{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: true
+{{ else }}
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
+{{ end }}
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
     separator: ;
@@ -527,7 +541,7 @@
   - target_label: provider
     replacement: {{ .Provider }}
 # etcd-backup-operator
-- job_name: {{ .ClusterID }}-prometheus/etcd-backup-operator-{ .ClusterID }}/0
+- job_name: {{ .ClusterID }}-prometheus/etcd-backup-operator-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
