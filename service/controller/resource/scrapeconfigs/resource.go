@@ -113,12 +113,12 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 		if v.Spec.Cluster.Etcd.Port != 0 {
 			etcdPort = v.Spec.Cluster.Etcd.Port
 		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
 	case *v1alpha1.KVMConfig:
 		if v.Spec.Cluster.Etcd.Port != 0 {
 			etcdPort = v.Spec.Cluster.Etcd.Port
 		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
 	case *corev1.Service:
 		// TODO: find a way to compute etcd url.
 		etcd = ""
