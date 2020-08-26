@@ -457,7 +457,7 @@
 - job_name: {{ .ClusterID }}-prometheus/chart-operator-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
