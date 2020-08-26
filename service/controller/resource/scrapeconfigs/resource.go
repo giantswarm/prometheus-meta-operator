@@ -103,7 +103,6 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-
 		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain, etcdPort)
 	case *v1alpha1.AWSConfig:
 		if v.Spec.Cluster.Etcd.Port != 0 {
