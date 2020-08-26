@@ -12,7 +12,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
 )
 
 type ControllerConfig struct {
@@ -34,14 +33,12 @@ func NewController(config ControllerConfig) (*Controller, error) {
 
 	var resources []resource.Interface
 	{
-		c := controllerresource.Config(config)
+		c := resourcesConfig(config)
 
-		resources, err = controllerresource.New(c)
+		resources, err = newResources(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-
-		resources = removeResourceByName(resources, "certificates")
 	}
 
 	var selector controller.Selector
