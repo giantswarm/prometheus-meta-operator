@@ -10,7 +10,7 @@ import (
 )
 
 func NginxIngressController(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
-	return &promv1.ServiceMonitor{
+	serviceMonitor := &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("nginx-ingress-controller-%s", cluster.GetName()),
 			Namespace: key.Namespace(cluster),
@@ -64,7 +64,7 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 						},
 						{
 							TargetLabel: "cluster_type",
-							Replacement: "tenant_cluster",
+							Replacement: key.ClusterType(cluster),
 						},
 						{
 							TargetLabel: "provider",
@@ -76,14 +76,19 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 							Action:       "drop",
 						},
 					},
-					TLSConfig: &promv1.TLSConfig{
-						CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-						CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-						KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
-						InsecureSkipVerify: true,
-					},
 				},
 			},
 		},
 	}
+
+	if !key.IsInCluster(cluster) {
+		serviceMonitor.Spec.Endpoints[0].TLSConfig = &promv1.TLSConfig{
+			CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+			CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+			KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+			InsecureSkipVerify: true,
+		}
+	}
+
+	return serviceMonitor
 }

@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- New control-plane controller, reconciling kubernetes api service (#92)
+
 ## [1.0.1] - 2020-08-25
 
 ### Changed

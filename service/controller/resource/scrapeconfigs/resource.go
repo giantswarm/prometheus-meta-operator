@@ -35,7 +35,9 @@ type TemplateData struct {
 	ETCD         string
 	Provider     string
 	ClusterID    string
+	ClusterType  string
 	SecretName   string
+	IsInCluster  bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -108,6 +110,9 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
 	case *v1alpha1.KVMConfig:
 		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, v.Spec.Cluster.Etcd.Port)
+	case *corev1.Service:
+		// TODO: find a way to compute etcd url.
+		etcd = ""
 	default:
 		return nil, microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
 	}
@@ -115,11 +120,13 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
-		APIServerURL: fmt.Sprintf("master.%s", clusterID),
+		APIServerURL: key.APIUrl(cluster),
 		ClusterID:    clusterID,
+		ClusterType:  key.ClusterType(cluster),
 		Provider:     provider,
 		SecretName:   key.Secret(),
 		ETCD:         etcd,
+		IsInCluster:  key.IsInCluster(cluster),
 	}
 
 	return d, nil

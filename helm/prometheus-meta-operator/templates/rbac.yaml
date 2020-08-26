@@ -10,12 +10,23 @@ rules:
     resources:
       - namespaces
       - serviceaccounts
-      - services
     verbs:
       - create
       - delete
       - get
       - update
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
   - apiGroups:
       - ""
     resources:
@@ -76,6 +87,42 @@ rules:
       - infrastructure.giantswarm.io
     resources:
       - awsclusters
+    verbs:
+      - get
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterroles
+      - clusterrolebindings
+    verbs:
+      - create
+      - delete
+      - get
+      - update
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+      - nodes/metrics
+      - nodes/proxy
+      - endpoints
+      - pods
+      - pods/proxy
+    verbs:
+      - get
+      - list
+      - watch
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - get
+  - nonResourceURLs:
+      - "/metrics"
     verbs:
       - get
 ---

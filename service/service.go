@@ -22,6 +22,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
+	controlplane "github.com/giantswarm/prometheus-meta-operator/service/controller/control-plane"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/legacy"
 )
 
@@ -36,9 +37,10 @@ type Config struct {
 type Service struct {
 	Version *version.Service
 
-	bootOnce             sync.Once
-	legacyController     *legacy.Controller
-	clusterapiController *clusterapi.Controller
+	bootOnce               sync.Once
+	legacyController       *legacy.Controller
+	clusterapiController   *clusterapi.Controller
+	controlplaneController *controlplane.Controller
 }
 
 // New creates a new configured service object.
@@ -139,6 +141,23 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var controlplaneController *controlplane.Controller
+	{
+		c := controlplane.ControllerConfig{
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			CreatePVC:        config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			StorageSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+		}
+		controlplaneController, err = controlplane.NewController(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var versionService *version.Service
 	{
 		c := version.Config{
@@ -159,9 +178,10 @@ func New(config Config) (*Service, error) {
 	s := &Service{
 		Version: versionService,
 
-		bootOnce:             sync.Once{},
-		legacyController:     legacyController,
-		clusterapiController: clusterapiController,
+		bootOnce:               sync.Once{},
+		legacyController:       legacyController,
+		clusterapiController:   clusterapiController,
+		controlplaneController: controlplaneController,
 	}
 
 	return s, nil
@@ -172,5 +192,6 @@ func (s *Service) Boot(ctx context.Context) {
 
 		go s.legacyController.Boot(ctx)
 		go s.clusterapiController.Boot(ctx)
+		go s.controlplaneController.Boot(ctx)
 	})
 }
