@@ -468,24 +468,26 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+{{ if eq .ClusterType "control_plane" }}
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: chart-operator-unique
     action: keep
+{{ else }}
+  - source_labels: [__meta_kubernetes_service_name]
+    regex: chart-operator
+    action: keep
+{{ end }}
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -519,23 +521,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: cluster-operator
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -568,23 +566,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: etcd-backup-operator-unique
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -617,23 +611,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: node-operator
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -666,23 +656,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: release-operator
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -715,23 +701,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: organization-operator-unique
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -764,23 +746,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: prometheus-meta-operator-unique
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -813,23 +791,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: rbac-operator-unique
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -862,23 +836,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_name]
-    separator: ;
     regex: draughtsman
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -912,23 +882,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
-    separator: ;
     regex: aws-operator
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -963,23 +929,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
-    separator: ;
     regex: azure-operator
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
@@ -1014,23 +976,19 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
-    separator: ;
     regex: kvm-operator
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    separator: ;
     regex: (.+)
     target_label: __metrics_path__
     replacement: $1
     action: replace
   - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    separator: ;
     regex: (.+)(?::\d+);(\d+)
     target_label: __address__
     replacement: $1:$2
     action: replace
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    separator: ;
     regex: (https?)
     target_label: __scheme__
     replacement: $1
