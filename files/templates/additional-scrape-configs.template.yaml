@@ -116,8 +116,6 @@
     action: drop
 - job_name: {{ .ClusterID }}-prometheus/calico-node-{{ .ClusterID }}/0
   honor_timestamps: false
-  scrape_interval: 60s
-  scrape_timeout: 60s
   scheme: https
   kubernetes_sd_configs:
   - role: pod
