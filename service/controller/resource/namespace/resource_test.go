@@ -36,8 +36,14 @@ func TestNamespace(t *testing.T) {
 				}
 
 				scheme := runtime.NewScheme()
-				v1alpha2.AddToScheme(scheme)
-				v1alpha1.AddToScheme(scheme)
+				err = v1alpha2.AddToScheme(scheme)
+				if err != nil {
+					t.Fatal(err)
+				}
+				err = v1alpha1.AddToScheme(scheme)
+				if err != nil {
+					t.Fatal(err)
+				}
 				codecs := serializer.NewCodecFactory(scheme)
 				deserializer := codecs.UniversalDeserializer()
 				input, err = runtime.Decode(deserializer, inputData)
