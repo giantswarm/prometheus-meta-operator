@@ -35,10 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - grafana
     - prometheus
     - prometheus-config-controller
-    - prometheus-operator
     - fluentbit
-    - fluentd
-- Scraping of oauth2-proxy
 - New control-plane controller, reconciling kubernetes api service (#92)
 
 ## [1.0.1] - 2020-08-25

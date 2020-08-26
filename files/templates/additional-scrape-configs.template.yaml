@@ -439,6 +439,60 @@
     replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
+{{ if eq .ClusterType "tenant_cluster" }}
+# metrics-server
+- job_name: {{ .ClusterID }}-prometheus/metrics-server-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+    api_server: https://{{ .APIServerURL }}
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: metrics-server
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_app]
+    target_label: app
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+{{ end }}
 # chart-operator
 - job_name: {{ .ClusterID }}-prometheus/chart-operator-{{ .ClusterID }}/0
   honor_timestamps: false
@@ -516,7 +570,7 @@
 {{ if eq .ClusterType "control_plane" }}
       - monitoring
 {{ else }}
-     - kube-system
+      - kube-system
 {{ end }}
 {{ if not .IsInCluster }}
     api_server: https://{{ .APIServerURL }}
@@ -540,6 +594,8 @@
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: net-exporter
     action: keep
+  - source_labels: [__meta_kubernetes_service_label_app]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -555,8 +611,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -603,6 +657,8 @@
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: cert-exporter
     action: keep
+  - source_labels: [__meta_kubernetes_service_label_app]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -618,8 +674,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -666,6 +720,8 @@
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: node-exporter
     action: keep
+  - source_labels: [__meta_kubernetes_service_label_app]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -681,8 +737,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -693,8 +747,8 @@
     replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
-# metrics-server
-- job_name: {{ .ClusterID }}-prometheus/metrics-server-{{ .ClusterID }}/0
+# kube-state-metrics 
+- job_name: {{ .ClusterID }}-prometheus/kube-state-metrics-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
@@ -727,71 +781,10 @@
 {{ end }}
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
-    regex: metrics-server
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
-  - target_label: cluster_id
-    replacement: {{ .ClusterID }}
-  - target_label: cluster_type
-    replacement: {{ .ClusterType }}
-  - target_label: provider
-    replacement: {{ .Provider }}
-# kube-state-metrics 
-- job_name: {{ .ClusterID }}-prometheus/kube-state-metrics-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-{{ if eq .ClusterType "control_plane" }}
-      - monitoring
-{{ else }}
-     - kube-system
-{{ end }}
-{{ if not .IsInCluster }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
     regex: kube-state-metrics 
     action: keep
+  - source_labels: [__meta_kubernetes_service_label_app]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -807,8 +800,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -835,9 +826,11 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     regex: cluster-operator
     action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -853,8 +846,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -880,9 +871,13 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_name]
-    regex: etcd-backup-operator-unique
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    regex: etcd-backup-operator
     action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
+    target_label: version
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -898,8 +893,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -925,9 +918,11 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     regex: node-operator
     action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -943,8 +938,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -970,9 +963,11 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     regex: release-operator
     action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -988,8 +983,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -1015,9 +1008,13 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_name]
-    regex: organization-operator-unique
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    regex: organization-operator
     action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
+    target_label: version
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -1033,8 +1030,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -1060,9 +1055,13 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_name]
-    regex: prometheus-meta-operator-unique
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    regex: prometheus-meta-operator
     action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
+    target_label: version
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -1078,8 +1077,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -1105,9 +1102,13 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_name]
-    regex: rbac-operator-unique
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    regex: rbac-operator
     action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
+    target_label: version
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -1123,8 +1124,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -1150,13 +1149,11 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     regex: draughtsman
     action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
-    target_label: version
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -1172,8 +1169,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_service_label_app]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -1193,15 +1188,19 @@
   - role: endpoints
     namespaces:
       names:
-      - monitoring
+      - giantswarm
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
     regex: app-exporter
     action: keep
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_version]
+    target_label: version
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
     target_label: __metrics_path__
@@ -1217,8 +1216,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
@@ -1238,7 +1235,7 @@
   - role: endpoints
     namespaces:
       names:
-      - monitoring
+      - giantswarm
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -1409,51 +1406,6 @@
     replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
-# prometheus-operator-app-operator
-- job_name: {{ .ClusterID }}-prometheus/prometheus-operator-app-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: prometheus-operator-app-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
-  - target_label: cluster_id
-    replacement: {{ .ClusterID }}
-  - target_label: cluster_type
-    replacement: {{ .ClusterType }}
-  - target_label: provider
-    replacement: {{ .Provider }}
 # fluentbit
 - job_name: {{ .ClusterID }}-prometheus/fluentbit-{{ .ClusterID }}/0
   honor_timestamps: false
@@ -1471,96 +1423,6 @@
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: fluentbit 
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
-  - target_label: cluster_id
-    replacement: {{ .ClusterID }}
-  - target_label: cluster_type
-    replacement: {{ .ClusterType }}
-  - target_label: provider
-    replacement: {{ .Provider }}
-# fluentd
-- job_name: {{ .ClusterID }}-prometheus/fluentd-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: fluentd 
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
-  - target_label: cluster_id
-    replacement: {{ .ClusterID }}
-  - target_label: cluster_type
-    replacement: {{ .ClusterType }}
-  - target_label: provider
-    replacement: {{ .Provider }}
-# oauth2-proxy
-- job_name: {{ .ClusterID }}-prometheus/auth2-proxy-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_k8s_app]
-    regex: auth2-proxy 
     action: keep
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
     regex: (.+)
