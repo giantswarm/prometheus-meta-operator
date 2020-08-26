@@ -314,9 +314,15 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+{{ if eq .ClusterType "control_plane" }}
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (k8s-controller-manager.*)
+    action: keep
+{{ else }}
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: controller-manager
     action: keep
+{{ end }}
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
   - source_labels: [__meta_kubernetes_pod_name]
@@ -360,9 +366,15 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
-    regex: scheduler
+{{ if eq .ClusterType "control_plane" }}
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (k8s-scheduler.*)
     action: keep
+{{ else }}
+  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
+    regex: controller-manager
+    action: keep
+{{ end }}
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
   - source_labels: [__meta_kubernetes_pod_name]
