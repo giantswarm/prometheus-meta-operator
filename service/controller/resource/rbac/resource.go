@@ -53,7 +53,9 @@ func toClusterRole(v interface{}) (*v1beta1.ClusterRole, error) {
 		},
 		Rules: []v1beta1.PolicyRule{
 			{
-				APIGroups: []string{},
+				APIGroups: []string{
+					"",
+				},
 				Resources: []string{
 					"nodes",
 					"nodes/metrics",
@@ -70,7 +72,9 @@ func toClusterRole(v interface{}) (*v1beta1.ClusterRole, error) {
 				},
 			},
 			{
-				APIGroups: []string{},
+				APIGroups: []string{
+					"",
+				},
 				Resources: []string{
 					"configmaps",
 				},
