@@ -1,40 +1,35 @@
 package unittest
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime"
-	"unicode"
+	"testing"
 
+	"github.com/ghodss/yaml"
 	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/microerror"
+	"github.com/google/go-cmp/cmp"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
-// NormalizeFileName converts all non-digit, non-letter runes in input string to
-// dash ('-'). Coalesces multiple dashes into one.
-func NormalizeFileName(s string) string {
-	var result []rune
-	for _, r := range s {
-		if unicode.IsDigit(r) || unicode.IsLetter(r) {
-			result = append(result, r)
-		} else {
-			l := len(result)
-			if l > 0 && result[l-1] != '-' {
-				result = append(result, rune('-'))
-			}
-		}
-	}
-	return string(result)
+type Config struct {
+	OutputDir string
+	T         *testing.T
+	TestFunc  func(interface{}) (metav1.Object, error)
 }
 
 type Runner struct {
 	OutputDir string
+	T         *testing.T
+	TestFunc  func(interface{}) (metav1.Object, error)
 
 	inputDir string
 	files    []os.FileInfo
@@ -48,7 +43,7 @@ type Value struct {
 	Output []byte
 }
 
-func NewRunner(outputDir string) (*Runner, error) {
+func NewRunner(config Config) (*Runner, error) {
 	_, filename, _, ok := runtime.Caller(0)
 	fmt.Println(path.Dir(filename), ok)
 	inputDir, err := filepath.Abs(filepath.Join(path.Dir(filename), "input"))
@@ -62,7 +57,9 @@ func NewRunner(outputDir string) (*Runner, error) {
 	}
 
 	r := &Runner{
-		OutputDir: outputDir,
+		OutputDir: config.OutputDir,
+		T:         config.T,
+		TestFunc:  config.TestFunc,
 		inputDir:  inputDir,
 		files:     files,
 		current:   -1,
@@ -70,6 +67,32 @@ func NewRunner(outputDir string) (*Runner, error) {
 	}
 
 	return r, nil
+}
+
+func (r *Runner) Run() error {
+	for r.Next() {
+		value := r.Value()
+		r.T.Run(value.Name, func(t *testing.T) {
+			namespace, err := r.TestFunc(value.Input)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			testResult, err := yaml.Marshal(namespace)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !bytes.Equal(testResult, value.Output) {
+				t.Fatalf("\n\n%s\n", cmp.Diff(string(value.Output), string(testResult)))
+			}
+		})
+	}
+	if err := r.Err(); err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
 }
 
 func (r *Runner) Next() bool {
@@ -105,20 +128,6 @@ func (r *Runner) Value() Value {
 	}
 
 	return v
-}
-
-func InputFiles() ([]os.FileInfo, string, error) {
-	root, err := filepath.Abs("./input")
-	if err != nil {
-		return nil, "", microerror.Mask(err)
-	}
-
-	files, err := ioutil.ReadDir(root)
-	if err != nil {
-		return nil, "", microerror.Mask(err)
-	}
-
-	return files, root, nil
 }
 
 func (r *Runner) inputValue() (pkgruntime.Object, error) {
