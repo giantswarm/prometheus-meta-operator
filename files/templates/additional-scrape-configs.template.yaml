@@ -439,7 +439,6 @@
     replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
-{{ if eq .ClusterType "tenant_cluster" }}
 # chart-operator
 - job_name: {{ .ClusterID }}-prometheus/chart-operator-{{ .ClusterID }}/0
   honor_timestamps: false
