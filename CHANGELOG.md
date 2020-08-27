@@ -24,14 +24,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - prometheus-meta-operator
     - rbac-operator
     - draughtsman
+- Scraping of the monitoring targets
+    - app-exporter
+    - cert-exporter
+    - vault-exporter
+    - node-exporter
+    - net-exporter
+    - kube-state-metrics
+    - alertmanager
+    - grafana
+    - prometheus
+    - prometheus-config-controller
+    - fluentbit
 - Scraping of the control plane apis
-  - tokend
-  - companyd
-  - userd
-  - api
-  - kubernetesd
-  - credentiald
-  - cluster-service
+    - tokend
+    - companyd
+    - userd
+    - api
+    - kubernetesd
+    - credentiald
+    - cluster-service
 - New control-plane controller, reconciling kubernetes api service (#92)
 
 ## [1.0.1] - 2020-08-25
