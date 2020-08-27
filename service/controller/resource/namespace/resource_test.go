@@ -11,7 +11,7 @@ import (
 var update = flag.Bool("update", false, "update .golden CF template file")
 
 func TestNamespace(t *testing.T) {
-	outputDir, err := filepath.Abs("./output")
+	outputDir, err := filepath.Abs("./test")
 	if err != nil {
 		t.Fatal(err)
 	}
