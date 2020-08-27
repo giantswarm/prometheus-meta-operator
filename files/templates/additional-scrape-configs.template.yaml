@@ -535,16 +535,12 @@
     regex: chart-operator
     action: keep
 {{ end }}
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (chart-operator.*)
     target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:8000/proxy/metrics
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
     regex: (https?)
     target_label: __scheme__
