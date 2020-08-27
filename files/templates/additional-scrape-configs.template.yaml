@@ -540,7 +540,7 @@
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (chart-operator.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:8000/proxy/metrics
+    replacement: /api/v1/namespaces/giantswarm/pods/${1}:8000/proxy/metrics
   - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
     regex: (https?)
     target_label: __scheme__
