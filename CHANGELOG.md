@@ -30,7 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - node-exporter
     - net-exporter
     - kube-state-metrics
-    - metrics-server
     - alertmanager
     - grafana
     - prometheus
