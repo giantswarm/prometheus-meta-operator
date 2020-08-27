@@ -101,11 +101,7 @@ func (r *Runner) Next() bool {
 	}
 
 	r.current++
-	if len(r.files) <= r.current {
-		return false
-	}
-
-	return true
+	return len(r.files) > r.current
 }
 
 func (r *Runner) Value() Value {

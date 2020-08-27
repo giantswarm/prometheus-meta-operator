@@ -1,14 +1,11 @@
 package namespace
 
 import (
-	"flag"
 	"path/filepath"
 	"testing"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
 )
-
-var update = flag.Bool("update", false, "update .golden CF template file")
 
 func TestNamespace(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
