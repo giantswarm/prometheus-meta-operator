@@ -613,7 +613,7 @@
 - job_name: {{ .ClusterID }}-prometheus/cert-exporter-{{ .ClusterID }}/0
   honor_timestamps: false
   metrics_path: /metrics
-  scheme: http
+  scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
   kubernetes_sd_configs:
@@ -647,23 +647,18 @@
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: cert-exporter
     action: keep
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (cert-exporter.*)
+    target_label: __metrics_path__
+{{ if eq .ClusterType "control_plane" }}
+    replacement: /api/v1/namespaces/monitoring/pods/${1}:9005/proxy/metrics
+{{ else }}
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:9005/proxy/metrics
+{{ end }}
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
