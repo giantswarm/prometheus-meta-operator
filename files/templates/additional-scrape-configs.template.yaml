@@ -28,11 +28,7 @@
     replacement: {{ .APIServerURL }}:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
-{{ if eq .ClusterType "control_plane" }}
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
-{{ else }}
-    replacement: /api/v1/nodes/${1}:9393/proxy/metrics
-{{ end }}
   - target_label: app
     replacement: docker
   # Add cluster_id label.
