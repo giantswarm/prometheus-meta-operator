@@ -12,7 +12,8 @@ import (
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
+	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
+	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/templates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
@@ -97,13 +98,15 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 	var etcd string
 	var etcdPort int = 2379
 	switch v := cluster.(type) {
-	case *v1alpha2.Cluster:
+	case *capiv1alpha2.Cluster:
 		ctx := context.Background()
 		infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain, etcdPort)
+	case *capiv1alpha3.Cluster:
+		etcd = fmt.Sprintf("etcd.%s:%d", v.Spec.ClusterNetwork.ServiceDomain, etcdPort)
 	case *v1alpha1.AWSConfig:
 		if v.Spec.Cluster.Etcd.Port != 0 {
 			etcdPort = v.Spec.Cluster.Etcd.Port
