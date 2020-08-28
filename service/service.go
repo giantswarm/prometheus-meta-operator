@@ -16,8 +16,10 @@ import (
 	"github.com/spf13/viper"
 	"k8s.io/client-go/rest"
 
-	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
+	providerv1alpha1 "github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
+	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
@@ -88,8 +90,10 @@ func New(config Config) (*Service, error) {
 
 			RestConfig: restConfig,
 			SchemeBuilder: k8sclient.SchemeBuilder{
-				v1alpha1.AddToScheme,
-				v1alpha2.AddToScheme,
+				apiextensionsv1.AddToScheme,
+				capiv1alpha2.AddToScheme,
+				capiv1alpha3.AddToScheme,
+				providerv1alpha1.AddToScheme,
 			},
 		}
 
