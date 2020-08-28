@@ -66,9 +66,10 @@ func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	var sourceData map[string][]byte
 	sourceSecret, err := sc.getSource(context.TODO(), v)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	if err == nil {
+		sourceData = sourceSecret.Data
 	}
 
 	secret := &corev1.Secret{
@@ -76,7 +77,7 @@ func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
 			Name:      key.Secret(),
 			Namespace: key.Namespace(cluster),
 		},
-		Data: sourceSecret.Data,
+		Data: sourceData,
 	}
 
 	return secret, nil
