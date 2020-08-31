@@ -114,7 +114,6 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "20Gi", "Storage sze for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Name, "", "Name of the installation.")
-	daemonCommand.PersistentFlags().String(f.Service.Vault.Host, "", "Address used to connect to Vault.")
 	daemonCommand.PersistentFlags().String(f.Service.Vault.Address, "", "Host used to connect to Vault.")
 	daemonCommand.PersistentFlags().String(f.Service.Etcd.Host, "", "Host used to connect to Etcd.")
 	daemonCommand.PersistentFlags().String(f.Service.Etcd.CA, "", "Certificate authority file path to use to authenticate with Etcd.")

@@ -32,7 +32,6 @@ data:
         name: {{ .Values.Installation.V1.Name }}
       vault:
         address: {{ .Values.Installation.V1.Auth.Vault.Address }}
-        host: {{ .Values.Installation.V1.Auth.Vault.Host }}
       etcd:
         host:  {{ .Values.Installation.V1.Monitoring.Prometheus.HostEtcd }}
         ca:  {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Ca }}

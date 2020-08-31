@@ -4,7 +4,6 @@ Installation:
     Auth:
       Vault:
         Address: ""
-        Host: ""
     Name: ""
     Monitoring:
       Prometheus:
