@@ -28,6 +28,15 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 	Provider  string
+
+	Etcd ConfigEtcd
+}
+
+type ConfigEtcd struct {
+	URL     string
+	CAPath  string
+	CrtPath string
+	KeyPath string
 }
 
 type TemplateData struct {
