@@ -27,8 +27,12 @@ func Secret() string {
 	return "cluster-certificates"
 }
 
-func EtcdSecret() string {
-	return "etcd-certificates"
+func EtcdSecret(obj interface{}) string {
+	if IsInCluster(obj) {
+		return "etcd-certificates"
+	}
+
+	return Secret()
 }
 
 func ClusterIDKey() string {

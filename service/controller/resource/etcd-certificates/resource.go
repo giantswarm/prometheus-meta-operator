@@ -73,7 +73,7 @@ func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
 
 	secret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
-			Name:      key.EtcdSecret(),
+			Name:      key.EtcdSecret(v),
 			Namespace: key.Namespace(cluster),
 		},
 		StringData: data,

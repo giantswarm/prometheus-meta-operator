@@ -163,7 +163,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 		}
 
 		prometheus.Spec.Secrets = []string{
-			key.EtcdSecret(),
+			key.EtcdSecret(cluster),
 		}
 	}
 

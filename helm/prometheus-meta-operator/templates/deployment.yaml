@@ -28,13 +28,13 @@ spec:
             path: config.yml
       - name: etcd-client-ca
         hostPath:
-          path: /etc/kubernetes/ssl/etcd/client-ca.pem
+          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Ca }}
       - name: etcd-client-crt
         hostPath:
-          path: /etc/kubernetes/ssl/etcd/client-crt.pem
+          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Crt }}
       - name: etcd-client-key
         hostPath:
-          path: /etc/kubernetes/ssl/etcd/client-key.pem
+          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Key }}
       serviceAccountName: {{ include "resource.default.name"  . }}
       securityContext:
         runAsUser: {{ .Values.pod.user.id }}

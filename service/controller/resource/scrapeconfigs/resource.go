@@ -29,24 +29,18 @@ type Config struct {
 	Logger    micrologger.Logger
 	Provider  string
 
-	Etcd ConfigEtcd
-}
-
-type ConfigEtcd struct {
-	URL     string
-	CAPath  string
-	CrtPath string
-	KeyPath string
+	EtcdURL string
 }
 
 type TemplateData struct {
-	APIServerURL string
-	ETCD         string
-	Provider     string
-	ClusterID    string
-	ClusterType  string
-	SecretName   string
-	IsInCluster  bool
+	APIServerURL   string
+	EtcdURL        string
+	Provider       string
+	ClusterID      string
+	ClusterType    string
+	SecretName     string
+	EtcdSecretName string
+	IsInCluster    bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -111,13 +105,14 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 	}
 
 	d := &TemplateData{
-		APIServerURL: key.APIUrl(cluster),
-		ClusterID:    clusterID,
-		ClusterType:  key.ClusterType(cluster),
-		Provider:     config.Provider,
-		SecretName:   key.Secret(),
-		ETCD:         etcd,
-		IsInCluster:  key.IsInCluster(cluster),
+		APIServerURL:   key.APIUrl(cluster),
+		ClusterID:      clusterID,
+		ClusterType:    key.ClusterType(cluster),
+		Provider:       config.Provider,
+		SecretName:     key.Secret(),
+		EtcdSecretName: key.EtcdSecret(cluster),
+		EtcdURL:        etcd,
+		IsInCluster:    key.IsInCluster(cluster),
 	}
 
 	return d, nil
@@ -173,7 +168,7 @@ func etcdURL(cluster interface{}, config Config) (string, error) {
 		}
 		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
 	case *corev1.Service:
-		etcd = config.Etcd.URL
+		etcd = config.EtcdURL
 	default:
 		return "", microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
 	}

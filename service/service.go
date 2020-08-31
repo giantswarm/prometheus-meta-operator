@@ -24,7 +24,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
 	controlplane "github.com/giantswarm/prometheus-meta-operator/service/controller/control-plane"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/legacy"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 )
 
 // Config represents the configuration used to create a new service.
@@ -145,16 +144,11 @@ func New(config Config) (*Service, error) {
 	var controlplaneController *controlplane.Controller
 	{
 		c := controlplane.ControllerConfig{
-			BaseDomain:  config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Provider:    config.Viper.GetString(config.Flag.Service.Provider.Kind),
-			CreatePVC:   config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize: config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			Etcd: scrapeconfigs.ConfigEtcd{
-				URL:     config.Viper.GetString(config.Flag.Service.Etcd.Host),
-				CAPath:  config.Viper.GetString(config.Flag.Service.Etcd.CA),
-				CrtPath: config.Viper.GetString(config.Flag.Service.Etcd.Crt),
-				KeyPath: config.Viper.GetString(config.Flag.Service.Etcd.Key),
-			},
+			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			CreatePVC:        config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			StorageSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			EtcdURL:          config.Viper.GetString(config.Flag.Service.Etcd.Host),
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,

@@ -12,7 +12,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 )
 
 type ControllerConfig struct {
@@ -23,7 +22,7 @@ type ControllerConfig struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
-	Etcd             scrapeconfigs.ConfigEtcd
+	EtcdURL          string
 }
 
 type Controller struct {
