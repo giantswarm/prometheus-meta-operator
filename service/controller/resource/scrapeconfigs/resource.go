@@ -51,7 +51,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:     config.Logger,
 		Name:       Name,
 		ToCR: func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config.Provider, config.K8sClient)
+			return toSecret(v, config)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -63,13 +63,13 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func toSecret(v interface{}, provider string, clients k8sclient.Interface) (*corev1.Secret, error) {
+func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	templateData, err := getTemplateData(cluster, provider, clients)
+	templateData, err := getTemplateData(cluster, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -93,46 +93,19 @@ func toSecret(v interface{}, provider string, clients k8sclient.Interface) (*cor
 	return scrapeConfigsSecret, nil
 }
 
-func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.Interface) (*TemplateData, error) {
-	var etcd string
-	var etcdPort int = 2379
-	switch v := cluster.(type) {
-	case *v1alpha2.Cluster:
-		ctx := context.Background()
-		infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain, etcdPort)
-	case *v1alpha1.AWSConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.AzureConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.KVMConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *corev1.Service:
-		// TODO: find a way to compute etcd url.
-		etcd = ""
-	default:
-		return nil, microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
-	}
-
+func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
 	clusterID := key.ClusterID(cluster)
+
+	etcd, err := etcdURL(cluster, config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	d := &TemplateData{
 		APIServerURL: key.APIUrl(cluster),
 		ClusterID:    clusterID,
 		ClusterType:  key.ClusterType(cluster),
-		Provider:     provider,
+		Provider:     config.Provider,
 		SecretName:   key.Secret(),
 		ETCD:         etcd,
 		IsInCluster:  key.IsInCluster(cluster),
@@ -161,4 +134,40 @@ func hasChanged(current, desired metav1.Object) bool {
 	d := desired.(*corev1.Secret)
 
 	return !reflect.DeepEqual(c.Data, d.Data)
+}
+
+func etcdURL(cluster interface{}, config Config) (string, error) {
+	var etcd string
+	var etcdPort int = 2379
+
+	switch v := cluster.(type) {
+	case *v1alpha2.Cluster:
+		ctx := context.Background()
+		infra, err := config.K8sClient.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
+		if err != nil {
+			return "", microerror.Mask(err)
+		}
+		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(v), infra.Spec.Cluster.DNS.Domain, etcdPort)
+	case *v1alpha1.AWSConfig:
+		if v.Spec.Cluster.Etcd.Port != 0 {
+			etcdPort = v.Spec.Cluster.Etcd.Port
+		}
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
+	case *v1alpha1.AzureConfig:
+		if v.Spec.Cluster.Etcd.Port != 0 {
+			etcdPort = v.Spec.Cluster.Etcd.Port
+		}
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
+	case *v1alpha1.KVMConfig:
+		if v.Spec.Cluster.Etcd.Port != 0 {
+			etcdPort = v.Spec.Cluster.Etcd.Port
+		}
+		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
+	case *corev1.Service:
+		etcd = config.Etcd.URL
+	default:
+		return "", microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
+	}
+
+	return etcd, nil
 }
