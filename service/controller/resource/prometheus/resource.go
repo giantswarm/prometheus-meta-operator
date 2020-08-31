@@ -161,6 +161,44 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 				InsecureSkipVerify: true,
 			},
 		}
+
+		prometheus.Spec.Volumes = append(prometheus.Spec.Volumes, v1.Volume{
+			Name: "etcd-client-ca",
+			VolumeSource: v1.VolumeSource{
+				HostPath: &v1.HostPathVolumeSource{
+					Path: "/etc/kubernetes/ssl/etcd/client-ca.pem",
+				},
+			},
+		})
+		prometheus.Spec.Volumes = append(prometheus.Spec.Volumes, v1.Volume{
+			Name: "etcd-client-crt",
+			VolumeSource: v1.VolumeSource{
+				HostPath: &v1.HostPathVolumeSource{
+					Path: "/etc/kubernetes/ssl/etcd/client-crt.pem",
+				},
+			},
+		})
+		prometheus.Spec.Volumes = append(prometheus.Spec.Volumes, v1.Volume{
+			Name: "etcd-client-key",
+			VolumeSource: v1.VolumeSource{
+				HostPath: &v1.HostPathVolumeSource{
+					Path: "/etc/kubernetes/ssl/etcd/client-key.pem",
+				},
+			},
+		})
+
+		prometheus.Spec.VolumeMounts = append(prometheus.Spec.VolumeMounts, v1.VolumeMount{
+			Name:      "etcd-client-ca",
+			MountPath: "/etc/kubernetes/ssl/etcd/client-ca.pem",
+		})
+		prometheus.Spec.VolumeMounts = append(prometheus.Spec.VolumeMounts, v1.VolumeMount{
+			Name:      "etcd-client-crt",
+			MountPath: "/etc/kubernetes/ssl/etcd/client-crt.pem",
+		})
+		prometheus.Spec.VolumeMounts = append(prometheus.Spec.VolumeMounts, v1.VolumeMount{
+			Name:      "etcd-client-key",
+			MountPath: "/etc/kubernetes/ssl/etcd/client-key.pem",
+		})
 	}
 
 	return prometheus, nil
