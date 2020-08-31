@@ -34,7 +34,7 @@ type Config struct {
 
 type TemplateData struct {
 	APIServerURL   string
-	EtcdURL        string
+	ETCD           string
 	Provider       string
 	ClusterID      string
 	ClusterType    string
@@ -111,7 +111,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		Provider:       config.Provider,
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
-		EtcdURL:        etcd,
+		ETCD:           etcd,
 		IsInCluster:    key.IsInCluster(cluster),
 	}
 
