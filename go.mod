@@ -1,6 +1,6 @@
 module github.com/giantswarm/prometheus-meta-operator
 
-go 1.13
+go 1.14
 
 require (
 	github.com/coreos/prometheus-operator v0.41.1
