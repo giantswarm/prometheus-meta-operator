@@ -1,6 +1,5 @@
 # Targets
 
-- aws-node
 - cadvisor
 - calico-node
 - cert-exporter
@@ -17,6 +16,10 @@
 - net-exporter
 - nginx-ingress-controller
 - node-exporter
+
+### AWS specific
+
+- aws-node
 
 ## Known issues
 
