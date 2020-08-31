@@ -1,7 +1,7 @@
 # Targets
 
 - cadvisor
-- calico-node
+- calico
 - cert-exporter
 - chart-operator
 - cluster-autoscaler
