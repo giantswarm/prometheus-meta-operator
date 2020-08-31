@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/operatorkit/v2/pkg/resource/wrapper/retryresource"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
+	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/frontend"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
@@ -42,6 +43,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		namespaceResource, err = namespace.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var etcdCertificatesResource resource.Interface
+	{
+		c := etcdcertificates.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		etcdCertificatesResource, err = etcdcertificates.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -160,6 +174,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
+		etcdCertificatesResource,
 		rbacResource,
 		prometheusResource,
 		frontendResource,
