@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add monitoring label
 
+### Changed
+
+- Upgrade to golang 1.15
+
 ## [1.1.0] - 2020-08-27
 
 ### Added
