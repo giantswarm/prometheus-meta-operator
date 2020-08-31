@@ -27,6 +27,10 @@ func Secret() string {
 	return "cluster-certificates"
 }
 
+func EtcdSecret() string {
+	return "etcd-certificates"
+}
+
 func ClusterIDKey() string {
 	return "cluster_id"
 }
