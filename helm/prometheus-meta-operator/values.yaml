@@ -7,7 +7,7 @@ Installation:
       Domain: quay.io
 pod:
   user:
-    id: 1000
+    id: 0
   group:
     id: 1000
 project:
