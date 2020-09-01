@@ -1884,24 +1884,10 @@
     namespaces:
       names:
       - gatekeeper-system
-{{ if not .IsInCluster }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
-{{ end }}
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_name]
     regex: gatekeeper
