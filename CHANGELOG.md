@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add monitoring label
-- vault target
+- etcd target for control planes
 
 ## [1.1.0] - 2020-08-27
 
