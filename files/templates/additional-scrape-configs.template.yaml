@@ -1880,21 +1880,18 @@
   scheme: http
   static_configs:
   - targets:
-    - vault1.gauss.eu-west-1.aws.gigantic.io:10300
+    - {{ .Vault }}:10300
     labels:
       app: vault
-      cluster_id: gauss
-      cluster_type: host
   - targets:
-    - vault1.gauss.eu-west-1.aws.gigantic.io:9005
+    - {{ .Vault }}:9005
     labels:
       app: cert-exporter
-      cluster_id: gauss
-      cluster_type: host
   relabel_configs:
-  - separator: ;
-    regex: (.*)
-    target_label: provider
-    replacement: aws
-    action: replace
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
 {{ end }}
