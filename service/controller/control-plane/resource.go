@@ -29,7 +29,6 @@ type resourcesConfig struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
-	EtcdURL          string
 }
 
 func newResources(config resourcesConfig) ([]resource.Interface, error) {
@@ -163,7 +162,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Provider:  config.Provider,
-			EtcdURL:   config.EtcdURL,
 		}
 
 		scrapeConfigResource, err = scrapeconfigs.New(c)

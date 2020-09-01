@@ -24,8 +24,6 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 	Provider  string
-
-	EtcdURL string
 }
 
 type TemplateData struct {

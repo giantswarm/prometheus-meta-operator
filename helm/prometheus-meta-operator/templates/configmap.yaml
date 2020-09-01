@@ -32,5 +32,3 @@ data:
         name: {{ .Values.Installation.V1.Name }}
       vault:
         host: {{ .Values.Installation.V1.Auth.Vault.Host }}
-      etcd:
-        host:  {{ .Values.Installation.V1.Monitoring.Prometheus.HostEtcd }}

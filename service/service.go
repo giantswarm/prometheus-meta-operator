@@ -148,7 +148,6 @@ func New(config Config) (*Service, error) {
 			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			CreatePVC:        config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
 			StorageSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			EtcdURL:          config.Viper.GetString(config.Flag.Service.Etcd.Host),
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,

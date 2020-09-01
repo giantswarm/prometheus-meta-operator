@@ -22,7 +22,6 @@ type ControllerConfig struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
-	EtcdURL          string
 }
 
 type Controller struct {
