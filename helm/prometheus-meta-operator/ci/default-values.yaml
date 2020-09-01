@@ -12,10 +12,6 @@ Installation:
           Enabled: true
           CreatePVC: true
         HostEtcd: ""
-        EtcdClientCertificates:
-          Ca: ""
-          Crt: ""
-          Key: ""
     Provider:
       Kind: ""
     Registry:
