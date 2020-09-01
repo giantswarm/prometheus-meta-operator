@@ -1875,4 +1875,26 @@
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
+- job_name: {{ .ClusterID }}-prometheus/vault-{{ .ClusterID }}/0
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets:
+    - vault1.gauss.eu-west-1.aws.gigantic.io:10300
+    labels:
+      app: vault
+      cluster_id: gauss
+      cluster_type: host
+  - targets:
+    - vault1.gauss.eu-west-1.aws.gigantic.io:9005
+    labels:
+      app: cert-exporter
+      cluster_id: gauss
+      cluster_type: host
+  relabel_configs:
+  - separator: ;
+    regex: (.*)
+    target_label: provider
+    replacement: aws
+    action: replace
 {{ end }}
