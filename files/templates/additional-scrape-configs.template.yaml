@@ -1880,7 +1880,7 @@
   metrics_path: /metrics
   scheme: http
   kubernetes_sd_configs:
-  - role: endpoints
+  - role: pod
     namespaces:
       names:
       - gatekeeper-system
