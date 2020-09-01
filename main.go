@@ -113,6 +113,9 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().Bool(f.Service.Prometheus.Storage.CreatePVC, false, "Should the operator create a PVC for storage.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "20Gi", "Storage sze for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
+	daemonCommand.PersistentFlags().String(f.Service.Installation.Name, "", "Name of the installation.")
+	daemonCommand.PersistentFlags().String(f.Service.Vault.Host, "", "Host used to connect to Vault.")
+	daemonCommand.PersistentFlags().String(f.Service.Etcd.Host, "", "Host used to connect to Etcd.")
 
 	err = newCommand.CobraCommand().Execute()
 	if err != nil {

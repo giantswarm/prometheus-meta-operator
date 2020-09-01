@@ -28,3 +28,9 @@ data:
           size: 20Gi
       provider:
         kind: {{ .Values.Installation.V1.Provider.Kind }}
+      installation:
+        name: {{ .Values.Installation.V1.Name }}
+      vault:
+        host: {{ .Values.Installation.V1.Auth.Vault.Host }}
+      etcd:
+        host:  {{ .Values.Installation.V1.Monitoring.Prometheus.HostEtcd }}
