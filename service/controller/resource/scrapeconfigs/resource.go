@@ -1,18 +1,14 @@
 package scrapeconfigs
 
 import (
-	"context"
-	"fmt"
 	"io/ioutil"
 	"reflect"
 
-	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/templates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
@@ -34,7 +30,6 @@ type Config struct {
 
 type TemplateData struct {
 	APIServerURL   string
-	ETCD           string
 	Provider       string
 	ClusterID      string
 	ClusterType    string
@@ -99,11 +94,6 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
 	clusterID := key.ClusterID(cluster)
 
-	etcd, err := etcdURL(cluster, config)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	d := &TemplateData{
 		APIServerURL:   key.APIUrl(cluster),
 		ClusterID:      clusterID,
@@ -111,7 +101,6 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		Provider:       config.Provider,
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
-		ETCD:           etcd,
 		IsInCluster:    key.IsInCluster(cluster),
 	}
 
@@ -138,40 +127,4 @@ func hasChanged(current, desired metav1.Object) bool {
 	d := desired.(*corev1.Secret)
 
 	return !reflect.DeepEqual(c.Data, d.Data)
-}
-
-func etcdURL(cluster interface{}, config Config) (string, error) {
-	var etcd string
-	var etcdPort int = 2379
-
-	switch v := cluster.(type) {
-	case *v1alpha2.Cluster:
-		ctx := context.Background()
-		infra, err := config.K8sClient.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
-		if err != nil {
-			return "", microerror.Mask(err)
-		}
-		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(v), infra.Spec.Cluster.DNS.Domain, etcdPort)
-	case *v1alpha1.AWSConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.AzureConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.KVMConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *corev1.Service:
-		etcd = config.EtcdURL
-	default:
-		return "", microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
-	}
-
-	return etcd, nil
 }
