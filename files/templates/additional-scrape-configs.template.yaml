@@ -228,7 +228,7 @@
     ca_file: /etc/prometheus/secrets/{{ .EtcdSecretName }}/ca
     cert_file: /etc/prometheus/secrets/{{ .EtcdSecretName }}/crt
     key_file: /etc/prometheus/secrets/{{ .EtcdSecretName }}/key
-    insecure_skip_verify: false
+    insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_node_label_role]
     regex: master
