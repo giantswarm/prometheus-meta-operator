@@ -9,8 +9,6 @@ import (
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
-	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/templates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
@@ -94,40 +92,6 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-	var etcd string
-	var etcdPort int = 2379
-	switch v := cluster.(type) {
-	case *capiv1alpha2.Cluster:
-		ctx := context.Background()
-		infra, err := config.K8sClient.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain, etcdPort)
-	case *capiv1alpha3.Cluster:
-		etcd = fmt.Sprintf("etcd.%s:%d", v.Spec.ClusterNetwork.ServiceDomain, etcdPort)
-	case *v1alpha1.AWSConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.AzureConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.KVMConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *corev1.Service:
-		// TODO: find a way to compute etcd url.
-		etcd = ""
-	default:
-		return nil, microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
-	}
-
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
