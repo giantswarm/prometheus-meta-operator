@@ -24,6 +24,7 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 	Provider  string
+	Vault     string
 }
 
 type TemplateData struct {
@@ -34,6 +35,7 @@ type TemplateData struct {
 	SecretName     string
 	EtcdSecretName string
 	IsInCluster    bool
+	Vault          string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -100,6 +102,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
 		IsInCluster:    key.IsInCluster(cluster),
+		Vault:          config.Vault,
 	}
 
 	return d, nil

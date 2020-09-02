@@ -26,6 +26,7 @@ type resourcesConfig struct {
 	Provider         string
 	CreatePVC        bool
 	StorageSize      string
+	Vault            string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
@@ -162,6 +163,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Provider:  config.Provider,
+			Vault:     config.Vault,
 		}
 
 		scrapeConfigResource, err = scrapeconfigs.New(c)
