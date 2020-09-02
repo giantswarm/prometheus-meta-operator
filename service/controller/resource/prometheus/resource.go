@@ -36,9 +36,10 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
+		ClientFunc:    clientFunc,
+		Logger:        config.Logger,
+		Name:          Name,
+		GetObjectMeta: getObjectMeta,
 		ToCR: func(v interface{}) (metav1.Object, error) {
 			return toPrometheus(v, config.CreatePVC, resource.MustParse(config.StorageSize))
 		},
@@ -52,9 +53,26 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
+func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return metav1.ObjectMeta{}, microerror.Mask(err)
+	}
+
+	return metav1.ObjectMeta{
+		Name:      cluster.GetName(),
+		Namespace: key.Namespace(cluster),
+	}, nil
+}
+
 func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
+	}
+
+	objectMeta, err := getObjectMeta(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
 
 	cluster, err := key.ToCluster(v)
@@ -62,7 +80,6 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 		return nil, microerror.Mask(err)
 	}
 
-	name := cluster.GetName()
 	var replicas int32 = 1
 	// Configured following https://github.com/coreos/prometheus-operator/issues/541#issuecomment-451884171
 	// as the volume could not mount otherwise
@@ -95,10 +112,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 	}
 
 	prometheus := &promv1.Prometheus{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      name,
-			Namespace: key.Namespace(cluster),
-		},
+		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),

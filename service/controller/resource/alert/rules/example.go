@@ -5,18 +5,34 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func ExampleRule(cluster metav1.Object) *promv1.PrometheusRule {
-	return &promv1.PrometheusRule{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      "example-rules",
-			Namespace: key.Namespace(cluster),
-			Labels: map[string]string{
-				key.ClusterIDKey(): key.ClusterID(cluster),
-			},
+func GetObjectMeta(obj interface{}) (metav1.ObjectMeta, error) {
+	cluster, err := key.ToCluster(obj)
+	if err != nil {
+		return metav1.ObjectMeta{}, microerror.Mask(err)
+	}
+
+	return metav1.ObjectMeta{
+		Name:      "example-rules",
+		Namespace: key.Namespace(cluster),
+		Labels: map[string]string{
+			key.ClusterIDKey(): key.ClusterID(cluster),
 		},
+	}, nil
+}
+
+func ExampleRule(obj interface{}) (*promv1.PrometheusRule, error) {
+	objectMeta, err := GetObjectMeta(obj)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return &promv1.PrometheusRule{
+		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusRuleSpec{
 			Groups: []promv1.RuleGroup{
 				promv1.RuleGroup{
@@ -48,5 +64,5 @@ func ExampleRule(cluster metav1.Object) *promv1.PrometheusRule {
 				},
 			},
 		},
-	}
+	}, nil
 }

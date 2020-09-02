@@ -30,6 +30,7 @@ func New(config Config) (*generic.Resource, error) {
 		ClientFunc:     clientFunc,
 		Logger:         config.Logger,
 		Name:           Name,
+		GetObjectMeta:  getObjectMeta,
 		ToCR:           toNamespace,
 		HasChangedFunc: hasChanged,
 	}
@@ -41,8 +42,19 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func toNamespace(v interface{}) (metav1.Object, error) {
+func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return metav1.ObjectMeta{}, microerror.Mask(err)
+	}
+
+	return metav1.ObjectMeta{
+		Name: key.Namespace(cluster),
+	}, nil
+}
+
+func toNamespace(v interface{}) (metav1.Object, error) {
+	objectMeta, err := getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -52,9 +64,7 @@ func toNamespace(v interface{}) (metav1.Object, error) {
 			APIVersion: corev1.SchemeGroupVersion.Version,
 			Kind:       "Namespace",
 		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: key.Namespace(cluster),
-		},
+		ObjectMeta: objectMeta,
 	}
 
 	return namespace, nil
