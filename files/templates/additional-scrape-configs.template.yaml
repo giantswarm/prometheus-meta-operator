@@ -1875,6 +1875,25 @@
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
+- job_name: {{ .ClusterID }}-prometheus/vault-{{ .ClusterID }}/0
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets:
+    - {{ .Vault }}:10300
+    labels:
+      app: vault
+  - targets:
+    - {{ .Vault }}:9005
+    labels:
+      app: cert-exporter
+  relabel_configs:
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
 # gatekeeper
 - job_name: {{ .ClusterID }}-prometheus/gatekeeper-{{ .ClusterID }}/0
   metrics_path: /metrics
