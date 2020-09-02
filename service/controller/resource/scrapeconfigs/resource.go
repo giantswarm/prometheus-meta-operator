@@ -1,12 +1,9 @@
 package scrapeconfigs
 
 import (
-	"context"
-	"fmt"
 	"io/ioutil"
 	"reflect"
 
-	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -29,16 +26,18 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 	Provider  string
+	Vault     string
 }
 
 type TemplateData struct {
-	APIServerURL string
-	ETCD         string
-	Provider     string
-	ClusterID    string
-	ClusterType  string
-	SecretName   string
-	IsInCluster  bool
+	APIServerURL   string
+	Provider       string
+	ClusterID      string
+	ClusterType    string
+	SecretName     string
+	EtcdSecretName string
+	IsInCluster    bool
+	Vault          string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -52,7 +51,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:     config.Logger,
 		Name:       Name,
 		ToCR: func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config.Provider, config.K8sClient)
+			return toSecret(v, config)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -64,13 +63,13 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func toSecret(v interface{}, provider string, clients k8sclient.Interface) (*corev1.Secret, error) {
+func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	templateData, err := getTemplateData(cluster, provider, clients)
+	templateData, err := getTemplateData(cluster, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -94,13 +93,13 @@ func toSecret(v interface{}, provider string, clients k8sclient.Interface) (*cor
 	return scrapeConfigsSecret, nil
 }
 
-func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.Interface) (*TemplateData, error) {
+func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
 	var etcd string
 	var etcdPort int = 2379
 	switch v := cluster.(type) {
 	case *capiv1alpha2.Cluster:
 		ctx := context.Background()
-		infra, err := clients.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
+		infra, err := config.K8sClient.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -132,13 +131,14 @@ func getTemplateData(cluster metav1.Object, provider string, clients k8sclient.I
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
-		APIServerURL: key.APIUrl(cluster),
-		ClusterID:    clusterID,
-		ClusterType:  key.ClusterType(cluster),
-		Provider:     provider,
-		SecretName:   key.Secret(),
-		ETCD:         etcd,
-		IsInCluster:  key.IsInCluster(cluster),
+		APIServerURL:   key.APIUrl(cluster),
+		ClusterID:      clusterID,
+		ClusterType:    key.ClusterType(cluster),
+		Provider:       config.Provider,
+		SecretName:     key.Secret(),
+		EtcdSecretName: key.EtcdSecret(cluster),
+		IsInCluster:    key.IsInCluster(cluster),
+		Vault:          config.Vault,
 	}
 
 	return d, nil

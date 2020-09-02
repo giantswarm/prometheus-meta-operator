@@ -48,6 +48,10 @@ func toNamespace(v interface{}) (metav1.Object, error) {
 	}
 
 	namespace := &corev1.Namespace{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: corev1.SchemeGroupVersion.Version,
+			Kind:       "Namespace",
+		},
 		ObjectMeta: metav1.ObjectMeta{
 			Name: key.Namespace(cluster),
 		},

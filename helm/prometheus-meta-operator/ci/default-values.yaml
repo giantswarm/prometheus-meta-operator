@@ -1,12 +1,20 @@
 ---
 Installation:
   V1:
+    Auth:
+      Vault:
+        Address: ""
+    Name: ""
     Monitoring:
       Prometheus:
         Host: ""
         Storage:
           Enabled: true
           CreatePVC: true
+        EtcdClientCertificates:
+          Ca: ""
+          Crt: ""
+          Key: ""
     Provider:
       Kind: ""
     Registry:
