@@ -161,6 +161,10 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 				InsecureSkipVerify: true,
 			},
 		}
+
+		prometheus.Spec.Secrets = []string{
+			key.EtcdSecret(cluster),
+		}
 	}
 
 	return prometheus, nil

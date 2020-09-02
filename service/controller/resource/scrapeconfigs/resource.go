@@ -1,18 +1,14 @@
 package scrapeconfigs
 
 import (
-	"context"
-	"fmt"
 	"io/ioutil"
 	"reflect"
 
-	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/templates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
@@ -32,14 +28,14 @@ type Config struct {
 }
 
 type TemplateData struct {
-	APIServerURL string
-	ETCD         string
-	Provider     string
-	ClusterID    string
-	ClusterType  string
-	SecretName   string
-	IsInCluster  bool
-	Vault        string
+	APIServerURL   string
+	Provider       string
+	ClusterID      string
+	ClusterType    string
+	SecretName     string
+	EtcdSecretName string
+	IsInCluster    bool
+	Vault          string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -96,49 +92,17 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-	var etcd string
-	var etcdPort int = 2379
-	switch v := cluster.(type) {
-	case *v1alpha2.Cluster:
-		ctx := context.Background()
-		infra, err := config.K8sClient.G8sClient().InfrastructureV1alpha2().AWSClusters(v.Spec.InfrastructureRef.Namespace).Get(ctx, v.Spec.InfrastructureRef.Name, metav1.GetOptions{})
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		etcd = fmt.Sprintf("etcd.%s.k8s.%s:%d", key.ClusterID(cluster), infra.Spec.Cluster.DNS.Domain, etcdPort)
-	case *v1alpha1.AWSConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.AzureConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *v1alpha1.KVMConfig:
-		if v.Spec.Cluster.Etcd.Port != 0 {
-			etcdPort = v.Spec.Cluster.Etcd.Port
-		}
-		etcd = fmt.Sprintf("%s:%d", v.Spec.Cluster.Etcd.Domain, etcdPort)
-	case *corev1.Service:
-		// TODO: find a way to compute etcd url.
-		etcd = ""
-	default:
-		return nil, microerror.Maskf(wrongTypeError, fmt.Sprintf("%T", v))
-	}
-
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
-		APIServerURL: key.APIUrl(cluster),
-		ClusterID:    clusterID,
-		ClusterType:  key.ClusterType(cluster),
-		Provider:     config.Provider,
-		SecretName:   key.Secret(),
-		ETCD:         etcd,
-		IsInCluster:  key.IsInCluster(cluster),
-		Vault:        config.Vault,
+		APIServerURL:   key.APIUrl(cluster),
+		ClusterID:      clusterID,
+		ClusterType:    key.ClusterType(cluster),
+		Provider:       config.Provider,
+		SecretName:     key.Secret(),
+		EtcdSecretName: key.EtcdSecret(cluster),
+		IsInCluster:    key.IsInCluster(cluster),
+		Vault:          config.Vault,
 	}
 
 	return d, nil
