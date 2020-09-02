@@ -102,7 +102,7 @@
 
 ## Unscrapeable
 
-* happa: not exposing any metrics because
+* happa: not exposing any metrics
 
 * metrics-server: not scrapping because according to official documentation it should not be used [as a source of monitoring solution metrics](https://github.com/kubernetes-sigs/metrics-server#kubernetes-metrics-server).
 
