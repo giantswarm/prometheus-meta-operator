@@ -744,6 +744,7 @@
   metrics_path: /metrics
   scheme: https
   kubernetes_sd_configs:
+    role: endpoints
 {{ if not .IsInCluster }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
