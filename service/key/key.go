@@ -3,11 +3,9 @@ package key
 import (
 	"fmt"
 
-	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -25,6 +23,14 @@ func Namespace(cluster metav1.Object) string {
 
 func Secret() string {
 	return "cluster-certificates"
+}
+
+func EtcdSecret(obj interface{}) string {
+	if IsInCluster(obj) {
+		return "etcd-certificates"
+	}
+
+	return Secret()
 }
 
 func ClusterIDKey() string {
@@ -45,16 +51,10 @@ func PrometheusAdditionalScrapeConfigsName() string {
 
 func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
-	case *v1alpha2.Cluster:
-		return fmt.Sprintf("master.%s", v.GetName())
-	case *v1alpha1.AWSConfig:
-		return fmt.Sprintf("master.%s", v.GetName())
-	case *v1alpha1.AzureConfig:
-		return fmt.Sprintf("master.%s", v.GetName())
-	case *v1alpha1.KVMConfig:
-		return fmt.Sprintf("master.%s", v.GetName())
 	case *v1.Service:
 		return v.Spec.ClusterIP
+	case metav1.Object:
+		return fmt.Sprintf("master.%s", v.GetName())
 	}
 
 	return ""

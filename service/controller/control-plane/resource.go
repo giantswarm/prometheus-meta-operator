@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/operatorkit/v2/pkg/resource/wrapper/retryresource"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
+	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
@@ -22,6 +23,7 @@ type resourcesConfig struct {
 	Provider         string
 	CreatePVC        bool
 	StorageSize      string
+	Vault            string
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
@@ -38,6 +40,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		namespaceResource, err = namespace.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var etcdCertificatesResource resource.Interface
+	{
+		c := etcdcertificates.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		etcdCertificatesResource, err = etcdcertificates.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -104,6 +119,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Provider:  config.Provider,
+			Vault:     config.Vault,
 		}
 
 		scrapeConfigResource, err = scrapeconfigs.New(c)
@@ -114,6 +130,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
+		etcdCertificatesResource,
 		rbacResource,
 		prometheusResource,
 		serviceMonitorResource,

@@ -212,22 +212,32 @@
 - job_name: {{ .ClusterID }}-prometheus/etcd-{{ .ClusterID }}/0
   honor_timestamps: false
   scheme: https
-  static_configs:
-    - targets:
-      - {{ .ETCD }}
+  kubernetes_sd_configs:
+  - role: node
 {{ if not .IsInCluster }}
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
+    api_server: https://{{ .APIServerURL }}
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
 {{ else }}
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
 {{ end }}
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .EtcdSecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .EtcdSecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .EtcdSecretName }}/key
+    insecure_skip_verify: true
   relabel_configs:
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: master
+    action: keep
+  - source_labels: [__address__]
+    regex: (.*):10250
+    target_label: __address__
+    replacement: ${1}:2379
+    action: replace
   - target_label: app
     replacement: etcd
   # Add cluster_id label.
@@ -740,6 +750,77 @@
     replacement: {{ .ClusterType }}
   - target_label: provider
     replacement: {{ .Provider }}
+- job_name: {{ .ClusterID }}-prometheus/managed-app-{{ .ClusterID }}/0
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+{{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+    insecure_skip_verify: true
+{{ else }}
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+{{ end }}
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
+    regex: (true)
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring]
+    regex: (true)
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring_port]
+    regex: (true)
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring_path]
+    regex: (true)
+    action: keep
+  - regex: (.*)
+    target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
+    regex: (.*);(.*);(.*);(.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}/proxy/${4}
+    action: replace
+  - source_labels: [__meta_kubernetes_service_name]
+    regex: (.*)
+    target_label: app
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    regex: (.*)
+    target_label: namespace
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (.*)
+    target_label: pod_name
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_type]
+    regex: (optional|default)
+    target_label: app_type
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
+    regex: (true)
+    target_label: is_managed_app
+    action: replace
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
 {{ if eq .ClusterType "control_plane" }}
 # app-operator
 - job_name: {{ .ClusterID }}-prometheus/app-operator-{{ .ClusterID }}/0
@@ -1079,6 +1160,53 @@
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     regex: rbac-operator
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
+    target_label: version
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# cert-operator
+- job_name: {{ .ClusterID }}-prometheus/cert-operator-{{ .ClusterID }}/0
+  honor_timestamps: false
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - giantswarm
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    regex: cert-operator
     action: keep
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
@@ -1875,4 +2003,57 @@
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
+- job_name: {{ .ClusterID }}-prometheus/vault-{{ .ClusterID }}/0
+  metrics_path: /metrics
+  scheme: http
+  static_configs:
+  - targets:
+    - {{ .Vault }}:10300
+    labels:
+      app: vault
+  - targets:
+    - {{ .Vault }}:9005
+    labels:
+      app: cert-exporter
+  relabel_configs:
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
+# gatekeeper
+- job_name: {{ .ClusterID }}-prometheus/gatekeeper-{{ .ClusterID }}/0
+  metrics_path: /metrics
+  scheme: https
+  kubernetes_sd_configs:
+  - role: pod
+    namespaces:
+      names:
+      - gatekeeper-system
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (gatekeeper.*)
+    action: keep
+  - target_label: __address__
+    replacement: {{ .APIServerURL }}:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/gatekeeper-system/pods/${1}:8888/proxy/metrics
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: {{ .ClusterID }}
+  - target_label: cluster_type
+    replacement: {{ .ClusterType }}
+  - target_label: provider
+    replacement: {{ .Provider }}
 {{ end }}
