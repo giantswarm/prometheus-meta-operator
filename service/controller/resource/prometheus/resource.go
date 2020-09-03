@@ -40,7 +40,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:        config.Logger,
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
-		ToCR: func(v interface{}) (metav1.Object, error) {
+		GetObject: func(v interface{}) (metav1.Object, error) {
 			return toPrometheus(v, config.CreatePVC, resource.MustParse(config.StorageSize))
 		},
 		HasChangedFunc: hasChanged,

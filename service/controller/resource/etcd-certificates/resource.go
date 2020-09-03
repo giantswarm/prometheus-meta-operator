@@ -50,7 +50,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:         config.Logger,
 		Name:           Name,
 		GetObjectMeta:  getObjectMeta,
-		ToCR:           sc.ToCR,
+		GetObject:      sc.ToCR,
 		HasChangedFunc: hasChanged,
 	}
 	r, err := generic.New(c)

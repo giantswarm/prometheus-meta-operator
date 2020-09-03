@@ -31,7 +31,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:         config.Logger,
 		Name:           Name,
 		GetObjectMeta:  getObjectMeta,
-		ToCR:           toNamespace,
+		GetObject:      toNamespace,
 		HasChangedFunc: hasChanged,
 	}
 	r, err := generic.New(c)
