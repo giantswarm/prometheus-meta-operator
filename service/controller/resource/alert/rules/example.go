@@ -25,7 +25,7 @@ func GetObjectMeta(obj interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func ExampleRule(obj interface{}) (*promv1.PrometheusRule, error) {
+func ExampleRule(obj interface{}) (metav1.Object, error) {
 	objectMeta, err := GetObjectMeta(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
