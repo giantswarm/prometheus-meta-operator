@@ -14,7 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - etcd target for control planes
 - vault target
 - gatekeeper target
+- managed-app target
 - Add scraping of cert-operatpr
+
+### Removed
+
+- frontend, ingress, and service resources.
 
 ### Fixed
 
