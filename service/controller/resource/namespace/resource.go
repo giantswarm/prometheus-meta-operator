@@ -27,12 +27,12 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc:     clientFunc,
-		Logger:         config.Logger,
-		Name:           Name,
-		GetObjectMeta:  getObjectMeta,
-		GetObject:      toNamespace,
-		HasChangedFunc: hasChanged,
+		ClientFunc:       clientFunc,
+		Logger:           config.Logger,
+		Name:             Name,
+		GetObjectMeta:    getObjectMeta,
+		GetDesiredObject: toNamespace,
+		HasChangedFunc:   hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {

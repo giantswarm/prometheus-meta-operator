@@ -46,12 +46,12 @@ func New(config Config) (*generic.Resource, error) {
 	sc := secretCopier{clientFunc: clientFunc}
 
 	c := generic.Config{
-		ClientFunc:     clientFunc,
-		Logger:         config.Logger,
-		Name:           Name,
-		GetObjectMeta:  getObjectMeta,
-		GetObject:      sc.ToCR,
-		HasChangedFunc: hasChanged,
+		ClientFunc:       clientFunc,
+		Logger:           config.Logger,
+		Name:             Name,
+		GetObjectMeta:    getObjectMeta,
+		GetDesiredObject: sc.ToCR,
+		HasChangedFunc:   hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {

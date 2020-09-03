@@ -33,9 +33,9 @@ type Config struct {
 	// metav1.ObjectMeta part (name, namespace, labels, annotations, etc.).
 	GetObjectMeta func(interface{}) (metav1.ObjectMeta, error)
 
-	// GetObject is a function that takes a resource object and returns the
+	// GetDesiredObject is a function that takes a resource object and returns the
 	// object populated with the desired state.
-	GetObject func(interface{}) (metav1.Object, error)
+	GetDesiredObject func(interface{}) (metav1.Object, error)
 
 	// HasChangedFunc is a function that takes two copies of an object - first
 	// with existing state in the cluster and second with the desired state for
@@ -45,12 +45,12 @@ type Config struct {
 }
 
 type Resource struct {
-	clientFunc     func(string) Interface
-	logger         micrologger.Logger
-	name           string
-	getObjectMeta  func(interface{}) (metav1.ObjectMeta, error)
-	getObject      func(interface{}) (metav1.Object, error)
-	hasChangedFunc func(metav1.Object, metav1.Object) bool
+	clientFunc       func(string) Interface
+	logger           micrologger.Logger
+	name             string
+	getObjectMeta    func(interface{}) (metav1.ObjectMeta, error)
+	getDesiredObject func(interface{}) (metav1.Object, error)
+	hasChangedFunc   func(metav1.Object, metav1.Object) bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -66,7 +66,7 @@ func New(config Config) (*Resource, error) {
 	if config.GetObjectMeta == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.GetObjectMeta must not be empty", config)
 	}
-	if config.GetObject == nil {
+	if config.GetDesiredObject == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.ToCR must not be empty", config)
 	}
 	if config.HasChangedFunc == nil {
@@ -74,12 +74,12 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		clientFunc:     config.ClientFunc,
-		logger:         config.Logger,
-		name:           config.Name,
-		getObjectMeta:  config.GetObjectMeta,
-		getObject:      config.GetObject,
-		hasChangedFunc: config.HasChangedFunc,
+		clientFunc:       config.ClientFunc,
+		logger:           config.Logger,
+		name:             config.Name,
+		getObjectMeta:    config.GetObjectMeta,
+		getDesiredObject: config.GetDesiredObject,
+		hasChangedFunc:   config.HasChangedFunc,
 	}
 
 	return r, nil

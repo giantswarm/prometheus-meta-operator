@@ -49,7 +49,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:        config.Logger,
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
-		GetObject: func(v interface{}) (metav1.Object, error) {
+		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
 			return toSecret(v, config)
 		},
 		HasChangedFunc: hasChanged,
