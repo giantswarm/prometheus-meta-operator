@@ -26,6 +26,15 @@ spec:
           items:
           - key: config.yml
             path: config.yml
+      - name: etcd-client-ca
+        hostPath:
+          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Ca }}
+      - name: etcd-client-crt
+        hostPath:
+          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Crt }}
+      - name: etcd-client-key
+        hostPath:
+          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Key }}
       serviceAccountName: {{ include "resource.default.name"  . }}
       securityContext:
         runAsUser: {{ .Values.pod.user.id }}
@@ -40,6 +49,12 @@ spec:
         volumeMounts:
         - name: {{ include "name" . }}-configmap
           mountPath: /var/run/{{ include "name" . }}/configmap/
+        - mountPath: /etcd-client-certs/ca.pem
+          name: etcd-client-ca
+        - mountPath: /etcd-client-certs/crt.pem
+          name: etcd-client-crt
+        - mountPath: /etcd-client-certs/key.pem
+          name: etcd-client-key
         livenessProbe:
           httpGet:
             path: /healthz

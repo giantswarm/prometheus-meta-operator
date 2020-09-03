@@ -11,8 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add monitoring label
+- etcd target for control planes
+- vault target
 - gatekeeper target
 - managed-app target
+- Add scraping of cert-operatpr
 
 ## [1.1.0] - 2020-08-27
 
