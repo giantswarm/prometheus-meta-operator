@@ -40,7 +40,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:         config.Logger,
 		Name:           Name,
 		GetObjectMeta:  rules.GetObjectMeta,
-		ToCR:           toPrometheusRule,
+		ToCR:           rules.ExampleRule,
 		HasChangedFunc: hasChanged,
 	}
 	r, err := generic.New(c)
@@ -49,10 +49,6 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	return r, nil
-}
-
-func toPrometheusRule(obj interface{}) (metav1.Object, error) {
-	return rules.ExampleRule(obj)
 }
 
 func hasChanged(current, desired metav1.Object) bool {
