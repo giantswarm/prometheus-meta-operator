@@ -51,7 +51,7 @@ func PrometheusAdditionalScrapeConfigsName() string {
 
 func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
-	case *metav1.ObjectMeta:
+	case *metav1.Object:
 		return fmt.Sprintf("master.%s", v.GetName())
 	case *v1.Service:
 		return v.Spec.ClusterIP
