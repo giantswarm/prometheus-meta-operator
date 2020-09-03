@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - managed-app target
 - Add scraping of cert-operatpr
 
+### Removed
+
+- frontend, ingress, and service resources.
+
 ## [1.1.0] - 2020-08-27
 
 ### Added
