@@ -21,6 +21,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - frontend, ingress, and service resources.
 
+### Fixed
+
+- prevented data loss in `Cluster` resources by always using the correct
+  version of the type as configured in CRDs storage version (#101)
+- avoids trying to read dependant objects from the cluster when processing
+  deletion, as they may be gone already and errors here were disrupting cleanup
+  and preventing the finalizer from being removed (#115)
+
 ## [1.1.0] - 2020-08-27
 
 ### Added

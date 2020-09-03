@@ -45,10 +45,11 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
-		ToCR: func(v interface{}) (metav1.Object, error) {
+		ClientFunc:    clientFunc,
+		Logger:        config.Logger,
+		Name:          Name,
+		GetObjectMeta: getObjectMeta,
+		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
 			return toSecret(v, config)
 		},
 		HasChangedFunc: hasChanged,
@@ -61,7 +62,24 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
+func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return metav1.ObjectMeta{}, microerror.Mask(err)
+	}
+
+	return metav1.ObjectMeta{
+		Name:      key.PrometheusAdditionalScrapeConfigsSecretName(),
+		Namespace: key.Namespace(cluster),
+	}, nil
+}
+
 func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
+	objectMeta, err := getObjectMeta(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -78,10 +96,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	}
 
 	scrapeConfigsSecret := &corev1.Secret{
-		ObjectMeta: metav1.ObjectMeta{
-			Name:      key.PrometheusAdditionalScrapeConfigsSecretName(),
-			Namespace: key.Namespace(cluster),
-		},
+		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
 			key.PrometheusAdditionalScrapeConfigsName(): []byte(scrapeConfigs),
 		},
