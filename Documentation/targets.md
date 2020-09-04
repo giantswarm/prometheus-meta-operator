@@ -75,8 +75,6 @@
 - dex
 - dex-k8s-authenticator
 - external-dns
-- g8s-cert-manager
-- g8s-cert-manager-injector
 - oauth2-proxy
 - passage
 - passage-redis
