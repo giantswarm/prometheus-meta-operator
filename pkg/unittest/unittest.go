@@ -32,7 +32,7 @@ type Config struct {
 // TestFunc is a function which takes the observed kubernetes object as input
 // (e.g. AWSConfig) and returns another kubernetes object (e.g. Service).
 //
-// OututDir holds yaml files, representing the yaml version of the object
+// OutputDir holds yaml files, representing the yaml version of the object
 // returned by TestFunc.
 // Files are mapped 1 to 1 from input to output directory.
 // e.g. when a file called `foo` is placed in the input directory, a
