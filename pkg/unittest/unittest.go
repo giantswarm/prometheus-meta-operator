@@ -2,7 +2,6 @@ package unittest
 
 import (
 	"bytes"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path"
@@ -64,7 +63,10 @@ type Value struct {
 // NewRunner creates a new Runner given a Config.
 func NewRunner(config Config) (*Runner, error) {
 	_, filename, _, ok := runtime.Caller(0)
-	fmt.Println(path.Dir(filename), ok)
+	if !ok {
+		return nil, microerror.Mask(executionError)
+	}
+
 	inputDir, err := filepath.Abs(filepath.Join(path.Dir(filename), "input"))
 	if err != nil {
 		return nil, microerror.Mask(err)
