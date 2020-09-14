@@ -93,7 +93,11 @@ func NewRunner(config Config) (*Runner, error) {
 // Run execute all the test using testing/T.Run function.
 func (r *Runner) Run() error {
 	for r.Next() {
-		value := r.Value()
+		value, err := r.Value()
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
 		r.T.Run(value.Name, func(t *testing.T) {
 			namespace, err := r.TestFunc(value.Input)
 			if err != nil {
@@ -129,26 +133,26 @@ func (r *Runner) Next() bool {
 }
 
 // Value returns the current test case values.
-func (r *Runner) Value() Value {
+func (r *Runner) Value() (*Value, error) {
 	input, err := r.inputValue()
 	if err != nil {
 		r.err = microerror.Mask(err)
-		return Value{}
+		return nil, microerror.Mask(err)
 	}
 
 	output, err := r.outputValue()
 	if err != nil {
 		r.err = microerror.Mask(err)
-		return Value{}
+		return nil, microerror.Mask(err)
 	}
 
-	v := Value{
+	v := &Value{
 		Name:   r.files[r.current].Name(),
 		Input:  input,
 		Output: output,
 	}
 
-	return v
+	return v, nil
 }
 
 // inputValue decode the input file as a kubernetes object and returns it.
