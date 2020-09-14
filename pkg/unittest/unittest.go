@@ -16,6 +16,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 )
 
@@ -166,16 +167,20 @@ func (r *Runner) inputValue() (pkgruntime.Object, error) {
 
 	// Create a decoder capable of decoding kubernetes objects but also
 	// Giant Swarm objects.
-	scheme := pkgruntime.NewScheme()
-	err = v1alpha2.AddToScheme(scheme)
+	s := pkgruntime.NewScheme()
+	err = scheme.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	err = v1alpha1.AddToScheme(scheme)
+	err = v1alpha2.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	codecs := serializer.NewCodecFactory(scheme)
+	err = v1alpha1.AddToScheme(s)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	codecs := serializer.NewCodecFactory(s)
 	deserializer := codecs.UniversalDeserializer()
 
 	// Do the acutal decoding.
