@@ -7,8 +7,9 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
 )
 
 var update = flag.Bool("update", false, "update the ouput file")
