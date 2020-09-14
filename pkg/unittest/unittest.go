@@ -26,6 +26,8 @@ type Config struct {
 	Update    bool
 }
 
+type TestFunc func(interface{}) (metav1.Object, error)
+
 // Runner is used to run unit test for a specific resource.
 // It does so by running TestFunc with different input and compare the result
 // with expected outputs.
@@ -43,7 +45,7 @@ type Config struct {
 type Runner struct {
 	OutputDir string
 	T         *testing.T
-	TestFunc  func(interface{}) (metav1.Object, error)
+	TestFunc  TestFunc
 	Update    bool
 
 	inputDir string
