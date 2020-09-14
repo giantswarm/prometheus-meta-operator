@@ -25,6 +25,7 @@ type Config struct {
 	OutputDir string
 	T         *testing.T
 	TestFunc  func(interface{}) (metav1.Object, error)
+	Update    bool
 }
 
 // Runner is used to run unit test for a specific resource.
@@ -45,6 +46,7 @@ type Runner struct {
 	OutputDir string
 	T         *testing.T
 	TestFunc  func(interface{}) (metav1.Object, error)
+	Update    bool
 
 	inputDir string
 	files    []os.FileInfo
@@ -83,6 +85,7 @@ func NewRunner(config Config) (*Runner, error) {
 		OutputDir: config.OutputDir,
 		T:         config.T,
 		TestFunc:  config.TestFunc,
+		Update:    config.Update,
 		inputDir:  inputDir,
 		files:     files,
 		current:   -1,
@@ -109,6 +112,13 @@ func (r *Runner) Run() error {
 			testResult, err := yaml.Marshal(namespace)
 			if err != nil {
 				t.Fatal(err)
+			}
+
+			if r.Update {
+				err := r.updateOutput(testResult)
+				if err != nil {
+					t.Fatal(err)
+				}
 			}
 
 			if !bytes.Equal(testResult, value.Output) {
@@ -206,6 +216,11 @@ func (r *Runner) outputValue() ([]byte, error) {
 	}
 
 	return output, nil
+}
+
+func (r *Runner) updateOutput(data []byte) error {
+	outputFile := filepath.Join(r.OutputDir, r.files[r.current].Name())
+	return ioutil.WriteFile(outputFile, data, 0644)
 }
 
 func (r *Runner) Err() error {
