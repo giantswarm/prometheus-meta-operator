@@ -50,7 +50,7 @@ type Runner struct {
 	err      error
 }
 
-// Value represents a test case.
+// Value represent a test case.
 // Name is the name of the test case.
 // Input is the input kubernetes object.
 // Output is the expected output.
