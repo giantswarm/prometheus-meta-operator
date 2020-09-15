@@ -82,11 +82,28 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 }
 
 func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
+	scrapeConfigs, err := toData(v, config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	objectMeta, err := getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
+	scrapeConfigsSecret := &corev1.Secret{
+		ObjectMeta: objectMeta,
+		Data: map[string][]byte{
+			key.PrometheusAdditionalScrapeConfigsName(): scrapeConfigs,
+		},
+		Type: "Opaque",
+	}
+
+	return scrapeConfigsSecret, nil
+}
+
+func toData(v interface{}, config Config) ([]byte, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -102,15 +119,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	scrapeConfigsSecret := &corev1.Secret{
-		ObjectMeta: objectMeta,
-		Data: map[string][]byte{
-			key.PrometheusAdditionalScrapeConfigsName(): []byte(scrapeConfigs),
-		},
-		Type: "Opaque",
-	}
-
-	return scrapeConfigsSecret, nil
+	return scrapeConfigs, nil
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
@@ -130,20 +139,20 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 	return d, nil
 }
 
-func renderTemplate(templateData TemplateData, config Config) (string, error) {
+func renderTemplate(templateData TemplateData, config Config) ([]byte, error) {
 	template, err := template.ParseGlob(config.TemplatePath)
 	if err != nil {
-		return "", microerror.Mask(err)
+		return nil, microerror.Mask(err)
 	}
 
 	var b bytes.Buffer
 	for _, t := range template.Templates() {
 		err := t.Execute(&b, templateData)
 		if err != nil {
-			return "", microerror.Mask(err)
+			return nil, microerror.Mask(err)
 		}
 	}
-	return b.String(), nil
+	return b.Bytes(), nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {

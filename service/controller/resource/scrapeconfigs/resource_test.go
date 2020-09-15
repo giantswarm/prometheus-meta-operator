@@ -7,8 +7,6 @@ import (
 	"runtime"
 	"testing"
 
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
 	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
 )
 
@@ -29,8 +27,8 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			Provider:     "aws",
 			Vault:        "vault1.some-installation.test",
 		}
-		testFunc = func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config)
+		testFunc = func(v interface{}) (interface{}, error) {
+			return toData(v, config)
 		}
 	}
 
@@ -40,10 +38,11 @@ func TestAWSScrapeconfigs(t *testing.T) {
 	}
 
 	c := unittest.Config{
-		OutputDir: outputDir,
-		T:         t,
-		TestFunc:  testFunc,
-		Update:    *update,
+		OutputDir:            outputDir,
+		T:                    t,
+		TestFunc:             testFunc,
+		Update:               *update,
+		TestFuncReturnsBytes: true,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
@@ -71,8 +70,8 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			Provider:     "azure",
 			Vault:        "vault1.some-installation.test",
 		}
-		testFunc = func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config)
+		testFunc = func(v interface{}) (interface{}, error) {
+			return toData(v, config)
 		}
 	}
 
@@ -82,10 +81,11 @@ func TestAzureScrapeconfigs(t *testing.T) {
 	}
 
 	c := unittest.Config{
-		OutputDir: outputDir,
-		T:         t,
-		TestFunc:  testFunc,
-		Update:    *update,
+		OutputDir:            outputDir,
+		T:                    t,
+		TestFunc:             testFunc,
+		Update:               *update,
+		TestFuncReturnsBytes: true,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
@@ -113,8 +113,8 @@ func TestKVMScrapeconfigs(t *testing.T) {
 			Provider:     "kvm",
 			Vault:        "vault1.some-installation.test",
 		}
-		testFunc = func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config)
+		testFunc = func(v interface{}) (interface{}, error) {
+			return toData(v, config)
 		}
 	}
 
@@ -124,10 +124,11 @@ func TestKVMScrapeconfigs(t *testing.T) {
 	}
 
 	c := unittest.Config{
-		OutputDir: outputDir,
-		T:         t,
-		TestFunc:  testFunc,
-		Update:    *update,
+		OutputDir:            outputDir,
+		T:                    t,
+		TestFunc:             testFunc,
+		Update:               *update,
+		TestFuncReturnsBytes: true,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {

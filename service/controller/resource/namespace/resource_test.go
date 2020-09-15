@@ -19,8 +19,10 @@ func TestNamespace(t *testing.T) {
 	c := unittest.Config{
 		OutputDir: outputDir,
 		T:         t,
-		TestFunc:  toNamespace,
-		Update:    *update,
+		TestFunc: func(v interface{}) (interface{}, error) {
+			return toNamespace(v)
+		},
+		Update: *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {

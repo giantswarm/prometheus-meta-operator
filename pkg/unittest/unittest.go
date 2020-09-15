@@ -13,7 +13,6 @@ import (
 	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/microerror"
 	"github.com/google/go-cmp/cmp"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -22,13 +21,14 @@ import (
 )
 
 type Config struct {
-	OutputDir string
-	T         *testing.T
-	TestFunc  func(interface{}) (metav1.Object, error)
-	Update    bool
+	OutputDir            string
+	T                    *testing.T
+	TestFunc             TestFunc
+	TestFuncReturnsBytes bool
+	Update               bool
 }
 
-type TestFunc func(interface{}) (metav1.Object, error)
+type TestFunc func(interface{}) (interface{}, error)
 
 // Runner is used to run unit test for a specific resource.
 // It does so by running TestFunc with different input and compare the result
@@ -45,15 +45,14 @@ type TestFunc func(interface{}) (metav1.Object, error)
 //
 // Input directory is harcoded as the input directory in this package.
 type Runner struct {
-	OutputDir string
-	T         *testing.T
-	TestFunc  TestFunc
-	Update    bool
+	OutputDir            string
+	T                    *testing.T
+	TestFunc             TestFunc
+	TestFuncReturnsBytes bool
+	Update               bool
 
-	inputDir string
 	files    []os.FileInfo
-	current  int
-	err      error
+	inputDir string
 }
 
 // Value represents a test case.
@@ -84,14 +83,13 @@ func NewRunner(config Config) (*Runner, error) {
 	}
 
 	r := &Runner{
-		OutputDir: config.OutputDir,
-		T:         config.T,
-		TestFunc:  config.TestFunc,
-		Update:    config.Update,
-		inputDir:  inputDir,
-		files:     files,
-		current:   -1,
-		err:       nil,
+		OutputDir:            config.OutputDir,
+		T:                    config.T,
+		TestFunc:             config.TestFunc,
+		TestFuncReturnsBytes: config.TestFuncReturnsBytes,
+		Update:               config.Update,
+		inputDir:             inputDir,
+		files:                files,
 	}
 
 	return r, nil
@@ -111,9 +109,14 @@ func (r *Runner) Run() error {
 				t.Fatal(err)
 			}
 
-			testResult, err := yaml.Marshal(result)
-			if err != nil {
-				t.Fatal(err)
+			var testResult []byte
+			if r.TestFuncReturnsBytes {
+				testResult = result.([]byte)
+			} else {
+				testResult, err = yaml.Marshal(result)
+				if err != nil {
+					t.Fatal(err)
+				}
 			}
 
 			outputFile := filepath.Join(r.OutputDir, file.Name())
