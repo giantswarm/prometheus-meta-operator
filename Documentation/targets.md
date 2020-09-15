@@ -7,11 +7,13 @@
 - cadvisor
 - calico
 - cert-exporter
+- cert-operator
 - chart-operator
 - cluster-autoscaler
 - cluster-operator
 - cluster-service
 - companyd
+- coredns
 - credentiald
 - crsync
 - docker
@@ -55,17 +57,15 @@
 ### KVM specific
 
 - kvm-operator
+- bridge-operator
+- flannel-operator
+- ingress-exporter
 
 ## Missing
 
-- bridge-operator
-- cert-operator
 - prometheus-operator-app
 - CP prometheus
 - TC prometheus
-- flannel-operator
-- coredns
-- ingress-exporter
 - azure-collector
 
 ## Not scraped
@@ -75,8 +75,6 @@
 - dex
 - dex-k8s-authenticator
 - external-dns
-- g8s-cert-manager
-- g8s-cert-manager-injector
 - oauth2-proxy
 - passage
 - passage-redis

@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	desired, err := r.toCR(obj)
+	desired, err := r.getDesiredObject(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}

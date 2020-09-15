@@ -1,0 +1,4 @@
+apiVersion: provider.giantswarm.io/v1alpha1
+kind: KVMConfig
+metadata:
+  name: bar

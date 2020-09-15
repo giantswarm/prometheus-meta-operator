@@ -9,14 +9,14 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	desired, err := r.toCR(obj)
+	object, err := r.getObjectMeta(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting")
-	c := r.clientFunc(desired.GetNamespace())
-	err = c.Delete(ctx, desired.GetName(), &metav1.DeleteOptions{})
+	c := r.clientFunc(object.GetNamespace())
+	err = c.Delete(ctx, object.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {

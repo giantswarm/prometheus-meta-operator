@@ -11,12 +11,9 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/frontend"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/service"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 )
 
@@ -74,47 +71,6 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var frontendResource resource.Interface
-	{
-		c := frontend.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		frontendResource, err = frontend.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var serviceResource resource.Interface
-	{
-		c := service.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		serviceResource, err = service.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var ingressResource resource.Interface
-	{
-		c := ingress.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-
-			BaseDomain: config.BaseDomain,
-		}
-
-		ingressResource, err = ingress.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var serviceMonitorResource resource.Interface
 	{
 		c := servicemonitor.Config{
@@ -160,9 +116,6 @@ func New(config Config) ([]resource.Interface, error) {
 		namespaceResource,
 		certificatesResource,
 		prometheusResource,
-		frontendResource,
-		serviceResource,
-		ingressResource,
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,

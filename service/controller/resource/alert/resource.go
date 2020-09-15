@@ -11,7 +11,6 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert/rules"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 const (
@@ -37,11 +36,12 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc:     clientFunc,
-		Logger:         config.Logger,
-		Name:           Name,
-		ToCR:           toPrometheusRule,
-		HasChangedFunc: hasChanged,
+		ClientFunc:       clientFunc,
+		Logger:           config.Logger,
+		Name:             Name,
+		GetObjectMeta:    rules.GetObjectMeta,
+		GetDesiredObject: rules.ExampleRule,
+		HasChangedFunc:   hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {
@@ -49,15 +49,6 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	return r, nil
-}
-
-func toPrometheusRule(obj interface{}) (metav1.Object, error) {
-	cluster, err := key.ToCluster(obj)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return rules.ExampleRule(cluster), nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
