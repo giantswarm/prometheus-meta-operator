@@ -13,6 +13,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -117,6 +118,15 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey(): key.ClusterID(cluster),
 				"cluster_type":     key.ClusterType(cluster),
+			},
+			PodMetadata: &promv1.EmbeddedObjectMetadata{
+				Labels: map[string]string{
+					"giantswarm.io/monitoring":     "true",
+					"app.kubernetes.io/name":       "prometheus",
+					"app.kubernetes.io/managed-by": project.Name(),
+					"app.kubernetes.io/version":    project.Version(),
+					"app.kubernetes.io/instance":   cluster.GetName(),
+				},
 			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{

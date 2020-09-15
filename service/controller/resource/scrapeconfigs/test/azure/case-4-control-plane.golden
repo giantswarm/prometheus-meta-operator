@@ -578,10 +578,18 @@
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
     regex: (true)
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring]
+    target_label: __tmp_keep_me
+    replacement: true
+  - source_labels: [__meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: (true)
+    target_label: __tmp_keep_me
+    replacement: true
+  - source_labels: [__tmp_keep_me]
     regex: (true)
     action: keep
+  - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
+    regex: (true)
+    action: drop
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring_port]
     regex: (true)
     action: keep
@@ -1267,7 +1275,7 @@
   - target_label: provider
     replacement: azure
 # prometheus
-- job_name: kubernetes-prometheus/prometheus-kubernetes/0
+- job_name: kubernetes-prometheus/g8s-prometheus-kubernetes/0
   honor_timestamps: false
   metrics_path: /metrics
   scheme: http
@@ -1784,6 +1792,35 @@
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/gatekeeper-system/pods/${1}:8888/proxy/metrics
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod_name
+  - target_label: cluster_id
+    replacement: kubernetes
+  - target_label: cluster_type
+    replacement: control_plane
+  - target_label: provider
+    replacement: azure
+# prometheus
+- job_name: kubernetes-prometheus/prometheus-kubernetes/0
+  metrics_path: /metrics
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_labelpresent_giantswarm_io_monitoring]
+    regex: (true)
+    action: keep
+  - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
+    regex: (true)
+    action: keep
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
