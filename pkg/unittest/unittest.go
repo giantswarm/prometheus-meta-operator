@@ -18,6 +18,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
+	"sigs.k8s.io/cluster-api/api/v1alpha3"
 )
 
 type Config struct {
@@ -173,6 +174,10 @@ func (r *Runner) inputValue() (pkgruntime.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 	err = v1alpha2.AddToScheme(s)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	err = v1alpha3.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
