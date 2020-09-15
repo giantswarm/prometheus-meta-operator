@@ -16,7 +16,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
+	"sigs.k8s.io/cluster-api/api/v1alpha3"
 )
 
 type Config struct {
@@ -97,76 +99,48 @@ func NewRunner(config Config) (*Runner, error) {
 
 // Run execute all the test using testing/T.Run function.
 func (r *Runner) Run() error {
-	for r.Next() {
-		value := r.Value()
-		r.T.Run(value.Name, func(t *testing.T) {
-			namespace, err := r.TestFunc(value.Input)
+	for _, file := range r.files {
+		r.T.Run(file.Name(), func(t *testing.T) {
+			input, err := inputValue(filepath.Join(r.inputDir, file.Name()))
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			testResult, err := yaml.Marshal(namespace)
+			result, err := r.TestFunc(input)
 			if err != nil {
 				t.Fatal(err)
 			}
 
+			testResult, err := yaml.Marshal(result)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			outputFile := filepath.Join(r.OutputDir, file.Name())
 			if r.Update {
-				err := r.updateOutput(testResult)
+				err := ioutil.WriteFile(outputFile, testResult, 0644)
 				if err != nil {
 					t.Fatal(err)
 				}
 			}
 
-			if !bytes.Equal(testResult, value.Output) {
-				t.Fatalf("\n\n%s\n", cmp.Diff(string(value.Output), string(testResult)))
+			output, err := ioutil.ReadFile(outputFile)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !bytes.Equal(testResult, output) {
+				t.Fatalf("\n\n%s\n", cmp.Diff(string(output), string(testResult)))
 			}
 		})
-	}
-	if err := r.Err(); err != nil {
-		return microerror.Mask(err)
 	}
 
 	return nil
 }
 
-// Next return true when there is more test cases to run.
-// There is 1 test case per input file.
-func (r *Runner) Next() bool {
-	if r.err != nil {
-		return false
-	}
-
-	r.current++
-	return len(r.files) > r.current
-}
-
-// Value returns the current test case values.
-func (r *Runner) Value() Value {
-	input, err := r.inputValue()
-	if err != nil {
-		r.err = microerror.Mask(err)
-		return Value{}
-	}
-
-	output, err := r.outputValue()
-	if err != nil {
-		r.err = microerror.Mask(err)
-		return Value{}
-	}
-
-	v := Value{
-		Name:   r.files[r.current].Name(),
-		Input:  input,
-		Output: output,
-	}
-
-	return v
-}
-
 // inputValue decode the input file as a kubernetes object and returns it.
-func (r *Runner) inputValue() (pkgruntime.Object, error) {
+func inputValue(inputFile string) (pkgruntime.Object, error) {
 	// Read the file.
-	inputFile := filepath.Join(r.inputDir, r.files[r.current].Name())
 	inputData, err := ioutil.ReadFile(inputFile)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -174,16 +148,24 @@ func (r *Runner) inputValue() (pkgruntime.Object, error) {
 
 	// Create a decoder capable of decoding kubernetes objects but also
 	// Giant Swarm objects.
-	scheme := pkgruntime.NewScheme()
-	err = v1alpha2.AddToScheme(scheme)
+	s := pkgruntime.NewScheme()
+	err = scheme.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	err = v1alpha1.AddToScheme(scheme)
+	err = v1alpha2.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	codecs := serializer.NewCodecFactory(scheme)
+	err = v1alpha3.AddToScheme(s)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	err = v1alpha1.AddToScheme(s)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	codecs := serializer.NewCodecFactory(s)
 	deserializer := codecs.UniversalDeserializer()
 
 	// Do the acutal decoding.
@@ -193,24 +175,4 @@ func (r *Runner) inputValue() (pkgruntime.Object, error) {
 	}
 
 	return input, nil
-}
-
-// outputValue return the expected output by reading the output file.
-func (r *Runner) outputValue() ([]byte, error) {
-	outputFile := filepath.Join(r.OutputDir, r.files[r.current].Name())
-	output, err := ioutil.ReadFile(outputFile)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return output, nil
-}
-
-func (r *Runner) updateOutput(data []byte) error {
-	outputFile := filepath.Join(r.OutputDir, r.files[r.current].Name())
-	return ioutil.WriteFile(outputFile, data, 0644)
-}
-
-func (r *Runner) Err() error {
-	return r.err
 }
