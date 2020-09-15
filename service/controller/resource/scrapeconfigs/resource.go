@@ -1,7 +1,8 @@
 package scrapeconfigs
 
 import (
-	"io/ioutil"
+	"bytes"
+	"html/template"
 	"path"
 	"reflect"
 
@@ -11,7 +12,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/templates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -19,7 +19,7 @@ import (
 const (
 	Name              = "scrapeconfigs"
 	templateDirectory = "/opt/prometheus-meta-operator"
-	templatePath      = "files/templates/additional-scrape-configs.template.yaml"
+	templatePath      = "files/templates/*.yaml"
 )
 
 type Config struct {
@@ -131,18 +131,19 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 }
 
 func renderTemplate(templateData TemplateData, config Config) (string, error) {
-	content, err := ioutil.ReadFile(config.TemplatePath)
+	template, err := template.ParseGlob(config.TemplatePath)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
 
-	template := string(content)
-
-	scrapeConfigs, err := templates.Render(template, templateData)
-	if err != nil {
-		return "", microerror.Mask(err)
+	var b bytes.Buffer
+	for _, t := range template.Templates() {
+		err := t.Execute(&b, templateData)
+		if err != nil {
+			return "", microerror.Mask(err)
+		}
 	}
-	return scrapeConfigs, nil
+	return b.String(), nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
