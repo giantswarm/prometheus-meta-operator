@@ -106,12 +106,12 @@ func (r *Runner) Run() error {
 				t.Fatal(err)
 			}
 
-			namespace, err := r.TestFunc(input)
+			result, err := r.TestFunc(input)
 			if err != nil {
 				t.Fatal(err)
 			}
 
-			testResult, err := yaml.Marshal(namespace)
+			testResult, err := yaml.Marshal(result)
 			if err != nil {
 				t.Fatal(err)
 			}
