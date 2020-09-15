@@ -2,6 +2,7 @@ package scrapeconfigs
 
 import (
 	"io/ioutil"
+	"path"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
@@ -16,15 +17,17 @@ import (
 )
 
 const (
-	Name         = "scrapeconfigs"
-	templatePath = "/opt/prometheus-meta-operator/files/templates/additional-scrape-configs.template.yaml"
+	Name              = "scrapeconfigs"
+	templateDirectory = "/opt/prometheus-meta-operator"
+	templatePath      = "files/templates/additional-scrape-configs.template.yaml"
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
-	Provider  string
-	Vault     string
+	K8sClient    k8sclient.Interface
+	Logger       micrologger.Logger
+	Provider     string
+	Vault        string
+	TemplatePath string
 }
 
 type TemplateData struct {
@@ -42,6 +45,10 @@ func New(config Config) (*generic.Resource, error) {
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
 		return wrappedClient{client: c}
+	}
+
+	if config.TemplatePath == "" {
+		config.TemplatePath = path.Join(templateDirectory, templatePath)
 	}
 
 	c := generic.Config{
@@ -90,7 +97,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	scrapeConfigs, err := renderTemplate(*templateData)
+	scrapeConfigs, err := renderTemplate(*templateData, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -123,8 +130,8 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 	return d, nil
 }
 
-func renderTemplate(templateData TemplateData) (string, error) {
-	content, err := ioutil.ReadFile(templatePath)
+func renderTemplate(templateData TemplateData, config Config) (string, error) {
+	content, err := ioutil.ReadFile(config.TemplatePath)
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
