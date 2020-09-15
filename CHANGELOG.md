@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Scraping of tenant cluster prometheus
+- Scraping of control plane prometheus
+
 ## [1.2.0] - 2020-09-03
 
 ### Added
