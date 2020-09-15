@@ -11,7 +11,7 @@ import (
 func ToCluster(obj interface{}) (metav1.Object, error) {
 	clusterMetaObject, ok := obj.(metav1.Object)
 	if !ok {
-		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements '%T'", obj, clusterMetaObject)
+		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements 'metav1.Object'", obj)
 	}
 
 	return clusterMetaObject, nil

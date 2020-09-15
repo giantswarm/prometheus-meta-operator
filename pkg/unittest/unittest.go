@@ -16,7 +16,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
+	"k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
+	"sigs.k8s.io/cluster-api/api/v1alpha3"
 )
 
 type Config struct {
@@ -93,7 +95,11 @@ func NewRunner(config Config) (*Runner, error) {
 // Run execute all the test using testing/T.Run function.
 func (r *Runner) Run() error {
 	for r.Next() {
-		value := r.Value()
+		value, err := r.Value()
+		if err != nil {
+			return microerror.Mask(err)
+		}
+
 		r.T.Run(value.Name, func(t *testing.T) {
 			namespace, err := r.TestFunc(value.Input)
 			if err != nil {
@@ -129,26 +135,26 @@ func (r *Runner) Next() bool {
 }
 
 // Value returns the current test case values.
-func (r *Runner) Value() Value {
+func (r *Runner) Value() (*Value, error) {
 	input, err := r.inputValue()
 	if err != nil {
 		r.err = microerror.Mask(err)
-		return Value{}
+		return nil, microerror.Mask(err)
 	}
 
 	output, err := r.outputValue()
 	if err != nil {
 		r.err = microerror.Mask(err)
-		return Value{}
+		return nil, microerror.Mask(err)
 	}
 
-	v := Value{
+	v := &Value{
 		Name:   r.files[r.current].Name(),
 		Input:  input,
 		Output: output,
 	}
 
-	return v
+	return v, nil
 }
 
 // inputValue decode the input file as a kubernetes object and returns it.
@@ -162,16 +168,24 @@ func (r *Runner) inputValue() (pkgruntime.Object, error) {
 
 	// Create a decoder capable of decoding kubernetes objects but also
 	// Giant Swarm objects.
-	scheme := pkgruntime.NewScheme()
-	err = v1alpha2.AddToScheme(scheme)
+	s := pkgruntime.NewScheme()
+	err = scheme.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	err = v1alpha1.AddToScheme(scheme)
+	err = v1alpha2.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	codecs := serializer.NewCodecFactory(scheme)
+	err = v1alpha3.AddToScheme(s)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	err = v1alpha1.AddToScheme(s)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	codecs := serializer.NewCodecFactory(s)
 	deserializer := codecs.UniversalDeserializer()
 
 	// Do the acutal decoding.
