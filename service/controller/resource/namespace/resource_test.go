@@ -1,11 +1,14 @@
 package namespace
 
 import (
+	"flag"
 	"path/filepath"
 	"testing"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
 )
+
+var update = flag.Bool("update", false, "update the ouput file")
 
 func TestNamespace(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
@@ -17,6 +20,7 @@ func TestNamespace(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc:  toNamespace,
+		Update:    *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
