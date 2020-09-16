@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
+func ClusterAutoscaler(cluster metav1.Object, provider string, installation string) *promv1.ServiceMonitor {
 	serviceMonitor := &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("cluster-autoscaler-%s", cluster.GetName()),
@@ -29,8 +29,9 @@ func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMo
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:   "metrics",
-					Scheme: "https",
+					Port:        "metrics",
+					Scheme:      "https",
+					HonorLabels: true,
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
 							Replacement:  fmt.Sprintf("master.%s:443", key.ClusterID(cluster)),
@@ -65,6 +66,10 @@ func ClusterAutoscaler(cluster metav1.Object, provider string) *promv1.ServiceMo
 						{
 							TargetLabel: "cluster_type",
 							Replacement: key.ClusterType(cluster),
+						},
+						{
+							TargetLabel: "installation",
+							Replacement: installation,
 						},
 						{
 							TargetLabel: "provider",
