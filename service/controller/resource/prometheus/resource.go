@@ -124,7 +124,6 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 					"giantswarm.io/monitoring":     "true",
 					"app.kubernetes.io/name":       "prometheus",
 					"app.kubernetes.io/managed-by": project.Name(),
-					"app.kubernetes.io/version":    project.Version(),
 					"app.kubernetes.io/instance":   cluster.GetName(),
 				},
 			},

@@ -26,6 +26,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			TemplatePath: path,
 			Provider:     "aws",
 			Vault:        "vault1.some-installation.test",
+			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return toData(v, config)
@@ -69,6 +70,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			TemplatePath: path,
 			Provider:     "azure",
 			Vault:        "vault1.some-installation.test",
+			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return toData(v, config)
@@ -112,6 +114,7 @@ func TestKVMScrapeconfigs(t *testing.T) {
 			TemplatePath: path,
 			Provider:     "kvm",
 			Vault:        "vault1.some-installation.test",
+			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return toData(v, config)

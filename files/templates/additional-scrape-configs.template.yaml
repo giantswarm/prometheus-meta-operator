@@ -31,6 +31,9 @@
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
   - target_label: app
     replacement: docker
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -89,6 +92,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -252,6 +258,8 @@
     action: replace
   - target_label: app
     replacement: etcd
+  - source_labels: ['__address__']
+    target_label:  'instance'
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -301,6 +309,9 @@
   relabel_configs:
   - target_label: app
     replacement: kubelet
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -1537,6 +1548,8 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: ['__address__']
+    target_label:  'instance'
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
@@ -2131,7 +2144,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_label_app]
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace

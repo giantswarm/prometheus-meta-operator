@@ -26,6 +26,9 @@
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
   - target_label: app
     replacement: docker
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: alice
@@ -37,7 +40,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -79,6 +82,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: alice
@@ -90,7 +96,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
   - source_labels: [__meta_kubernetes_node_address_InternalIP]
     target_label: ip
   - source_labels: [__meta_kubernetes_node_label_role]
@@ -151,7 +157,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 
 - job_name: alice-prometheus/aws-node-alice/0
   honor_labels: true
@@ -198,7 +204,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 
 # Add etcd configuration
 - job_name: alice-prometheus/etcd-alice/0
@@ -230,6 +236,8 @@
     action: replace
   - target_label: app
     replacement: etcd
+  - source_labels: ['__address__']
+    target_label:  'instance'
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: alice
@@ -241,7 +249,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -274,6 +282,9 @@
   relabel_configs:
   - target_label: app
     replacement: kubelet
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: alice
@@ -285,7 +296,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-controller-manager
 - job_name: alice-prometheus/kubernetes-controller-manager-alice/0
   honor_labels: true
@@ -333,7 +344,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-scheduler
 - job_name: alice-prometheus/kubernetes-scheduler-alice/0
   honor_labels: true
@@ -381,7 +392,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-proxy
 - job_name: alice-prometheus/kube-proxy-alice/0
   honor_labels: true
@@ -431,7 +442,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # coredns
 - job_name: alice-prometheus/coredns-alice/0
   honor_labels: true
@@ -483,7 +494,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # chart-operator
 - job_name: alice-prometheus/chart-operator-alice/0
   honor_labels: true
@@ -537,7 +548,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # net-exporter
 - job_name: alice-prometheus/net-exporter-alice/0
   honor_labels: true
@@ -593,7 +604,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # cert-exporter
 - job_name: alice-prometheus/cert-exporter-alice/0
   honor_labels: true
@@ -649,7 +660,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # node-exporter
 - job_name: alice-prometheus/node-exporter-alice/0
   honor_labels: true
@@ -710,7 +721,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-state-metrics 
 - job_name: alice-prometheus/kube-state-metrics-alice/0
   honor_labels: true
@@ -766,7 +777,7 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 - job_name: alice-prometheus/managed-app-alice/0
   honor_labels: true
   scheme: https
@@ -838,5 +849,5 @@
     replacement: aws
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 

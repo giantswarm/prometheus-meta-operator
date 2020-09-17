@@ -26,6 +26,9 @@
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
   - target_label: app
     replacement: docker
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -37,7 +40,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -79,6 +82,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -90,7 +96,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
   - source_labels: [__meta_kubernetes_node_address_InternalIP]
     target_label: ip
   - source_labels: [__meta_kubernetes_node_label_role]
@@ -151,7 +157,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 
 # Add etcd configuration
 - job_name: baz-prometheus/etcd-baz/0
@@ -183,6 +189,8 @@
     action: replace
   - target_label: app
     replacement: etcd
+  - source_labels: ['__address__']
+    target_label:  'instance'
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -194,7 +202,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -227,6 +235,9 @@
   relabel_configs:
   - target_label: app
     replacement: kubelet
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -238,7 +249,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-controller-manager
 - job_name: baz-prometheus/kubernetes-controller-manager-baz/0
   honor_labels: true
@@ -286,7 +297,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-scheduler
 - job_name: baz-prometheus/kubernetes-scheduler-baz/0
   honor_labels: true
@@ -334,7 +345,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-proxy
 - job_name: baz-prometheus/kube-proxy-baz/0
   honor_labels: true
@@ -384,7 +395,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # coredns
 - job_name: baz-prometheus/coredns-baz/0
   honor_labels: true
@@ -436,7 +447,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # chart-operator
 - job_name: baz-prometheus/chart-operator-baz/0
   honor_labels: true
@@ -490,7 +501,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # net-exporter
 - job_name: baz-prometheus/net-exporter-baz/0
   honor_labels: true
@@ -546,7 +557,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # cert-exporter
 - job_name: baz-prometheus/cert-exporter-baz/0
   honor_labels: true
@@ -602,7 +613,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # node-exporter
 - job_name: baz-prometheus/node-exporter-baz/0
   honor_labels: true
@@ -663,7 +674,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 # kube-state-metrics 
 - job_name: baz-prometheus/kube-state-metrics-baz/0
   honor_labels: true
@@ -719,7 +730,7 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 - job_name: baz-prometheus/managed-app-baz/0
   honor_labels: true
   scheme: https
@@ -791,5 +802,5 @@
     replacement: kvm
   # Add installation label.
   - target_label: installation
-    replacement: 
+    replacement: test-installation
 
