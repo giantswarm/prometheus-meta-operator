@@ -1,7 +1,7 @@
 # Additional scrape configuration for the tenant clusters components
 # Add scrape configuration for docker
 - job_name: {{ .ClusterID }}-prometheus/docker-{{ .ClusterID }}/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -31,6 +31,9 @@
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
   - target_label: app
     replacement: docker
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -56,7 +59,7 @@
     action: keep
 # Add scrape configuration for cadvisor
 - job_name: {{ .ClusterID }}-prometheus/cadvisor-{{ .ClusterID }}/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -86,6 +89,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -111,7 +117,7 @@
     regex: container_network_.*
     action: drop
 - job_name: {{ .ClusterID }}-prometheus/calico-node-{{ .ClusterID }}/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -160,7 +166,7 @@
     replacement: {{ .Provider }}
 {{ if eq .Provider "aws" }}
 - job_name: {{ .ClusterID }}-prometheus/aws-node-{{ .ClusterID }}/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -210,7 +216,7 @@
 {{ end }}
 # Add etcd configuration
 - job_name: {{ .ClusterID }}-prometheus/etcd-{{ .ClusterID }}/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -240,6 +246,8 @@
     action: replace
   - target_label: app
     replacement: etcd
+  - source_labels: ['__address__']
+    target_label:  'instance'
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -261,7 +269,7 @@
     replacement: worker
 # Add kubelet configuration
 - job_name: {{ .ClusterID }}-prometheus/kubelet-{{ .ClusterID }}/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -286,6 +294,9 @@
   relabel_configs:
   - target_label: app
     replacement: kubelet
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
@@ -297,8 +308,7 @@
     replacement: {{ .Provider }}
 # kube-controller-manager
 - job_name: {{ .ClusterID }}-prometheus/kubernetes-controller-manager-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -341,16 +351,18 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # kube-scheduler
 - job_name: {{ .ClusterID }}-prometheus/kubernetes-scheduler-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -393,16 +405,18 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # kube-proxy
 - job_name: {{ .ClusterID }}-prometheus/kube-proxy-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -443,16 +457,18 @@
     target_label: pod_name
   - target_label: app
     replacement: kube-proxy
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # coredns
 - job_name: {{ .ClusterID }}-prometheus/coredns-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -495,16 +511,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # chart-operator
 - job_name: {{ .ClusterID }}-prometheus/chart-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -553,16 +571,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # net-exporter
 - job_name: {{ .ClusterID }}-prometheus/net-exporter-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -613,16 +633,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # cert-exporter
 - job_name: {{ .ClusterID }}-prometheus/cert-exporter-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -673,16 +695,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # node-exporter
 - job_name: {{ .ClusterID }}-prometheus/node-exporter-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -736,16 +760,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # kube-state-metrics 
 - job_name: {{ .ClusterID }}-prometheus/kube-state-metrics-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -796,14 +822,17 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 - job_name: {{ .ClusterID }}-prometheus/managed-app-{{ .ClusterID }}/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
@@ -826,15 +855,7 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
-    regex: (true)
-    target_label: __tmp_keep_me
-    replacement: true
-  - source_labels: [__meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: (true)
-    target_label: __tmp_keep_me
-    replacement: true
-  - source_labels: [__tmp_keep_me]
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: (true)
     action: keep
   - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
@@ -875,17 +896,19 @@
     regex: (true)
     target_label: is_managed_app
     action: replace
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 {{ if eq .ClusterType "control_plane" }}
 # app-operator
 - job_name: {{ .ClusterID }}-prometheus/app-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -921,16 +944,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # cluster-operator
 - job_name: {{ .ClusterID }}-prometheus/cluster-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -966,16 +991,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # etcd-backup-operator
 - job_name: {{ .ClusterID }}-prometheus/etcd-backup-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1013,16 +1040,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # node-operator
 - job_name: {{ .ClusterID }}-prometheus/node-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1058,16 +1087,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # release-operator
 - job_name: {{ .ClusterID }}-prometheus/release-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1103,16 +1134,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # organization-operator
 - job_name: {{ .ClusterID }}-prometheus/organization-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1150,16 +1183,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # prometheus-meta-operator
 - job_name: {{ .ClusterID }}-prometheus/prometheus-meta-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1197,16 +1232,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # rbac-operator
 - job_name: {{ .ClusterID }}-prometheus/rbac-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1244,16 +1281,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # cert-operator
 - job_name: {{ .ClusterID }}-prometheus/cert-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1291,16 +1330,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # draughtsman
 - job_name: {{ .ClusterID }}-prometheus/draughtsman-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1336,16 +1377,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # app-exporter
 - job_name: {{ .ClusterID }}-prometheus/app-exporter-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1383,16 +1426,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # vault-exporter
 - job_name: {{ .ClusterID }}-prometheus/vault-exporter-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1422,22 +1467,26 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: ['__address__']
+    target_label:  'instance'
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # alertmanager
 - job_name: {{ .ClusterID }}-prometheus/alertmanager-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1473,16 +1522,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # grafana
 - job_name: {{ .ClusterID }}-prometheus/grafana-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1512,22 +1563,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # prometheus
 - job_name: {{ .ClusterID }}-prometheus/g8s-prometheus-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1557,22 +1610,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # fluentbit
 - job_name: {{ .ClusterID }}-prometheus/fluentbit-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1602,22 +1657,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # giantswarm-api
 - job_name: {{ .ClusterID }}-prometheus/giantswarm-api-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
@@ -1646,22 +1703,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # tokend
 - job_name: {{ .ClusterID }}-prometheus/tokend-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1690,22 +1749,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # companyd
 - job_name: {{ .ClusterID }}-prometheus/companyd-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1734,22 +1795,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # userd
 - job_name: {{ .ClusterID }}-prometheus/userd-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1778,22 +1841,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # kubernetesd
 - job_name: {{ .ClusterID }}-prometheus/kubernetesd-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1822,22 +1887,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # credentiald
 - job_name: {{ .ClusterID }}-prometheus/credentiald-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1866,22 +1933,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # cluster-service
 - job_name: {{ .ClusterID }}-prometheus/cluster-service-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1910,23 +1979,25 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 {{ if eq .Provider "aws" }}
 # aws-operator
 - job_name: {{ .ClusterID }}-prometheus/aws-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1956,24 +2027,26 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
 {{ if eq .Provider "azure" }}
 # azure-operator
 - job_name: {{ .ClusterID }}-prometheus/azure-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -2003,22 +2076,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # azure-collector
 - job_name: {{ .ClusterID }}-prometheus/azure-collector-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -2033,24 +2108,26 @@
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
     regex: azure-collector
     action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
 {{ if eq .Provider "kvm" }}
 # kvm-operator
 - job_name: {{ .ClusterID }}-prometheus/kvm-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -2080,22 +2157,24 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # flannel-operator
 - job_name: {{ .ClusterID }}-prometheus/flannel-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -2116,16 +2195,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # bridge-operator
 - job_name: {{ .ClusterID }}-prometheus/bridge-operator-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -2146,16 +2227,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # ingress-exporter
 - job_name: {{ .ClusterID }}-prometheus/ingress-exporter-{{ .ClusterID }}/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -2176,15 +2259,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
 - job_name: {{ .ClusterID }}-prometheus/vault-{{ .ClusterID }}/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   static_configs:
   - targets:
@@ -2196,15 +2282,18 @@
     labels:
       app: cert-exporter
   relabel_configs:
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # gatekeeper
 - job_name: {{ .ClusterID }}-prometheus/gatekeeper-{{ .ClusterID }}/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -2230,15 +2319,18 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 # prometheus
 - job_name: {{ .ClusterID }}-prometheus/prometheus-{{ .ClusterID }}/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -2259,10 +2351,13 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: {{ .ClusterID }}
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: {{ .ClusterType }}
+  # Add provider label.
   - target_label: provider
     replacement: {{ .Provider }}
 {{ end }}
