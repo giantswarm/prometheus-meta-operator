@@ -855,9 +855,12 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+  - source_labels: [__meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: (true)
     action: keep
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    #regex: (true)
+    target_label: labelannotationpresent
   - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
     regex: (true)
     action: drop
