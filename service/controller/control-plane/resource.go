@@ -21,6 +21,7 @@ import (
 type resourcesConfig struct {
 	BaseDomain       string
 	Provider         string
+	Installation     string
 	CreatePVC        bool
 	StorageSize      string
 	Vault            string
@@ -92,6 +93,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			PrometheusClient: config.PrometheusClient,
 			Logger:           config.Logger,
 			Provider:         config.Provider,
+			Installation:     config.Installation,
 		}
 
 		serviceMonitorResource, err = servicemonitor.New(c)
@@ -116,10 +118,11 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-			Provider:  config.Provider,
-			Vault:     config.Vault,
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Provider:     config.Provider,
+			Installation: config.Installation,
+			Vault:        config.Vault,
 		}
 
 		scrapeConfigResource, err = scrapeconfigs.New(c)

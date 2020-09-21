@@ -17,6 +17,7 @@ import (
 type ControllerConfig struct {
 	BaseDomain       string
 	Provider         string
+	Installation     string
 	CreatePVC        bool
 	StorageSize      string
 	Vault            string

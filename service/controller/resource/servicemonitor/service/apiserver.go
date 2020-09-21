@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func APIServer(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
+func APIServer(cluster metav1.Object, provider string, installation string) *promv1.ServiceMonitor {
 	serviceMonitor := &promv1.ServiceMonitor{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      fmt.Sprintf("kubernetes-apiserver-%s", cluster.GetName()),
@@ -29,8 +29,9 @@ func APIServer(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:   "https",
-					Scheme: "https",
+					Port:        "https",
+					Scheme:      "https",
+					HonorLabels: true,
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
 							SourceLabels: []string{"__meta_kubernetes_service_name"},
@@ -55,6 +56,10 @@ func APIServer(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
 						{
 							TargetLabel: "cluster_type",
 							Replacement: key.ClusterType(cluster),
+						},
+						{
+							TargetLabel: "installation",
+							Replacement: installation,
 						},
 						{
 							TargetLabel: "provider",

@@ -19,12 +19,14 @@ const (
 type Config struct {
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
+	Installation     string
 	Provider         string
 }
 
 type Resource struct {
 	prometheusClient promclient.Interface
 	logger           micrologger.Logger
+	installation     string
 	provider         string
 }
 
@@ -42,6 +44,7 @@ func New(config Config) (*Resource, error) {
 	r := &Resource{
 		prometheusClient: config.PrometheusClient,
 		logger:           config.Logger,
+		installation:     config.Installation,
 		provider:         config.Provider,
 	}
 
@@ -52,19 +55,19 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toServiceMonitors(obj interface{}, provider string) ([]*promv1.ServiceMonitor, error) {
+func toServiceMonitors(obj interface{}, provider string, installation string) ([]*promv1.ServiceMonitor, error) {
 	cluster, err := key.ToCluster(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	serviceMonitors := []*promv1.ServiceMonitor{
-		service.APIServer(cluster, provider),
-		service.NginxIngressController(cluster, provider),
+		service.APIServer(cluster, provider, installation),
+		service.NginxIngressController(cluster, provider, installation),
 	}
 
 	if (provider == "aws" || provider == "azure") && key.ClusterType(cluster) == "tenant_cluster" {
-		serviceMonitors = append(serviceMonitors, service.ClusterAutoscaler(cluster, provider))
+		serviceMonitors = append(serviceMonitors, service.ClusterAutoscaler(cluster, provider, installation))
 	}
 
 	return serviceMonitors, nil

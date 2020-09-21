@@ -1,7 +1,7 @@
 # Additional scrape configuration for the tenant clusters components
 # Add scrape configuration for docker
 - job_name: kubernetes-prometheus/docker-kubernetes/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -19,6 +19,9 @@
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
   - target_label: app
     replacement: docker
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -28,6 +31,9 @@
   # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -44,7 +50,7 @@
     action: keep
 # Add scrape configuration for cadvisor
 - job_name: kubernetes-prometheus/cadvisor-kubernetes/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -62,6 +68,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -71,6 +80,9 @@
   # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
   - source_labels: [__meta_kubernetes_node_address_InternalIP]
     target_label: ip
   - source_labels: [__meta_kubernetes_node_label_role]
@@ -87,7 +99,7 @@
     regex: container_network_.*
     action: drop
 - job_name: kubernetes-prometheus/calico-node-kubernetes/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -122,9 +134,12 @@
   # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 
 - job_name: kubernetes-prometheus/aws-node-kubernetes/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -159,10 +174,13 @@
   # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 
 # Add etcd configuration
 - job_name: kubernetes-prometheus/etcd-kubernetes/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -185,6 +203,8 @@
     action: replace
   - target_label: app
     replacement: etcd
+  - source_labels: ['__address__']
+    target_label:  'instance'
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -194,6 +214,9 @@
   # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -206,7 +229,7 @@
     replacement: worker
 # Add kubelet configuration
 - job_name: kubernetes-prometheus/kubelet-kubernetes/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -219,6 +242,9 @@
   relabel_configs:
   - target_label: app
     replacement: kubelet
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -228,10 +254,12 @@
   # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-controller-manager
 - job_name: kubernetes-prometheus/kubernetes-controller-manager-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -258,16 +286,21 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-scheduler
 - job_name: kubernetes-prometheus/kubernetes-scheduler-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -294,16 +327,21 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-proxy
 - job_name: kubernetes-prometheus/kube-proxy-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -332,16 +370,21 @@
     target_label: pod_name
   - target_label: app
     replacement: kube-proxy
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # coredns
 - job_name: kubernetes-prometheus/coredns-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -372,16 +415,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # chart-operator
 - job_name: kubernetes-prometheus/chart-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -414,16 +462,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # net-exporter
 - job_name: kubernetes-prometheus/net-exporter-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -458,16 +511,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # cert-exporter
 - job_name: kubernetes-prometheus/cert-exporter-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -502,16 +560,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # node-exporter
 - job_name: kubernetes-prometheus/node-exporter-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -551,16 +614,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-state-metrics 
 - job_name: kubernetes-prometheus/kube-state-metrics-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -595,14 +663,20 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 - job_name: kubernetes-prometheus/managed-app-kubernetes/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
@@ -654,17 +728,22 @@
     regex: (true)
     target_label: is_managed_app
     action: replace
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 
 # app-operator
 - job_name: kubernetes-prometheus/app-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -700,16 +779,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # cluster-operator
 - job_name: kubernetes-prometheus/cluster-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -745,16 +829,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # etcd-backup-operator
 - job_name: kubernetes-prometheus/etcd-backup-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -792,16 +881,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # node-operator
 - job_name: kubernetes-prometheus/node-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -837,16 +931,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # release-operator
 - job_name: kubernetes-prometheus/release-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -882,16 +981,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # organization-operator
 - job_name: kubernetes-prometheus/organization-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -929,16 +1033,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # prometheus-meta-operator
 - job_name: kubernetes-prometheus/prometheus-meta-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -976,16 +1085,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # rbac-operator
 - job_name: kubernetes-prometheus/rbac-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1023,16 +1137,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # cert-operator
 - job_name: kubernetes-prometheus/cert-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1070,16 +1189,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # draughtsman
 - job_name: kubernetes-prometheus/draughtsman-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1115,16 +1239,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # app-exporter
 - job_name: kubernetes-prometheus/app-exporter-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1162,16 +1291,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # vault-exporter
 - job_name: kubernetes-prometheus/vault-exporter-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1201,22 +1335,29 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: ['__address__']
+    target_label:  'instance'
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # alertmanager
 - job_name: kubernetes-prometheus/alertmanager-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1252,16 +1393,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # grafana
 - job_name: kubernetes-prometheus/grafana-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1291,22 +1437,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # prometheus
 - job_name: kubernetes-prometheus/g8s-prometheus-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1336,22 +1487,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # fluentbit
 - job_name: kubernetes-prometheus/fluentbit-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1381,22 +1537,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # giantswarm-api
 - job_name: kubernetes-prometheus/giantswarm-api-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
@@ -1425,22 +1586,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # tokend
 - job_name: kubernetes-prometheus/tokend-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1469,22 +1635,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # companyd
 - job_name: kubernetes-prometheus/companyd-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1513,22 +1684,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # userd
 - job_name: kubernetes-prometheus/userd-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1557,22 +1733,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kubernetesd
 - job_name: kubernetes-prometheus/kubernetesd-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1601,22 +1782,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # credentiald
 - job_name: kubernetes-prometheus/credentiald-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1645,22 +1831,27 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # cluster-service
 - job_name: kubernetes-prometheus/cluster-service-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1689,23 +1880,28 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 
 # aws-operator
 - job_name: kubernetes-prometheus/aws-operator-kubernetes/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1735,23 +1931,29 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 
 
 
 - job_name: kubernetes-prometheus/vault-kubernetes/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   static_configs:
   - targets:
@@ -1763,15 +1965,21 @@
     labels:
       app: cert-exporter
   relabel_configs:
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # gatekeeper
 - job_name: kubernetes-prometheus/gatekeeper-kubernetes/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -1797,15 +2005,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # prometheus
 - job_name: kubernetes-prometheus/prometheus-kubernetes/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -1826,10 +2040,16 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: control_plane
+  # Add provider label.
   - target_label: provider
     replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 

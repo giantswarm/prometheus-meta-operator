@@ -25,6 +25,7 @@ const (
 type Config struct {
 	K8sClient    k8sclient.Interface
 	Logger       micrologger.Logger
+	Installation string
 	Provider     string
 	Vault        string
 	TemplatePath string
@@ -37,6 +38,7 @@ type TemplateData struct {
 	ClusterType    string
 	SecretName     string
 	EtcdSecretName string
+	Installation   string
 	IsInCluster    bool
 	Vault          string
 }
@@ -130,6 +132,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		ClusterID:      clusterID,
 		ClusterType:    key.ClusterType(cluster),
 		Provider:       config.Provider,
+		Installation:   config.Installation,
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
 		IsInCluster:    key.IsInCluster(cluster),

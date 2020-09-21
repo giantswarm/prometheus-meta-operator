@@ -1,7 +1,7 @@
 # Additional scrape configuration for the tenant clusters components
 # Add scrape configuration for docker
 - job_name: bob-prometheus/docker-bob/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -26,6 +26,9 @@
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
   - target_label: app
     replacement: docker
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
@@ -35,6 +38,9 @@
   # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -51,7 +57,7 @@
     action: keep
 # Add scrape configuration for cadvisor
 - job_name: bob-prometheus/cadvisor-bob/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -76,6 +82,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
@@ -85,6 +94,9 @@
   # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
   - source_labels: [__meta_kubernetes_node_address_InternalIP]
     target_label: ip
   - source_labels: [__meta_kubernetes_node_label_role]
@@ -101,7 +113,7 @@
     regex: container_network_.*
     action: drop
 - job_name: bob-prometheus/calico-node-bob/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -143,10 +155,13 @@
   # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 
 # Add etcd configuration
 - job_name: bob-prometheus/etcd-bob/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -174,6 +189,8 @@
     action: replace
   - target_label: app
     replacement: etcd
+  - source_labels: ['__address__']
+    target_label:  'instance'
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
@@ -183,6 +200,9 @@
   # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]
@@ -195,7 +215,7 @@
     replacement: worker
 # Add kubelet configuration
 - job_name: bob-prometheus/kubelet-bob/0
-  honor_timestamps: false
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
@@ -215,6 +235,9 @@
   relabel_configs:
   - target_label: app
     replacement: kubelet
+  - source_labels: [__address__]
+    regex: '.*'
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
@@ -224,10 +247,12 @@
   # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-controller-manager
 - job_name: bob-prometheus/kubernetes-controller-manager-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -261,16 +286,21 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-scheduler
 - job_name: bob-prometheus/kubernetes-scheduler-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -304,16 +334,21 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-proxy
 - job_name: bob-prometheus/kube-proxy-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
@@ -349,16 +384,21 @@
     target_label: pod_name
   - target_label: app
     replacement: kube-proxy
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # coredns
 - job_name: bob-prometheus/coredns-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -396,16 +436,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # chart-operator
 - job_name: bob-prometheus/chart-operator-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -445,16 +490,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # net-exporter
 - job_name: bob-prometheus/net-exporter-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -496,16 +546,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # cert-exporter
 - job_name: bob-prometheus/cert-exporter-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -547,16 +602,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # node-exporter
 - job_name: bob-prometheus/node-exporter-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
@@ -603,16 +663,21 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # kube-state-metrics 
 - job_name: bob-prometheus/kube-state-metrics-bob/0
-  honor_timestamps: false
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   scrape_timeout: 1m
   scrape_interval: 1m
@@ -654,14 +719,20 @@
     target_label: namespace
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: pod_name
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 - job_name: bob-prometheus/managed-app-bob/0
-  metrics_path: /metrics
+  honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
@@ -720,10 +791,16 @@
     regex: (true)
     target_label: is_managed_app
     action: replace
+  # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
+  # Add cluster_type label.
   - target_label: cluster_type
     replacement: tenant_cluster
+  # Add provider label.
   - target_label: provider
     replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 

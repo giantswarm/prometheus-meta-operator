@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func NginxIngressController(cluster metav1.Object, provider string) *promv1.ServiceMonitor {
+func NginxIngressController(cluster metav1.Object, provider string, installation string) *promv1.ServiceMonitor {
 	var labelSelectors map[string]string
 	if key.ClusterType(cluster) == "control_plane" {
 		labelSelectors = map[string]string{
@@ -38,8 +38,9 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 			},
 			Endpoints: []promv1.Endpoint{
 				{
-					Port:   "https",
-					Scheme: "https",
+					Port:        "https",
+					Scheme:      "https",
+					HonorLabels: true,
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
 							Replacement:  key.APIUrl(cluster),
@@ -74,6 +75,10 @@ func NginxIngressController(cluster metav1.Object, provider string) *promv1.Serv
 						{
 							TargetLabel: "cluster_type",
 							Replacement: key.ClusterType(cluster),
+						},
+						{
+							TargetLabel: "installation",
+							Replacement: installation,
 						},
 						{
 							TargetLabel: "provider",
