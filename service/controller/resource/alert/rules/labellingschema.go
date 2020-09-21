@@ -17,7 +17,7 @@ func GetObjectMeta(obj interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:      "example-rules",
+		Name:      "labelling-schema-rules",
 		Namespace: key.Namespace(cluster),
 		Labels: map[string]string{
 			key.ClusterIDKey(): key.ClusterID(cluster),
@@ -25,7 +25,7 @@ func GetObjectMeta(obj interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func ExampleRule(obj interface{}) (metav1.Object, error) {
+func LabellingSchemaValidationRule(obj interface{}) (metav1.Object, error) {
 	objectMeta, err := GetObjectMeta(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -36,28 +36,27 @@ func ExampleRule(obj interface{}) (metav1.Object, error) {
 		Spec: promv1.PrometheusRuleSpec{
 			Groups: []promv1.RuleGroup{
 				promv1.RuleGroup{
-					Name: "apiserver",
+					Name: "labelling-schema",
 					Rules: []promv1.Rule{
 						promv1.Rule{
-							Alert: "APIServerLatencyTooHigh",
+							Alert: "InvalidLabellingSchema",
 							Expr: intstr.IntOrString{
 								Type:   intstr.String,
-								StrVal: `histogram_quantile(0.95, sum(rate(apiserver_request_latencies_bucket{subresource!~"log", verb=~"DELETE|GET|PATCH|POST|PUT"}[1h])) WITHOUT (instance, resource)) / 1e+06 > 3`,
+								StrVal: `up{cluster_type!~"control_plane|tenant_cluster"} or up{app=""} or up{installation=""} or up{cluster_id=""} or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)"} or up{provider!~"aws|azure|kvm"}`,
 							},
-							For: "3h",
+							For: "10m",
 							Labels: map[string]string{
-								"l_if_cluster_status_creating":              "true",
+								"cancel_if_cluster_status_creating":         "true",
 								"cancel_if_cluster_status_updating":         "true",
 								"cancel_if_cluster_status_deleting":         "true",
 								"cancel_if_cluster_with_notready_nodepools": "true",
 								"severity": "notify",
-								"area":     "kaas",
-								"team":     "ludacris",
-								"topic":    "kubernetes",
+								"area":     "empowerment",
+								"team":     "atlas",
+								"topic":    "observability",
 							},
 							Annotations: map[string]string{
-								"description": "Kubernetes API Server {{ $labels.verb }} request latency is too high.",
-								"opsrecipe":   "apiserver-overloaded.md",
+								"description": "Labelling schema is invalid.",
 							},
 						},
 					},

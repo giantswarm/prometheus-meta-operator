@@ -40,7 +40,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:           config.Logger,
 		Name:             Name,
 		GetObjectMeta:    rules.GetObjectMeta,
-		GetDesiredObject: rules.ExampleRule,
+		GetDesiredObject: rules.LabellingSchemaValidationRule,
 		HasChangedFunc:   hasChanged,
 	}
 	r, err := generic.New(c)
