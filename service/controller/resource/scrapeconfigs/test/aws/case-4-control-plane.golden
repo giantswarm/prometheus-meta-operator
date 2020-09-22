@@ -59,7 +59,6 @@
 
   relabel_configs:
   - source_labels: [__address__]
-    regex: '.*'
     target_label: instance
   - target_label: __address__
     replacement: :443
@@ -135,6 +134,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  
 
 - job_name: kubernetes-prometheus/aws-node-kubernetes/0
   honor_labels: true
@@ -202,7 +202,7 @@
   - target_label: app
     replacement: etcd
   - source_labels: ['__address__']
-    target_label:  'instance'
+    target_label: 'instance'
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -241,7 +241,6 @@
   - target_label: app
     replacement: kubelet
   - source_labels: [__address__]
-    regex: '.*'
     target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
@@ -271,6 +270,9 @@
     insecure_skip_verify: true
 
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:10252
+    target_label: instance
 
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (k8s-controller-manager.*)
@@ -312,6 +314,9 @@
     insecure_skip_verify: true
 
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:10251
+    target_label: instance
 
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (k8s-scheduler.*)
@@ -353,12 +358,12 @@
     insecure_skip_verify: true
 
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:10249
+    target_label: instance
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-proxy.*)
     action: keep
-  - source_labels: [__address__]
-    regex: '.*'
-    target_label: instance  
   - target_label: __address__
     replacement: :443
   - source_labels: [__meta_kubernetes_pod_name]
@@ -399,6 +404,9 @@
     insecure_skip_verify: true
 
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:8000
+    target_label: instance
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: coredns
     action: keep
@@ -442,6 +450,9 @@
     insecure_skip_verify: true
 
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:8000
+    target_label: instance
 
   - source_labels: [__meta_kubernetes_service_name]
     regex: chart-operator-unique
@@ -489,6 +500,9 @@
     insecure_skip_verify: true
 
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:8000
+    target_label: instance
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: net-exporter
     action: keep
@@ -682,6 +696,9 @@
     insecure_skip_verify: true
 
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
+    replacement: $1:$2
+    target_label: instance
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: keep
