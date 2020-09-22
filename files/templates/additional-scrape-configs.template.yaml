@@ -171,6 +171,7 @@
   # Add installation label.
   - target_label: installation
     replacement: {{ .Installation }}
+  
 {{ if eq .Provider "aws" }}
 - job_name: {{ .ClusterID }}-prometheus/aws-node-{{ .ClusterID }}/0
   honor_labels: true
@@ -350,6 +351,9 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:10252
+    target_label: instance
 {{ if eq .ClusterType "control_plane" }}
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (k8s-controller-manager.*)
@@ -407,6 +411,9 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:10251
+    target_label: instance
 {{ if eq .ClusterType "control_plane" }}
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (k8s-scheduler.*)
@@ -464,12 +471,12 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:10249
+    target_label: instance
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-proxy.*)
     action: keep
-  - source_labels: [__address__]
-    regex: '.*'
-    target_label: instance  
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
   - source_labels: [__meta_kubernetes_pod_name]
@@ -522,6 +529,9 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:8000
+    target_label: instance
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: coredns
     action: keep
@@ -577,6 +587,9 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+  replacement: ${1}:8000
+  target_label: instance
 {{ if eq .ClusterType "control_plane" }}
   - source_labels: [__meta_kubernetes_service_name]
     regex: chart-operator-unique
@@ -642,6 +655,9 @@
     insecure_skip_verify: true
 {{ end }}
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_ip]
+    replacement: ${1}:8000
+    target_label: instance
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: net-exporter
     action: keep

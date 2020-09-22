@@ -43,6 +43,11 @@ func NginxIngressController(cluster metav1.Object, provider string, installation
 					HonorLabels: true,
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
+							Replacement:  fmt.Sprintf("${1}:10254"),
+							SourceLabels: []string{"__meta_kubernetes_pod_ip"},
+							TargetLabel:  "instance",
+						},
+						{
 							Replacement:  key.APIUrl(cluster),
 							SourceLabels: []string{"__address__"},
 							TargetLabel:  "__address__",

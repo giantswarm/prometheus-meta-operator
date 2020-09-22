@@ -34,6 +34,11 @@ func ClusterAutoscaler(cluster metav1.Object, provider string, installation stri
 					HonorLabels: true,
 					RelabelConfigs: []*promv1.RelabelConfig{
 						{
+							Replacement:  fmt.Sprintf("${1}:8085"),
+							SourceLabels: []string{"__meta_kubernetes_pod_ip"},
+							TargetLabel:  "instance",
+						},
+						{
 							Replacement:  fmt.Sprintf("master.%s:443", key.ClusterID(cluster)),
 							SourceLabels: []string{"__address__"},
 							TargetLabel:  "__address__",
