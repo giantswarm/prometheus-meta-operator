@@ -125,7 +125,7 @@
     insecure_skip_verify: false
 
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip]
+  - source_labels: [__address__]
     replacement: ${1}:9091
     target_label: instance
   - target_label: __address__
@@ -234,8 +234,8 @@
     action: replace
   - target_label: app
     replacement: etcd
-  - source_labels: ['__address__']
-    target_label: 'instance'
+  - source_labels: [__address__]
+    target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -317,8 +317,8 @@
     insecure_skip_verify: true
 
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip]
-    replacement: ${1}:10252
+  - source_labels: [__address__]
+    replacement: $1:10252
     target_label: instance
 
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
@@ -368,8 +368,8 @@
     insecure_skip_verify: true
 
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip]
-    replacement: ${1}:10251
+  - source_labels: [__address__]
+    replacement: $1:10251
     target_label: instance
 
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
@@ -419,8 +419,8 @@
     insecure_skip_verify: true
 
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip]
-    replacement: ${1}:10249
+  - source_labels: [__address__]
+    replacement: $1:10249
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-proxy.*)
@@ -472,8 +472,7 @@
     insecure_skip_verify: true
 
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip]
-    replacement: ${1}:8000
+  - source_labels: [__address__]
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_label_k8s_app]
     regex: coredns
@@ -525,8 +524,7 @@
     insecure_skip_verify: true
 
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip]
-    replacement: ${1}:8000
+  - source_labels: [__address__]
     target_label: instance
 
   - source_labels: [__meta_kubernetes_service_name]
@@ -582,8 +580,7 @@
     insecure_skip_verify: true
 
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip]
-    replacement: ${1}:8000
+  - source_labels: [__address__]
     target_label: instance
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: net-exporter
@@ -807,6 +804,7 @@
 
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
+    regex: (.*);(.*)
     replacement: $1:$2
     target_label: instance
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]

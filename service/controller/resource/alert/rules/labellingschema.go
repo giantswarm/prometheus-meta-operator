@@ -42,7 +42,7 @@ func LabellingSchemaValidationRule(obj interface{}) (metav1.Object, error) {
 							Alert: "InvalidLabellingSchema",
 							Expr: intstr.IntOrString{
 								Type:   intstr.String,
-								StrVal: `up{cluster_type!~"control_plane|tenant_cluster"} or up{app=""} or up{installation=""} or up{cluster_id=""} or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)"} or up{provider!~"aws|azure|kvm"}`,
+								StrVal: `up{cluster_type!~"control_plane|tenant_cluster"} or up{app=""} or up{installation=""} or up{cluster_id=""} or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)||vault.*"} or up{provider!~"aws|azure|kvm"}`,
 							},
 							For: "10m",
 							Labels: map[string]string{
