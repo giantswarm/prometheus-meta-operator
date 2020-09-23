@@ -168,5 +168,31 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var namespaceDeleterResource resource.Interface
+	{
+		c := namespace.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		namespaceDeleterResource, err = namespace.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		cd := deleteResourceConfig{
+			Resource: namespaceDeleterResource,
+		}
+		namespaceDeleterResource, err = newDeleteResource(cd)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	newResources := []resource.Interface{
+		namespaceDeleterResource,
+	}
+	newResources = append(newResources, resources...)
+
 	return resources, nil
 }
