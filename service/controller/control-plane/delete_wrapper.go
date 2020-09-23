@@ -15,25 +15,8 @@ type deleteResource struct {
 	resource resource.Interface
 }
 
-func DeleteWrap(resources []resource.Interface, config resourcesConfig) ([]resource.Interface, error) {
-	var wrapped []resource.Interface
-
-	for _, r := range resources {
-		c := deleteResourceConfig{
-			Resource: r,
-		}
-
-		resource, err := newDeleteResource(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		wrapped = append(wrapped, resource)
-	}
-
-	return wrapped, nil
-}
-
+// newDeleteResource convert a resource to be a delete only resource.
+// EnsureDeleted method will be called in every cases (creation and deletion).
 func newDeleteResource(config deleteResourceConfig) (*deleteResource, error) {
 	if config.Resource == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Resource must not be empty", config)

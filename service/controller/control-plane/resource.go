@@ -168,6 +168,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	// TODO: remove this block in the next release.
 	var namespaceDeleterResource resource.Interface
 	{
 		c := namespace.Config{
