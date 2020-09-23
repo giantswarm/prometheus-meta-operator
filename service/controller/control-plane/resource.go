@@ -161,5 +161,12 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	{
+		resources, err = ControlPlaneWrap(resources, config)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	return resources, nil
 }
