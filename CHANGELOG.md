@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Set honor labels to true
+- Change control plane namespace to reflect the installation name instead of 'kubernetes'
 
 ## [1.2.0] - 2020-09-03
 

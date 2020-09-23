@@ -161,5 +161,39 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	return resources, nil
+	{
+		resources, err = ControlPlaneWrap(resources, config)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	// TODO: remove this block in the next release.
+	var namespaceDeleterResource resource.Interface
+	{
+		c := namespace.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		namespaceDeleterResource, err = namespace.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		cd := deleteResourceConfig{
+			Resource: namespaceDeleterResource,
+		}
+		namespaceDeleterResource, err = newDeleteResource(cd)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	r := []resource.Interface{
+		namespaceDeleterResource,
+	}
+	r = append(r, resources...)
+
+	return r, nil
 }
