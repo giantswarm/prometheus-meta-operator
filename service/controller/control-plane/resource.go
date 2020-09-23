@@ -189,10 +189,10 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	newResources := []resource.Interface{
+	r := []resource.Interface{
 		namespaceDeleterResource,
 	}
-	newResources = append(newResources, resources...)
+	r = append(r, resources...)
 
-	return resources, nil
+	return r, nil
 }
