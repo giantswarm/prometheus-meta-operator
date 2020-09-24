@@ -119,5 +119,5 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret
 }
 
 func (r *Resource) hasChanged(current, desired *corev1.Secret) bool {
-	return !reflect.DeepEqual(current.Data, desired.Data) || current.Type != desired.Type
+	return !reflect.DeepEqual(current.Data, desired.Data)
 }
