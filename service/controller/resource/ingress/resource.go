@@ -8,6 +8,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
+	"k8s.io/api/extensions/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -40,7 +41,10 @@ func New(config Config) (*generic.Resource, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.BaseDomain must not be empty", config)
 	}
 
-	clientFunc := func(namespace string) generic.Interface {}
+	clientFunc := func(namespace string) generic.Interface {
+		c := config.K8sClient.K8sClient().ExtensionsV1beta1().Ingresses(namespace)
+		return wrappedClient{client: c}
+	}
 
 	c := generic.Config{
 		ClientFunc:       clientFunc,
@@ -71,12 +75,12 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 }
 
 func toIngress(v interface{}) (metav1.Object, error) {
-	return TODO, nil
+	return &v1beta1.Ingress{}, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*TODO)
-	d := desired.(*TODO)
+	c := current.(*v1beta1.Ingress)
+	d := desired.(*v1beta1.Ingress)
 
 	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
