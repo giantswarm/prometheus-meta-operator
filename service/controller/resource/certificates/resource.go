@@ -13,11 +13,8 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-const (
-	Name = "certificates"
-)
-
 type Config struct {
+	Name                string
 	SourceNameFunc      NameFunc
 	SourceNamespaceFunc NameFunc
 	TargetNameFunc      NameFunc
@@ -28,6 +25,7 @@ type Config struct {
 type NameFunc func(metav1.Object) string
 
 type Resource struct {
+	name                string
 	sourceNameFunc      NameFunc
 	sourceNamespaceFunc NameFunc
 	targetNameFunc      NameFunc
@@ -36,6 +34,9 @@ type Resource struct {
 }
 
 func New(config Config) (*Resource, error) {
+	if config.Name == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Name must not be empty", config)
+	}
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
 	}
@@ -53,6 +54,7 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
+		name:                config.Name,
 		logger:              config.Logger,
 		k8sClient:           config.K8sClient,
 		sourceNameFunc:      config.SourceNameFunc,
@@ -64,7 +66,7 @@ func New(config Config) (*Resource, error) {
 }
 
 func (r *Resource) Name() string {
-	return Name
+	return r.name
 }
 
 func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {

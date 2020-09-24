@@ -25,12 +25,20 @@ func NamespaceDefault(cluster metav1.Object) string {
 	return v1.NamespaceDefault
 }
 
+func NamespaceMonitoring(cluster metav1.Object) string {
+	return "monitoring"
+}
+
 func Secret() string {
 	return SecretAPICertificates(nil)
 }
 
 func SecretAPICertificates(cluster metav1.Object) string {
 	return "cluster-certificates"
+}
+
+func SecretTLSCertificates(cluster metav1.Object) string {
+	return "prometheus-certificates"
 }
 
 func EtcdSecret(obj interface{}) string {
