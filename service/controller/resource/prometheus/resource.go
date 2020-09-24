@@ -2,6 +2,7 @@ package prometheus
 
 import (
 	"fmt"
+	"net/url"
 	"reflect"
 
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
@@ -23,6 +24,7 @@ const (
 )
 
 type Config struct {
+	Address          string
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
 
@@ -31,6 +33,10 @@ type Config struct {
 }
 
 func New(config Config) (*generic.Resource, error) {
+	var address *url.URL
+	{
+		u, err := url.Parse("https://example.org")
+	}
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.PrometheusClient.MonitoringV1().Prometheuses(namespace)
 		return wrappedClient{client: c}
@@ -42,7 +48,7 @@ func New(config Config) (*generic.Resource, error) {
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
 		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
-			return toPrometheus(v, config.CreatePVC, resource.MustParse(config.StorageSize))
+			return toPrometheus(v, config.CreatePVC, resource.MustParse(config.StorageSize), config.Address)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -66,7 +72,7 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) (metav1.Object, error) {
+func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, address string) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -119,6 +125,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity) 
 				key.ClusterIDKey(): key.ClusterID(cluster),
 				"cluster_type":     key.ClusterType(cluster),
 			},
+			ExternalURL: fmt.Sprintf("%s"),
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: map[string]string{
 					"giantswarm.io/monitoring":     "true",
