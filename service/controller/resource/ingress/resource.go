@@ -23,13 +23,6 @@ type Config struct {
 	BaseDomain string
 }
 
-type Resource struct {
-	k8sClient k8sclient.Interface
-	logger    micrologger.Logger
-
-	baseDomain string
-}
-
 func New(config Config) (*generic.Resource, error) {
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
