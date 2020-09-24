@@ -33,10 +33,11 @@ type Config struct {
 }
 
 func New(config Config) (*generic.Resource, error) {
-	var address *url.URL
-	{
-		u, err := url.Parse("https://example.org")
+	address, err := url.Parse(config.Address)
+	if err != nil {
+		return nil, microerror.Mask(err)
 	}
+
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.PrometheusClient.MonitoringV1().Prometheuses(namespace)
 		return wrappedClient{client: c}
@@ -48,7 +49,7 @@ func New(config Config) (*generic.Resource, error) {
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
 		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
-			return toPrometheus(v, config.CreatePVC, resource.MustParse(config.StorageSize), config.Address)
+			return toPrometheus(v, config.CreatePVC, resource.MustParse(config.StorageSize), address)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -72,7 +73,7 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, address string) (metav1.Object, error) {
+func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, address *url.URL) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -118,6 +119,11 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 		}
 	}
 
+	externalURL, err := address.Parse("/" + key.ClusterID(cluster))
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -125,7 +131,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 				key.ClusterIDKey(): key.ClusterID(cluster),
 				"cluster_type":     key.ClusterType(cluster),
 			},
-			ExternalURL: fmt.Sprintf("%s"),
+			ExternalURL: externalURL.String(),
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: map[string]string{
 					"giantswarm.io/monitoring":     "true",
