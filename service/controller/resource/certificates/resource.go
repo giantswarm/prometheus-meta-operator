@@ -2,7 +2,6 @@ package certificates
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
@@ -11,7 +10,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -20,66 +18,74 @@ const (
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	SourceNameFunc      NameFunc
+	SourceNamespaceFunc NameFunc
+	TargetNameFunc      NameFunc
+	K8sClient           k8sclient.Interface
+	Logger              micrologger.Logger
 }
 
-// secretCopier provides a `ToCR` method which copies data from the source
-// cluster secret CR
-type secretCopier struct {
-	clientFunc func(string) generic.Interface
+type NameFunc func(metav1.Object) string
+
+type Resource struct {
+	sourceNameFunc      NameFunc
+	sourceNamespaceFunc NameFunc
+	targetNameFunc      NameFunc
+	k8sClient           k8sclient.Interface
+	logger              micrologger.Logger
 }
 
-func New(config Config) (*generic.Resource, error) {
+func New(config Config) (*Resource, error) {
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
-		return wrappedClient{client: c}
+	if config.SourceNameFunc == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.SourceNameFunc must not be empty", config)
+	}
+	if config.SourceNamespaceFunc == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.SourceNamespaceFunc must not be empty", config)
+	}
+	if config.TargetNameFunc == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.TargetNameFunc must not be empty", config)
 	}
 
-	sc := secretCopier{clientFunc: clientFunc}
-
-	c := generic.Config{
-		ClientFunc:       clientFunc,
-		Logger:           config.Logger,
-		Name:             Name,
-		GetObjectMeta:    getObjectMeta,
-		GetDesiredObject: sc.ToCR,
-		HasChangedFunc:   hasChanged,
-	}
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	r := &Resource{
+		logger:              config.Logger,
+		k8sClient:           config.K8sClient,
+		sourceNameFunc:      config.SourceNameFunc,
+		sourceNamespaceFunc: config.SourceNamespaceFunc,
+		targetNameFunc:      config.TargetNameFunc,
 	}
 
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func (r *Resource) Name() string {
+	return Name
+}
+
+func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
 	return metav1.ObjectMeta{
-		Name:      key.Secret(),
+		Name:      r.targetNameFunc(cluster),
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
 
-func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
-	objectMeta, err := getObjectMeta(v)
+func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
+	objectMeta, err := r.getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	sourceSecret, err := sc.getSource(context.TODO(), v)
+	sourceSecret, err := r.getSource(context.TODO(), v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -93,23 +99,22 @@ func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
 }
 
 // getSource returns the Secret to be copied, i.e. default/$CLUSTER_ID-prometheus
-func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (*corev1.Secret, error) {
+func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	secretName := fmt.Sprintf("%s-prometheus", cluster.GetName())
 
-	s, err := sc.clientFunc("default").Get(ctx, secretName, metav1.GetOptions{})
+	secretName := r.sourceNameFunc(cluster)
+	secretNamespace := r.sourceNamespaceFunc(cluster)
+
+	s, err := r.k8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	return s.(*corev1.Secret), nil
+	return s, nil
 }
 
-func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*corev1.Secret)
-	d := desired.(*corev1.Secret)
-
-	return !reflect.DeepEqual(c.Data, d.Data)
+func (r *Resource) hasChanged(current, desired *corev1.Secret) bool {
+	return !reflect.DeepEqual(current.Data, desired.Data)
 }

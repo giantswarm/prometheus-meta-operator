@@ -21,7 +21,15 @@ func Namespace(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-prometheus", cluster.GetName())
 }
 
+func NamespaceDefault(cluster metav1.Object) string {
+	return v1.NamespaceDefault
+}
+
 func Secret() string {
+	return SecretAPICertificates(nil)
+}
+
+func SecretAPICertificates(cluster metav1.Object) string {
 	return "cluster-certificates"
 }
 
