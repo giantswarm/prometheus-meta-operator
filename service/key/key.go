@@ -6,6 +6,8 @@ import (
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -83,4 +85,19 @@ func ControlPlaneBearerToken() string {
 
 func ControlPlaneCAFile() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+}
+
+func Labels(cluster metav1.Object) map[string]string {
+	return map[string]string{
+		"app.kubernetes.io/name":       "prometheus",
+		"app.kubernetes.io/managed-by": project.Name(),
+		"app.kubernetes.io/instance":   cluster.GetName(),
+	}
+}
+
+func Oauth2ServicePort() int {
+	return 4180
+}
+func Oauth2ServiceName() string {
+	return "oauth2-proxy"
 }

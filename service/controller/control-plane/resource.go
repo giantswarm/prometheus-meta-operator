@@ -12,6 +12,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/oauth"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
@@ -131,6 +132,20 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var oauthIngressResource resource.Interface
+	{
+		c := oauth.Config{
+			K8sClient:      config.K8sClient,
+			Logger:         config.Logger,
+			PrometheusHost: config.BaseDomain,
+		}
+
+		oauthIngressResource, err = oauth.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		etcdCertificatesResource,
@@ -139,6 +154,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
+		oauthIngressResource,
 	}
 
 	{
