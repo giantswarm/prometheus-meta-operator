@@ -21,7 +21,16 @@ Installation:
       Kind: ""
     Registry:
       Domain: ""
+    Security:
+      RestrictAccess:
+        Enabled: false
+      Subnet:
+        VPN: ""
     Secret:
+      Certificate:
+        Monitoring:
+          CrtPem: ""
+          KeyPem: ""
       Registry:
         PullSecret:
           DockerConfigJSON: ""

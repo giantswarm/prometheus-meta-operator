@@ -152,16 +152,18 @@ func New(config Config) (*Service, error) {
 	var controlplaneController *controlplane.Controller
 	{
 		c := controlplane.ControllerConfig{
-			Address:          config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
-			Installation:     config.Viper.GetString(config.Flag.Service.Installation.Name),
-			CreatePVC:        config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			Vault:            config.Viper.GetString(config.Flag.Service.Vault.Host),
-			K8sClient:        k8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: prometheusClient,
+			Address:                 config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			BaseDomain:              config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Provider:                config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+			CreatePVC:               config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			StorageSize:             config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			Vault:                   config.Viper.GetString(config.Flag.Service.Vault.Host),
+			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
+			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+			K8sClient:               k8sClient,
+			Logger:                  config.Logger,
+			PrometheusClient:        prometheusClient,
 		}
 		controlplaneController, err = controlplane.NewController(c)
 		if err != nil {

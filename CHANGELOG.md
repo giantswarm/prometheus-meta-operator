@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- Add tls certificate for ingress
+### Added
+
 - Add oauth ingress
+- Add tls certificate for ingress
+- Add ingress for individual prometheuses
 
 ## [1.3.0] - 2020-09-24
 

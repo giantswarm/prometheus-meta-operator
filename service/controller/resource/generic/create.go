@@ -20,6 +20,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	if apierrors.IsNotFound(err) {
 		current, err = c.Create(ctx, desired, metav1.CreateOptions{})
 	}
+
 	if err != nil {
 		return microerror.Mask(err)
 	}
