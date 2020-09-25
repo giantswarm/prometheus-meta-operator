@@ -8,6 +8,7 @@ Installation:
     Monitoring:
       Prometheus:
         Host: ""
+        Letsencrypt: false
         Storage:
           Enabled: true
           CreatePVC: true
