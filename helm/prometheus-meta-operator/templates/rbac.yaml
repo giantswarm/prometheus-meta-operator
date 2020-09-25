@@ -66,6 +66,8 @@ rules:
     verbs:
       - create
       - delete
+      - get
+      - update
   - apiGroups:
       - monitoring.coreos.com
     resources:

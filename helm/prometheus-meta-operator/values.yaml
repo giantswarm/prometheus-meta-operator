@@ -1,6 +1,7 @@
 image:
   name: "giantswarm/prometheus-meta-operator"
   tag: "[[ .Version ]]"
+
 Installation:
   V1:
     Registry:
@@ -10,6 +11,7 @@ pod:
     id: 0
   group:
     id: 1000
+
 project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"

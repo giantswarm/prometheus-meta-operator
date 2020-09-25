@@ -15,15 +15,17 @@ import (
 )
 
 type ControllerConfig struct {
-	Address          string
-	BaseDomain       string
-	Provider         string
-	Installation     string
-	CreatePVC        bool
-	StorageSize      string
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
+	Address                 string
+	BaseDomain              string
+	Provider                string
+	Installation            string
+	CreatePVC               bool
+	StorageSize             string
+	RestrictedAccessEnabled bool
+	WhitelistedSubnets      string
+	K8sClient               k8sclient.Interface
+	Logger                  micrologger.Logger
+	PrometheusClient        promclient.Interface
 }
 
 type Controller struct {

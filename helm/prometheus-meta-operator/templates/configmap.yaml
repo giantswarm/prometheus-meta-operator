@@ -27,6 +27,10 @@ data:
         storage:
           createPVC: {{ and .Values.Installation.V1.Monitoring.Prometheus.Storage.Enabled .Values.Installation.V1.Monitoring.Prometheus.Storage.CreatePVC }}
           size: 20Gi
+      security:
+        restrictedAccess: 
+          enabled: {{ .Values.Installation.V1.Security.RestrictAccess.Enabled }}
+          subnets: {{ .Values.Installation.V1.Security.Subnet.VPN }}
       provider:
         kind: {{ .Values.Installation.V1.Provider.Kind }}
       installation:

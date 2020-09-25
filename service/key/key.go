@@ -6,6 +6,8 @@ import (
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -47,6 +49,18 @@ func EtcdSecret(obj interface{}) string {
 	}
 
 	return Secret()
+}
+
+func Labels(cluster metav1.Object) map[string]string {
+	return map[string]string{
+		"app.kubernetes.io/name":       "prometheus",
+		"app.kubernetes.io/managed-by": project.Name(),
+		"app.kubernetes.io/instance":   cluster.GetName(),
+	}
+}
+
+func PrometheusPort() int32 {
+	return 9090
 }
 
 func ClusterIDKey() string {

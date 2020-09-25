@@ -21,6 +21,11 @@ Installation:
       Kind: ""
     Registry:
       Domain: ""
+    Security:
+      RestrictAccess:
+        Enabled: false
+      Subnet:
+        VPN: ""
     Secret:
       Registry:
         PullSecret:

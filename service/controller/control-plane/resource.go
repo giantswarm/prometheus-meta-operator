@@ -12,6 +12,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
@@ -21,16 +22,18 @@ import (
 )
 
 type resourcesConfig struct {
-	Address          string
-	BaseDomain       string
-	Provider         string
-	Installation     string
-	CreatePVC        bool
-	StorageSize      string
-	Vault            string
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
+	Address                 string
+	BaseDomain              string
+	Provider                string
+	Installation            string
+	CreatePVC               bool
+	StorageSize             string
+	Vault                   string
+	RestrictedAccessEnabled bool
+	WhitelistedSubnets      string
+	K8sClient               k8sclient.Interface
+	Logger                  micrologger.Logger
+	PrometheusClient        promclient.Interface
 }
 
 func newResources(config resourcesConfig) ([]resource.Interface, error) {
@@ -152,6 +155,22 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var ingressResource resource.Interface
+	{
+		c := ingress.Config{
+			K8sClient:               config.K8sClient,
+			Logger:                  config.Logger,
+			BaseDomain:              config.BaseDomain,
+			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
+			WhitelistedSubnets:      config.WhitelistedSubnets,
+		}
+
+		ingressResource, err = ingress.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		tlsCertificatesResource,
@@ -161,6 +180,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
+		ingressResource,
 	}
 
 	{

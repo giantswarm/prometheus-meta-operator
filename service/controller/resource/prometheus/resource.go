@@ -14,7 +14,6 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -68,8 +67,9 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:      cluster.GetName(),
+		Name:      key.ClusterID(cluster),
 		Namespace: key.Namespace(cluster),
+		Labels:    key.Labels(cluster),
 	}, nil
 }
 
@@ -124,6 +124,13 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 		return nil, microerror.Mask(err)
 	}
 
+	labels := make(map[string]string)
+	for k, v := range key.Labels(cluster) {
+		labels[k] = v
+	}
+
+	labels["giantswarm.io/monitoring"] = "true"
+
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -133,12 +140,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 			},
 			ExternalURL: externalURL.String(),
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
-				Labels: map[string]string{
-					"giantswarm.io/monitoring":     "true",
-					"app.kubernetes.io/name":       "prometheus",
-					"app.kubernetes.io/managed-by": project.Name(),
-					"app.kubernetes.io/instance":   cluster.GetName(),
-				},
+				Labels: labels,
 			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
