@@ -6,6 +6,7 @@ Installation:
   V1:
     Registry:
       Domain: quay.io
+
 pod:
   user:
     id: 0

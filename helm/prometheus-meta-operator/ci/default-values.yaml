@@ -27,6 +27,10 @@ Installation:
       Subnet:
         VPN: ""
     Secret:
+      Certificate:
+        Monitoring:
+          CrtPem: ""
+          KeyPem: ""
       Registry:
         PullSecret:
           DockerConfigJSON: ""
