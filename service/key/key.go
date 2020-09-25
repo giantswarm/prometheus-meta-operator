@@ -38,7 +38,7 @@ func SecretAPICertificates(cluster metav1.Object) string {
 }
 
 func SecretTLSCertificates(cluster metav1.Object) string {
-	return "prometheus-certificates"
+	return "prometheus-tls"
 }
 
 func EtcdSecret(obj interface{}) string {
