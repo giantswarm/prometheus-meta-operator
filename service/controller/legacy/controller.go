@@ -15,6 +15,7 @@ import (
 )
 
 type ControllerConfig struct {
+	Address          string
 	BaseDomain       string
 	Provider         string
 	Installation     string

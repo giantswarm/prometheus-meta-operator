@@ -21,6 +21,7 @@ import (
 )
 
 type resourcesConfig struct {
+	Address          string
 	BaseDomain       string
 	Provider         string
 	Installation     string
@@ -94,6 +95,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
+			Address:          config.Address,
 			PrometheusClient: config.PrometheusClient,
 			Logger:           config.Logger,
 			CreatePVC:        config.CreatePVC,

@@ -6,7 +6,6 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v2/pkg/resource"
 	v1 "k8s.io/api/core/v1"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type cpResourceConfig struct {
@@ -57,7 +56,7 @@ func newCPResource(config cpResourceConfig) (*cpResource, error) {
 }
 
 func (r *cpResource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	err := r.resource.EnsureCreated(ctx, r.cpObject())
+	err := r.resource.EnsureCreated(ctx, r.cpObject(obj))
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -66,7 +65,7 @@ func (r *cpResource) EnsureCreated(ctx context.Context, obj interface{}) error {
 }
 
 func (r *cpResource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	err := r.resource.EnsureDeleted(ctx, r.cpObject())
+	err := r.resource.EnsureDeleted(ctx, r.cpObject(obj))
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -78,14 +77,9 @@ func (r *cpResource) Name() string {
 	return r.resource.Name()
 }
 
-func (r *cpResource) cpObject() *v1.Service {
-	return &v1.Service{
-		TypeMeta: metav1.TypeMeta{
-			Kind:       "Service",
-			APIVersion: v1.SchemeGroupVersion.Version,
-		},
-		ObjectMeta: metav1.ObjectMeta{
-			Name: r.installation,
-		},
-	}
+func (r *cpResource) cpObject(obj interface{}) *v1.Service {
+	svc := obj.(*v1.Service)
+	svc.SetName(r.installation)
+
+	return svc
 }

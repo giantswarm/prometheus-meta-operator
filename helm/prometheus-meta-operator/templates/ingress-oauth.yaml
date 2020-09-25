@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ include "resource.default.name" . }}
+  namespace: "monitoring"
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  {{- if .Values.Installation.V1.Monitoring.Prometheus.Letsencrypt }}
+  annotations:
+    kubernetes.io/tls-acme: "true"
+  {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+    http:
+      paths:
+      - backend:
+          serviceName: oauth2-proxy
+          servicePort: 4180
+        path: /oauth2
+  tls:
+  - hosts:
+    - {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+    secretName: prometheus-tls

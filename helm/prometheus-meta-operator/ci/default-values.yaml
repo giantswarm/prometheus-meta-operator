@@ -7,7 +7,9 @@ Installation:
     Name: ""
     Monitoring:
       Prometheus:
+        Address: ""
         Host: ""
+        Letsencrypt: false
         Storage:
           Enabled: true
           CreatePVC: true
