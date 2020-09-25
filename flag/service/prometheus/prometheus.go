@@ -1,6 +1,7 @@
 package prometheus
 
 type Prometheus struct {
+	Address    string
 	BaseDomain string
 	Storage    PrometheusStorage
 }

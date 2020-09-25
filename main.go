@@ -110,6 +110,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.CrtFile, "", "Certificate file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.KeyFile, "", "Key file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.BaseDomain, "", "Base domain to create Prometheus Ingress resources under.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Address, "", "Address to access Prometheus UI.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Prometheus.Storage.CreatePVC, false, "Should the operator create a PVC for storage.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "20Gi", "Storage sze for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")

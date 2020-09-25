@@ -117,6 +117,7 @@ func New(config Config) (*Service, error) {
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
+			Address:          config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			Installation:     config.Viper.GetString(config.Flag.Service.Installation.Name),
@@ -132,6 +133,7 @@ func New(config Config) (*Service, error) {
 	var legacyController *legacy.Controller
 	{
 		c := legacy.ControllerConfig{
+			Address:          config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			Installation:     config.Viper.GetString(config.Flag.Service.Installation.Name),
@@ -150,6 +152,7 @@ func New(config Config) (*Service, error) {
 	var controlplaneController *controlplane.Controller
 	{
 		c := controlplane.ControllerConfig{
+			Address:          config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:       config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Provider:         config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			Installation:     config.Viper.GetString(config.Flag.Service.Installation.Name),
