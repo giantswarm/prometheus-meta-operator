@@ -139,6 +139,7 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 				"cluster_type":     key.ClusterType(cluster),
 			},
 			ExternalURL: externalURL.String(),
+			RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
