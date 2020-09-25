@@ -22,6 +22,7 @@ data:
           crtFile: ''
           keyFile: ''
       prometheus:
+        address: {{ .Values.Installation.V1.Monitoring.Prometheus.Address }}
         baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
         storage:
           createPVC: {{ and .Values.Installation.V1.Monitoring.Prometheus.Storage.Enabled .Values.Installation.V1.Monitoring.Prometheus.Storage.CreatePVC }}

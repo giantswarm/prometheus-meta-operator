@@ -7,6 +7,7 @@ Installation:
     Name: ""
     Monitoring:
       Prometheus:
+        Address: ""
         Host: ""
         Letsencrypt: false
         Storage:
