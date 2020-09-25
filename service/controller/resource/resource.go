@@ -15,6 +15,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 type Config struct {
@@ -45,14 +46,35 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var certificatesResource resource.Interface
+	var apiCertificatesResource resource.Interface
 	{
 		c := certificates.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			Name:                "api-certificates",
+			K8sClient:           config.K8sClient,
+			Logger:              config.Logger,
+			SourceNameFunc:      key.Namespace,
+			SourceNamespaceFunc: key.NamespaceDefault,
+			TargetNameFunc:      key.SecretAPICertificates,
 		}
 
-		certificatesResource, err = certificates.New(c)
+		apiCertificatesResource, err = certificates.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var tlsCertificatesResource resource.Interface
+	{
+		c := certificates.Config{
+			Name:                "tls-certificates",
+			K8sClient:           config.K8sClient,
+			Logger:              config.Logger,
+			SourceNameFunc:      key.SecretTLSCertificates,
+			SourceNamespaceFunc: key.NamespaceMonitoring,
+			TargetNameFunc:      key.SecretTLSCertificates,
+		}
+
+		tlsCertificatesResource, err = certificates.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -119,7 +141,8 @@ func New(config Config) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
-		certificatesResource,
+		apiCertificatesResource,
+		tlsCertificatesResource,
 		prometheusResource,
 		serviceMonitorResource,
 		alertResource,
