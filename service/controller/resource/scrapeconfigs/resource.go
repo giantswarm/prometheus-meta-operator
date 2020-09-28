@@ -6,6 +6,7 @@ import (
 	"path"
 	"reflect"
 
+	"github.com/Masterminds/sprig"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -32,15 +33,16 @@ type Config struct {
 }
 
 type TemplateData struct {
-	APIServerURL   string
-	Provider       string
-	ClusterID      string
-	ClusterType    string
-	SecretName     string
-	EtcdSecretName string
-	Installation   string
-	IsInCluster    bool
-	Vault          string
+	APIServerURL        string
+	Provider            string
+	ClusterID           string
+	ClusterType         string
+	CommonRelabelConfig string
+	SecretName          string
+	EtcdSecretName      string
+	Installation        string
+	IsInCluster         bool
+	Vault               string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -136,19 +138,46 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
 		Vault:          config.Vault,
+		CommonRelabelConfig: `# Add cluster_id label.
+- target_label: cluster_id
+  replacement: {{ .ClusterID }}
+# Add cluster_type label.
+- target_label: cluster_type
+  replacement: {{ .ClusterType }}
+# Add provider label.
+- target_label: provider
+  replacement: {{ .Provider }}
+# Add installation label.
+- target_label: installation
+  replacement: {{ .Installation }}`,
+		//		CommonRelabelConfig: "  # Add cluster_id label.\n" +
+		//			"  - target_label: cluster_id\n" +
+		//			"    replacement: {{ .ClusterID }}\n" +
+		//			"  # Add cluster_type label.\n" +
+		//			"  - target_label: cluster_type\n" +
+		//			"    replacement: {{ .ClusterType }}\n" +
+		//			"  # Add provider label.\n" +
+		//			"  - target_label: provider\n" +
+		//			"    replacement: {{ .Provider }}\n" +
+		//			"  # Add installation label.\n" +
+		//			"  - target_label: installation\n" +
+		//			"    replacement: {{ .Installation }}",
 	}
 
 	return d, nil
 }
 
 func renderTemplate(templateData TemplateData, config Config) ([]byte, error) {
-	template, err := template.ParseGlob(config.TemplatePath)
+	template, err := template.New("base").Funcs(sprig.FuncMap()).ParseGlob(config.TemplatePath)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	var b bytes.Buffer
 	for _, t := range template.Templates() {
+		if t.Name() == "base" {
+			continue
+		}
 		err := t.Execute(&b, templateData)
 		if err != nil {
 			return nil, microerror.Mask(err)
