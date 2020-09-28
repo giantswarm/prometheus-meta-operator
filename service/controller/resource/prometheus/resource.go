@@ -182,9 +182,10 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			TLSConfig: &promv1.TLSConfig{
-				CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-				CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-				KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+				CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+				CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+				KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+				InsecureSkipVerify: true,
 			},
 		}
 
