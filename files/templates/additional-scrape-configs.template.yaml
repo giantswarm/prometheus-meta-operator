@@ -122,6 +122,12 @@
   kubernetes_sd_configs:
   - role: pod
 {{ if not .IsInCluster }}
+    api_server: https://{{ .APIServerURL }}
+    tls_config:
+      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
+      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
+      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+      insecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
     cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
