@@ -5,7 +5,7 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -63,7 +63,7 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -121,7 +121,7 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -177,7 +177,7 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -230,7 +230,7 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -286,7 +286,7 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -330,7 +330,7 @@
     namespaces:
       names:
       - kube-system
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -390,7 +390,7 @@
     namespaces:
       names:
       - kube-system
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -450,7 +450,7 @@
     namespaces:
       names:
       - kube-system
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -508,7 +508,7 @@
     namespaces:
       names:
       - kube-system
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -565,7 +565,7 @@
     namespaces:
       names:
       - giantswarm
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -632,7 +632,7 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -697,7 +697,7 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -762,7 +762,7 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -830,7 +830,7 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
@@ -887,7 +887,7 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-{{ if not .IsInCluster }}
+{{ if ne .ClusterType "control_plane" }}
     api_server: https://{{ .APIServerURL }}
     tls_config:
       ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca

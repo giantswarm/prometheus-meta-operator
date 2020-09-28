@@ -135,7 +135,6 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		Installation:   config.Installation,
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
-		IsInCluster:    key.IsInCluster(cluster),
 		Vault:          config.Vault,
 	}
 
