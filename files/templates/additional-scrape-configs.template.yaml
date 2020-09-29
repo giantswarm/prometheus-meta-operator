@@ -5,24 +5,9 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig" . | indent 2 }}
+
   relabel_configs:
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
@@ -52,24 +37,9 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -99,24 +69,9 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: ${1}:9091
@@ -144,24 +99,9 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig" . | indent 2 }}
+
   relabel_configs:
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
@@ -231,24 +171,9 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - target_label: app
     replacement: kubelet
@@ -264,24 +189,9 @@
     namespaces:
       names:
       - kube-system
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10252
@@ -313,24 +223,9 @@
     namespaces:
       names:
       - kube-system
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10251
@@ -362,24 +257,9 @@
     namespaces:
       names:
       - kube-system
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10249
@@ -409,24 +289,9 @@
     namespaces:
       names:
       - kube-system
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -455,24 +320,9 @@
     namespaces:
       names:
       - giantswarm
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -511,24 +361,9 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -565,24 +400,9 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -619,24 +439,9 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: node-exporter
@@ -676,24 +481,9 @@
 {{ else }}
       - kube-system
 {{ end }}
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -722,24 +512,9 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-{{ if ne .ClusterType "control_plane" }}
-    api_server: https://{{ .APIServerURL }}
-    tls_config:
-      ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-      cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-      key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{ include "_apiserver" . }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
     regex: (.*);(.*)
