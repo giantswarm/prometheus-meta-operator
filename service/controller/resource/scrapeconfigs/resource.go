@@ -158,14 +158,25 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 }
 
 func renderTemplate(templateData TemplateData, config Config) ([]byte, error) {
-	tpl, err := template.New("_base").Funcs(sprig.FuncMap()).ParseGlob(path.Join(config.TemplatePath, templatePath))
+	tpl := template.New("_base")
+
+	var funcMap template.FuncMap = map[string]interface{}{}
+	// copied from: https://github.com/helm/helm/blob/8648ccf5d35d682dcd5f7a9c2082f0aaf071e817/pkg/engine/engine.go#L147-L154
+	funcMap["include"] = func(name string, data interface{}) (string, error) {
+		buf := bytes.NewBuffer(nil)
+		if err := tpl.ExecuteTemplate(buf, name, data); err != nil {
+			return "", err
+		}
+		return buf.String(), nil
+	}
+
+	tpl, err := tpl.Funcs(sprig.FuncMap()).Funcs(funcMap).ParseGlob(path.Join(config.TemplatePath, templatePath))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	var b bytes.Buffer
 	for _, t := range tpl.Templates() {
-		fmt.Printf("===== TEMPLATE: %s\n", t.Name())
 		if strings.HasPrefix(t.Name(), "_") {
 			continue
 		}
