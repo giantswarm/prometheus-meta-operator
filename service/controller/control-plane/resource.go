@@ -15,6 +15,9 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
+	promxyApp "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/app"
+	promxyConfigmap "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/configmap"
+	promxyServerGroup "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/servergroup"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
@@ -171,6 +174,44 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var promxyConfigmapResource resource.Interface
+	{
+		c := promxyConfigmap.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		promxyConfigmapResource, err = promxyConfigmap.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+	var promxyAppResource resource.Interface
+	{
+		c := promxyApp.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		promxyAppResource, err = promxyApp.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var promxyServerGroupResource resource.Interface
+	{
+		c := promxyServerGroup.Config{
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Installation: config.Installation,
+		}
+
+		promxyServerGroupResource, err = promxyServerGroup.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
 	resources := []resource.Interface{
 		namespaceResource,
 		tlsCertificatesResource,
@@ -181,6 +222,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertResource,
 		scrapeConfigResource,
 		ingressResource,
+		promxyConfigmapResource,
+		promxyAppResource,
+		promxyServerGroupResource,
 	}
 
 	{

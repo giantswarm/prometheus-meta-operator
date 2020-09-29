@@ -11,10 +11,6 @@ room for such suffix.
 {{- .Release.Name | replace "." "-" | trunc 47 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "resource.networkPolicy.name" -}}
-{{- include "resource.default.name" . -}}-network-policy
-{{- end -}}
-
 {{- define "resource.psp.name" -}}
 {{- include "resource.default.name" . -}}-psp
 {{- end -}}
@@ -26,3 +22,4 @@ room for such suffix.
 {{- define "resource.default.namespace" -}}
 monitoring
 {{- end -}}
+
