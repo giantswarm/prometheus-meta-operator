@@ -5,7 +5,9 @@ import (
 	"html/template"
 	"path"
 	"reflect"
+	"strings"
 
+	"github.com/Masterminds/sprig"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -135,7 +137,6 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		Installation:   config.Installation,
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
-		IsInCluster:    key.IsInCluster(cluster),
 		Vault:          config.Vault,
 	}
 
@@ -143,13 +144,28 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 }
 
 func renderTemplate(templateData TemplateData, config Config) ([]byte, error) {
-	template, err := template.ParseGlob(config.TemplatePath)
+	tpl := template.New("_base")
+
+	var funcMap template.FuncMap = map[string]interface{}{}
+	// copied from: https://github.com/helm/helm/blob/8648ccf5d35d682dcd5f7a9c2082f0aaf071e817/pkg/engine/engine.go#L147-L154
+	funcMap["include"] = func(name string, data interface{}) (string, error) {
+		buf := bytes.NewBuffer(nil)
+		if err := tpl.ExecuteTemplate(buf, name, data); err != nil {
+			return "", err
+		}
+		return buf.String(), nil
+	}
+
+	tpl, err := tpl.Funcs(sprig.FuncMap()).Funcs(funcMap).ParseGlob(config.TemplatePath)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	var b bytes.Buffer
-	for _, t := range template.Templates() {
+	for _, t := range tpl.Templates() {
+		if strings.HasPrefix(t.Name(), "_") {
+			continue
+		}
 		err := t.Execute(&b, templateData)
 		if err != nil {
 			return nil, microerror.Mask(err)
