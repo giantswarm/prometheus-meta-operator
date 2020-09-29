@@ -10,6 +10,8 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
 
+const monitoring = "monitoring"
+
 func ToCluster(obj interface{}) (metav1.Object, error) {
 	clusterMetaObject, ok := obj.(metav1.Object)
 	if !ok {
@@ -28,7 +30,7 @@ func NamespaceDefault(cluster metav1.Object) string {
 }
 
 func NamespaceMonitoring(cluster metav1.Object) string {
-	return "monitoring"
+	return monitoring
 }
 
 func Secret() string {
@@ -113,4 +115,16 @@ func ControlPlaneBearerToken() string {
 
 func ControlPlaneCAFile() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+}
+
+func PromxyConfigMapName() string {
+	return "promxy-app-unique"
+}
+
+func PromxyConfigMapNamespace() string {
+	return monitoring
+}
+
+func PromxyConfigFileName() string {
+	return "config.yaml"
 }
