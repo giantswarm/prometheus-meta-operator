@@ -20,7 +20,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			t.Fatal("cannot get current filename")
 		}
 
-		path := path.Join(path.Dir(filename), "../../../..")
+		path := path.Join(path.Dir(filename), "../../../..", templatePath)
 
 		config := Config{
 			TemplatePath: path,
@@ -64,7 +64,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			t.Fatal("cannot get current filename")
 		}
 
-		path := path.Join(path.Dir(filename), "../../../..")
+		path := path.Join(path.Dir(filename), "../../../..", templatePath)
 
 		config := Config{
 			TemplatePath: path,
@@ -108,7 +108,7 @@ func TestKVMScrapeconfigs(t *testing.T) {
 			t.Fatal("cannot get current filename")
 		}
 
-		path := path.Join(path.Dir(filename), "../../../..")
+		path := path.Join(path.Dir(filename), "../../../..", templatePath)
 
 		config := Config{
 			TemplatePath: path,
