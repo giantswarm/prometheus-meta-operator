@@ -2,7 +2,6 @@ package scrapeconfigs
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"path"
 	"reflect"
@@ -35,16 +34,15 @@ type Config struct {
 }
 
 type TemplateData struct {
-	APIServerURL        string
-	Provider            string
-	ClusterID           string
-	ClusterType         string
-	CommonRelabelConfig string
-	SecretName          string
-	EtcdSecretName      string
-	Installation        string
-	IsInCluster         bool
-	Vault               string
+	APIServerURL   string
+	Provider       string
+	ClusterID      string
+	ClusterType    string
+	SecretName     string
+	EtcdSecretName string
+	Installation   string
+	IsInCluster    bool
+	Vault          string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -140,18 +138,6 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		SecretName:     key.Secret(),
 		EtcdSecretName: key.EtcdSecret(cluster),
 		Vault:          config.Vault,
-		CommonRelabelConfig: fmt.Sprintf(`# Add cluster_id label.
-- target_label: cluster_id
-  replacement: %s
-# Add cluster_type label.
-- target_label: cluster_type
-  replacement: %s
-# Add provider label.
-- target_label: provider
-  replacement: %s
-# Add installation label.
-- target_label: installation
-  replacement: %s`, clusterID, key.ClusterType(cluster), config.Provider, config.Installation),
 	}
 
 	return d, nil
@@ -170,7 +156,7 @@ func renderTemplate(templateData TemplateData, config Config) ([]byte, error) {
 		return buf.String(), nil
 	}
 
-	tpl, err := tpl.Funcs(sprig.FuncMap()).Funcs(funcMap).ParseGlob(path.Join(config.TemplatePath, templatePath))
+	tpl, err := tpl.Funcs(sprig.FuncMap()).Funcs(funcMap).ParseGlob(config.TemplatePath)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
