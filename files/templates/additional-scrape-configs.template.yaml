@@ -51,17 +51,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -98,17 +90,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: ${1}:9091
@@ -143,17 +127,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: false
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig" . | indent 2 }}
+
   relabel_configs:
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
@@ -230,17 +206,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - target_label: app
     replacement: kubelet
@@ -263,17 +231,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10252
@@ -312,17 +272,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10251
@@ -361,17 +313,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10249
@@ -408,17 +352,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -454,17 +390,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -510,17 +438,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -564,17 +484,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -618,17 +530,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: node-exporter
@@ -675,17 +579,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -721,17 +617,9 @@
       cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
       key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
       insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-    cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-    key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
-    insecure_skip_verify: true
-{{ else }}
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-{{ end }}
+{{- end }}
+{{ include "_tlsconfig_skip" . | indent 2 }}
+
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
     regex: (.*);(.*)
