@@ -1,0 +1,65 @@
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: alice
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+  name: alice
+  namespace: alice-prometheus
+spec:
+  additionalScrapeConfigs:
+    key: prometheus-additional.yaml
+    name: additional-scrape-configs
+  apiserverConfig:
+    host: https://master.alice
+    tlsConfig:
+      ca: {}
+      caFile: /etc/prometheus/secrets/cluster-certificates/ca
+      cert: {}
+      certFile: /etc/prometheus/secrets/cluster-certificates/crt
+      keyFile: /etc/prometheus/secrets/cluster-certificates/key
+  arbitraryFSAccessThroughSMs: {}
+  externalLabels:
+    cluster_id: alice
+    cluster_type: tenant_cluster
+  externalUrl: http://prometheus/alice
+  podMetadata:
+    labels:
+      app.kubernetes.io/instance: alice
+      app.kubernetes.io/managed-by: prometheus-meta-operator
+      app.kubernetes.io/name: prometheus
+      giantswarm.io/monitoring: "true"
+  replicas: 1
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+  retention: 2w
+  retentionSize: 45Gi
+  routePrefix: /alice
+  ruleSelector:
+    matchLabels:
+      cluster_id: alice
+  rules:
+    alert: {}
+  secrets:
+  - cluster-certificates
+  securityContext:
+    fsGroup: 2000
+    runAsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceMonitorSelector:
+    matchLabels:
+      cluster_id: alice
+  storage:
+    volumeClaimTemplate:
+      metadata: {}
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+      status: {}
+  walCompression: true

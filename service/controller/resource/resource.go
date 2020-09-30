@@ -28,6 +28,8 @@ type Config struct {
 	StorageSize             string
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
+	RetentionDuration       string
+	RetentionSize           string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -86,11 +88,13 @@ func New(config Config) ([]resource.Interface, error) {
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
-			Address:          config.Address,
-			PrometheusClient: config.PrometheusClient,
-			Logger:           config.Logger,
-			CreatePVC:        config.CreatePVC,
-			StorageSize:      config.StorageSize,
+			Address:           config.Address,
+			PrometheusClient:  config.PrometheusClient,
+			Logger:            config.Logger,
+			CreatePVC:         config.CreatePVC,
+			StorageSize:       config.StorageSize,
+			RetentionDuration: config.RetentionDuration,
+			RetentionSize:     config.RetentionSize,
 		}
 
 		prometheusResource, err = prometheus.New(c)

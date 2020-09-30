@@ -24,6 +24,8 @@ type ControllerConfig struct {
 	Vault                   string
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
+	RetentionDuration       string
+	RetentionSize           string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface

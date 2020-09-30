@@ -24,9 +24,12 @@ data:
       prometheus:
         address: {{ .Values.Installation.V1.Monitoring.Prometheus.Address }}
         baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+        retention:
+          duration: 2w
+          size: 90GB
         storage:
           createPVC: {{ and .Values.Installation.V1.Monitoring.Prometheus.Storage.Enabled .Values.Installation.V1.Monitoring.Prometheus.Storage.CreatePVC }}
-          size: 20Gi
+          size: 100Gi
       security:
         restrictedAccess: 
           enabled: {{ .Values.Installation.V1.Security.RestrictAccess.Enabled }}

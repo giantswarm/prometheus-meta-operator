@@ -27,16 +27,13 @@ type Config struct {
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
 
-	CreatePVC   bool
-	StorageSize string
+	CreatePVC         bool
+	StorageSize       string
+	RetentionDuration string
+	RetentionSize     string
 }
 
 func New(config Config) (*generic.Resource, error) {
-	address, err := url.Parse(config.Address)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.PrometheusClient.MonitoringV1().Prometheuses(namespace)
 		return wrappedClient{client: c}
@@ -48,7 +45,7 @@ func New(config Config) (*generic.Resource, error) {
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
 		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
-			return toPrometheus(v, config.CreatePVC, resource.MustParse(config.StorageSize), address)
+			return toPrometheus(v, config)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -73,7 +70,7 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, address *url.URL) (metav1.Object, error) {
+func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -88,6 +85,11 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 		return nil, microerror.Mask(err)
 	}
 
+	address, err := url.Parse(config.Address)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	var replicas int32 = 1
 	// Configured following https://github.com/coreos/prometheus-operator/issues/541#issuecomment-451884171
 	// as the volume could not mount otherwise
@@ -97,8 +99,12 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 	// Prometheus default image runs using the nobody user (65534)
 	var gid int64 = 65534
 
+	var walCompression bool = true
+
 	var storage promv1.StorageSpec
-	if createPVC {
+	storageSize := resource.MustParse(config.StorageSize)
+
+	if config.CreatePVC {
 		storage = promv1.StorageSpec{
 			VolumeClaimTemplate: promv1.EmbeddedPersistentVolumeClaim{
 				Spec: corev1.PersistentVolumeClaimSpec{
@@ -152,6 +158,9 @@ func toPrometheus(v interface{}, createPVC bool, storageSize resource.Quantity, 
 					corev1.ResourceMemory: *resource.NewQuantity(100*1024*1024, resource.BinarySI),
 				},
 			},
+			Retention:      config.RetentionDuration,
+			RetentionSize:  config.RetentionSize,
+			WALCompression: &walCompression,
 			ServiceMonitorSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					key.ClusterIDKey(): key.ClusterID(cluster),

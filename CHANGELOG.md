@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Changed
+
+- Set retention size to 90Gi and duration to 2w
+- Increased storage to 100Gi
+
 ## [1.4.0] - 2020-09-25
 
 ### Added
