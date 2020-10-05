@@ -32,7 +32,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	index := 0
 	desiredPVC := currentStS.Spec.VolumeClaimTemplates[index]
 
-	pvcName := fmt.Sprintf("%s-%s-0", desiredPVC.GetName(), currentStS.GetName(), index)
+	pvcName := fmt.Sprintf("%s-%s-%d", desiredPVC.GetName(), currentStS.GetName(), index)
 
 	currentPVC, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
