@@ -29,9 +29,12 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	// TODO find by name : prometheus-df3yn-db-prometheus-df3yn-0
-	desiredPVC := currentStS.Spec.VolumeClaimTemplates[0]
+	index := 0
+	desiredPVC := currentStS.Spec.VolumeClaimTemplates[index]
 
-	currentPVC, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, desiredPVC.GetName(), metav1.GetOptions{})
+	pvcName := fmt.Sprintf("%s-%s-0", desiredPVC.GetName(), currentStS.GetName(), index)
+
+	currentPVC, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "PVC NOT FOUND")
 		if *currentStS.Spec.Replicas <= 0 {
@@ -57,7 +60,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		if !reflect.DeepEqual(desiredPVC, currentPVC) {
 			r.logger.LogCtx(ctx, "level", "debug", "message", "PVC DO NOT MATCH; DELETING")
-			err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, desiredPVC.GetName(), metav1.DeleteOptions{})
+			err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, pvcName, metav1.DeleteOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
