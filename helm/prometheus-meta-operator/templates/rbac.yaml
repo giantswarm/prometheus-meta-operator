@@ -50,6 +50,20 @@ rules:
       - create
       - delete
   - apiGroups:
+      - apps
+    resources:
+      - statefulsets
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - persistentvolumeclaims
+    verbs:
+      - get
+      - delete
+  - apiGroups:
       - cluster.x-k8s.io
     resources:
       - clusters
