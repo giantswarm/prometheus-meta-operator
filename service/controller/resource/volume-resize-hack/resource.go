@@ -14,7 +14,6 @@ type Config struct {
 }
 
 type Resource struct {
-	name      string
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 }
