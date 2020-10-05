@@ -19,9 +19,11 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	namespace := key.Namespace(cluster)
+
 	stsName := fmt.Sprintf("prometheus-%s", cluster.GetName())
 	r.logger.LogCtx(ctx, "level", "debug", "message", "creating")
-	currentStS, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(key.Namespace(cluster)).Get(ctx, stsName, metav1.GetOptions{})
+	currentStS, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -29,7 +31,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	// TODO find by name : prometheus-df3yn-db-prometheus-df3yn-0
 	desiredPVC := currentStS.Spec.VolumeClaimTemplates[0]
 
-	currentPVC, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(desiredPVC.GetNamespace()).Get(ctx, desiredPVC.GetName(), metav1.GetOptions{})
+	currentPVC, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, desiredPVC.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "PVC NOT FOUND")
 		if *currentStS.Spec.Replicas <= 0 {
@@ -40,7 +42,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					Replicas: 1,
 				},
 			}
-			_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(key.Namespace(cluster)).UpdateScale(ctx, stsName, scale, metav1.UpdateOptions{})
+			_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).UpdateScale(ctx, stsName, scale, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -55,7 +57,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		if !reflect.DeepEqual(desiredPVC, currentPVC) {
 			r.logger.LogCtx(ctx, "level", "debug", "message", "PVC DO NOT MATCH; DELETING")
-			err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(desiredPVC.GetNamespace()).Delete(ctx, desiredPVC.GetName(), metav1.DeleteOptions{})
+			err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, desiredPVC.GetName(), metav1.DeleteOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -66,7 +68,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					Replicas: 0,
 				},
 			}
-			_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(key.Namespace(cluster)).UpdateScale(ctx, stsName, scale, metav1.UpdateOptions{})
+			_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).UpdateScale(ctx, stsName, scale, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
