@@ -6,10 +6,11 @@ import (
 	"reflect"
 
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	autoscalingv1 "k8s.io/api/autoscaling/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
