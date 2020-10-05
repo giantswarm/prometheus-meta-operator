@@ -16,6 +16,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
+	volumeresizehack "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volume-resize-hack"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -103,6 +104,19 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
+	var volumeResizeHack resource.Interface
+	{
+		c := volumeresizehack.Config{
+			Logger:    config.Logger,
+			K8sClient: config.K8sClient,
+		}
+
+		volumeResizeHack, err = volumeresizehack.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var serviceMonitorResource resource.Interface
 	{
 		c := servicemonitor.Config{
@@ -167,6 +181,7 @@ func New(config Config) ([]resource.Interface, error) {
 		apiCertificatesResource,
 		tlsCertificatesResource,
 		prometheusResource,
+		volumeResizeHack,
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
