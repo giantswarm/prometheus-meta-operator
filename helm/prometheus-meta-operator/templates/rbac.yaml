@@ -53,6 +53,7 @@ rules:
       - apps
     resources:
       - statefulsets
+      - statefulsets/scale
     verbs:
       - get
       - update

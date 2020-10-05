@@ -51,6 +51,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			}
 			r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED UP")
 		} else {
+			// TODO: return nil, when pvc is not present but replicas is set to 1, there's another issue. This resource is not responsible here.
 			return microerror.Mask(err)
 		}
 	} else {
