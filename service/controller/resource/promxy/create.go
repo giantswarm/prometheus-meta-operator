@@ -1,15 +1,13 @@
-package servergroup
+package promxy
 
 import (
 	"context"
 	"fmt"
-	"net/url"
 
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -30,26 +28,24 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	promxyConfiguration, err := promxy.Deserialize(configmap.Data["values.promxy"])
+	promxyConfiguration, err := Deserialize(configmap.Data["config.yaml"])
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	url, err := url.Parse("https://kubernetes.default:443")
+	serverGroup, err := r.toServerGroup(cluster)
 	if err != nil {
 		return microerror.Mask(err)
 	}
-
-	serverGroup := r.toServerGroup(url, cluster)
 	if !promxyConfiguration.Promxy.Contains(serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "adding server group")
 		promxyConfiguration.Promxy.Add(serverGroup)
-		content, err := promxy.Serialize(promxyConfiguration)
+		content, err := Serialize(promxyConfiguration)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		configmap.Data["values.promxy"] = content
+		configmap.Data["config.yaml"] = content
 		_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Update(ctx, configmap, metav1.UpdateOptions{})
 
 		if err != nil {

@@ -128,15 +128,7 @@ rules:
       - configmaps
     verbs:
       - get
-      - create
       - update
-  - apiGroups:
-    - application.giantswarm.io
-    resources:
-    - apps
-    verbs:
-    - get
-    - update
   - nonResourceURLs:
       - "/metrics"
     verbs:

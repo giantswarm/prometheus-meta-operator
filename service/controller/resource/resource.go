@@ -14,7 +14,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
-	promxyServerGroup "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/servergroup"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -158,41 +158,15 @@ func New(config Config) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
-	/*
-		var promxyConfigmapResource resource.Interface
-		{
-			c := promxyConfigmap.Config{
-				K8sClient: config.K8sClient,
-				Logger:    config.Logger,
-			}
-
-			promxyConfigmapResource, err = promxyConfigmap.New(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-		}
-		var promxyAppResource resource.Interface
-		{
-			c := promxyApp.Config{
-				K8sClient: config.K8sClient,
-				Logger:    config.Logger,
-			}
-
-			promxyAppResource, err = promxyApp.New(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-		}
-	*/
-	var promxyServerGroupResource resource.Interface
+	var promxyResource resource.Interface
 	{
-		c := promxyServerGroup.Config{
+		c := promxy.Config{
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
 			Installation: config.Installation,
 		}
 
-		promxyServerGroupResource, err = promxyServerGroup.New(c)
+		promxyResource, err = promxy.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -207,9 +181,7 @@ func New(config Config) ([]resource.Interface, error) {
 		alertResource,
 		scrapeConfigResource,
 		ingressResource,
-		// promxyConfigmapResource,
-		// promxyAppResource,
-		promxyServerGroupResource,
+		promxyResource,
 	}
 
 	{

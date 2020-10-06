@@ -1,4 +1,4 @@
-package servergroup
+package promxy
 
 import (
 	"fmt"
@@ -14,7 +14,6 @@ import (
 	"github.com/prometheus/prometheus/pkg/relabel"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -54,7 +53,7 @@ func (r *Resource) Name() string {
 	return "promxy-server-group"
 }
 
-func (r *Resource) toServerGroup(apiServerURL *url.URL, cluster metav1.Object) promxy.ServerGroup {
+func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 	httpClient := config.HTTPClientConfig{
 		TLSConfig: config.TLSConfig{
 			CAFile:             "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
@@ -63,12 +62,18 @@ func (r *Resource) toServerGroup(apiServerURL *url.URL, cluster metav1.Object) p
 		BearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token",
 	}
 
-	return promxy.ServerGroup{
+	apiServerHost := r.k8sClient.RESTConfig().Host
+	apiServerUrl, err := url.Parse(apiServerHost)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return &ServerGroup{
 		AntiAffinity:   time.Second * 10,
 		Scheme:         "http",
 		RemoteReadPath: "api/v1/read",
 		RemoteRead:     true,
-		HTTPConfig: promxy.HTTPClientConfig{
+		HTTPConfig: HTTPClientConfig{
 			DialTimeout: time.Millisecond * 200, // Default dial timeout of 200ms
 		},
 		Labels: model.LabelSet{
@@ -91,7 +96,7 @@ func (r *Resource) toServerGroup(apiServerURL *url.URL, cluster metav1.Object) p
 		KubernetesSDConfigs: []*kubernetes.SDConfig{
 			&kubernetes.SDConfig{
 				APIServer: config.URL{
-					URL: apiServerURL,
+					URL: apiServerUrl,
 				},
 				Role:             kubernetes.RolePod,
 				HTTPClientConfig: httpClient,
@@ -102,5 +107,5 @@ func (r *Resource) toServerGroup(apiServerURL *url.URL, cluster metav1.Object) p
 				},
 			},
 		},
-	}
+	}, nil
 }

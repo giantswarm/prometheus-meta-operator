@@ -1,4 +1,4 @@
-package app
+package promxy
 
 import (
 	"github.com/giantswarm/microerror"

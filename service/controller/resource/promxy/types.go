@@ -1,11 +1,15 @@
 package promxy
 
 import (
+	"github.com/prometheus/prometheus/config"
 	"gopkg.in/yaml.v2"
 )
 
 type Promxy struct {
-	Promxy PromxyConfig `yaml:"promxy"`
+	// Prometheus configs -- this includes configurations for
+	// recording rules, alerting rules, etc.
+	PromConfig config.Config `yaml:",inline"`
+	Promxy     PromxyConfig  `yaml:"promxy"`
 }
 
 // PromxyConfig is the configuration for Promxy itself
@@ -14,7 +18,7 @@ type PromxyConfig struct {
 	ServerGroups []*ServerGroup `yaml:"server_groups"`
 }
 
-func (p *PromxyConfig) Contains(group ServerGroup) bool {
+func (p *PromxyConfig) Contains(group *ServerGroup) bool {
 	for _, val := range p.ServerGroups {
 		if val.PathPrefix == group.PathPrefix {
 			return true
@@ -23,11 +27,11 @@ func (p *PromxyConfig) Contains(group ServerGroup) bool {
 	return false
 }
 
-func (p *PromxyConfig) Add(group ServerGroup) {
-	p.ServerGroups = append(p.ServerGroups, &group)
+func (p *PromxyConfig) Add(group *ServerGroup) {
+	p.ServerGroups = append(p.ServerGroups, group)
 }
 
-func (p *PromxyConfig) Remove(group ServerGroup) {
+func (p *PromxyConfig) Remove(group *ServerGroup) {
 	var index int
 	for key, val := range p.ServerGroups {
 		if val.PathPrefix == group.PathPrefix {
