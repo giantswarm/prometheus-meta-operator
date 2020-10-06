@@ -96,7 +96,8 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN")
 			scale := &autoscalingv1.Scale{
 				ObjectMeta: metav1.ObjectMeta{
-					Name: stsName,
+					Name:      stsName,
+					Namespace: namespace,
 				},
 				Spec: autoscalingv1.ScaleSpec{
 					Replicas: 0,
@@ -130,7 +131,8 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING UP")
 		scale := &autoscalingv1.Scale{
 			ObjectMeta: metav1.ObjectMeta{
-				Name: stsName,
+				Name:      stsName,
+				Namespace: namespace,
 			},
 			Spec: autoscalingv1.ScaleSpec{
 				Replicas: 1,
