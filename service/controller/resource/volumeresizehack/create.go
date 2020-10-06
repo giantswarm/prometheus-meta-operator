@@ -53,7 +53,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc re-creating was triggered")
+		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc re-creation was triggered")
 	} else {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc do not need to be re-created")
 	}
