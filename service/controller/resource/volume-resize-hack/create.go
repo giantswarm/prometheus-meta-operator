@@ -68,6 +68,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			r.logger.LogCtx(ctx, "level", "debug", "message", "PVC DELETED; SCALING DOWN")
 
 			scale := &autoscalingv1.Scale{
+				ObjectMeta: metav1.ObjectMeta{
+					Name: stsName,
+				},
 				Spec: autoscalingv1.ScaleSpec{
 					Replicas: 0,
 				},
