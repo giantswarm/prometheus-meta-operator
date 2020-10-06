@@ -82,6 +82,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 		r.logger.LogCtx(ctx, "level", "debug", "message", "PAUSED PROMETHEUS")
+		time.Sleep(5 * time.Second)
 
 		if !noPVCnoReplicas {
 			// delete pvc
@@ -91,6 +92,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 			r.logger.LogCtx(ctx, "level", "debug", "message", "DELETED PVC")
+			time.Sleep(5 * time.Second)
 
 			// scale down
 			r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN")
@@ -108,6 +110,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 			r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN")
+			time.Sleep(5 * time.Second)
 
 			// wait 30s for pvc gone
 			r.logger.LogCtx(ctx, "level", "debug", "message", "WAITING PVC")
@@ -125,6 +128,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 			r.logger.LogCtx(ctx, "level", "debug", "message", "WAITED PVC")
+			time.Sleep(5 * time.Second)
 		}
 
 		// scale back up
@@ -143,6 +147,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED UP")
+		time.Sleep(5 * time.Second)
 
 		// unpause
 		r.logger.LogCtx(ctx, "level", "debug", "message", "UNPAUSING PROMETHEUS")
