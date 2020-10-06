@@ -118,7 +118,7 @@ func ControlPlaneCAFile() string {
 }
 
 func PromxyConfigMapName() string {
-	return "promxy-server-groups"
+	return "promxy-app-unique"
 }
 
 func PromxyConfigMapNamespace() string {

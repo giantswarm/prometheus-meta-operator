@@ -11,7 +11,7 @@ type Promxy struct {
 // PromxyConfig is the configuration for Promxy itself
 type PromxyConfig struct {
 	// Config for each of the server groups promxy is configured to aggregate
-	ServerGroups []*ServerGroup `yaml:"serverGroups"`
+	ServerGroups []*ServerGroup `yaml:"server_groups"`
 }
 
 func (p *PromxyConfig) Contains(group ServerGroup) bool {

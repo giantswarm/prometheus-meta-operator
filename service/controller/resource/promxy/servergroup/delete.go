@@ -24,7 +24,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
-	promxyConfiguration, err := promxy.Deserialize(configmap.Data["values"])
+	promxyConfiguration, err := promxy.Deserialize(configmap.Data["values.promxy"])
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -48,7 +48,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		configmap.Data["values"] = content
+		configmap.Data["values.promxy"] = content
 		_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Update(ctx, configmap, metav1.UpdateOptions{})
 
 		if err != nil {
