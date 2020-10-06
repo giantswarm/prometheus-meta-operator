@@ -72,19 +72,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	if noPVCnoReplicas || resize {
-		// pause
-		r.logger.LogCtx(ctx, "level", "debug", "message", "PAUSING PROMETHEUS")
-		currentPrometheus.Spec.Paused = true
-		pausedPrometheus, err := r.prometheusClient.MonitoringV1().Prometheuses(namespace).Update(ctx, currentPrometheus, metav1.UpdateOptions{})
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "PAUSED PROMETHEUS")
-		time.Sleep(5 * time.Second)
-
 		if !noPVCnoReplicas {
 			// delete pvc
-			r.logger.LogCtx(ctx, "level", "debug", "message", "DELETING PVC")
+			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("DELETING PVC %s/%s", namespace, pvcName))
 			err = r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, pvcName, metav1.DeleteOptions{})
 			if err != nil {
 				return microerror.Mask(err)
@@ -92,16 +82,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			r.logger.LogCtx(ctx, "level", "debug", "message", "DELETED PVC")
 			time.Sleep(5 * time.Second)
 		}
-
-		// unpause
-		r.logger.LogCtx(ctx, "level", "debug", "message", "UNPAUSING PROMETHEUS")
-		pausedPrometheus.Spec.Paused = false
-		_, err = r.prometheusClient.MonitoringV1().Prometheuses(namespace).Update(ctx, pausedPrometheus, metav1.UpdateOptions{})
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "UNPAUSED PROMETHEUS")
-
 	} else {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "PVC MATCH")
 	}
