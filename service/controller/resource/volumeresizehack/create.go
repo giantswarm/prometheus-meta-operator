@@ -32,7 +32,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	// Get prometheus
 	prometheusName := key.ClusterID(cluster)
-	currentPrometheus, err := r.prometheusClient.MonitoringV1().Prometheuses(namespace).Get(ctx, prometheusName, metav1.GetOptions{})
+	_, err = r.prometheusClient.MonitoringV1().Prometheuses(namespace).Get(ctx, prometheusName, metav1.GetOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
