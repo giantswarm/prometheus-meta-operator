@@ -21,3 +21,12 @@ var wrongTypeError = &microerror.Error{
 func IsWrongType(err error) bool {
 	return microerror.Cause(err) == wrongTypeError
 }
+
+var pvcExist = &microerror.Error{
+	Kind: "pvcExist",
+}
+
+// IsPvcExist asserts pvcExist.
+func IsPvcExist(err error) bool {
+	return microerror.Cause(err) == pvcExist
+}
