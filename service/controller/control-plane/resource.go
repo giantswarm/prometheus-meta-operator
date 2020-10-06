@@ -119,8 +119,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var volumeResizeHack resource.Interface
 	{
 		c := volumeresizehack.Config{
-			Logger:    config.Logger,
-			K8sClient: config.K8sClient,
+			Logger:           config.Logger,
+			K8sClient:        config.K8sClient,
+			PrometheusClient: config.PrometheusClient,
 		}
 
 		volumeResizeHack, err = volumeresizehack.New(c)
