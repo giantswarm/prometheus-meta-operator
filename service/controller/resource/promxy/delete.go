@@ -2,27 +2,21 @@ package promxy
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/giantswarm/microerror"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	configmapName := key.PromxyConfigMapName()
-	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("checking if %s configmap already exists ", configmapName))
-	configmap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Get(ctx, configmapName, metav1.GetOptions{})
-
-	if apierrors.IsNotFound(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("configmap %s does not exists", configmapName))
-		return nil
-	} else if err != nil {
+	configMap, err := r.getConfigMap(ctx, obj)
+	if err != nil {
 		return microerror.Mask(err)
+	} else if configMap == nil {
+		return nil // Missing config map, we return immediately
 	}
-	promxyConfiguration, err := Deserialize(configmap.Data["config.yaml"])
+
+	config, err := r.readFromConfig(configMap)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -37,20 +31,15 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	if promxyConfiguration.Promxy.Contains(serverGroup) {
+	if config.Promxy.contains(serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "removing server group")
-		promxyConfiguration.Promxy.Remove(serverGroup)
-		content, err := Serialize(promxyConfiguration)
+		config.Promxy.remove(serverGroup)
+
+		err = r.updateConfig(ctx, configMap, config)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		configmap.Data["config.yaml"] = content
-		_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Update(ctx, configmap, metav1.UpdateOptions{})
-
-		if err != nil {
-			return microerror.Mask(err)
-		}
 		r.logger.LogCtx(ctx, "level", "debug", "message", "removed server group")
 	}
 	return nil

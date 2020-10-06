@@ -125,10 +125,6 @@ func PromxyConfigMapNamespace() string {
 	return monitoring
 }
 
-func PromxyAppName() string {
-	return "promxy-app-unique"
-}
-
-func PromxyAppNamespace() string {
-	return "giantswarm"
+func PromxyConfigFileName() string {
+	return "config.yaml"
 }

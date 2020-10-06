@@ -2,33 +2,26 @@ package promxy
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/giantswarm/microerror"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	cluster, err := key.ToCluster(obj)
+	configMap, err := r.getConfigMap(ctx, obj)
+	if err != nil {
+		return microerror.Mask(err)
+	} else if configMap == nil {
+		return nil // Missing config map, we return immediately
+	}
+
+	config, err := r.readFromConfig(configMap)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	configMapName := key.PromxyConfigMapName()
-	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("checking if %s configmap already exists ", configMapName))
-	configmap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Get(ctx, configMapName, metav1.GetOptions{})
-
-	if apierrors.IsNotFound(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("configmap %s does not exists", configMapName))
-		return nil
-	} else if err != nil {
-		return microerror.Mask(err)
-	}
-
-	promxyConfiguration, err := Deserialize(configmap.Data["config.yaml"])
+	cluster, err := key.ToCluster(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -37,20 +30,16 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	if !promxyConfiguration.Promxy.Contains(serverGroup) {
+
+	if !config.Promxy.contains(serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "adding server group")
-		promxyConfiguration.Promxy.Add(serverGroup)
-		content, err := Serialize(promxyConfiguration)
+		config.Promxy.add(serverGroup)
+
+		err = r.updateConfig(ctx, configMap, config)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		configmap.Data["config.yaml"] = content
-		_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Update(ctx, configmap, metav1.UpdateOptions{})
-
-		if err != nil {
-			return microerror.Mask(err)
-		}
 		r.logger.LogCtx(ctx, "level", "debug", "message", "added server group")
 	}
 	return nil

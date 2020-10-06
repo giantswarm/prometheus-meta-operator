@@ -1,6 +1,7 @@
 package promxy
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"time"
@@ -12,6 +13,9 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/discovery/kubernetes"
 	"github.com/prometheus/prometheus/pkg/relabel"
+	"gopkg.in/yaml.v2"
+	v1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -21,12 +25,14 @@ type Config struct {
 	K8sClient    k8sclient.Interface
 	Logger       micrologger.Logger
 	Installation string
+	Provider     string
 }
 
 type Resource struct {
 	k8sClient    k8sclient.Interface
 	logger       micrologger.Logger
 	installation string
+	provider     string
 }
 
 func New(config Config) (*Resource, error) {
@@ -44,13 +50,14 @@ func New(config Config) (*Resource, error) {
 		logger:       config.Logger,
 		k8sClient:    config.K8sClient,
 		installation: config.Installation,
+		provider:     config.Provider,
 	}
 
 	return r, nil
 }
 
 func (r *Resource) Name() string {
-	return "promxy-server-group"
+	return "promxy"
 }
 
 func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
@@ -63,7 +70,7 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 	}
 
 	apiServerHost := r.k8sClient.RESTConfig().Host
-	apiServerUrl, err := url.Parse(apiServerHost)
+	apiServerURL, err := url.Parse(apiServerHost)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -79,6 +86,7 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 		Labels: model.LabelSet{
 			model.LabelName("installation"):     model.LabelValue(r.installation),
 			model.LabelName(key.ClusterIDKey()): model.LabelValue(key.ClusterID(cluster)),
+			model.LabelName("provider"):         model.LabelValue(r.provider),
 		},
 		PathPrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
 		RelabelConfigs: []*relabel.Config{
@@ -96,7 +104,7 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 		KubernetesSDConfigs: []*kubernetes.SDConfig{
 			&kubernetes.SDConfig{
 				APIServer: config.URL{
-					URL: apiServerUrl,
+					URL: apiServerURL,
 				},
 				Role:             kubernetes.RolePod,
 				HTTPClientConfig: httpClient,
@@ -108,4 +116,37 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 			},
 		},
 	}, nil
+}
+
+func (r *Resource) getConfigMap(ctx context.Context, obj interface{}) (*v1.ConfigMap, error) {
+	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("checking if %s config map already exists ", key.PromxyConfigMapName()))
+	configMap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Get(ctx, key.PromxyConfigMapName(), metav1.GetOptions{})
+
+	if apierrors.IsNotFound(err) {
+		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("config map %s does not exists", key.PromxyConfigMapName()))
+		return nil, nil
+	} else if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return configMap, nil
+}
+
+func (r *Resource) readFromConfig(configMap *v1.ConfigMap) (*Promxy, error) {
+	content := configMap.Data[key.PromxyConfigFileName()]
+	config := Promxy{}
+	err := yaml.Unmarshal([]byte(content), &config)
+	return &config, microerror.Mask(err)
+}
+
+func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, config *Promxy) error {
+	bytes, err := yaml.Marshal(config)
+	if err != nil {
+		return err
+	}
+
+	configMap.Data[key.PromxyConfigFileName()] = string(bytes)
+	_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Update(ctx, configMap, metav1.UpdateOptions{})
+
+	return microerror.Mask(err)
 }

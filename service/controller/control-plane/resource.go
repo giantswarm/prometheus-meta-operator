@@ -177,6 +177,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
 			Installation: config.Installation,
+			Provider:     config.Provider,
 		}
 
 		promxyResource, err = promxy.New(c)
