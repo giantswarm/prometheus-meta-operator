@@ -8,7 +8,6 @@ import (
 
 	"github.com/giantswarm/backoff"
 	"github.com/giantswarm/microerror"
-	autoscalingv1 "k8s.io/api/autoscaling/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -96,19 +95,12 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 			// scale down
 			r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN")
-			scale := &autoscalingv1.Scale{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      stsName,
-					Namespace: namespace,
-				},
-				Spec: autoscalingv1.ScaleSpec{
-					Replicas: 0,
-				},
-			}
-			_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).UpdateScale(ctx, stsName, scale, metav1.UpdateOptions{})
+			*currentStS.Spec.Replicas = 0
+			pausedStS, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
+			currentStS = pausedStS
 			r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN")
 			time.Sleep(5 * time.Second)
 
@@ -133,16 +125,8 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		// scale back up
 		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING UP")
-		scale := &autoscalingv1.Scale{
-			ObjectMeta: metav1.ObjectMeta{
-				Name:      stsName,
-				Namespace: namespace,
-			},
-			Spec: autoscalingv1.ScaleSpec{
-				Replicas: 1,
-			},
-		}
-		_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).UpdateScale(ctx, stsName, scale, metav1.UpdateOptions{})
+		*currentStS.Spec.Replicas = 1
+		_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
