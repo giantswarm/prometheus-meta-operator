@@ -7,7 +7,7 @@ import (
 	"github.com/giantswarm/micrologger"
 )
 
-const Name = "volume-resize-hack"
+const Name = "volumeresizehack"
 
 type Config struct {
 	K8sClient        k8sclient.Interface
