@@ -19,10 +19,10 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	// TODO: replace with github.com/jacksontj/promxy/pkg/config
-	// when https://github.com/jacksontj/promxy/tree/master/pkg/config is resolved
+	// when https://github.com/jacksontj/promxy/issues/352 is resolved.
 	proxyconfig "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/config"
 	// TODO: replace with github.com/jacksontj/promxy/pkg/servergroup
-	// when https://github.com/jacksontj/promxy/tree/master/pkg/config is resolved
+	// when https://github.com/jacksontj/promxy/issues/352 is resolved.
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/servergroup"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
