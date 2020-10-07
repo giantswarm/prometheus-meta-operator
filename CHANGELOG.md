@@ -10,6 +10,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.5.0] - 2020-10-07
 
+### Added
+
+- Support for managing Promxy configuration
+
+### Removed
+
+- Old namespace deleter resource
+
 ## [1.4.0] - 2020-09-25
 
 ### Added
