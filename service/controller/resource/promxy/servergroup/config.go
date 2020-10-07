@@ -83,7 +83,7 @@ type Config struct {
 	RelabelConfigs []*relabel.Config `yaml:"relabel_configs,omitempty"`
 	// Hosts is a set of ServiceDiscoveryConfig options that allow promxy to discover
 	// all hosts in the server_group
-	Hosts discovery.Configs `yaml:"-"`
+	Hosts discovery.Configs `yaml:",inline"`
 	// PathPrefix to prepend to all queries to hosts in this servergroup
 	PathPrefix string `yaml:"path_prefix"`
 	// QueryParams are a map of query params to add to all HTTP calls made to this downstream
