@@ -6,7 +6,6 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/ghodss/yaml"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -14,6 +13,7 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/discovery/kubernetes"
 	"github.com/prometheus/prometheus/pkg/relabel"
+	"gopkg.in/yaml.v2"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
