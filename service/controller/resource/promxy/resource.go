@@ -144,13 +144,14 @@ func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, co
 
 	return nil
 }
-func promxyAdd(p proxyconfig.PromxyConfig, group *ServerGroup) proxyconfig.PromxyConfig {
+
+func promxyAdd(p proxyconfig.PromxyConfig, group *servergroup.Config) proxyconfig.PromxyConfig {
 	p.ServerGroups = append(p.ServerGroups, group)
 
 	return p
 }
 
-func promxyRemove(p proxyconfig.PromxyConfig, group *ServerGroup) proxyconfig.PromxyConfig {
+func promxyRemove(p proxyconfig.PromxyConfig, group *servergroup.Config) proxyconfig.PromxyConfig {
 	var index int
 	for key, val := range p.ServerGroups {
 		if val.PathPrefix == group.PathPrefix {
