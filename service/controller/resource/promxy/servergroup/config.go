@@ -2,7 +2,10 @@ package servergroup
 
 import (
 	"fmt"
+	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 
 	config_util "github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
@@ -129,13 +132,63 @@ func (c *Config) GetAntiAffinity() model.Time {
 }
 
 func (c *Config) MarhsalYAML() (interface{}, error) {
-	return c.Hosts.MarshalYAML()
+	return discovery.MarshalYAMLWithInlineConfigs(c)
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
 func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*c = DefaultConfig
-	return c.Hosts.UnmarshalYAML(unmarshal)
+	if err := discovery.UnmarshalYAMLWithInlineConfigs(c, unmarshal); err != nil {
+		return err
+	}
+
+	// The UnmarshalYAML method of HTTPClientConfig is not being called because it's not a pointer.
+	// We cannot make it a pointer as the parser panics for inlined pointer structs.
+	// Thus we just do its validation here.
+	if err := c.HTTPConfig.HTTPConfig.Validate(); err != nil {
+		return err
+	}
+
+	// Check for users putting URLs in target groups.
+	if len(c.RelabelConfigs) == 0 {
+		if err := checkStaticTargets(c.Hosts); err != nil {
+			return err
+		}
+	}
+
+	for _, rlcfg := range c.RelabelConfigs {
+		if rlcfg == nil {
+			return errors.New("empty or null target relabeling rule in scrape config")
+		}
+	}
+
+	return nil
+}
+
+func checkStaticTargets(configs discovery.Configs) error {
+	for _, cfg := range configs {
+		sc, ok := cfg.(discovery.StaticConfig)
+		if !ok {
+			continue
+		}
+		for _, tg := range sc {
+			for _, t := range tg.Targets {
+				if err := CheckTargetAddress(t[model.AddressLabel]); err != nil {
+					return err
+				}
+			}
+		}
+	}
+	return nil
+}
+
+// CheckTargetAddress checks if target address is valid.
+func CheckTargetAddress(address model.LabelValue) error {
+	// For now check for a URL, we may want to expand this later.
+	if strings.Contains(string(address), "/") {
+		return errors.Errorf("%q is not a valid hostname", address)
+	}
+	return nil
 }
 
 // HTTPClientConfig extends prometheus' HTTPClientConfig
