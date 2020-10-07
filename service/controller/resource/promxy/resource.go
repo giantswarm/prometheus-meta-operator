@@ -12,12 +12,14 @@ import (
 	"github.com/giantswarm/micrologger"
 	"github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
+	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/discovery/kubernetes"
 	"github.com/prometheus/prometheus/pkg/relabel"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	proxyconfig "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/config"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/servergroup"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -60,7 +62,7 @@ func (r *Resource) Name() string {
 	return "promxy"
 }
 
-func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
+func (r *Resource) toServerGroup(cluster metav1.Object) (*servergroup.Config, error) {
 	httpClient := config.HTTPClientConfig{
 		TLSConfig: config.TLSConfig{
 			CAFile:             "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
@@ -75,11 +77,11 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	return &ServerGroup{
+	return &servergroup.Config{
 		Scheme:         "http",
 		RemoteReadPath: "api/v1/read",
 		RemoteRead:     true,
-		HTTPConfig: HTTPClientConfig{
+		HTTPConfig: servergroup.HTTPClientConfig{
 			DialTimeout: time.Millisecond * 200, // Default dial timeout of 200ms
 		},
 		Labels: model.LabelSet{
@@ -100,7 +102,7 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 				Regex:     relabel.MustNewRegexp(fmt.Sprintf("prometheus-meta-operator;prometheus;%s", key.ClusterID(cluster))),
 			},
 		},
-		KubernetesSDConfigs: []*kubernetes.SDConfig{
+		Hosts: discovery.Configs{
 			&kubernetes.SDConfig{
 				APIServer: config.URL{
 					URL: apiServerURL,
