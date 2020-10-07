@@ -128,14 +128,14 @@ func (c *Config) GetAntiAffinity() model.Time {
 	return model.TimeFromUnix(int64((c.AntiAffinity).Seconds()))
 }
 
+func (c *Config) MarhsalYAML() (interface{}, error) {
+	return c.Hosts.MarshalYAML()
+}
+
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
 func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	*c = DefaultConfig
-	// We want to set c to the defaults and then overwrite it with the input.
-	// To make unmarshal fill the plain data struct rather than calling UnmarshalYAML
-	// again, we have to hide it using a type indirection.
-	type plain Config
-	return unmarshal((*plain)(c))
+	return c.Hosts.UnmarshalYAML(unmarshal)
 }
 
 // HTTPClientConfig extends prometheus' HTTPClientConfig
