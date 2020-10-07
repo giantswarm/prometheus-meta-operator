@@ -40,7 +40,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if server group must be added")
 	if !config.Promxy.contains(serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "adding server group")
-		config.Promxy.add(serverGroup)
+		config.Promxy = promxyAdd(config.Promxy, serverGroup)
 
 		err = r.updateConfig(ctx, configMap, config)
 		if err != nil {

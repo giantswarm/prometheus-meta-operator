@@ -39,7 +39,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 	if config.Promxy.contains(serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "removing server group")
-		config.Promxy.remove(serverGroup)
+		config.Promxy = promxyRemove(config.Promxy, serverGroup)
 
 		err = r.updateConfig(ctx, configMap, config)
 		if err != nil {

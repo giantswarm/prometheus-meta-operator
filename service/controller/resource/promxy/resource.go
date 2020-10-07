@@ -143,3 +143,20 @@ func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, co
 
 	return nil
 }
+func promxyAdd(p PromxyConfig, group *ServerGroup) PromxyConfig {
+	p.ServerGroups = append(p.ServerGroups, group)
+
+	return p
+}
+
+func promxyRemove(p PromxyConfig, group *ServerGroup) PromxyConfig {
+	var index int
+	for key, val := range p.ServerGroups {
+		if val.PathPrefix == group.PathPrefix {
+			index = key
+		}
+	}
+	p.ServerGroups = append(p.ServerGroups[:index], p.ServerGroups[index+1:]...)
+
+	return p
+}

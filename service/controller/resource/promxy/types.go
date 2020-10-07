@@ -39,20 +39,6 @@ func (p *PromxyConfig) contains(group *ServerGroup) bool {
 	return false
 }
 
-func (p *PromxyConfig) add(group *ServerGroup) {
-	p.ServerGroups = append(p.ServerGroups, group)
-}
-
-func (p *PromxyConfig) remove(group *ServerGroup) {
-	var index int
-	for key, val := range p.ServerGroups {
-		if val.PathPrefix == group.PathPrefix {
-			index = key
-		}
-	}
-	p.ServerGroups = append(p.ServerGroups[:index], p.ServerGroups[index+1:]...)
-}
-
 // ServerGroup is the configuration for a ServerGroup that promxy will talk to.
 // This is where the vast majority of options exist.
 type ServerGroup struct {
