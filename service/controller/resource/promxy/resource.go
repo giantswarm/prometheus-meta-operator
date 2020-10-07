@@ -17,6 +17,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	proxyconfig "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/config"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -116,19 +117,19 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 	}, nil
 }
 
-func (r *Resource) readFromConfig(configMap *v1.ConfigMap) (*Promxy, error) {
+func (r *Resource) readFromConfig(configMap *v1.ConfigMap) (*proxyconfig.Config, error) {
 	content, ok := configMap.Data[key.PromxyConfigFileName()]
 	if !ok {
 		return nil, microerror.Mask(invalidConfigError)
 	}
 
-	config := Promxy{}
+	config := proxyconfig.Config{}
 	err := yaml.Unmarshal([]byte(content), &config)
 	return &config, microerror.Mask(err)
 
 }
 
-func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, config *Promxy) error {
+func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, config *proxyconfig.Config) error {
 	bytes, err := yaml.Marshal(config)
 	if err != nil {
 		return err
@@ -143,13 +144,13 @@ func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, co
 
 	return nil
 }
-func promxyAdd(p PromxyConfig, group *ServerGroup) PromxyConfig {
+func promxyAdd(p proxyconfig.PromxyConfig, group *ServerGroup) proxyconfig.PromxyConfig {
 	p.ServerGroups = append(p.ServerGroups, group)
 
 	return p
 }
 
-func promxyRemove(p PromxyConfig, group *ServerGroup) PromxyConfig {
+func promxyRemove(p proxyconfig.PromxyConfig, group *ServerGroup) proxyconfig.PromxyConfig {
 	var index int
 	for key, val := range p.ServerGroups {
 		if val.PathPrefix == group.PathPrefix {
