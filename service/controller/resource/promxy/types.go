@@ -11,6 +11,11 @@ import (
 	"github.com/prometheus/prometheus/pkg/relabel"
 )
 
+// Promxy defines the content of promxy configuration file.
+// This structure is copied over from godoc.org/github.com/jacksontj/promxy/pkg/config#Config as Promxy
+// is relying on prometheus 1.8 and we are using prometheus 2.20 with implies some changes in prometheus types
+// and makes the defautl promxy struct incompatible with our codebase.
+// TODO, move to promxy type once https://github.com/jacksontj/promxy/issues/352 is resolved
 type Promxy struct {
 	// Prometheus configs that includes configurations for
 	// recording rules, alerting rules, etc.

@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/ghodss/yaml"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -13,9 +14,7 @@ import (
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/discovery/kubernetes"
 	"github.com/prometheus/prometheus/pkg/relabel"
-	"gopkg.in/yaml.v2"
 	v1 "k8s.io/api/core/v1"
-	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -76,7 +75,6 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 	}
 
 	return &ServerGroup{
-		AntiAffinity:   time.Second * 10,
 		Scheme:         "http",
 		RemoteReadPath: "api/v1/read",
 		RemoteRead:     true,
@@ -118,25 +116,16 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 	}, nil
 }
 
-func (r *Resource) getConfigMap(ctx context.Context, obj interface{}) (*v1.ConfigMap, error) {
-	r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("checking if %s config map already exists ", key.PromxyConfigMapName()))
-	configMap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Get(ctx, key.PromxyConfigMapName(), metav1.GetOptions{})
-
-	if apierrors.IsNotFound(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("config map %s does not exists", key.PromxyConfigMapName()))
-		return nil, nil
-	} else if err != nil {
-		return nil, microerror.Mask(err)
+func (r *Resource) readFromConfig(configMap *v1.ConfigMap) (*Promxy, error) {
+	content, ok := configMap.Data[key.PromxyConfigFileName()]
+	if !ok {
+		return nil, microerror.Mask(invalidConfigError)
 	}
 
-	return configMap, nil
-}
-
-func (r *Resource) readFromConfig(configMap *v1.ConfigMap) (*Promxy, error) {
-	content := configMap.Data[key.PromxyConfigFileName()]
 	config := Promxy{}
 	err := yaml.Unmarshal([]byte(content), &config)
 	return &config, microerror.Mask(err)
+
 }
 
 func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, config *Promxy) error {
@@ -148,5 +137,9 @@ func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, co
 	configMap.Data[key.PromxyConfigFileName()] = string(bytes)
 	_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Update(ctx, configMap, metav1.UpdateOptions{})
 
-	return microerror.Mask(err)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
 }

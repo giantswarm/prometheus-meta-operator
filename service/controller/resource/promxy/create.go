@@ -4,16 +4,21 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	configMap, err := r.getConfigMap(ctx, obj)
-	if err != nil {
+	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if promxy config map already exists")
+	configMap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Get(ctx, key.PromxyConfigMapName(), metav1.GetOptions{})
+
+	if apierrors.IsNotFound(err) {
+		r.logger.LogCtx(ctx, "level", "debug", "message", "promxy needs to be updated")
+		return nil
+	} else if err != nil {
 		return microerror.Mask(err)
-	} else if configMap == nil {
-		return nil // Missing config map, we return immediately
 	}
 
 	config, err := r.readFromConfig(configMap)
