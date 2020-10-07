@@ -15,6 +15,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
@@ -170,7 +171,20 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
+	var promxyResource resource.Interface
+	{
+		c := promxy.Config{
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Installation: config.Installation,
+			Provider:     config.Provider,
+		}
 
+		promxyResource, err = promxy.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
 	resources := []resource.Interface{
 		namespaceResource,
 		tlsCertificatesResource,
@@ -181,6 +195,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertResource,
 		scrapeConfigResource,
 		ingressResource,
+		promxyResource,
 	}
 
 	{
