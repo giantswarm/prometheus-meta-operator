@@ -31,7 +31,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	if !config.Promxy.contains(serverGroup) {
+	if !config.Promxy.contains(serverGroup) || config.Promxy.needsUpdate(serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "promxy configmap needs to be updated")
 		r.logger.LogCtx(ctx, "level", "debug", "message", "adding server group")
 		config.Promxy.add(serverGroup)

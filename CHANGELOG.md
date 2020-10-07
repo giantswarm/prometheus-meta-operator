@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix promxy config marshaling
+- Fix promxy config not being updated
+
 ## [1.5.0] - 2020-10-07
 
 ### Added

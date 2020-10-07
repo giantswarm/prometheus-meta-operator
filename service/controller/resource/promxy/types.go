@@ -2,6 +2,7 @@ package promxy
 
 import (
 	"fmt"
+	"reflect"
 	"time"
 
 	config_util "github.com/prometheus/common/config"
@@ -34,6 +35,15 @@ func (p *PromxyConfig) contains(group *ServerGroup) bool {
 	for _, val := range p.ServerGroups {
 		if val.PathPrefix == group.PathPrefix {
 			return true
+		}
+	}
+	return false
+}
+
+func (p *PromxyConfig) needsUpdate(group *ServerGroup) bool {
+	for _, val := range p.ServerGroups {
+		if val.PathPrefix == group.PathPrefix {
+			return !reflect.DeepEqual(val, group)
 		}
 	}
 	return false
