@@ -35,7 +35,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	if promxyContains(config.PromxyConfig, serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "promxy configmap needs to be updated")
 		r.logger.LogCtx(ctx, "level", "debug", "message", "removing server group")
-		config.Promxy.remove(serverGroup)
+		config.PromxyConfig = promxyRemove(config.PromxyConfig, serverGroup)
 
 		err = r.updateConfig(ctx, configMap, config)
 		if err != nil {
