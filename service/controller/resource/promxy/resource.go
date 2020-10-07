@@ -161,3 +161,12 @@ func promxyRemove(p proxyconfig.PromxyConfig, group *ServerGroup) proxyconfig.Pr
 
 	return p
 }
+
+func promxyContains(p proxyconfig.PromxyConfig, group *servergroup.Config) bool {
+	for _, val := range p.ServerGroups {
+		if val.PathPrefix == group.PathPrefix {
+			return true
+		}
+	}
+	return false
+}
