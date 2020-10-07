@@ -8,7 +8,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy/servergroup"
 
-	"github.com/ghodss/yaml"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // DefaultPromxyConfig is the default promxy config that the config file
