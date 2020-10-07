@@ -21,6 +21,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "reading promxy config")
 	config, err := r.readFromConfig(configMap)
 	if err != nil {
 		return microerror.Mask(err)

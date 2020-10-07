@@ -21,6 +21,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "reading promxy config")
 	config, err := r.readFromConfig(configMap)
 	if err != nil {
 		return microerror.Mask(err)
@@ -36,6 +37,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
+	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if server group must be added")
 	if !config.Promxy.contains(serverGroup) {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "adding server group")
 		config.Promxy.add(serverGroup)
