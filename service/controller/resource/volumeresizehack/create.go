@@ -89,6 +89,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		// scale back up
 		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN AGAIN")
 		currentStS, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
+		if err != nil {
+			return microerror.Mask(err)
+		}
 		*currentStS.Spec.Replicas = 0
 		_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
 		if err != nil {
