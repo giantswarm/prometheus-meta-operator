@@ -61,11 +61,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		// scale down
 		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN")
 		*currentStS.Spec.Replicas = 0
-		pausedStS, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
+		_, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		currentStS = pausedStS
 		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN")
 		time.Sleep(5 * time.Second)
 
@@ -88,13 +87,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		time.Sleep(5 * time.Second)
 
 		// scale back up
-		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING UP")
-		*currentStS.Spec.Replicas = 1
+		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN AGAIN")
+		currentStS, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
+		*currentStS.Spec.Replicas = 0
 		_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED UP")
+		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN AGAIN")
 		time.Sleep(5 * time.Second)
 		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc re-creation was triggered")
 	} else {
