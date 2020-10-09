@@ -22,7 +22,6 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/spf13/viper v1.6.2
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9
-	gopkg.in/yaml.v2 v2.3.0
 	k8s.io/api v0.18.5
 	k8s.io/apiextensions-apiserver v0.18.5
 	k8s.io/apimachinery v0.18.5
