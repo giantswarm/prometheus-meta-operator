@@ -31,7 +31,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	if len(currentStS.Spec.VolumeClaimTemplates) <= 0 {
+	if len(currentStS.Spec.VolumeClaimTemplates) < 1 {
 		// No PVC template found in StS, nothing to resize. Skip this resource.
 		r.logger.LogCtx(ctx, "level", "debug", "message", "skipping, no pvc found in sts")
 		return nil
@@ -42,67 +42,73 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	desiredPVC := currentStS.Spec.VolumeClaimTemplates[index]
 	pvcName := fmt.Sprintf("%s-%s-%d", desiredPVC.GetName(), currentStS.GetName(), index)
 	currentPVC, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, metav1.GetOptions{})
-	if err != nil {
-		// Skip when we cannot get PVC.
-		r.logger.LogCtx(ctx, "level", "debug", "message", "skipping, cannot get pvc", "error", microerror.Mask(err))
-		return nil
-	}
-
-	if !reflect.DeepEqual(desiredPVC.Spec.Resources.Requests, currentPVC.Spec.Resources.Requests) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc need to be re-created")
-
-		// delete pvc
-		err = r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, pvcName, metav1.DeleteOptions{})
+	if apierrors.IsNotFound(err) {
+		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc is missing, need to be re-created")
+	} else {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "PVC DELETED")
+		if !reflect.DeepEqual(desiredPVC.Spec.Resources.Requests, currentPVC.Spec.Resources.Requests) {
+			r.logger.LogCtx(ctx, "level", "debug", "message", "pvc has wrong size, need to be re-created")
 
-		// scale down
-		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN")
-		*currentStS.Spec.Replicas = 0
-		_, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN")
-		time.Sleep(5 * time.Second)
-
-		// wait 30s for pvc gone
-		r.logger.LogCtx(ctx, "level", "debug", "message", "WAITING PVC")
-		o := func() error {
-			_, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, metav1.GetOptions{})
-			if apierrors.IsNotFound(err) {
-				return nil
+			// delete pvc
+			{
+				err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Delete(ctx, pvcName, metav1.DeleteOptions{})
+				if err != nil {
+					return microerror.Mask(err)
+				}
+				r.logger.LogCtx(ctx, "level", "debug", "message", "PVC DELETED")
 			}
 
-			return microerror.Mask(pvcExist)
-		}
-		b := backoff.NewMaxRetries(6, 5*time.Second)
-		err = backoff.Retry(o, b)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "WAITED PVC")
-		time.Sleep(5 * time.Second)
+			// scale down
+			{
+				r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN")
+				*currentStS.Spec.Replicas = 0
+				_, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
+				if err != nil {
+					return microerror.Mask(err)
+				}
+				r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN")
+			}
 
-		// scale back up
-		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN AGAIN")
-		currentStS, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
-		if err != nil {
-			return microerror.Mask(err)
+			// wait 30s for pvc gone
+			{
+				r.logger.LogCtx(ctx, "level", "debug", "message", "WAITING PVC")
+				o := func() error {
+					_, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, metav1.GetOptions{})
+					if apierrors.IsNotFound(err) {
+						return nil
+					}
+
+					return microerror.Mask(pvcExist)
+				}
+				b := backoff.NewMaxRetries(6, 5*time.Second)
+				err := backoff.Retry(o, b)
+				if err != nil {
+					return microerror.Mask(err)
+				}
+				r.logger.LogCtx(ctx, "level", "debug", "message", "WAITED PVC")
+			}
+		} else {
+			r.logger.LogCtx(ctx, "level", "debug", "message", "pvc do not need to be re-created")
+			return nil
 		}
-		*currentStS.Spec.Replicas = 0
-		_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN AGAIN")
-		time.Sleep(5 * time.Second)
-		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc re-creation was triggered")
-	} else {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc do not need to be re-created")
 	}
+
+	// scale down again
+	r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN AGAIN")
+	currentStS, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	*currentStS.Spec.Replicas = 0
+	_, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN AGAIN")
+
+	r.logger.LogCtx(ctx, "level", "debug", "message", "pvc re-created")
 
 	return nil
 }
