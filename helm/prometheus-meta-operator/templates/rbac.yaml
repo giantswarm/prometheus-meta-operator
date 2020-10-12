@@ -49,6 +49,7 @@ rules:
     verbs:
       - create
       - delete
+  # TODO: remove rules for both statefulsets and persistentvolumeclaims once resizing is done.
   - apiGroups:
       - apps
     resources:
