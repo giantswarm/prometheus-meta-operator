@@ -177,6 +177,12 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				},
 				Key: key.PrometheusAdditionalScrapeConfigsName(),
 			},
+			AdditionalAlertManagerConfigs: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: key.AlertManagerSecretName(),
+				},
+				Key: key.AlertManagerKey(),
+			},
 			SecurityContext: &v1.PodSecurityContext{
 				RunAsUser:    &uid,
 				RunAsGroup:   &gid,

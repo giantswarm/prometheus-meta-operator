@@ -81,6 +81,14 @@ func PrometheusAdditionalScrapeConfigsName() string {
 	return "prometheus-additional.yaml"
 }
 
+func AlertManagerSecretName() string {
+	return "alertmanager-config"
+}
+
+func AlertManagerKey() string {
+	return "alertmanager-additional.yaml"
+}
+
 func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
 	case *v1.Service:
