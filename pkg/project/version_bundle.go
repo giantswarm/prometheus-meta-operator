@@ -9,7 +9,7 @@ func NewVersionBundle() versionbundle.Bundle {
 		Changelogs: []versionbundle.Changelog{
 			{
 				Component:   "prometheus-meta-operator",
-				Description: "TODO",
+				Description: "The prometheus-meta-operator manages Kubernetes clusters monitoring.",
 				Kind:        versionbundle.KindChanged,
 			},
 		},

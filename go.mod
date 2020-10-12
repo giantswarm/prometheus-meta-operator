@@ -20,12 +20,16 @@ require (
 	github.com/google/go-cmp v0.5.1
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
+	github.com/prometheus/common v0.13.0
+	github.com/prometheus/prometheus v2.21.0+incompatible
 	github.com/spf13/viper v1.6.2
-	golang.org/x/net v0.0.0-20200602114024-627f9648deb9
-	k8s.io/api v0.18.5
+	golang.org/x/crypto v0.0.0-20200930160638-afb6bcd081ae // indirect
+	golang.org/x/net v0.0.0-20200822124328-c89045814202
+	gopkg.in/yaml.v2 v2.3.0
+	k8s.io/api v0.18.8
 	k8s.io/apiextensions-apiserver v0.18.5
-	k8s.io/apimachinery v0.18.5
-	k8s.io/client-go v0.18.5
+	k8s.io/apimachinery v0.18.8
+	k8s.io/client-go v0.18.8
 	sigs.k8s.io/cluster-api v0.3.7
 	sigs.k8s.io/controller-runtime v0.6.1
 )
