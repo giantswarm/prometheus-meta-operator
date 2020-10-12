@@ -1,0 +1,13 @@
+metadata:
+  creationTimestamp: null
+  name: alertmanager-config
+  namespace: alice-prometheus
+stringData:
+  alertmanager-additional.yaml: |
+    - static_configs:
+      - targets:
+        - alertmanager.monitoring:9093
+      scheme: http
+      timeout: 10s
+      api_version: v1
+type: Opaque
