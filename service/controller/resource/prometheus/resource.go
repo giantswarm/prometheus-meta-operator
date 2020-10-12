@@ -225,11 +225,10 @@ func alertManagerConfig() *promv1.AlertingSpec {
 	return &promv1.AlertingSpec{
 		Alertmanagers: []promv1.AlertmanagerEndpoints{
 			promv1.AlertmanagerEndpoints{
-				Namespace:  "monitoring",
-				Name:       "alertmanager",
-				Port:       intstr.FromInt(9093),
-				Scheme:     "http",
-				APIVersion: "v2",
+				Namespace: "monitoring",
+				Name:      "alertmanager",
+				Port:      intstr.FromInt(9093),
+				Scheme:    "http",
 			},
 		},
 	}
