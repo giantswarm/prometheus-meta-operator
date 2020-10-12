@@ -7,7 +7,6 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/coreos/prometheus-operator v0.41.1
-	github.com/ghodss/yaml v1.0.0
 	github.com/giantswarm/apiextensions/v2 v2.1.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/k8sclient/v4 v4.0.0
@@ -32,4 +31,5 @@ require (
 	k8s.io/client-go v0.18.8
 	sigs.k8s.io/cluster-api v0.3.7
 	sigs.k8s.io/controller-runtime v0.6.1
+	sigs.k8s.io/yaml v1.2.0
 )

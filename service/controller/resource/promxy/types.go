@@ -20,15 +20,15 @@ import (
 type Promxy struct {
 	// Prometheus configs that includes configurations for
 	// recording rules, alerting rules, etc.
-	PromConfig config.Config `yaml:",inline"`
+	PromConfig config.Config `json:",inline" yaml:",inline"`
 	// Promxy specific configuration
-	Promxy PromxyConfig `yaml:"promxy"`
+	Promxy PromxyConfig `json:"promxy" yaml:"promxy"`
 }
 
 // PromxyConfig is the configuration for Promxy itself
 type PromxyConfig struct {
 	// Config for each of the server groups promxy is configured to aggregate
-	ServerGroups []*ServerGroup `yaml:"server_groups"`
+	ServerGroups []*ServerGroup `json:"server_groups" yaml:"server_groups"`
 }
 
 func (p *PromxyConfig) contains(group *ServerGroup) bool {
@@ -84,17 +84,17 @@ type ServerGroup struct {
 	// The only option that exists in reality is the "remote read" API -- which suffers
 	// from the same memory-balooning problems that the HTTP+JSON API originally had.
 	// It has **less** of a problem (its 2x memory instead of 14x) so it is a viable option.
-	RemoteRead bool `yaml:"remote_read"`
+	RemoteRead bool `json:"remote_read" yaml:"remote_read"`
 	// RemoteReadPath sets the remote read path for the hosts in this servergroup
-	RemoteReadPath string `yaml:"remote_read_path"`
+	RemoteReadPath string `json:"remote_read_path" yaml:"remote_read_path"`
 	// HTTP client config for promxy to use when connecting to the various server_groups
 	// this is the same config as prometheus
-	HTTPConfig HTTPClientConfig `yaml:"http_client"`
+	HTTPConfig HTTPClientConfig `json:"http_client" yaml:"http_client"`
 	// Scheme defines how promxy talks to this server group (http, https, etc.)
-	Scheme string `yaml:"scheme"`
+	Scheme string `json:"scheme" yaml:"scheme"`
 	// Labels is a set of labels that will be added to all metrics retrieved
 	// from this server group
-	Labels model.LabelSet `yaml:"labels"`
+	Labels model.LabelSet `json:"labels" yaml:"labels"`
 	// RelabelConfigs are similar in function and identical in configuration as prometheus'
 	// relabel config for scrape jobs. The difference here being that the source labels
 	// you can pull from are from the downstream servergroup target and the labels you are
@@ -121,16 +121,16 @@ type ServerGroup struct {
 	//
 	// So in reality its "the same", the difference is in prometheus these apply to the labels/targets of a scrape job,
 	// in promxy they apply to the prometheus hosts in the servergroup - but the behavior is the same.
-	RelabelConfigs []*relabel.Config `yaml:"relabel_configs,omitempty"`
+	RelabelConfigs []*relabel.Config `json:"relabel_configs,omitempty" yaml:"relabel_configs,omitempty"`
 	// Hosts is a set of discovery.Config options that allow promxy to discover
 	// all hosts in the server_group
-	KubernetesSDConfigs []*kubernetes.SDConfig `yaml:"kubernetes_sd_configs,omitempty"`
+	KubernetesSDConfigs []*kubernetes.SDConfig `json:"kubernetes_sd_configs,omitempty" yaml:"kubernetes_sd_configs,omitempty"`
 	// PathPrefix to prepend to all queries to hosts in this servergroup
-	PathPrefix string `yaml:"path_prefix"`
+	PathPrefix string `json:"path_prefix" yaml:"path_prefix"`
 	// QueryParams are a map of query params to add to all HTTP calls made to this downstream
 	// the main use-case for this is to add `nocache=1` to VictoriaMetrics downstreams
 	// (see https://github.com/jacksontj/promxy/issues/202)
-	QueryParams map[string]string `yaml:"query_params,omitempty"`
+	QueryParams map[string]string `json:"query_params,omitempty" yaml:"query_params,omitempty"`
 	// TODO cache this as a model.Time after unmarshal
 	// AntiAffinity defines how large of a gap in the timeseries will cause promxy
 	// to merge series from 2 hosts in a server_group. This required for a couple reasons
@@ -141,22 +141,22 @@ type ServerGroup struct {
 	// cause variable scrape completion time (slow exporter, serial exporter, network latency, etc.)
 	// any one of these can cause the resulting data in prometheus to have the same time but in reality
 	// come from different points in time. Best practice for this value is to set it to your scrape interval
-	AntiAffinity time.Duration `yaml:"anti_affinity,omitempty"`
+	AntiAffinity time.Duration `json:"anti_affinity,omitempty" yaml:"anti_affinity,omitempty"`
 
 	// IgnoreError will hide all errors from this given servergroup effectively making
 	// the responses from this servergroup "not required" for the result.
 	// Note: this allows you to make the tradeoff between availability of queries and consistency of results
-	IgnoreError bool `yaml:"ignore_error,omitempty"`
+	IgnoreError bool `json:"ignore_error,omitempty" yaml:"ignore_error,omitempty"`
 
 	// RelativeTimeRangeConfig defines a relative time range that this servergroup will respond to
 	// An example use-case would be if a specific servergroup was long-term storage, it might only
 	// have data 3d old and retain 90d of data.
-	*RelativeTimeRangeConfig `yaml:"relative_time_range,omitempty"`
+	*RelativeTimeRangeConfig `json:"relative_time_range,omitempty" yaml:"relative_time_range,omitempty"`
 
 	// AbsoluteTimeRangeConfig defines an absolute time range that this servergroup will respond to
 	// An example use-case would be if a specific servergroup was was "deprecated" and wasn't getting
 	// any new data after a specific given point in time
-	*AbsoluteTimeRangeConfig `yaml:"absolute_time_range,omitempty"`
+	*AbsoluteTimeRangeConfig `json:"absolute_time_range" yaml:"absolute_time_range,omitempty"`
 }
 
 // GetScheme returns the scheme for this servergroup
@@ -171,15 +171,15 @@ func (c *ServerGroup) GetAntiAffinity() model.Time {
 
 // HTTPClientConfig extends prometheus' HTTPClientConfig
 type HTTPClientConfig struct {
-	DialTimeout time.Duration                `yaml:"dial_timeout"`
-	HTTPConfig  config_util.HTTPClientConfig `yaml:",inline"`
+	DialTimeout time.Duration                `json:"dial_timeout" yaml:"dial_timeout"`
+	HTTPConfig  config_util.HTTPClientConfig `json:",inline" yaml:",inline"`
 }
 
 // RelativeTimeRangeConfig configures durations relative from "now" to define
 // a servergroup's time range
 type RelativeTimeRangeConfig struct {
-	Start *time.Duration `yaml:"start"`
-	End   *time.Duration `yaml:"end"`
+	Start *time.Duration `json:"start" yaml:"start"`
+	End   *time.Duration `json:"end" yaml:"end"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.
@@ -201,8 +201,8 @@ func (tr *RelativeTimeRangeConfig) validate() error {
 
 // AbsoluteTimeRangeConfig contains absolute times to define a servergroup's time range
 type AbsoluteTimeRangeConfig struct {
-	Start time.Time `yaml:"start"`
-	End   time.Time `yaml:"end"`
+	Start time.Time `json:"start" yaml:"start"`
+	End   time.Time `json:"end" yaml:"end"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface.

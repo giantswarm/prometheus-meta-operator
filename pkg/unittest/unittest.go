@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/ghodss/yaml"
 	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/microerror"
 	"github.com/google/go-cmp/cmp"
@@ -18,16 +17,19 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	"sigs.k8s.io/cluster-api/api/v1alpha2"
 	"sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/yaml"
 )
 
 type Config struct {
 	OutputDir            string
 	T                    *testing.T
+	Marshaller           Marshaller
 	TestFunc             TestFunc
 	TestFuncReturnsBytes bool
 	Update               bool
 }
 
+type Marshaller func(o interface{}) ([]byte, error)
 type TestFunc func(interface{}) (interface{}, error)
 
 // Runner is used to run unit test for a specific resource.
@@ -47,6 +49,7 @@ type TestFunc func(interface{}) (interface{}, error)
 type Runner struct {
 	OutputDir            string
 	T                    *testing.T
+	Marshaller           Marshaller
 	TestFunc             TestFunc
 	TestFuncReturnsBytes bool
 	Update               bool
@@ -82,9 +85,15 @@ func NewRunner(config Config) (*Runner, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	var marshaller Marshaller = yaml.Marshal
+	if config.Marshaller != nil {
+		marshaller = config.Marshaller
+	}
+
 	r := &Runner{
 		OutputDir:            config.OutputDir,
 		T:                    config.T,
+		Marshaller:           marshaller,
 		TestFunc:             config.TestFunc,
 		TestFuncReturnsBytes: config.TestFuncReturnsBytes,
 		Update:               config.Update,
@@ -113,7 +122,7 @@ func (r *Runner) Run() error {
 			if r.TestFuncReturnsBytes {
 				testResult = result.([]byte)
 			} else {
-				testResult, err = yaml.Marshal(result)
+				testResult, err = r.Marshaller(result)
 				if err != nil {
 					t.Fatal(err)
 				}
