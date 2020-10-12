@@ -75,7 +75,7 @@ func toSecret(v interface{}) (metav1.Object, error) {
 		StringData: map[string]string{
 			key.AlertManagerKey(): fmt.Sprintf(`- static_configs:
   - targets:
-    - alertmanager:9093
+    - alertmanager.monitoring:9093
   scheme: http
   timeout: 10s
   api_version: v1
