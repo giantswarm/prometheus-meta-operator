@@ -13,6 +13,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -215,7 +216,23 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		}
 	}
 
+	prometheus.Spec.Alerting = alertManagerConfig()
+
 	return prometheus, nil
+}
+
+func alertManagerConfig() *promv1.AlertingSpec {
+	return &promv1.AlertingSpec{
+		Alertmanagers: []promv1.AlertmanagerEndpoints{
+			promv1.AlertmanagerEndpoints{
+				Namespace:  "monitoring",
+				Name:       "alertmanager",
+				Port:       intstr.FromInt(9093),
+				Scheme:     "http",
+				APIVersion: "v2",
+			},
+		},
+	}
 }
 
 func hasChanged(current, desired metav1.Object) bool {
