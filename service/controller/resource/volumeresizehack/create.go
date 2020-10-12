@@ -24,7 +24,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	namespace := key.Namespace(cluster)
 
-	// Get StS
+	// get sts
 	stsName := fmt.Sprintf("prometheus-%s", cluster.GetName())
 	currentStS, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
 	if err != nil {
@@ -32,12 +32,12 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	if len(currentStS.Spec.VolumeClaimTemplates) < 1 {
-		// No PVC template found in StS, nothing to resize. Skip this resource.
-		r.logger.LogCtx(ctx, "level", "debug", "message", "skipping, no pvc found in sts")
+		// No pvc template found in sts, nothing to resize. Skip this resource.
+		r.logger.LogCtx(ctx, "level", "debug", "message", "skipping, no pvc found in sts volumeclaimtemplates")
 		return nil
 	}
 
-	// Get PVC
+	// get pvc
 	index := 0
 	desiredPVC := currentStS.Spec.VolumeClaimTemplates[index]
 	pvcName := fmt.Sprintf("%s-%s-%d", desiredPVC.GetName(), currentStS.GetName(), index)
@@ -57,23 +57,19 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				if err != nil {
 					return microerror.Mask(err)
 				}
-				r.logger.LogCtx(ctx, "level", "debug", "message", "PVC DELETED")
 			}
 
-			// scale down
+			// scale down sts
 			{
-				r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN")
 				*currentStS.Spec.Replicas = 0
 				_, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Update(ctx, currentStS, metav1.UpdateOptions{})
 				if err != nil {
 					return microerror.Mask(err)
 				}
-				r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN")
 			}
 
 			// wait 30s for pvc gone
 			{
-				r.logger.LogCtx(ctx, "level", "debug", "message", "WAITING PVC")
 				o := func() error {
 					_, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, metav1.GetOptions{})
 					if apierrors.IsNotFound(err) {
@@ -87,7 +83,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				if err != nil {
 					return microerror.Mask(err)
 				}
-				r.logger.LogCtx(ctx, "level", "debug", "message", "WAITED PVC")
 			}
 		} else {
 			r.logger.LogCtx(ctx, "level", "debug", "message", "pvc do not need to be re-created")
@@ -95,8 +90,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 	}
 
-	// scale down again
-	r.logger.LogCtx(ctx, "level", "debug", "message", "SCALING DOWN AGAIN")
+	// scale down again sts
 	currentStS, err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
 	if err != nil {
 		return microerror.Mask(err)
@@ -106,7 +100,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	r.logger.LogCtx(ctx, "level", "debug", "message", "SCALED DOWN AGAIN")
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "pvc re-created")
 
