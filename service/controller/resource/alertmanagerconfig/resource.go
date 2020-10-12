@@ -1,7 +1,6 @@
 package alertmanagerconfig
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
@@ -16,6 +15,14 @@ import (
 
 const (
 	Name = "alertmanagerconfig"
+
+	alertmanagerConfig = `- static_configs:
+  - targets:
+    - alertmanager.monitoring:9093
+  scheme: http
+  timeout: 10s
+  api_version: v1
+`
 )
 
 type Config struct {
@@ -73,13 +80,7 @@ func toSecret(v interface{}) (metav1.Object, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		StringData: map[string]string{
-			key.AlertManagerKey(): fmt.Sprintf(`- static_configs:
-  - targets:
-    - alertmanager.monitoring:9093
-  scheme: http
-  timeout: 10s
-  api_version: v1
-`),
+			key.AlertManagerKey(): alertmanagerConfig,
 		},
 		Type: "Opaque",
 	}
