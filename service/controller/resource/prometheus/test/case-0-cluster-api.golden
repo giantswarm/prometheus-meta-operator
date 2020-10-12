@@ -10,12 +10,6 @@ spec:
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs
-  alerting:
-    alertmanagers:
-    - name: alertmanager
-      namespace: monitoring
-      port: 9093
-      scheme: http
   apiserverConfig:
     host: https://master.bob
     tlsConfig:

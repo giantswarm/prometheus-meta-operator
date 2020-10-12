@@ -2063,3 +2063,11 @@
   - target_label: installation
     replacement: test-installation
 
+alerting:
+  alert_relabel_configs:
+  - action: labeldrop
+    regex: prometheus_replica
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
