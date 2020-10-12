@@ -1754,3 +1754,11 @@
     target_label: pod_name
 {{ include "_labelingschema" . | indent 2 }}
 {{ end }}
+alerting:
+  alert_relabel_configs:
+  - action: labeldrop
+    regex: prometheus_replica
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
