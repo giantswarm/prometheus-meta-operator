@@ -19,6 +19,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -32,6 +33,8 @@ type resourcesConfig struct {
 	Vault                   string
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
+	RetentionDuration       string
+	RetentionSize           string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -99,14 +102,30 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
-			Address:          config.Address,
-			PrometheusClient: config.PrometheusClient,
-			Logger:           config.Logger,
-			CreatePVC:        config.CreatePVC,
-			StorageSize:      config.StorageSize,
+			Address:           config.Address,
+			PrometheusClient:  config.PrometheusClient,
+			Logger:            config.Logger,
+			CreatePVC:         config.CreatePVC,
+			StorageSize:       config.StorageSize,
+			RetentionDuration: config.RetentionDuration,
+			RetentionSize:     config.RetentionSize,
 		}
 
 		prometheusResource, err = prometheus.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var volumeResizeHack resource.Interface
+	{
+		c := volumeresizehack.Config{
+			Logger:           config.Logger,
+			K8sClient:        config.K8sClient,
+			PrometheusClient: config.PrometheusClient,
+		}
+
+		volumeResizeHack, err = volumeresizehack.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -191,6 +210,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		etcdCertificatesResource,
 		rbacResource,
 		prometheusResource,
+		volumeResizeHack,
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
