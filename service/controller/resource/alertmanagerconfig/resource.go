@@ -71,8 +71,17 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
+func toData(v interface{}) ([]byte, error) {
+	return []byte(alertmanagerConfig), nil
+}
+
 func toSecret(v interface{}) (metav1.Object, error) {
 	objectMeta, err := getObjectMeta(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	data, err := toData(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -80,9 +89,8 @@ func toSecret(v interface{}) (metav1.Object, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		StringData: map[string]string{
-			key.AlertManagerKey(): alertmanagerConfig,
+			key.AlertManagerKey(): string(data),
 		},
-		Type: "Opaque",
 	}
 
 	return secret, nil

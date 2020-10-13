@@ -20,9 +20,10 @@ func TestAlertmanagerconfig(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toSecret(v)
+			return toData(v)
 		},
-		Update: *update,
+		TestFuncReturnsBytes: true,
+		Update:               *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
