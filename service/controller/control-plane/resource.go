@@ -10,6 +10,7 @@ import (
 	"github.com/giantswarm/operatorkit/v2/pkg/resource/wrapper/retryresource"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
@@ -94,6 +95,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		rbacResource, err = rbac.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerConfig resource.Interface
+	{
+		c := alertmanagerconfig.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		alertmanagerConfig, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -209,6 +223,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		tlsCertificatesResource,
 		etcdCertificatesResource,
 		rbacResource,
+		alertmanagerConfig,
 		prometheusResource,
 		volumeResizeHack,
 		serviceMonitorResource,
