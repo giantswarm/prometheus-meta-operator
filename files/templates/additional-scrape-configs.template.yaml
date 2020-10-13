@@ -7,7 +7,6 @@
   - role: node
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig" . | indent 2 }}
-
   relabel_configs:
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
@@ -20,13 +19,7 @@
     replacement: ${1}:9323
     target_label: instance
 {{ include "_labelingschema" . | indent 2 }}
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
+{{ include "_node_role" . | indent 2 }}
   metric_relabel_configs:
   - source_labels: [__name__]
     regex: (process_virtual_memory_bytes|process_resident_memory_bytes)
@@ -39,7 +32,6 @@
   - role: node
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -51,12 +43,7 @@
   - target_label: app
     replacement: cadvisor
 {{ include "_labelingschema" . | indent 2 }}
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
+{{ include "_node_role" . | indent 2 }}
   metric_relabel_configs:
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|vault-exporter)
@@ -71,7 +58,6 @@
   - role: pod
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: ${1}:9091
@@ -87,12 +73,8 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
-  
 {{ if eq .Provider "aws" }}
 - job_name: {{ .ClusterID }}-prometheus/aws-node-{{ .ClusterID }}/0
   honor_labels: true
@@ -101,7 +83,6 @@
   - role: pod
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig" . | indent 2 }}
-
   relabel_configs:
   - target_label: __address__
     replacement: {{ .APIServerURL }}:443
@@ -114,10 +95,7 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 {{ end }}
 # Add etcd configuration
@@ -154,17 +132,11 @@
     replacement: etcd
   - source_labels: [__address__]
     target_label: instance
-{{ include "_labelingschema" . | indent 2 }}
   # Add ip label.
   - target_label: ip
-    source_labels: [__meta_kubernetes_node_address_InternalIP]
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
+    source_labels: [__meta_kubernetes_node_address_InternalIP]    
+{{ include "_labelingschema" . | indent 2 }}
+{{ include "_node_role" . | indent 2 }}
 # Add kubelet configuration
 - job_name: {{ .ClusterID }}-prometheus/kubelet-{{ .ClusterID }}/0
   honor_labels: true
@@ -173,7 +145,6 @@
   - role: node
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - target_label: app
     replacement: kubelet
@@ -191,7 +162,6 @@
       - kube-system
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10252
@@ -213,6 +183,7 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # kube-scheduler
 - job_name: {{ .ClusterID }}-prometheus/kubernetes-scheduler-{{ .ClusterID }}/0
@@ -225,7 +196,6 @@
       - kube-system
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10251
@@ -247,6 +217,7 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # kube-proxy
 - job_name: {{ .ClusterID }}-prometheus/kube-proxy-{{ .ClusterID }}/0
@@ -259,7 +230,6 @@
       - kube-system
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10249
@@ -273,12 +243,9 @@
     regex: (kube-proxy.*)
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10249/proxy/metrics
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
   - target_label: app
     replacement: kube-proxy
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # coredns
 - job_name: {{ .ClusterID }}-prometheus/coredns-{{ .ClusterID }}/0
@@ -291,7 +258,6 @@
       - kube-system
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -306,10 +272,7 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:9153/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # chart-operator
 - job_name: {{ .ClusterID }}-prometheus/chart-operator-{{ .ClusterID }}/0
@@ -322,7 +285,6 @@
       - giantswarm
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -343,10 +305,7 @@
     replacement: /api/v1/namespaces/giantswarm/pods/${1}:8000/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # net-exporter
 - job_name: {{ .ClusterID }}-prometheus/net-exporter-{{ .ClusterID }}/0
@@ -363,7 +322,6 @@
 {{ end }}
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -382,10 +340,7 @@
 {{ end }}
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # cert-exporter
 - job_name: {{ .ClusterID }}-prometheus/cert-exporter-{{ .ClusterID }}/0
@@ -402,7 +357,6 @@
 {{ end }}
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -421,10 +375,7 @@
 {{ end }}
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # node-exporter
 - job_name: {{ .ClusterID }}-prometheus/node-exporter-{{ .ClusterID }}/0
@@ -441,7 +392,6 @@
 {{ end }}
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: node-exporter
@@ -463,10 +413,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # kube-state-metrics
 - job_name: {{ .ClusterID }}-prometheus/kube-state-metrics-{{ .ClusterID }}/0
@@ -483,7 +430,6 @@
 {{ end }}
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -502,10 +448,7 @@
 {{ end }}
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 - job_name: {{ .ClusterID }}-prometheus/managed-app-{{ .ClusterID }}/0
   honor_labels: true
@@ -514,7 +457,6 @@
   - role: endpoints
 {{ include "_apiserver" . }}
 {{ include "_tlsconfig_skip" . | indent 2 }}
-
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
     regex: (.*);(.*)
@@ -545,14 +487,6 @@
     regex: (.*)
     target_label: app
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    regex: (.*)
-    target_label: namespace
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (.*)
-    target_label: pod_name
-    action: replace
   - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_type]
     regex: (optional|default)
     target_label: app_type
@@ -561,6 +495,7 @@
     regex: (true)
     target_label: is_managed_app
     action: replace
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 {{ if eq .ClusterType "control_plane" }}
 # app-operator
@@ -597,10 +532,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # cluster-operator
 - job_name: {{ .ClusterID }}-prometheus/cluster-operator-{{ .ClusterID }}/0
@@ -636,10 +568,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # etcd-backup-operator
 - job_name: {{ .ClusterID }}-prometheus/etcd-backup-operator-{{ .ClusterID }}/0
@@ -677,10 +606,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # node-operator
 - job_name: {{ .ClusterID }}-prometheus/node-operator-{{ .ClusterID }}/0
@@ -716,10 +642,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # release-operator
 - job_name: {{ .ClusterID }}-prometheus/release-operator-{{ .ClusterID }}/0
@@ -755,10 +678,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # organization-operator
 - job_name: {{ .ClusterID }}-prometheus/organization-operator-{{ .ClusterID }}/0
@@ -796,10 +716,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # prometheus-meta-operator
 - job_name: {{ .ClusterID }}-prometheus/prometheus-meta-operator-{{ .ClusterID }}/0
@@ -837,10 +754,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # rbac-operator
 - job_name: {{ .ClusterID }}-prometheus/rbac-operator-{{ .ClusterID }}/0
@@ -878,10 +792,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # cert-operator
 - job_name: {{ .ClusterID }}-prometheus/cert-operator-{{ .ClusterID }}/0
@@ -919,10 +830,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # draughtsman
 - job_name: {{ .ClusterID }}-prometheus/draughtsman-{{ .ClusterID }}/0
@@ -958,10 +866,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # app-exporter
 - job_name: {{ .ClusterID }}-prometheus/app-exporter-{{ .ClusterID }}/0
@@ -999,10 +904,7 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # vault-exporter
 - job_name: {{ .ClusterID }}-prometheus/vault-exporter-{{ .ClusterID }}/0
@@ -1040,10 +942,7 @@
     target_label:  instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # alertmanager
 - job_name: {{ .ClusterID }}-prometheus/alertmanager-{{ .ClusterID }}/0
@@ -1079,10 +978,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # grafana
 - job_name: {{ .ClusterID }}-prometheus/grafana-{{ .ClusterID }}/0
@@ -1118,10 +1014,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # prometheus
 - job_name: {{ .ClusterID }}-prometheus/g8s-prometheus-{{ .ClusterID }}/0
@@ -1157,10 +1050,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # fluentbit
 - job_name: {{ .ClusterID }}-prometheus/fluentbit-{{ .ClusterID }}/0
@@ -1196,10 +1086,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # giantswarm-api
 - job_name: {{ .ClusterID }}-prometheus/giantswarm-api-{{ .ClusterID }}/0
@@ -1234,10 +1121,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # tokend
 - job_name: {{ .ClusterID }}-prometheus/tokend-{{ .ClusterID }}/0
@@ -1272,10 +1156,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # companyd
 - job_name: {{ .ClusterID }}-prometheus/companyd-{{ .ClusterID }}/0
@@ -1310,10 +1191,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # userd
 - job_name: {{ .ClusterID }}-prometheus/userd-{{ .ClusterID }}/0
@@ -1348,10 +1226,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # kubernetesd
 - job_name: {{ .ClusterID }}-prometheus/kubernetesd-{{ .ClusterID }}/0
@@ -1386,10 +1261,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # credentiald
 - job_name: {{ .ClusterID }}-prometheus/credentiald-{{ .ClusterID }}/0
@@ -1424,10 +1296,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # cluster-service
 - job_name: {{ .ClusterID }}-prometheus/cluster-service-{{ .ClusterID }}/0
@@ -1462,10 +1331,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 {{ if eq .Provider "aws" }}
 # aws-operator
@@ -1502,10 +1368,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 {{ end }}
 {{ if eq .Provider "azure" }}
@@ -1543,10 +1406,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # azure-collector
 - job_name: {{ .ClusterID }}-prometheus/azure-collector-{{ .ClusterID }}/0
@@ -1567,10 +1427,7 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 {{ end }}
 {{ if eq .Provider "kvm" }}
@@ -1608,10 +1465,7 @@
     action: replace
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # flannel-operator
 - job_name: {{ .ClusterID }}-prometheus/flannel-operator-{{ .ClusterID }}/0
@@ -1632,10 +1486,7 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # bridge-operator
 - job_name: {{ .ClusterID }}-prometheus/bridge-operator-{{ .ClusterID }}/0
@@ -1656,10 +1507,7 @@
     action: keep
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # ingress-exporter
 - job_name: {{ .ClusterID }}-prometheus/ingress-exporter-{{ .ClusterID }}/0
@@ -1680,10 +1528,7 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 {{ end }}
 - job_name: {{ .ClusterID }}-prometheus/vault-{{ .ClusterID }}/0
@@ -1724,10 +1569,7 @@
     replacement: /api/v1/namespaces/gatekeeper-system/pods/${1}:8888/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 # prometheus
 - job_name: {{ .ClusterID }}-prometheus/prometheus-{{ .ClusterID }}/0
@@ -1748,9 +1590,6 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+{{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
 {{ end }}

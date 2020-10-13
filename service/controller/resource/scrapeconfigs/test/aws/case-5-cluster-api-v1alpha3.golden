@@ -17,7 +17,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
-
   relabel_configs:
   - target_label: __address__
     replacement: master.baz:443
@@ -44,6 +43,7 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+  # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
     regex: null
     target_label: role
@@ -70,7 +70,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -93,8 +92,10 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+  # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
     regex: null
     target_label: role
@@ -123,7 +124,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: ${1}:9091
@@ -139,10 +139,26 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -155,7 +171,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  
 
 - job_name: baz-prometheus/aws-node-baz/0
   honor_labels: true
@@ -174,7 +189,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
-
   relabel_configs:
   - target_label: __address__
     replacement: master.baz:443
@@ -187,10 +201,26 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -236,6 +266,9 @@
     replacement: etcd
   - source_labels: [__address__]
     target_label: instance
+  # Add ip label.
+  - target_label: ip
+    source_labels: [__meta_kubernetes_node_address_InternalIP]    
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -248,12 +281,10 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  # Add ip label.
-  - target_label: ip
-    source_labels: [__meta_kubernetes_node_address_InternalIP]
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+  # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
     regex: null
     target_label: role
@@ -276,7 +307,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - target_label: app
     replacement: kubelet
@@ -315,7 +345,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10252
@@ -333,6 +362,26 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -366,7 +415,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10251
@@ -384,6 +432,26 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -417,7 +485,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10249
@@ -431,12 +498,28 @@
     regex: (kube-proxy.*)
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10249/proxy/metrics
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
   - target_label: app
     replacement: kube-proxy
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -470,7 +553,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -485,10 +567,26 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:9153/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -522,7 +620,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -539,10 +636,26 @@
     replacement: /api/v1/namespaces/giantswarm/pods/${1}:8000/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -578,7 +691,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -595,10 +707,26 @@
 
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -634,7 +762,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -651,10 +778,26 @@
 
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -690,7 +833,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: node-exporter
@@ -712,10 +854,26 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -751,7 +909,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -768,10 +925,26 @@
 
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  # Add pod label.
   - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod_name
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -801,7 +974,6 @@
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
-
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
     regex: (.*);(.*)
@@ -832,14 +1004,6 @@
     regex: (.*)
     target_label: app
     action: replace
-  - source_labels: [__meta_kubernetes_namespace]
-    regex: (.*)
-    target_label: namespace
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (.*)
-    target_label: pod_name
-    action: replace
   - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_type]
     regex: (optional|default)
     target_label: app_type
@@ -848,6 +1012,26 @@
     regex: (true)
     target_label: is_managed_app
     action: replace
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz

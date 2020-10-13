@@ -1,0 +1,25 @@
+{{- define "_node_role" -}}
+# Add role label.
+- source_labels: [__meta_kubernetes_node_label_role]
+  target_label: role
+# If role is empty, we default to worker
+- source_labels: [__meta_kubernetes_node_label_role]
+  regex: null
+  target_label: role
+  replacement: worker
+{{- end -}}
+{{- define "_common" -}}
+# Add namespace label.
+- source_labels: [__meta_kubernetes_namespace]
+  target_label: namespace
+# Add pod label.
+- source_labels: [__meta_kubernetes_pod_name]
+  target_label: pod
+# Add container label.
+- source_labels: [__meta_kubernetes_pod_container_name]
+  target_label: container
+# Add node label.
+- source_labels: [__meta_kubernetes_pod_node_name]
+  target_label: node
+{{ include "_node_role" . }}
+{{- end -}}
