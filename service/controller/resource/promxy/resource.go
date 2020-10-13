@@ -59,19 +59,17 @@ func (r *Resource) Name() string {
 	return "promxy"
 }
 
-func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
+func toServerGroup(obj interface{}, apiServerURL *url.URL, installation string, provider string) (*ServerGroup, error) {
+	cluster, err := key.ToCluster(obj)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	httpClient := config.HTTPClientConfig{
 		TLSConfig: config.TLSConfig{
 			CAFile:             "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",
 			InsecureSkipVerify: true,
 		},
 		BearerTokenFile: "/var/run/secrets/kubernetes.io/serviceaccount/token",
-	}
-
-	apiServerHost := r.k8sClient.RESTConfig().Host
-	apiServerURL, err := url.Parse(apiServerHost)
-	if err != nil {
-		return nil, microerror.Mask(err)
 	}
 
 	return &ServerGroup{
@@ -82,9 +80,9 @@ func (r *Resource) toServerGroup(cluster metav1.Object) (*ServerGroup, error) {
 			DialTimeout: time.Millisecond * 200, // Default dial timeout of 200ms
 		},
 		Labels: model.LabelSet{
-			model.LabelName("installation"):     model.LabelValue(r.installation),
+			model.LabelName("installation"):     model.LabelValue(installation),
 			model.LabelName(key.ClusterIDKey()): model.LabelValue(key.ClusterID(cluster)),
-			model.LabelName("provider"):         model.LabelValue(r.provider),
+			model.LabelName("provider"):         model.LabelValue(provider),
 		},
 		PathPrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
 		RelabelConfigs: []*relabel.Config{

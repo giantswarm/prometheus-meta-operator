@@ -2,6 +2,7 @@ package promxy
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,12 +22,13 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	cluster, err := key.ToCluster(obj)
+	apiServerHost := r.k8sClient.RESTConfig().Host
+	apiServerURL, err := url.Parse(apiServerHost)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	serverGroup, err := r.toServerGroup(cluster)
+	serverGroup, err := toServerGroup(obj, apiServerURL, r.installation, r.provider)
 	if err != nil {
 		return microerror.Mask(err)
 	}
