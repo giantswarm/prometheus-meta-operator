@@ -15,14 +15,16 @@ import (
 
 const (
 	Name = "alertmanagerconfig"
+)
 
-	alertmanagerConfig = `- static_configs:
+var (
+	alertmanagerConfig = []byte(`- static_configs:
   - targets:
     - alertmanager.monitoring:9093
   scheme: http
   timeout: 10s
   api_version: v1
-`
+`)
 )
 
 type Config struct {
@@ -72,7 +74,7 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 }
 
 func toData(v interface{}) ([]byte, error) {
-	return []byte(alertmanagerConfig), nil
+	return alertmanagerConfig, nil
 }
 
 func toSecret(v interface{}) (metav1.Object, error) {
@@ -88,8 +90,8 @@ func toSecret(v interface{}) (metav1.Object, error) {
 
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
-		StringData: map[string]string{
-			key.AlertManagerKey(): string(data),
+		Data: map[string][]byte{
+			key.AlertManagerKey(): data,
 		},
 	}
 
