@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add pod, container, node and node role labels
+- Allow ignoring clusters using the `giantswarm.io/monitoring: false` label on cluster CRs
 
 ## [1.7.0] - 2020-10-14
 

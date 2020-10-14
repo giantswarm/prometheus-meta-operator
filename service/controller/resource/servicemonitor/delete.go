@@ -6,10 +6,17 @@ import (
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	serviceMonitors, err := toServiceMonitors(obj, r.provider, r.installation)
+	cluster, err := key.ToCluster(obj)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	serviceMonitors, err := toServiceMonitors(cluster, r.provider, r.installation)
 	if err != nil {
 		return microerror.Mask(err)
 	}
