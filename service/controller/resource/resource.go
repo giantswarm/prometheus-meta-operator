@@ -211,11 +211,11 @@ func New(config Config) ([]resource.Interface, error) {
 		apiCertificatesResource,
 		tlsCertificatesResource,
 		alertmanagerConfig,
-		prometheusResource,
-		volumeResizeHack,
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
+		prometheusResource,
+		volumeResizeHack,
 		ingressResource,
 		promxyResource,
 	}

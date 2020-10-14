@@ -224,11 +224,11 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfig,
-		prometheusResource,
-		volumeResizeHack,
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
+		prometheusResource,
+		volumeResizeHack,
 		ingressResource,
 		promxyResource,
 	}
