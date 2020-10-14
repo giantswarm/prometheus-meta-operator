@@ -24,6 +24,10 @@ data:
       prometheus:
         address: {{ .Values.Installation.V1.Monitoring.Prometheus.Address }}
         baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+        bastions: 
+        {{- range .Values.Installation.V1.Monitoring.Prometheus.Bastions }}
+        - {{ . }}
+        {{- end }}
         retention:
           duration: 2w
           size: 90GB
