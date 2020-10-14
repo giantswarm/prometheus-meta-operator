@@ -6,10 +6,11 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/heartbeat"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/og"
+
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 const (
