@@ -78,6 +78,7 @@ func getRules(obj interface{}) (metav1.Object, error) {
 		Spec: promv1.PrometheusRuleSpec{
 			Groups: []promv1.RuleGroup{
 				rules.LabellingSchemaValidationRule(obj),
+				rules.Heartbeat(obj),
 			},
 		},
 	}
