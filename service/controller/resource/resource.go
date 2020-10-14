@@ -34,6 +34,7 @@ type Config struct {
 	WhitelistedSubnets      string
 	RetentionDuration       string
 	RetentionSize           string
+	OpsgenieKey             string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -213,6 +214,7 @@ func New(config Config) ([]resource.Interface, error) {
 		c := heartbeat.Config{
 			Logger:       config.Logger,
 			Installation: config.Installation,
+			OpsgenieKey:  config.OpsgenieKey,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)

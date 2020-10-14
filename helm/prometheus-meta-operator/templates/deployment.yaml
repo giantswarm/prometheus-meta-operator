@@ -45,11 +45,13 @@ spec:
         image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
         args:
         - daemon
-        - --config.dirs=/var/run/{{ include "name" . }}/configmap/
+        - --config.dirs=/var/run/{{ include "name" . }}/configmap/,/var/run/{{ include "name" . }}/secret/
         - --config.files=config
         volumeMounts:
         - name: {{ include "name" . }}-configmap
           mountPath: /var/run/{{ include "name" . }}/configmap/
+        - name: {{ include "name" . }}-secret
+          mountPath: /var/run/{{ include "name" . }}/secret/
         - mountPath: /etcd-client-certs/ca.pem
           name: etcd-client-ca
         - mountPath: /etcd-client-certs/crt.pem

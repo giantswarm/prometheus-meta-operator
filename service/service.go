@@ -125,6 +125,7 @@ func New(config Config) (*Service, error) {
 			StorageSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
 			RetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			RetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			OpsgenieKey:       config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 		}
 		clusterapiController, err = clusterapi.NewController(c)
 		if err != nil {
@@ -143,6 +144,7 @@ func New(config Config) (*Service, error) {
 			StorageSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
 			RetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			RetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			OpsgenieKey:       config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 			K8sClient:         k8sClient,
 			Logger:            config.Logger,
 			PrometheusClient:  prometheusClient,
@@ -167,6 +169,7 @@ func New(config Config) (*Service, error) {
 			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
 			RetentionDuration:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			RetentionSize:           config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			OpsgenieKey:             config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 			K8sClient:               k8sClient,
 			Logger:                  config.Logger,
 			PrometheusClient:        prometheusClient,

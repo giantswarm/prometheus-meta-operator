@@ -37,6 +37,7 @@ type resourcesConfig struct {
 	WhitelistedSubnets      string
 	RetentionDuration       string
 	RetentionSize           string
+	OpsgenieKey             string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -224,8 +225,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var heartbeatResource resource.Interface
 	{
 		c := heartbeat.Config{
-			Logger:       config.Logger,
 			Installation: config.Installation,
+			Logger:       config.Logger,
+			OpsgenieKey:  config.OpsgenieKey,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)
