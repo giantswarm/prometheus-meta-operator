@@ -27,6 +27,12 @@ spec:
           items:
           - key: config.yml
             path: config.yml
+      - name: {{ include "name" . }}-secret
+        secret:
+          secretName: {{ include "resource.default.name"  . }}
+          items:
+          - key: secret.yml
+            path: secret.yml
       - name: etcd-client-ca
         hostPath:
           path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Ca }}
@@ -46,7 +52,7 @@ spec:
         args:
         - daemon
         - --config.dirs=/var/run/{{ include "name" . }}/configmap/,/var/run/{{ include "name" . }}/secret/
-        - --config.files=config
+        - --config.files=config,secret
         volumeMounts:
         - name: {{ include "name" . }}-configmap
           mountPath: /var/run/{{ include "name" . }}/configmap/
