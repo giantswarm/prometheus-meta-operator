@@ -20,12 +20,14 @@ const (
 type Config struct {
 	Logger       micrologger.Logger
 	Installation string
+	OpsgenieKey  string
 }
 
 type Resource struct {
 	logger          micrologger.Logger
 	heartbeatClient *heartbeat.Client
 	installation    string
+	opsgenieKey     string
 }
 
 func New(config Config) (*Resource, error) {
@@ -35,9 +37,12 @@ func New(config Config) (*Resource, error) {
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
 	}
+	if config.OpsgenieKey == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.OpsgenieKey must not be empty", config)
+	}
 
 	c := &client.Config{
-		ApiKey:         "",
+		ApiKey:         config.OpsgenieKey,
 		OpsGenieAPIURL: client.API_URL,
 		RetryCount:     1,
 	}

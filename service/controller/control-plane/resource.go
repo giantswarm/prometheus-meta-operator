@@ -224,8 +224,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var heartbeatResource resource.Interface
 	{
 		c := heartbeat.Config{
-			Logger:       config.Logger,
 			Installation: config.Installation,
+			Logger:       config.Logger,
+			OpsgenieKey:  config.OpsgenieKey,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)

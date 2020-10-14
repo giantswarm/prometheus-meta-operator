@@ -213,6 +213,7 @@ func New(config Config) ([]resource.Interface, error) {
 		c := heartbeat.Config{
 			Logger:       config.Logger,
 			Installation: config.Installation,
+			OpsgenieKey:  config.OpsgenieKey,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)
