@@ -27,7 +27,6 @@ type Resource struct {
 	logger          micrologger.Logger
 	heartbeatClient *heartbeat.Client
 	installation    string
-	opsgenieKey     string
 }
 
 func New(config Config) (*Resource, error) {
