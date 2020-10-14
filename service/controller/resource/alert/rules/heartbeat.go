@@ -11,7 +11,7 @@ func Heartbeat(obj interface{}) promv1.RuleGroup {
 		Rules: []promv1.Rule{
 			promv1.Rule{
 				Alert: "Heartbeat",
-				Expr:  intstr.FromString(`time() - max(container_start_time_seconds{cluster_type="host", namespace="monitoring", container="prometheus"}) > 20 * 60`),
+				Expr:  intstr.FromString(`time() - max(container_start_time_seconds{cluster_type="host", namespace="monitoring", container="prometheus"}) > 60`),
 				Labels: map[string]string{
 					"severity": "heartbeat",
 					"team":     "atlas",
