@@ -75,7 +75,7 @@ func toHeartbeat(v interface{}, installation string) (*heartbeat.Heartbeat, erro
 		OwnerTeam: og.OwnerTeam{
 			Name: "alerts_router_team",
 		},
-		AlertTags:     []string{},
+		AlertTags:     []string{"managed-by: prometheus-meta-operator"},
 		AlertPriority: "P3",
 		AlertMessage:  fmt.Sprintf("Heartbeat [%s] is expired.", name),
 	}
