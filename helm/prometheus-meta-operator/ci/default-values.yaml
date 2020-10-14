@@ -31,6 +31,9 @@ Installation:
         Monitoring:
           CrtPem: ""
           KeyPem: ""
+      Prometheus:
+        Heartbeat:
+          OpsgenieKey: ""
       Registry:
         PullSecret:
           DockerConfigJSON: ""
