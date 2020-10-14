@@ -12,6 +12,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
@@ -191,6 +192,7 @@ func New(config Config) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
+
 	var promxyResource resource.Interface
 	{
 		c := promxy.Config{
@@ -201,6 +203,19 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		promxyResource, err = promxy.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var heartbeatResource resource.Interface
+	{
+		c := heartbeat.Config{
+			Logger:       config.Logger,
+			Installation: config.Installation,
+		}
+
+		heartbeatResource, err = heartbeat.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -218,6 +233,7 @@ func New(config Config) ([]resource.Interface, error) {
 		volumeResizeHack,
 		ingressResource,
 		promxyResource,
+		heartbeatResource,
 	}
 
 	{

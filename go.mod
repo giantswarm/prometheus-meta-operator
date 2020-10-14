@@ -19,6 +19,7 @@ require (
 	github.com/google/go-cmp v0.5.1
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.1
 	github.com/prometheus/common v0.13.0
 	github.com/prometheus/prometheus v2.21.0+incompatible
 	github.com/spf13/viper v1.6.2
