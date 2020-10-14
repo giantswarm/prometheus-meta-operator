@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add alertmanager config
 
+### Fixed
+
+- Fix a bug where promxy configmap keep growing and lead to OutOfMemory issues.
+- Fix an issue where prometheus fails to be created due to resource order.
+
 ## [1.6.0] - 2020-10-12
 
 ### Changed
