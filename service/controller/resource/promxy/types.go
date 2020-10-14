@@ -54,13 +54,15 @@ func (p *PromxyConfig) add(group *ServerGroup) {
 }
 
 func (p *PromxyConfig) remove(group *ServerGroup) {
-	var index int
-	for key, val := range p.ServerGroups {
-		if val.PathPrefix == group.PathPrefix {
-			index = key
+	var s []*ServerGroup
+
+	for _, val := range p.ServerGroups {
+		if val.PathPrefix != group.PathPrefix {
+			s = append(s, val)
 		}
 	}
-	p.ServerGroups = append(p.ServerGroups[:index], p.ServerGroups[index+1:]...)
+
+	p.ServerGroups = s
 }
 
 // ServerGroup is the configuration for a ServerGroup that promxy will talk to.
