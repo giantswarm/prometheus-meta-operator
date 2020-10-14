@@ -11,6 +11,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert/rules"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 const (
@@ -39,13 +40,46 @@ func New(config Config) (*generic.Resource, error) {
 		ClientFunc:       clientFunc,
 		Logger:           config.Logger,
 		Name:             Name,
-		GetObjectMeta:    rules.GetObjectMeta,
-		GetDesiredObject: rules.LabellingSchemaValidationRule,
+		GetObjectMeta:    getObjectMeta,
+		GetDesiredObject: getRules,
 		HasChangedFunc:   hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {
 		return nil, microerror.Mask(err)
+	}
+
+	return r, nil
+}
+
+func getObjectMeta(obj interface{}) (metav1.ObjectMeta, error) {
+	cluster, err := key.ToCluster(obj)
+	if err != nil {
+		return metav1.ObjectMeta{}, microerror.Mask(err)
+	}
+
+	return metav1.ObjectMeta{
+		Name:      "prometheus-meta-operator",
+		Namespace: key.Namespace(cluster),
+		Labels: map[string]string{
+			key.ClusterIDKey(): key.ClusterID(cluster),
+		},
+	}, nil
+}
+
+func getRules(obj interface{}) (metav1.Object, error) {
+	objectMeta, err := getObjectMeta(obj)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	r := &promv1.PrometheusRule{
+		ObjectMeta: objectMeta,
+		Spec: promv1.PrometheusRuleSpec{
+			Groups: []promv1.RuleGroup{
+				rules.LabellingSchemaValidationRule(obj),
+			},
+		},
 	}
 
 	return r, nil
