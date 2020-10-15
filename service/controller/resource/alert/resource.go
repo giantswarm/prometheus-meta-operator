@@ -73,11 +73,16 @@ func getRules(obj interface{}) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	cluster, err := key.ToCluster(obj)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	r := &promv1.PrometheusRule{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusRuleSpec{
 			Groups: []promv1.RuleGroup{
-				rules.LabellingSchemaValidationRule(obj),
+				rules.LabellingSchemaValidationRule(cluster),
 			},
 		},
 	}

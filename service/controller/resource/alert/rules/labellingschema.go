@@ -2,10 +2,11 @@ package rules
 
 import (
 	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func LabellingSchemaValidationRule(obj interface{}) promv1.RuleGroup {
+func LabellingSchemaValidationRule(obj metav1.Object) promv1.RuleGroup {
 	return promv1.RuleGroup{
 		Name: "labelling-schema",
 		Rules: []promv1.Rule{
