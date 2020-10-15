@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add pod, container, node and node role labels
+
 ## [1.7.0] - 2020-10-14
 
 ### Added

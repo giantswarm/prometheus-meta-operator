@@ -38,14 +38,6 @@ func APIServer(cluster metav1.Object, provider string, installation string) *pro
 							TargetLabel:  "app",
 						},
 						{
-							SourceLabels: []string{"__meta_kubernetes_namespace"},
-							TargetLabel:  "namespace",
-						},
-						{
-							SourceLabels: []string{"__meta_kubernetes_pod_name"},
-							TargetLabel:  "pod_name",
-						},
-						{
 							SourceLabels: []string{"__meta_kubernetes_pod_node_name"},
 							TargetLabel:  "node",
 						},
