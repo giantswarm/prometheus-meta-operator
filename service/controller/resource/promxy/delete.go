@@ -12,6 +12,12 @@ import (
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if promxy configmap needs to be updated")
+
+	cluster, err := key.ToCluster(obj)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
 	configMap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Get(ctx, key.PromxyConfigMapName(), metav1.GetOptions{})
 
 	if err != nil {
@@ -29,7 +35,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	serverGroup, err := toServerGroup(obj, apiServerURL, r.installation, r.provider)
+	serverGroup, err := toServerGroup(cluster, apiServerURL, r.installation, r.provider)
 	if err != nil {
 		return microerror.Mask(err)
 	}

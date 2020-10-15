@@ -59,11 +59,7 @@ func (r *Resource) Name() string {
 	return "promxy"
 }
 
-func toServerGroup(obj interface{}, apiServerURL *url.URL, installation string, provider string) (*ServerGroup, error) {
-	cluster, err := key.ToCluster(obj)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+func toServerGroup(cluster metav1.Object, apiServerURL *url.URL, installation string, provider string) (*ServerGroup, error) {
 	httpClient := config.HTTPClientConfig{
 		TLSConfig: config.TLSConfig{
 			CAFile:             "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt",

@@ -7,6 +7,7 @@ import (
 	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor/service"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -55,12 +56,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toServiceMonitors(obj interface{}, provider string, installation string) ([]*promv1.ServiceMonitor, error) {
-	cluster, err := key.ToCluster(obj)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
+func toServiceMonitors(cluster metav1.Object, provider string, installation string) ([]*promv1.ServiceMonitor, error) {
 	serviceMonitors := []*promv1.ServiceMonitor{
 		service.APIServer(cluster, provider, installation),
 		service.NginxIngressController(cluster, provider, installation),

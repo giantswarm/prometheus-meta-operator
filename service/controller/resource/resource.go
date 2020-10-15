@@ -19,6 +19,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -235,6 +236,17 @@ func New(config Config) ([]resource.Interface, error) {
 		c := metricsresource.WrapConfig{}
 
 		resources, err = metricsresource.Wrap(resources, c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	{
+		c := monitoringdisabledresource.WrapConfig{
+			Logger: config.Logger,
+		}
+
+		resources, err = monitoringdisabledresource.Wrap(resources, c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
