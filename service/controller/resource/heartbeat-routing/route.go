@@ -37,9 +37,9 @@ func toRoute(cluster metav1.Object, installation string) config.Route {
 // ensureRoute ensure route exist in cfg.Route and is up to date. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
 func ensureRoute(cfg config.Config, route config.Route) (config.Config, bool, error) {
-	r, _, exist := existRoute(&cfg, route)
+	r, _ := getRoute(&cfg, route)
 
-	if exist {
+	if r != nil {
 		if !reflect.DeepEqual(*r, route) {
 			*r = route
 			return cfg, true, nil
@@ -58,9 +58,9 @@ func ensureRoute(cfg config.Config, route config.Route) (config.Config, bool, er
 // removeRoute ensure route is removed from cfg.Receivers. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
 func removeRoute(cfg config.Config, route config.Route) (config.Config, bool) {
-	_, index, exist := existRoute(&cfg, route)
+	r, index := getRoute(&cfg, route)
 
-	if exist {
+	if r != nil {
 		cfg.Route.Routes = append(cfg.Route.Routes[:index], cfg.Route.Routes[index+1:]...)
 		return cfg, true
 	}
@@ -68,14 +68,14 @@ func removeRoute(cfg config.Config, route config.Route) (config.Config, bool) {
 	return cfg, false
 }
 
-func existRoute(cfg *config.Config, route config.Route) (*config.Route, int, bool) {
+func getRoute(cfg *config.Config, route config.Route) (*config.Route, int) {
 	if cfg.Route != nil {
 		for index, r := range cfg.Route.Routes {
 			if r.Receiver == route.Receiver {
-				return r, index, true
+				return r, index
 			}
 		}
 	}
 
-	return nil, -1, false
+	return nil, -1
 }

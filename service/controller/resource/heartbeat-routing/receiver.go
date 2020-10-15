@@ -35,9 +35,9 @@ func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) 
 // ensureReceiver ensure receiver exist in cfg.Receivers and is up to date. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
 func ensureReceiver(cfg config.Config, receiver config.Receiver) (config.Config, bool) {
-	r, _, exist := getReceiver(cfg, receiver)
+	r, _ := getReceiver(cfg, receiver)
 
-	if exist {
+	if r != nil {
 		if !reflect.DeepEqual(*r, receiver) {
 			*r = receiver
 			return cfg, true
@@ -53,9 +53,9 @@ func ensureReceiver(cfg config.Config, receiver config.Receiver) (config.Config,
 // removeReceiver ensure receiver is removed from cfg.Receivers. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
 func removeReceiver(cfg config.Config, receiver config.Receiver) (config.Config, bool) {
-	_, index, exist := getReceiver(cfg, receiver)
+	r, index := getReceiver(cfg, receiver)
 
-	if exist {
+	if r != nil {
 		cfg.Receivers = append(cfg.Receivers[:index], cfg.Receivers[index+1:]...)
 		return cfg, true
 	}
@@ -63,12 +63,12 @@ func removeReceiver(cfg config.Config, receiver config.Receiver) (config.Config,
 	return cfg, false
 }
 
-func getReceiver(cfg config.Config, receiver config.Receiver) (*config.Receiver, int, bool) {
+func getReceiver(cfg config.Config, receiver config.Receiver) (*config.Receiver, int) {
 	for index, r := range cfg.Receivers {
 		if r.Name == receiver.Name {
-			return r, index, true
+			return r, index
 		}
 	}
 
-	return nil, -1, false
+	return nil, -1
 }
