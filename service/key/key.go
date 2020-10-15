@@ -143,13 +143,13 @@ func PromxyConfigFileName() string {
 }
 
 func AlertmanagerConfigMapName() string {
-	return ""
+	return "alertmanager"
 }
 
 func AlertmanagerConfigMapNamespace() string {
-	return ""
+	return monitoring
 }
 
 func AlertmanagerConfigMapKey() string {
-	return ""
+	return "config.yml"
 }
