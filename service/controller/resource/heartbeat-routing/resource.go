@@ -20,6 +20,7 @@ type Resource struct {
 	logger       micrologger.Logger
 	installation string
 	provider     string
+	opsgenieKey  string
 }
 
 func New(config Config) (*Resource, error) {
