@@ -1333,6 +1333,22 @@
     target_label: app
 {{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
+{{ if .Bastions }}
+# bastion exporters
+- job_name: {{ .ClusterID }}-prometheus/bastions-{{ .ClusterID }}/0
+  honor_labels: true
+  scheme: http
+  static_configs:
+  - targets:
+    {{- range $bastion := .Bastions }}
+    - '{{ $bastion}}:10300'
+    {{- end }}
+    labels:
+      app: node-exporter
+      role: bastion
+  relabel_configs:
+{{ include "_labelingschema" . | indent 2 }}
+{{ end }}
 {{ if eq .Provider "aws" }}
 # aws-operator
 - job_name: {{ .ClusterID }}-prometheus/aws-operator-{{ .ClusterID }}/0

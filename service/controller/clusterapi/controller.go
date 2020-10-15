@@ -22,6 +22,7 @@ import (
 type ControllerConfig struct {
 	Address                 string
 	BaseDomain              string
+	Bastions                []string
 	Provider                string
 	Installation            string
 	CreatePVC               bool
@@ -30,6 +31,7 @@ type ControllerConfig struct {
 	WhitelistedSubnets      string
 	RetentionDuration       string
 	RetentionSize           string
+	OpsgenieKey             string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
