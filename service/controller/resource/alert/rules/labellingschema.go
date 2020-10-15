@@ -6,7 +6,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/intstr"
 )
 
-func LabellingSchemaValidationRule(obj metav1.Object) promv1.RuleGroup {
+func LabellingSchemaValidationRule(obj metav1.Object, installation string) promv1.RuleGroup {
 	return promv1.RuleGroup{
 		Name: "labelling-schema",
 		Rules: []promv1.Rule{

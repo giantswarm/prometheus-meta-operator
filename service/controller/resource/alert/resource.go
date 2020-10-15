@@ -19,6 +19,7 @@ const (
 )
 
 type Config struct {
+	Installation     string
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
 }
@@ -30,6 +31,9 @@ func New(config Config) (*generic.Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
+	if config.Installation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
+	}
 
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.PrometheusClient.MonitoringV1().PrometheusRules(namespace)
@@ -37,12 +41,14 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc:       clientFunc,
-		Logger:           config.Logger,
-		Name:             Name,
-		GetObjectMeta:    getObjectMeta,
-		GetDesiredObject: getRules,
-		HasChangedFunc:   hasChanged,
+		ClientFunc:    clientFunc,
+		Logger:        config.Logger,
+		Name:          Name,
+		GetObjectMeta: getObjectMeta,
+		GetDesiredObject: func(obj interface{}) (metav1.Object, error) {
+			return getRules(obj, config.Installation)
+		},
+		HasChangedFunc: hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {
@@ -67,7 +73,7 @@ func getObjectMeta(obj interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func getRules(obj interface{}) (metav1.Object, error) {
+func getRules(obj interface{}, installation string) (metav1.Object, error) {
 	objectMeta, err := getObjectMeta(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -82,7 +88,7 @@ func getRules(obj interface{}) (metav1.Object, error) {
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusRuleSpec{
 			Groups: []promv1.RuleGroup{
-				rules.LabellingSchemaValidationRule(cluster),
+				rules.LabellingSchemaValidationRule(cluster, installation),
 			},
 		},
 	}
