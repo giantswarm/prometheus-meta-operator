@@ -20,12 +20,14 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 type Config struct {
 	Address                 string
 	BaseDomain              string
+	Bastions                []string
 	Provider                string
 	Installation            string
 	CreatePVC               bool
@@ -34,6 +36,7 @@ type Config struct {
 	WhitelistedSubnets      string
 	RetentionDuration       string
 	RetentionSize           string
+	OpsgenieKey             string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -167,6 +170,7 @@ func New(config Config) ([]resource.Interface, error) {
 		c := scrapeconfigs.Config{
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
+			Bastions:     config.Bastions,
 			Provider:     config.Provider,
 			Installation: config.Installation,
 		}
@@ -252,6 +256,17 @@ func New(config Config) ([]resource.Interface, error) {
 		c := metricsresource.WrapConfig{}
 
 		resources, err = metricsresource.Wrap(resources, c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	{
+		c := monitoringdisabledresource.WrapConfig{
+			Logger: config.Logger,
+		}
+
+		resources, err = monitoringdisabledresource.Wrap(resources, c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

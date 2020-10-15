@@ -7,8 +7,9 @@ Installation:
     Name: ""
     Monitoring:
       Prometheus:
-        Address: ""
-        Host: ""
+        Address: "https://prometheus:9090"
+        Bastions: []
+        Host: "prometheus:9090"
         Letsencrypt: false
         Storage:
           Enabled: true
@@ -31,6 +32,9 @@ Installation:
         Monitoring:
           CrtPem: ""
           KeyPem: ""
+      Prometheus:
+        Heartbeat:
+          OpsgenieKey: ""
       Registry:
         PullSecret:
           DockerConfigJSON: ""

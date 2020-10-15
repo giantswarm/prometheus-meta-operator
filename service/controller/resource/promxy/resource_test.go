@@ -9,6 +9,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 var update = flag.Bool("update", false, "update the ouput file")
@@ -25,7 +26,12 @@ func TestServerGroup(t *testing.T) {
 		T:          t,
 		Marshaller: yaml.Marshal,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toServerGroup(v, url, "test-installation", "kvm")
+			cluster, err := key.ToCluster(v)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			return toServerGroup(cluster, url, "test-installation", "kvm")
 		},
 		Update: *update,
 	}
