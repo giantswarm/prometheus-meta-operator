@@ -21,12 +21,14 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 type resourcesConfig struct {
 	Address                 string
 	BaseDomain              string
+	Bastions                []string
 	Provider                string
 	Installation            string
 	CreatePVC               bool
@@ -179,6 +181,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := scrapeconfigs.Config{
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
+			Bastions:     config.Bastions,
 			Provider:     config.Provider,
 			Installation: config.Installation,
 			Vault:        config.Vault,
@@ -256,6 +259,16 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	{
 		resources, err = ControlPlaneWrap(resources, config)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	{
+		c := monitoringdisabledresource.WrapConfig{
+			Logger: config.Logger,
+		}
+		resources, err = monitoringdisabledresource.Wrap(resources, c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

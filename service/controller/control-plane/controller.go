@@ -17,6 +17,7 @@ import (
 type ControllerConfig struct {
 	Address                 string
 	BaseDomain              string
+	Bastions                []string
 	Provider                string
 	Installation            string
 	CreatePVC               bool

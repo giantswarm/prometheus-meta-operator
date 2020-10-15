@@ -12,7 +12,7 @@ func LabellingSchemaValidationRule(obj metav1.Object, installation string) promv
 		Rules: []promv1.Rule{
 			promv1.Rule{
 				Alert: "InvalidLabellingSchema",
-				Expr:  intstr.FromString(`up{cluster_type!~"control_plane|tenant_cluster"} or up{app=""} or up{installation=""} or up{cluster_id=""} or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)||vault.*"} or up{provider!~"aws|azure|kvm"}`),
+				Expr:  intstr.FromString(`up{cluster_type!~"control_plane|tenant_cluster"} or up{app=""} or up{installation=""} or up{cluster_id=""} or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)||vault.*||bastion.*"} or up{provider!~"aws|azure|kvm"}`),
 				For:   "10m",
 				Labels: map[string]string{
 					"cancel_if_cluster_status_creating":         "true",
