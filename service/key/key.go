@@ -45,6 +45,11 @@ func SecretTLSCertificates(cluster metav1.Object) string {
 	return "prometheus-tls"
 }
 
+func IsMonitoringDisabled(cluster metav1.Object) bool {
+	ignored, ok := cluster.GetLabels()["giantswarm.io/monitoring"]
+	return ok && ignored == "false"
+}
+
 func EtcdSecret(obj interface{}) string {
 	if IsInCluster(obj) {
 		return "etcd-certificates"

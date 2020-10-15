@@ -3,6 +3,7 @@ package prometheus
 type Prometheus struct {
 	Address    string
 	BaseDomain string
+	Bastions   string
 	Storage    PrometheusStorage
 	Retention  PrometheusRetention
 }

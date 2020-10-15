@@ -2461,6 +2461,7 @@
   - target_label: installation
     replacement: test-installation
 
+
 # aws-operator
 - job_name: kubernetes-prometheus/aws-operator-kubernetes/0
   honor_labels: true
