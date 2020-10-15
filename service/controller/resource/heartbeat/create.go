@@ -17,7 +17,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	var current heartbeat.Heartbeat
 	getResult, err := r.heartbeatClient.Get(ctx, desired.Name)
 	if IsApiNotFoundError(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat dot not exists")
+		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat does not exist")
 		r.logger.LogCtx(ctx, "level", "debug", "message", "creating heartbeat")
 		req := &heartbeat.AddRequest{
 			Name:          desired.Name,
