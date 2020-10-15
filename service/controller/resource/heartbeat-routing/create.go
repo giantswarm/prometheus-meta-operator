@@ -23,6 +23,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	cfg, err := r.readFromConfig(configMap)
+	if err != nil {
+		return microerror.Mask(err)
+	}
 
 	receiver := toReceiver(cluster, r.installation)
 
