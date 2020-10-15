@@ -2,23 +2,33 @@ package heartbeatrouting
 
 import (
 	"fmt"
+	"net/url"
 	"reflect"
 
 	"github.com/prometheus/alertmanager/config"
 	commoncfg "github.com/prometheus/common/config"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/microerror"
+
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) config.Receiver {
+func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) (config.Receiver, error) {
 	name := fmt.Sprintf("heartbeat_%s_%s", installation, key.ClusterID(cluster))
 
-	return config.Receiver{
+	u, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/{{ .Values.Installation.V1.Monitoring.Prometheus.Heartbeat.Name }}/ping", name))
+	if err != nil {
+		return config.Receiver{}, microerror.Mask(err)
+	}
+
+	r := config.Receiver{
 		Name: name,
 		WebhookConfigs: []*config.WebhookConfig{
 			&config.WebhookConfig{
-				URL: nil,
+				URL: &config.URL{
+					URL: u,
+				},
 				HTTPConfig: &commoncfg.HTTPClientConfig{
 					BasicAuth: &commoncfg.BasicAuth{
 						Password: commoncfg.Secret(opsgenieKey),
@@ -30,6 +40,8 @@ func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) 
 			},
 		},
 	}
+
+	return r, nil
 }
 
 // ensureReceiver ensure receiver exist in cfg.Receivers and is up to date. Returns true when changes have been made to cfg.
