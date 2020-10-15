@@ -2407,6 +2407,7 @@
     replacement: test-installation
 
 
+
 # azure-operator
 - job_name: kubernetes-prometheus/azure-operator-kubernetes/0
   honor_labels: true

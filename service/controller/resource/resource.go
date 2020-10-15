@@ -12,6 +12,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
@@ -26,6 +27,7 @@ import (
 type Config struct {
 	Address                 string
 	BaseDomain              string
+	Bastions                []string
 	Provider                string
 	Installation            string
 	CreatePVC               bool
@@ -34,6 +36,7 @@ type Config struct {
 	WhitelistedSubnets      string
 	RetentionDuration       string
 	RetentionSize           string
+	OpsgenieKey             string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -152,6 +155,7 @@ func New(config Config) ([]resource.Interface, error) {
 	var alertResource resource.Interface
 	{
 		c := alert.Config{
+			Installation:     config.Installation,
 			PrometheusClient: config.PrometheusClient,
 			Logger:           config.Logger,
 		}
@@ -167,6 +171,7 @@ func New(config Config) ([]resource.Interface, error) {
 		c := scrapeconfigs.Config{
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
+			Bastions:     config.Bastions,
 			Provider:     config.Provider,
 			Installation: config.Installation,
 		}
@@ -192,6 +197,7 @@ func New(config Config) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
+
 	var promxyResource resource.Interface
 	{
 		c := promxy.Config{
@@ -202,6 +208,20 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		promxyResource, err = promxy.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var heartbeatResource resource.Interface
+	{
+		c := heartbeat.Config{
+			Logger:       config.Logger,
+			Installation: config.Installation,
+			OpsgenieKey:  config.OpsgenieKey,
+		}
+
+		heartbeatResource, err = heartbeat.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -219,6 +239,7 @@ func New(config Config) ([]resource.Interface, error) {
 		volumeResizeHack,
 		ingressResource,
 		promxyResource,
+		heartbeatResource,
 	}
 
 	{
