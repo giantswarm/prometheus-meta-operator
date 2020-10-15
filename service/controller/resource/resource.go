@@ -35,6 +35,7 @@ type Config struct {
 	WhitelistedSubnets      string
 	RetentionDuration       string
 	RetentionSize           string
+	OpsgenieKey             string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface

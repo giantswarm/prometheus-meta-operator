@@ -38,6 +38,7 @@ type resourcesConfig struct {
 	WhitelistedSubnets      string
 	RetentionDuration       string
 	RetentionSize           string
+	OpsgenieKey             string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -221,6 +222,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		tlsCertificatesResource,
