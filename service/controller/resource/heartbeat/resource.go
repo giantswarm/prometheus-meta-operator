@@ -87,6 +87,7 @@ func toHeartbeat(v interface{}, installation string) (*heartbeat.Heartbeat, erro
 }
 
 func hasChanged(current, desired heartbeat.Heartbeat) bool {
+	// Ignore those fields for comparison by setting them to the same value.
 	current.Enabled = true
 	desired.Enabled = true
 	current.Expired = true
