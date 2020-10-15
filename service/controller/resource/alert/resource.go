@@ -89,6 +89,7 @@ func getRules(obj interface{}, installation string) (metav1.Object, error) {
 		Spec: promv1.PrometheusRuleSpec{
 			Groups: []promv1.RuleGroup{
 				rules.LabellingSchemaValidationRule(cluster, installation),
+				rules.Heartbeat(cluster, installation),
 			},
 		},
 	}
