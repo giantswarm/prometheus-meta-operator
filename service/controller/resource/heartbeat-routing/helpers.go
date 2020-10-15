@@ -38,12 +38,36 @@ func remove(cfg config.Config, receiver config.Receiver, route config.Route) con
 	return config.Config{}
 }
 
-func (r *Resource) readFromConfig(configMap *v1.ConfigMap) (config.Config, error) {
-	// TODO: implement me.
-	return config.Config{}, nil
+func (r *Resource) readConfig() (*v1.ConfigMap, config.Config, error) {
+	configMap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.AlertmanagerConfigMapNamespace()).Get(ctx, key.AlertmanagerConfigMapName(), metav1.GetOptions{})
+	if err != nil {
+		return nil, config.Config{}, microerror.Mask(err)
+	}
+
+	content, ok := configMap.Data[key.AlertmanagerConfigMapKey()]
+	if !ok {
+		return nil, config.Config{}, microerror.Mask(invalidConfigError)
+	}
+
+	cfg, err := config.Load(content)
+	if err != nil {
+		return nil, config.Config{}, microerror.Mask(err)
+	}
+
+	return configMap, cfg, nil
 }
 
 func (r *Resource) updateConfig(ctx context.Context, configMap *v1.ConfigMap, cfg config.Config) error {
-	// TODO: implement me.
+	content, err := config.String()
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	configMap.Data[key.AlertmanagerConfigMapKey()] = content
+	_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.AlertmanagerConfigMapNamespace()).Update(ctx, configMap, metav1.UpdateOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
 	return nil
 }

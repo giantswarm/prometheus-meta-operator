@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -17,12 +16,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	configMap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.AlertmanagerConfigMapNamespace()).Get(ctx, key.AlertmanagerConfigMapName(), metav1.GetOptions{})
-	if err != nil {
-		return microerror.Mask(err)
-	}
-
-	cfg, err := r.readFromConfig(configMap)
+	configMap, cfg, err := r.readConfig()
 	if err != nil {
 		return microerror.Mask(err)
 	}
