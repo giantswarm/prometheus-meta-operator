@@ -15,7 +15,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if heartbeat exists")
 	_, err = r.heartbeatClient.Get(ctx, desired.Name)
 	if IsApiNotFoundError(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat does not exists")
+		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat does not exist")
 	} else if err != nil {
 		return microerror.Mask(err)
 	} else {
