@@ -166,6 +166,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var alertResource resource.Interface
 	{
 		c := alert.Config{
+			Installation:     config.Installation,
 			PrometheusClient: config.PrometheusClient,
 			Logger:           config.Logger,
 		}
