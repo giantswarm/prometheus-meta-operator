@@ -141,3 +141,15 @@ func PromxyConfigMapNamespace() string {
 func PromxyConfigFileName() string {
 	return "config.yaml"
 }
+
+func AlertmanagerConfigMapName() string {
+	return ""
+}
+
+func AlertmanagerConfigMapNamespace() string {
+	return ""
+}
+
+func AlertmanagerConfigMapKey() string {
+	return ""
+}
