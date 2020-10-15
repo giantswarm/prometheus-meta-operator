@@ -26,6 +26,7 @@ import (
 type Config struct {
 	Address                 string
 	BaseDomain              string
+	Bastions                []string
 	Provider                string
 	Installation            string
 	CreatePVC               bool
@@ -167,6 +168,7 @@ func New(config Config) ([]resource.Interface, error) {
 		c := scrapeconfigs.Config{
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
+			Bastions:     config.Bastions,
 			Provider:     config.Provider,
 			Installation: config.Installation,
 		}

@@ -119,6 +119,7 @@ func New(config Config) (*Service, error) {
 			PrometheusClient:  prometheusClient,
 			Address:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Bastions:          config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 			Provider:          config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			Installation:      config.Viper.GetString(config.Flag.Service.Installation.Name),
 			CreatePVC:         config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
@@ -137,6 +138,7 @@ func New(config Config) (*Service, error) {
 		c := legacy.ControllerConfig{
 			Address:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Bastions:          config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 			Provider:          config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			Installation:      config.Viper.GetString(config.Flag.Service.Installation.Name),
 			CreatePVC:         config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
@@ -158,6 +160,7 @@ func New(config Config) (*Service, error) {
 		c := controlplane.ControllerConfig{
 			Address:                 config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:              config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 			Provider:                config.Viper.GetString(config.Flag.Service.Provider.Kind),
 			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
 			CreatePVC:               config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
