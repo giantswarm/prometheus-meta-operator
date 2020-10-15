@@ -9,17 +9,16 @@ import (
 const Name = "heartbeatrouting"
 
 type Config struct {
+	Installation string
 	K8sClient    k8sclient.Interface
 	Logger       micrologger.Logger
-	Installation string
-	Provider     string
+	OpsgenieKey  string
 }
 
 type Resource struct {
+	installation string
 	k8sClient    k8sclient.Interface
 	logger       micrologger.Logger
-	installation string
-	provider     string
 	opsgenieKey  string
 }
 
@@ -33,12 +32,15 @@ func New(config Config) (*Resource, error) {
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
 	}
+	if config.OpsgenieKey == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.OpsgenieKey must not be empty", config)
+	}
 
 	r := &Resource{
-		logger:       config.Logger,
-		k8sClient:    config.K8sClient,
 		installation: config.Installation,
-		provider:     config.Provider,
+		k8sClient:    config.K8sClient,
+		logger:       config.Logger,
+		opsgenieKey:  config.OpsgenieKey,
 	}
 
 	return r, nil

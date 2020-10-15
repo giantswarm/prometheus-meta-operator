@@ -13,6 +13,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeat"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
@@ -227,6 +228,21 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
+	var heartbeatRoutingResource resource.Interface
+	{
+		c := heartbeatrouting.Config{
+			Installation: config.Installation,
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			OpsgenieKey:  config.OpsgenieKey,
+		}
+
+		heartbeatRoutingResource, err = heartbeatrouting.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
@@ -240,6 +256,7 @@ func New(config Config) ([]resource.Interface, error) {
 		ingressResource,
 		promxyResource,
 		heartbeatResource,
+		heartbeatRoutingResource,
 	}
 
 	{
