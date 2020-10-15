@@ -16,24 +16,22 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	configMap, cfg, err := r.readConfig()
+	configMap, cfg, err := r.readConfig(ctx)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	receiver := toReceiver(cluster, r.installation)
+	receiver := toReceiver(cluster, r.installation, r.opsgenieKey)
+	cfg, receiverUpdate := ensureReceiver(cfg, receiver)
 
 	route := toRoute(cluster, r.installation)
+	cfg, routeUpdate, err := ensureRoute(cfg, route)
+	if err != nil {
+		return microerror.Mask(err)
+	}
 
-	exists := contains(cfg, receiver, route)
-	if !exists || hasChanged(cfg, receiver, route) {
+	if receiverUpdate || routeUpdate {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "alertmanager configmap needs to be updated")
-		if exists {
-			cfg = remove(cfg, receiver, route)
-		}
-
-		cfg = add(cfg, receiver, route)
-
 		err = r.updateConfig(ctx, configMap, cfg)
 		if err != nil {
 			return microerror.Mask(err)
