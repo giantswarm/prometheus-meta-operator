@@ -2408,6 +2408,7 @@
 
 
 
+
 # kvm-operator
 - job_name: kubernetes-prometheus/kvm-operator-kubernetes/0
   honor_labels: true

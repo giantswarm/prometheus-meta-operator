@@ -23,10 +23,11 @@ const (
 )
 
 type Config struct {
-	Address          string
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
 
+	Address           string
+	Bastions          []string
 	CreatePVC         bool
 	StorageSize       string
 	RetentionDuration string
