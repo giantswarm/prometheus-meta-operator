@@ -23,9 +23,8 @@ func toRoute(cluster metav1.Object, installation string) config.Route {
 	return config.Route{
 		Receiver: name,
 		Match: map[string]string{
-			"cluster":      key.ClusterID(cluster),
-			"installation": installation,
-			"type":         "heartbeat",
+			"name": fmt.Sprintf("%s-%s", installation, key.ClusterID(cluster)),
+			"type": "heartbeat",
 		},
 		Continue:       false,
 		GroupInterval:  &one,
