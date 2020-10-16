@@ -35,3 +35,5 @@ require (
 	sigs.k8s.io/controller-runtime v0.6.1
 	sigs.k8s.io/yaml v1.2.0
 )
+
+replace github.com/prometheus/common v0.13.0 => github.com/TheoBrigitte/common v0.14.1-0.20201016115105-3915d5e42e58
