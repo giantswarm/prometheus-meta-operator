@@ -78,6 +78,26 @@ func ClusterID(cluster metav1.Object) string {
 	return cluster.GetName()
 }
 
+func InstallationKey() string {
+	return "installation"
+}
+
+func TypeKey() string {
+	return "type"
+}
+
+func Heartbeat() string {
+	return "heartbeat"
+}
+
+func HeartbeatName(cluster metav1.Object, installation string) string {
+	return fmt.Sprintf("%s-%s", installation, ClusterID(cluster))
+}
+
+func HeartbeatReceiverName(cluster metav1.Object, installation string) string {
+	return fmt.Sprintf("heartbeat_%s_%s", installation, ClusterID(cluster))
+}
+
 func PrometheusAdditionalScrapeConfigsSecretName() string {
 	return "additional-scrape-configs"
 }

@@ -1,7 +1,6 @@
 package heartbeatrouting
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/prometheus/alertmanager/config"
@@ -14,8 +13,6 @@ import (
 )
 
 func toRoute(cluster metav1.Object, installation string) (config.Route, error) {
-	name := fmt.Sprintf("heartbeat_%s_%s", installation, key.ClusterID(cluster))
-
 	one, err := model.ParseDuration("1s")
 	if err != nil {
 		return config.Route{}, microerror.Mask(err)
@@ -27,11 +24,11 @@ func toRoute(cluster metav1.Object, installation string) (config.Route, error) {
 	}
 
 	r := config.Route{
-		Receiver: name,
+		Receiver: key.HeartbeatReceiverName(cluster, installation),
 		Match: map[string]string{
-			"cluster":      key.ClusterID(cluster),
-			"installation": installation,
-			"type":         "heartbeat",
+			key.ClusterIDKey():    key.ClusterID(cluster),
+			key.InstallationKey(): installation,
+			key.TypeKey():         key.Heartbeat(),
 		},
 		Continue:       false,
 		GroupInterval:  &one,

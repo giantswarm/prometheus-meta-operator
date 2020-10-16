@@ -15,16 +15,13 @@ import (
 )
 
 func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) (config.Receiver, error) {
-	receiverName := fmt.Sprintf("heartbeat_%s_%s", installation, key.ClusterID(cluster))
-	heartbeatName := fmt.Sprintf("%s-%s", installation, key.ClusterID(cluster))
-
-	u, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", heartbeatName))
+	u, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", key.HeartbeatName(cluster, installation)))
 	if err != nil {
 		return config.Receiver{}, microerror.Mask(err)
 	}
 
 	r := config.Receiver{
-		Name: receiverName,
+		Name: key.HeartbeatReceiverName(cluster, installation),
 		WebhookConfigs: []*config.WebhookConfig{
 			&config.WebhookConfig{
 				URL: &config.URL{

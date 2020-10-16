@@ -16,10 +16,10 @@ func Heartbeat(obj metav1.Object, installation string) promv1.RuleGroup {
 				Alert: "Heartbeat",
 				Expr:  intstr.FromString(`vector(1)`),
 				Labels: map[string]string{
-					"cluster":      key.ClusterID(obj),
-					"installation": installation,
-					"type":         "heartbeat",
-					"team":         "atlas",
+					key.ClusterIDKey():    key.ClusterID(obj),
+					key.InstallationKey(): installation,
+					key.TypeKey():         key.Heartbeat(),
+					"team":                "atlas",
 				},
 				Annotations: map[string]string{
 					"description": "This alert is used to ensure the entire alerting pipeline is functionnal.",

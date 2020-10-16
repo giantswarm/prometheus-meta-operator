@@ -69,9 +69,8 @@ func toHeartbeat(v interface{}, installation string) (*heartbeat.Heartbeat, erro
 		return nil, microerror.Mask(err)
 	}
 
-	name := fmt.Sprintf("%s-%s", installation, cluster.GetName())
 	h := &heartbeat.Heartbeat{
-		Name:         name,
+		Name:         key.HeartbeatName(cluster, installation),
 		Description:  "*Recipe:* https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/heartbeat-expired/",
 		Interval:     25,
 		IntervalUnit: string(heartbeat.Minutes),
@@ -84,7 +83,7 @@ func toHeartbeat(v interface{}, installation string) (*heartbeat.Heartbeat, erro
 			"managed-by: prometheus-meta-operator",
 		},
 		AlertPriority: "P3",
-		AlertMessage:  fmt.Sprintf("Heartbeat [%s] is expired.", name),
+		AlertMessage:  fmt.Sprintf("Heartbeat [%s] is expired.", key.HeartbeatName(cluster, installation)),
 	}
 
 	return h, nil
