@@ -6,6 +6,7 @@ import (
 	"reflect"
 
 	"github.com/prometheus/alertmanager/config"
+	commoncfg "github.com/prometheus/common/config"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/microerror"
@@ -17,7 +18,7 @@ func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) 
 	receiverName := fmt.Sprintf("heartbeat_%s_%s", installation, key.ClusterID(cluster))
 	heartbeatName := fmt.Sprintf("%s-%s", installation, key.ClusterID(cluster))
 
-	u, err := url.Parse(fmt.Sprintf("https://%s@api.opsgenie.com/v2/heartbeats/%s/ping", opsgenieKey, heartbeatName))
+	u, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", heartbeatName))
 	if err != nil {
 		return config.Receiver{}, microerror.Mask(err)
 	}
@@ -28,6 +29,11 @@ func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) 
 			&config.WebhookConfig{
 				URL: &config.URL{
 					URL: u,
+				},
+				HTTPConfig: &commoncfg.HTTPClientConfig{
+					BasicAuth: &commoncfg.BasicAuth{
+						Password: commoncfg.Secret(opsgenieKey),
+					},
 				},
 				NotifierConfig: config.NotifierConfig{
 					VSendResolved: false,
