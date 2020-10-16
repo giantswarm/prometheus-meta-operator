@@ -14,12 +14,12 @@ func Heartbeat(obj metav1.Object, installation string) promv1.RuleGroup {
 		Rules: []promv1.Rule{
 			promv1.Rule{
 				Alert: "Heartbeat",
-				Expr:  intstr.FromString(`time() - max(container_start_time_seconds{cluster_type="host", namespace="monitoring", container="prometheus"}) > 20 * 60`),
+				Expr:  intstr.FromString(`vector(1)`),
 				Labels: map[string]string{
-					"cluster":      key.ClusterID(obj),
-					"installation": installation,
-					"type":         "heartbeat",
-					"team":         "atlas",
+					key.ClusterIDKey():    key.ClusterID(obj),
+					key.InstallationKey(): installation,
+					key.TypeKey():         key.Heartbeat(),
+					"team":                "atlas",
 				},
 				Annotations: map[string]string{
 					"description": "This alert is used to ensure the entire alerting pipeline is functionnal.",
