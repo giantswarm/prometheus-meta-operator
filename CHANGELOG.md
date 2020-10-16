@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add monitoring of control plane bastions
 - Add heartbeat alert to prometheus
 - Create heartbeat in opsgenie
+- Route heartbeat alerts to corresponding opsgenie heartbeat
 
 ## [1.7.0] - 2020-10-14
 

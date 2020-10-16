@@ -4,10 +4,11 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/prometheus/alertmanager/config"
-	commoncfg "github.com/prometheus/common/config"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	alertmanagerconfig "github.com/giantswarm/prometheus-meta-operator/pkg/alertmanager/config"
+	promcommonconfig "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 )
 
 var (
@@ -26,28 +27,28 @@ var (
 func TestEnsureReceiver(t *testing.T) {
 	testCases := []struct {
 		name           string
-		cfg            config.Config
+		cfg            alertmanagerconfig.Config
 		expectedUpdate bool
 		len            int
 		index          int
 	}{
 		{
 			name: "no update",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "heartbeat_installation_cluster",
-						WebhookConfigs: []*config.WebhookConfig{
-							&config.WebhookConfig{
-								URL: &config.URL{
+						WebhookConfigs: []*alertmanagerconfig.WebhookConfig{
+							&alertmanagerconfig.WebhookConfig{
+								URL: &alertmanagerconfig.URL{
 									URL: u,
 								},
-								HTTPConfig: &commoncfg.HTTPClientConfig{
-									BasicAuth: &commoncfg.BasicAuth{
+								HTTPConfig: &promcommonconfig.HTTPClientConfig{
+									BasicAuth: &promcommonconfig.BasicAuth{
 										Password: "secret-key",
 									},
 								},
-								NotifierConfig: config.NotifierConfig{
+								NotifierConfig: alertmanagerconfig.NotifierConfig{
 									VSendResolved: false,
 								},
 							},
@@ -61,21 +62,21 @@ func TestEnsureReceiver(t *testing.T) {
 		},
 		{
 			name: "update",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "heartbeat_installation_cluster",
-						WebhookConfigs: []*config.WebhookConfig{
-							&config.WebhookConfig{
-								URL: &config.URL{
+						WebhookConfigs: []*alertmanagerconfig.WebhookConfig{
+							&alertmanagerconfig.WebhookConfig{
+								URL: &alertmanagerconfig.URL{
 									URL: u,
 								},
-								HTTPConfig: &commoncfg.HTTPClientConfig{
-									BasicAuth: &commoncfg.BasicAuth{
+								HTTPConfig: &promcommonconfig.HTTPClientConfig{
+									BasicAuth: &promcommonconfig.BasicAuth{
 										Password: "wrong",
 									},
 								},
-								NotifierConfig: config.NotifierConfig{
+								NotifierConfig: alertmanagerconfig.NotifierConfig{
 									VSendResolved: false,
 								},
 							},
@@ -89,21 +90,21 @@ func TestEnsureReceiver(t *testing.T) {
 		},
 		{
 			name: "add",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "not me",
-						WebhookConfigs: []*config.WebhookConfig{
-							&config.WebhookConfig{
-								URL: &config.URL{
+						WebhookConfigs: []*alertmanagerconfig.WebhookConfig{
+							&alertmanagerconfig.WebhookConfig{
+								URL: &alertmanagerconfig.URL{
 									URL: u,
 								},
-								HTTPConfig: &commoncfg.HTTPClientConfig{
-									BasicAuth: &commoncfg.BasicAuth{
+								HTTPConfig: &promcommonconfig.HTTPClientConfig{
+									BasicAuth: &promcommonconfig.BasicAuth{
 										Password: "something",
 									},
 								},
-								NotifierConfig: config.NotifierConfig{
+								NotifierConfig: alertmanagerconfig.NotifierConfig{
 									VSendResolved: false,
 								},
 							},
@@ -117,8 +118,8 @@ func TestEnsureReceiver(t *testing.T) {
 		},
 		{
 			name: "add from 0",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{},
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{},
 			},
 			expectedUpdate: true,
 			len:            1,
@@ -147,18 +148,18 @@ func TestEnsureReceiver(t *testing.T) {
 func TestRemoveReceiver(t *testing.T) {
 	testCases := []struct {
 		name           string
-		cfg            config.Config
+		cfg            alertmanagerconfig.Config
 		expectedUpdate bool
 		len            int
 	}{
 		{
 			name: "no update",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "one",
 					},
-					&config.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "two",
 					},
 				},
@@ -168,23 +169,23 @@ func TestRemoveReceiver(t *testing.T) {
 		},
 		{
 			name: "no update (empty)",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{},
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{},
 			},
 			expectedUpdate: false,
 			len:            0,
 		},
 		{
 			name: "remove first",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "heartbeat_installation_cluster",
 					},
-					&config.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "one",
 					},
-					&config.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "two",
 					},
 				},
@@ -194,15 +195,15 @@ func TestRemoveReceiver(t *testing.T) {
 		},
 		{
 			name: "remove middle",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "one",
 					},
-					&config.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "heartbeat_installation_cluster",
 					},
-					&config.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "two",
 					},
 				},
@@ -212,15 +213,15 @@ func TestRemoveReceiver(t *testing.T) {
 		},
 		{
 			name: "remove last",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "one",
 					},
-					&config.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "two",
 					},
-					&config.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "heartbeat_installation_cluster",
 					},
 				},
@@ -230,9 +231,9 @@ func TestRemoveReceiver(t *testing.T) {
 		},
 		{
 			name: "remove (empty)",
-			cfg: config.Config{
-				Receivers: []*config.Receiver{
-					&config.Receiver{
+			cfg: alertmanagerconfig.Config{
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
 						Name: "heartbeat_installation_cluster",
 					},
 				},

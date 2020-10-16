@@ -3,27 +3,33 @@ package route
 import (
 	"reflect"
 
-	"github.com/prometheus/alertmanager/config"
+	"github.com/giantswarm/microerror"
 	"github.com/prometheus/common/model"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/microerror"
-
+	alertmanagerconfig "github.com/giantswarm/prometheus-meta-operator/pkg/alertmanager/config"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func toRoute(cluster metav1.Object, installation string) (config.Route, error) {
-	one, err := model.ParseDuration("1s")
+func toRoute(cluster metav1.Object, installation string) (alertmanagerconfig.Route, error) {
+	groupInterval, err := model.ParseDuration("30s")
 	if err != nil {
-		return config.Route{}, microerror.Mask(err)
+		return alertmanagerconfig.Route{}, microerror.Mask(err)
 	}
 
-	fifteen, err := model.ParseDuration("15s")
+	// We wait for 5 minutes before we start to ping OpsGenie to allow the prometheus server to start
+	groupWait, err := model.ParseDuration("5m")
 	if err != nil {
-		return config.Route{}, microerror.Mask(err)
+		return alertmanagerconfig.Route{}, microerror.Mask(err)
 	}
 
-	r := config.Route{
+	// We ping OpsGenie every minute
+	repeatInterval, err := model.ParseDuration("1m")
+	if err != nil {
+		return alertmanagerconfig.Route{}, microerror.Mask(err)
+	}
+
+	r := alertmanagerconfig.Route{
 		Receiver: key.HeartbeatReceiverName(cluster, installation),
 		Match: map[string]string{
 			key.ClusterIDKey():    key.ClusterID(cluster),
@@ -31,9 +37,9 @@ func toRoute(cluster metav1.Object, installation string) (config.Route, error) {
 			key.TypeKey():         key.Heartbeat(),
 		},
 		Continue:       false,
-		GroupInterval:  &one,
-		GroupWait:      &one,
-		RepeatInterval: &fifteen,
+		GroupWait:      &groupWait,
+		GroupInterval:  &groupInterval,
+		RepeatInterval: &repeatInterval,
 	}
 
 	return r, nil
@@ -41,7 +47,7 @@ func toRoute(cluster metav1.Object, installation string) (config.Route, error) {
 
 // EnsureCreated ensure route exist in cfg.Route and is up to date. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
-func EnsureCreated(cfg config.Config, cluster metav1.Object, installation string) (config.Config, bool, error) {
+func EnsureCreated(cfg alertmanagerconfig.Config, cluster metav1.Object, installation string) (alertmanagerconfig.Config, bool, error) {
 	desired, err := toRoute(cluster, installation)
 	if err != nil {
 		return cfg, false, microerror.Mask(err)
@@ -67,7 +73,7 @@ func EnsureCreated(cfg config.Config, cluster metav1.Object, installation string
 
 // EnsureDeleted ensure route is removed from cfg.Receivers. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
-func EnsureDeleted(cfg config.Config, cluster metav1.Object, installation string) (config.Config, bool, error) {
+func EnsureDeleted(cfg alertmanagerconfig.Config, cluster metav1.Object, installation string) (alertmanagerconfig.Config, bool, error) {
 	desired, err := toRoute(cluster, installation)
 	if err != nil {
 		return cfg, false, microerror.Mask(err)
@@ -83,7 +89,7 @@ func EnsureDeleted(cfg config.Config, cluster metav1.Object, installation string
 	return cfg, false, nil
 }
 
-func getRoute(cfg *config.Config, route config.Route) (*config.Route, int) {
+func getRoute(cfg *alertmanagerconfig.Config, route alertmanagerconfig.Route) (*alertmanagerconfig.Route, int) {
 	if cfg.Route != nil {
 		for index, r := range cfg.Route.Routes {
 			if r.Receiver == route.Receiver {
