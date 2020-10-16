@@ -27,7 +27,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 	cfg, receiverUpdate := ensureReceiver(cfg, receiver)
 
-	route := toRoute(cluster, r.installation)
+	route, err := toRoute(cluster, r.installation)
+	if err != nil {
+		return microerror.Mask(err)
+	}
 	cfg, routeUpdate, err := ensureRoute(cfg, route)
 	if err != nil {
 		return microerror.Mask(err)

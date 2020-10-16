@@ -13,14 +13,20 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-var (
-	one, _     = model.ParseDuration("1s")
-	fifteen, _ = model.ParseDuration("15s")
-)
-
-func toRoute(cluster metav1.Object, installation string) config.Route {
+func toRoute(cluster metav1.Object, installation string) (config.Route, error) {
 	name := fmt.Sprintf("heartbeat_%s_%s", installation, key.ClusterID(cluster))
-	return config.Route{
+
+	one, err := model.ParseDuration("1s")
+	if err != nil {
+		return config.Route{}, microerror.Mask(err)
+	}
+
+	fifteen, err := model.ParseDuration("15s")
+	if err != nil {
+		return config.Route{}, microerror.Mask(err)
+	}
+
+	r := config.Route{
 		Receiver: name,
 		Match: map[string]string{
 			"cluster":      key.ClusterID(cluster),
@@ -32,6 +38,8 @@ func toRoute(cluster metav1.Object, installation string) config.Route {
 		GroupWait:      &one,
 		RepeatInterval: &fifteen,
 	}
+
+	return r, nil
 }
 
 // ensureRoute ensure route exist in cfg.Route and is up to date. Returns true when changes have been made to cfg.

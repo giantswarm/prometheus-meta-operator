@@ -27,7 +27,10 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	}
 	cfg, receiverUpdate := removeReceiver(cfg, receiver)
 
-	route := toRoute(cluster, r.installation)
+	route, err := toRoute(cluster, r.installation)
+	if err != nil {
+		return microerror.Mask(err)
+	}
 	cfg, routeUpdate := removeRoute(cfg, route)
 
 	if receiverUpdate || routeUpdate {
