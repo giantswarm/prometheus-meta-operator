@@ -19,11 +19,14 @@ require (
 	github.com/google/go-cmp v0.5.1
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
+	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.1
+	github.com/pkg/errors v0.9.1
 	github.com/prometheus/alertmanager v0.21.0
 	github.com/prometheus/common v0.13.0
 	github.com/prometheus/prometheus v2.21.0+incompatible
 	github.com/spf13/viper v1.6.2
+	github.com/stretchr/testify v1.5.1
 	golang.org/x/crypto v0.0.0-20200930160638-afb6bcd081ae // indirect
 	golang.org/x/net v0.0.0-20200822124328-c89045814202
 	gopkg.in/yaml.v2 v2.3.0
