@@ -68,8 +68,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat is up to date")
 	}
 
-	// Trigger initial ping to ensure opsgenie alerts when an issue arise.
-	// This check if alertmanager is up and its config is up to date
+	// The initial ping to the heartbeat is there to move the heartbeat from inactive to active.
 	_, err = r.heartbeatClient.Ping(ctx, desired.Name)
 	if err != nil {
 		return microerror.Mask(err)

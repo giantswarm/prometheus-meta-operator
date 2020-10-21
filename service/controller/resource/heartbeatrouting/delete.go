@@ -23,17 +23,19 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	cfg, receiverUpdated, err := receiver.EnsureDeleted(cfg, cluster, r.installation, r.opsgenieKey)
+	cfg, receiverNeedsUpdate, err := receiver.EnsureDeleted(cfg, cluster, r.installation, r.opsgenieKey)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	cfg, routeUpdated, err := route.EnsureDeleted(cfg, cluster, r.installation)
+	cfg, routeNeedsUpdate, err := route.EnsureDeleted(cfg, cluster, r.installation)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	if receiverUpdated || routeUpdated {
+	alertManagerConfigMapNeedsUpdate := receiverNeedsUpdate || routeNeedsUpdate
+
+	if alertManagerConfigMapNeedsUpdate {
 		r.logger.LogCtx(ctx, "level", "debug", "message", "alertmanager configmap needs to be updated")
 		err = r.updateConfig(ctx, configMap, cfg)
 		if err != nil {
