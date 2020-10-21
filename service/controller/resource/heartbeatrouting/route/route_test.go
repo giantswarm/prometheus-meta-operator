@@ -3,10 +3,11 @@ package route
 import (
 	"testing"
 
-	"github.com/prometheus/alertmanager/config"
 	"github.com/prometheus/common/model"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	alertmanagerconfig "github.com/giantswarm/prometheus-meta-operator/pkg/alertmanager/config"
 )
 
 var (
@@ -21,23 +22,24 @@ var (
 )
 
 func TestEnsureCreated(t *testing.T) {
-	var one, _ = model.ParseDuration("1s")
-	var fifteen, _ = model.ParseDuration("15s")
+	var groupInterval, _ = model.ParseDuration("30s")
+	var groupWait, _ = model.ParseDuration("5m")
+	var repeatInterval, _ = model.ParseDuration("1m")
 
 	testCases := []struct {
 		name           string
-		cfg            config.Config
+		cfg            alertmanagerconfig.Config
 		expectedUpdate bool
 		errorMatcher   func(error) bool
 		len            int
 	}{
 		{
 			name: "no update",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "heartbeat_installation_cluster",
 							Match: map[string]string{
 								"cluster_id":   "cluster",
@@ -45,9 +47,9 @@ func TestEnsureCreated(t *testing.T) {
 								"type":         "heartbeat",
 							},
 							Continue:       false,
-							GroupInterval:  &one,
-							GroupWait:      &one,
-							RepeatInterval: &fifteen,
+							GroupInterval:  &groupInterval,
+							GroupWait:      &groupWait,
+							RepeatInterval: &repeatInterval,
 						},
 					},
 				},
@@ -57,11 +59,11 @@ func TestEnsureCreated(t *testing.T) {
 		},
 		{
 			name: "update",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "heartbeat_installation_cluster",
 							Match: map[string]string{
 								"cluster_id":   "cluster",
@@ -69,9 +71,9 @@ func TestEnsureCreated(t *testing.T) {
 								"type":         "wrong",
 							},
 							Continue:       false,
-							GroupInterval:  &one,
-							GroupWait:      &one,
-							RepeatInterval: &fifteen,
+							GroupInterval:  &groupInterval,
+							GroupWait:      &groupWait,
+							RepeatInterval: &repeatInterval,
 						},
 					},
 				},
@@ -81,11 +83,11 @@ func TestEnsureCreated(t *testing.T) {
 		},
 		{
 			name: "add",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "not me",
 							Match: map[string]string{
 								"cluster":      "cluster",
@@ -93,9 +95,9 @@ func TestEnsureCreated(t *testing.T) {
 								"type":         "heartbeat",
 							},
 							Continue:       false,
-							GroupInterval:  &one,
-							GroupWait:      &one,
-							RepeatInterval: &fifteen,
+							GroupInterval:  &groupInterval,
+							GroupWait:      &groupWait,
+							RepeatInterval: &repeatInterval,
 						},
 					},
 				},
@@ -105,10 +107,10 @@ func TestEnsureCreated(t *testing.T) {
 		},
 		{
 			name: "add from 0",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes:   []*config.Route{},
+					Routes:   []*alertmanagerconfig.Route{},
 				},
 			},
 			expectedUpdate: true,
@@ -116,7 +118,7 @@ func TestEnsureCreated(t *testing.T) {
 		},
 		{
 			name: "empty route",
-			cfg: config.Config{
+			cfg: alertmanagerconfig.Config{
 				Route: nil,
 			},
 			errorMatcher: IsEmptyRouteError,
@@ -154,21 +156,21 @@ func TestEnsureCreated(t *testing.T) {
 func TestEnsureDeleted(t *testing.T) {
 	testCases := []struct {
 		name           string
-		cfg            config.Config
+		cfg            alertmanagerconfig.Config
 		expectedUpdate bool
 		errorMatcher   func(error) bool
 		len            int
 	}{
 		{
 			name: "no update",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "one",
 						},
-						&config.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "two",
 						},
 					},
@@ -179,10 +181,10 @@ func TestEnsureDeleted(t *testing.T) {
 		},
 		{
 			name: "no update (empty)",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes:   []*config.Route{},
+					Routes:   []*alertmanagerconfig.Route{},
 				},
 			},
 			expectedUpdate: false,
@@ -190,17 +192,17 @@ func TestEnsureDeleted(t *testing.T) {
 		},
 		{
 			name: "remove first",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "heartbeat_installation_cluster",
 						},
-						&config.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "one",
 						},
-						&config.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "two",
 						},
 					},
@@ -211,17 +213,17 @@ func TestEnsureDeleted(t *testing.T) {
 		},
 		{
 			name: "remove middle",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "one",
 						},
-						&config.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "heartbeat_installation_cluster",
 						},
-						&config.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "two",
 						},
 					},
@@ -232,17 +234,17 @@ func TestEnsureDeleted(t *testing.T) {
 		},
 		{
 			name: "remove last",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "one",
 						},
-						&config.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "two",
 						},
-						&config.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "heartbeat_installation_cluster",
 						},
 					},
@@ -253,11 +255,11 @@ func TestEnsureDeleted(t *testing.T) {
 		},
 		{
 			name: "remove (empty)",
-			cfg: config.Config{
-				Route: &config.Route{
+			cfg: alertmanagerconfig.Config{
+				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
-					Routes: []*config.Route{
-						&config.Route{
+					Routes: []*alertmanagerconfig.Route{
+						&alertmanagerconfig.Route{
 							Receiver: "heartbeat_installation_cluster",
 						},
 					},
@@ -268,7 +270,7 @@ func TestEnsureDeleted(t *testing.T) {
 		},
 		{
 			name: "empty route",
-			cfg: config.Config{
+			cfg: alertmanagerconfig.Config{
 				Route: nil,
 			},
 			expectedUpdate: false,

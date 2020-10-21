@@ -22,7 +22,7 @@ func Heartbeat(obj metav1.Object, installation string) promv1.RuleGroup {
 					"team":                "atlas",
 				},
 				Annotations: map[string]string{
-					"description": "This alert is used to ensure the entire alerting pipeline is functionnal.",
+					"description": "This alert is used to ensure the entire alerting pipeline is functional.",
 				},
 			},
 		},

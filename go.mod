@@ -22,7 +22,6 @@ require (
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.1
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/alertmanager v0.21.0
 	github.com/prometheus/common v0.13.0
 	github.com/prometheus/prometheus v2.21.0+incompatible
 	github.com/spf13/viper v1.6.2
