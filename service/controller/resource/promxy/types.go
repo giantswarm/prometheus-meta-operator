@@ -5,11 +5,12 @@ import (
 	"reflect"
 	"time"
 
-	config_util "github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery/kubernetes"
 	"github.com/prometheus/prometheus/pkg/relabel"
+
+	promcommoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 )
 
 // Promxy defines the content of promxy configuration file.
@@ -171,8 +172,8 @@ func (c *ServerGroup) GetAntiAffinity() model.Time {
 
 // HTTPClientConfig extends prometheus' HTTPClientConfig
 type HTTPClientConfig struct {
-	DialTimeout time.Duration                `json:"dial_timeout" yaml:"dial_timeout"`
-	HTTPConfig  config_util.HTTPClientConfig `json:",inline" yaml:",inline"`
+	DialTimeout time.Duration                  `json:"dial_timeout" yaml:"dial_timeout"`
+	HTTPConfig  promcommoncfg.HTTPClientConfig `json:",inline" yaml:",inline"`
 }
 
 // RelativeTimeRangeConfig configures durations relative from "now" to define
