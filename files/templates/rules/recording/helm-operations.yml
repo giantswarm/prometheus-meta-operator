@@ -1,0 +1,17 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: helm-operations
+  namespace: {{ .Namespace }}
+  labels:
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: {{ .ManagedBy }}
+    app.kubernetes.io/instance: {{ .ClusterID }}
+spec:
+  groups:
+  - name: helm-operations
+    rules:
+    - expr: "sum by (cluster_id, release, event) (helmclient_library_event_total{release!=''})"
+      record: monitoring:helm:number_of_operations_on_release
+---
