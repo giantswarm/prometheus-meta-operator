@@ -1,5 +1,6 @@
 package installation
 
 type Installation struct {
-	Name string
+	Name     string
+	Pipeline string
 }

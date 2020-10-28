@@ -42,5 +42,10 @@ data:
         kind: {{ .Values.Installation.V1.Provider.Kind }}
       installation:
         name: {{ .Values.Installation.V1.Name }}
+        {{- if .Values.Installation.V1.Infra.TestingEnvironment }}
+        pipeline: testing
+        {{- else }}
+        pipeline: stable
+        {{- end }}
       vault:
         host: {{ .Values.Installation.V1.Auth.Vault.Host }}

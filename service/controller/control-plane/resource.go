@@ -33,6 +33,7 @@ type resourcesConfig struct {
 	Bastions                []string
 	Provider                string
 	Installation            string
+	Pipeline                string
 	CreatePVC               bool
 	StorageSize             string
 	Vault                   string
@@ -233,6 +234,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Installation: config.Installation,
 			Logger:       config.Logger,
 			OpsgenieKey:  config.OpsgenieKey,
+			Pipeline:     config.Pipeline,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)

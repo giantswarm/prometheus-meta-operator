@@ -21,12 +21,14 @@ type Config struct {
 	Logger       micrologger.Logger
 	Installation string
 	OpsgenieKey  string
+	Pipeline     string
 }
 
 type Resource struct {
 	logger          micrologger.Logger
 	heartbeatClient *heartbeat.Client
 	installation    string
+	pipeline        string
 }
 
 func New(config Config) (*Resource, error) {
@@ -35,6 +37,9 @@ func New(config Config) (*Resource, error) {
 	}
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
+	}
+	if config.Pipeline == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Pipeline must not be empty", config)
 	}
 	if config.OpsgenieKey == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.OpsgenieKey must not be empty", config)
@@ -54,6 +59,7 @@ func New(config Config) (*Resource, error) {
 		logger:          config.Logger,
 		heartbeatClient: client,
 		installation:    config.Installation,
+		pipeline:        config.Pipeline,
 	}
 
 	return r, nil
@@ -63,7 +69,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toHeartbeat(v interface{}, installation string) (*heartbeat.Heartbeat, error) {
+func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbeat.Heartbeat, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -80,6 +86,7 @@ func toHeartbeat(v interface{}, installation string) (*heartbeat.Heartbeat, erro
 			Name: "alerts_router_team",
 		},
 		AlertTags: []string{
+			fmt.Sprintf("pipeline: %s", pipeline),
 			"managed-by: prometheus-meta-operator",
 		},
 		AlertPriority: "P3",
