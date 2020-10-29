@@ -3,10 +3,10 @@ package alert
 import (
 	"reflect"
 
-	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
-	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert/rules"
