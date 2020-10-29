@@ -99,7 +99,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	var runAsNonRoot bool = true
 	// Prometheus default image runs using the nobody user (65534)
 	var gid int64 = 65534
-
 	var walCompression bool = true
 
 	var storage promv1.StorageSpec
