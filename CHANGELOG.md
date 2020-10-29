@@ -10,8 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add support to remote write to Cortex
 - Added recording rules
 - Remote write to cortex
+
+### Fixed
+
+- Fix kube-state-metrics scraping port on Control Planes.
 
 ### Fixed
 

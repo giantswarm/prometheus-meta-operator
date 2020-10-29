@@ -30,6 +30,7 @@ type Config struct {
 	Bastions          []string
 	CreatePVC         bool
 	StorageSize       string
+	RemoteWriteURL    string
 	RetentionDuration string
 	RetentionSize     string
 	RemoteWriteURL    string
@@ -186,6 +187,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					corev1.ResourceMemory: *resource.NewQuantity(100*1024*1024, resource.BinarySI),
 				},
 			},
+
 			Retention:      config.RetentionDuration,
 			RetentionSize:  config.RetentionSize,
 			WALCompression: &walCompression,

@@ -20,6 +20,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
@@ -122,6 +123,21 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var remoteWriteConfigResource resource.Interface
+	{
+		c := remotewriteconfig.Config{
+			K8sClient:           config.K8sClient,
+			Logger:              config.Logger,
+			RemoteWriteUsername: config.RemoteWriteUsername,
+			RemoteWritePassword: config.RemoteWritePassword,
+		}
+
+		remoteWriteConfigResource, err = remotewriteconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
@@ -130,6 +146,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Logger:            config.Logger,
 			CreatePVC:         config.CreatePVC,
 			StorageSize:       config.StorageSize,
+			RemoteWriteURL:    config.RemoteWriteURL,
 			RetentionDuration: config.RetentionDuration,
 			RetentionSize:     config.RetentionSize,
 			RemoteWriteURL:    config.RemoteWriteURL,
@@ -271,6 +288,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
+		remoteWriteConfigResource,
 		prometheusResource,
 		volumeResizeHack,
 		ingressResource,
