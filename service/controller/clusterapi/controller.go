@@ -25,6 +25,7 @@ type ControllerConfig struct {
 	Bastions                []string
 	Provider                string
 	Installation            string
+	Pipeline                string
 	CreatePVC               bool
 	StorageSize             string
 	RestrictedAccessEnabled bool

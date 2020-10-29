@@ -5,6 +5,8 @@ Installation:
       Vault:
         Address: ""
     Name: ""
+    Infra:
+      TestingEnvironment: false
     Monitoring:
       Prometheus:
         Address: "https://prometheus:9090"
