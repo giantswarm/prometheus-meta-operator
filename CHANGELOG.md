@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix kube-state-metrics scraping port on Control Planes.
+
 ## [1.8.0] - 2020-10-21
 
 ### Added

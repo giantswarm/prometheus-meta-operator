@@ -442,7 +442,7 @@
     regex: (kube-state-metrics.*)
     target_label: __metrics_path__
 {{ if eq .ClusterType "control_plane" }}
-    replacement: /api/v1/namespaces/monitoring/pods/${1}:8080/proxy/metrics
+    replacement: /api/v1/namespaces/monitoring/pods/${1}:10301/proxy/metrics
 {{ else }}
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10301/proxy/metrics
 {{ end }}
