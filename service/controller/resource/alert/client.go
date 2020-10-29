@@ -3,8 +3,8 @@ package alert
 import (
 	"context"
 
-	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
-	monv1 "github.com/coreos/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	monv1 "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned/typed/monitoring/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 

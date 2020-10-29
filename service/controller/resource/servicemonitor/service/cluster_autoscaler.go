@@ -3,7 +3,7 @@ package service
 import (
 	"fmt"
 
-	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -85,15 +85,19 @@ func ClusterAutoscaler(cluster metav1.Object, provider string, installation stri
 
 	if !key.IsInCluster(cluster) {
 		serviceMonitor.Spec.Endpoints[0].TLSConfig = &promv1.TLSConfig{
-			CAFile:             fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-			CertFile:           fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-			KeyFile:            fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
-			InsecureSkipVerify: true,
+			CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+			CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
+			KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+			SafeTLSConfig: promv1.SafeTLSConfig{
+				InsecureSkipVerify: true,
+			},
 		}
 	} else {
 		serviceMonitor.Spec.Endpoints[0].TLSConfig = &promv1.TLSConfig{
-			CAFile:             key.ControlPlaneCAFile(),
-			InsecureSkipVerify: true,
+			CAFile: key.ControlPlaneCAFile(),
+			SafeTLSConfig: promv1.SafeTLSConfig{
+				InsecureSkipVerify: true,
+			},
 		}
 		serviceMonitor.Spec.Endpoints[0].BearerTokenFile = key.ControlPlaneBearerToken()
 	}

@@ -3,12 +3,12 @@ package clusterapi
 import (
 	"context"
 
-	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/operatorkit/v2/pkg/controller"
 	"github.com/giantswarm/operatorkit/v2/pkg/resource"
+	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"

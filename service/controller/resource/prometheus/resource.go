@@ -5,10 +5,10 @@ import (
 	"net/url"
 	"reflect"
 
-	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
-	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -92,7 +92,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	var replicas int32 = 1
-	// Configured following https://github.com/coreos/prometheus-operator/issues/541#issuecomment-451884171
+	// Configured following https://github.com/prometheus-operator/prometheus-operator/issues/541#issuecomment-451884171
 	// as the volume could not mount otherwise
 	var uid int64 = 1000
 	var fsGroup int64 = 2000
@@ -212,8 +212,10 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			BearerTokenFile: key.ControlPlaneBearerToken(),
 			TLSConfig: &promv1.TLSConfig{
-				CAFile:             key.ControlPlaneCAFile(),
-				InsecureSkipVerify: true,
+				CAFile: key.ControlPlaneCAFile(),
+				SafeTLSConfig: promv1.SafeTLSConfig{
+					InsecureSkipVerify: true,
+				},
 			},
 		}
 
