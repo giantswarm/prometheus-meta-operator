@@ -1,11 +1,12 @@
 package prometheus
 
 type Prometheus struct {
-	Address    string
-	BaseDomain string
-	Bastions   string
-	Storage    PrometheusStorage
-	Retention  PrometheusRetention
+	Address     string
+	BaseDomain  string
+	Bastions    string
+	Storage     PrometheusStorage
+	Retention   PrometheusRetention
+	RemoteWrite PrometheusRemoteWrite
 }
 
 type PrometheusStorage struct {
@@ -16,4 +17,14 @@ type PrometheusStorage struct {
 type PrometheusRetention struct {
 	Duration string
 	Size     string
+}
+
+type PrometheusRemoteWrite struct {
+	URL       string
+	BasicAuth PrometheusRemoteWriteBasicAuth
+}
+
+type PrometheusRemoteWriteBasicAuth struct {
+	Username string
+	Password string
 }

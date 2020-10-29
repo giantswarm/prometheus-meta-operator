@@ -35,6 +35,8 @@ Installation:
           CrtPem: ""
           KeyPem: ""
       Prometheus:
+        Cortex:
+          ApiKey: ""
         Heartbeat:
           OpsgenieKey: ""
       Registry:

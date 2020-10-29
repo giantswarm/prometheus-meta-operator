@@ -173,3 +173,15 @@ func AlertmanagerConfigMapNamespace() string {
 func AlertmanagerConfigMapKey() string {
 	return "config.yml"
 }
+
+func RemoteWriteSecretName() string {
+	return "remote-write"
+}
+
+func RemoteWriteUsernameKey() string {
+	return "username"
+}
+
+func RemoteWritePasswordKey() string {
+	return "password"
+}

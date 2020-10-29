@@ -29,6 +29,9 @@ type ControllerConfig struct {
 	RetentionDuration       string
 	RetentionSize           string
 	OpsgenieKey             string
+	RemoteWriteURL          string
+	RemoteWriteUsername     string
+	RemoteWritePassword     string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
