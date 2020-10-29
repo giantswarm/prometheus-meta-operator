@@ -3,8 +3,8 @@ package servicemonitor
 import (
 	"reflect"
 
-	promv1 "github.com/coreos/prometheus-operator/pkg/apis/monitoring/v1"
-	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"

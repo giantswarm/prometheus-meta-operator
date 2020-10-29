@@ -19,4 +19,4 @@ go build github.com/giantswarm/prometheus-meta-operator
 
 
 [operatorkit]: https://github.com/giantswarm/operatorkit
-[prometheus-operator]: https://github.com/coreos/prometheus-operator
+[prometheus-operator]: https://github.com/prometheus-operator/prometheus-operator

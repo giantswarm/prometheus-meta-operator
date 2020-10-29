@@ -3,7 +3,7 @@ package clusterapi
 import (
 	"context"
 
-	promclient "github.com/coreos/prometheus-operator/pkg/client/versioned"
+	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
