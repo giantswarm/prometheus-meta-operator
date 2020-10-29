@@ -132,6 +132,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			StorageSize:       config.StorageSize,
 			RetentionDuration: config.RetentionDuration,
 			RetentionSize:     config.RetentionSize,
+			RemoteWriteURL:    config.RemoteWriteURL,
 		}
 
 		prometheusResource, err = prometheus.New(c)

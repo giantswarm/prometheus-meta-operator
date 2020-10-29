@@ -32,7 +32,7 @@ spec:
           or up{installation=""}
           or up{cluster_id=""}
           or up{provider!~"aws|azure|kvm"}
-          or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)||vault.*||bastion.*"}
+          or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)|vault.*|bastion.*"}
         for: "10m"
         labels:
           area: "empowerment"
