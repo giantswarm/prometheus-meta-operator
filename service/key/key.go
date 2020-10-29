@@ -22,7 +22,7 @@ func ToCluster(obj interface{}) (metav1.Object, error) {
 }
 
 func Namespace(cluster metav1.Object) string {
-	return fmt.Sprintf("%s-prometheus", cluster.GetName())
+	return fmt.Sprintf("%s-prometheus", ClusterID(cluster))
 }
 
 func NamespaceDefault(cluster metav1.Object) string {
@@ -62,7 +62,7 @@ func Labels(cluster metav1.Object) map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "prometheus",
 		"app.kubernetes.io/managed-by": project.Name(),
-		"app.kubernetes.io/instance":   cluster.GetName(),
+		"app.kubernetes.io/instance":   ClusterID(cluster),
 	}
 }
 
