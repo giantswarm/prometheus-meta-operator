@@ -1,4 +1,4 @@
-package prometheus
+package remotewriteconfig
 
 import (
 	"flag"
@@ -10,30 +10,20 @@ import (
 
 var update = flag.Bool("update", false, "update the ouput file")
 
-func TestPrometheus(t *testing.T) {
+func TestRemoteWriteSecret(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
 	if err != nil {
 		t.Fatal(err)
-	}
-
-	config := Config{
-		Address:           "http://prometheus/cluster",
-		CreatePVC:         true,
-		Customer:          "Giant Swarm",
-		Installation:      "test-installation",
-		Pipeline:          "testing",
-		Provider:          "kvm",
-		Region:            "onprem",
-		StorageSize:       "50Gi",
-		RetentionDuration: "2w",
-		RetentionSize:     "45Gi",
 	}
 
 	c := unittest.Config{
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toPrometheus(v, config)
+			return toSecret(v, Config{
+				RemoteWriteUsername: "test",
+				RemoteWritePassword: "test",
+			})
 		},
 		Update: *update,
 	}

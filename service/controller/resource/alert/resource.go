@@ -107,20 +107,3 @@ func hasChanged(current, desired metav1.Object) bool {
 
 	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
-
-func updateMeta(c, d metav1.Object) {
-	d.SetGenerateName(c.GetGenerateName())
-	d.SetUID(c.GetUID())
-	d.SetResourceVersion(c.GetResourceVersion())
-	d.SetGeneration(c.GetGeneration())
-	d.SetSelfLink(c.GetSelfLink())
-	d.SetCreationTimestamp(c.GetCreationTimestamp())
-	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
-	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	d.SetLabels(c.GetLabels())
-	d.SetAnnotations(c.GetAnnotations())
-	d.SetFinalizers(c.GetFinalizers())
-	d.SetOwnerReferences(c.GetOwnerReferences())
-	d.SetClusterName(c.GetClusterName())
-	d.SetManagedFields(c.GetManagedFields())
-}

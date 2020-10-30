@@ -25,6 +25,11 @@ spec:
   externalLabels:
     cluster_id: alice
     cluster_type: tenant_cluster
+    customer: Giant Swarm
+    installation: test-installation
+    pipeline: testing
+    provider: kvm
+    region: onprem
   externalUrl: http://prometheus/alice
   podMetadata:
     labels:

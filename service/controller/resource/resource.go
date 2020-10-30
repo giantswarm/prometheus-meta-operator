@@ -18,6 +18,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
@@ -26,12 +27,15 @@ import (
 )
 
 type Config struct {
-	Address                 string
-	BaseDomain              string
-	Bastions                []string
-	Provider                string
-	Installation            string
-	Pipeline                string
+	Address      string
+	BaseDomain   string
+	Bastions     []string
+	Provider     string
+	Installation string
+	Pipeline     string
+	Region       string
+	Customer     string
+
 	CreatePVC               bool
 	StorageSize             string
 	RestrictedAccessEnabled bool
@@ -110,6 +114,21 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
+	var remoteWriteConfigResource resource.Interface
+	{
+		c := remotewriteconfig.Config{
+			K8sClient:           config.K8sClient,
+			Logger:              config.Logger,
+			RemoteWriteUsername: config.RemoteWriteUsername,
+			RemoteWritePassword: config.RemoteWritePassword,
+		}
+
+		remoteWriteConfigResource, err = remotewriteconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
@@ -117,6 +136,11 @@ func New(config Config) ([]resource.Interface, error) {
 			PrometheusClient:  config.PrometheusClient,
 			Logger:            config.Logger,
 			CreatePVC:         config.CreatePVC,
+			Customer:          config.Customer,
+			Installation:      config.Installation,
+			Pipeline:          config.Pipeline,
+			Provider:          config.Provider,
+			Region:            config.Region,
 			StorageSize:       config.StorageSize,
 			RetentionDuration: config.RetentionDuration,
 			RetentionSize:     config.RetentionSize,
@@ -257,6 +281,7 @@ func New(config Config) ([]resource.Interface, error) {
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
+		remoteWriteConfigResource,
 		prometheusResource,
 		volumeResizeHack,
 		ingressResource,

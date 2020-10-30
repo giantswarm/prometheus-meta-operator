@@ -1,0 +1,8 @@
+data:
+  password: dGVzdA==
+  username: dGVzdA==
+metadata:
+  creationTimestamp: null
+  name: remote-write
+  namespace: alice-prometheus
+type: Opaque

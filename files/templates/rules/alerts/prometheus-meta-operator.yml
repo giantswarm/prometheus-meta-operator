@@ -5,6 +5,7 @@ metadata:
   name: prometheus-meta-operator
   namespace: {{ .Namespace }}
   labels:
+    cluster_id: {{ .ClusterID }}
     app.kubernetes.io/name: "prometheus"
     app.kubernetes.io/managed-by: {{ .ManagedBy }}
     app.kubernetes.io/instance: {{ .ClusterID }}

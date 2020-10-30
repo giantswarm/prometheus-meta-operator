@@ -20,6 +20,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
@@ -34,6 +35,8 @@ type resourcesConfig struct {
 	Provider                string
 	Installation            string
 	Pipeline                string
+	Region                  string
+	Customer                string
 	CreatePVC               bool
 	StorageSize             string
 	Vault                   string
@@ -122,6 +125,21 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var remoteWriteConfigResource resource.Interface
+	{
+		c := remotewriteconfig.Config{
+			K8sClient:           config.K8sClient,
+			Logger:              config.Logger,
+			RemoteWriteUsername: config.RemoteWriteUsername,
+			RemoteWritePassword: config.RemoteWritePassword,
+		}
+
+		remoteWriteConfigResource, err = remotewriteconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
@@ -129,6 +147,11 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			PrometheusClient:  config.PrometheusClient,
 			Logger:            config.Logger,
 			CreatePVC:         config.CreatePVC,
+			Customer:          config.Customer,
+			Installation:      config.Installation,
+			Pipeline:          config.Pipeline,
+			Provider:          config.Provider,
+			Region:            config.Region,
 			StorageSize:       config.StorageSize,
 			RetentionDuration: config.RetentionDuration,
 			RetentionSize:     config.RetentionSize,
@@ -271,6 +294,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		serviceMonitorResource,
 		alertResource,
 		scrapeConfigResource,
+		remoteWriteConfigResource,
 		prometheusResource,
 		volumeResizeHack,
 		ingressResource,
