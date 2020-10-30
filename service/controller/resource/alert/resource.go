@@ -99,7 +99,7 @@ func (r *Resource) GetRules(obj interface{}) ([]*promv1.PrometheusRule, error) {
 		if len(bytes.TrimSpace(file)) > 0 {
 			var rule promv1.PrometheusRule = promv1.PrometheusRule{}
 
-			if err = yaml.Unmarshal(file, &rule); err != nil {
+			if err = yaml.UnmarshalStrict(file, &rule); err != nil {
 				return nil, microerror.Mask(err)
 			}
 
