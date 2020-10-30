@@ -5,6 +5,7 @@ Installation:
       Vault:
         Address: ""
     Name: ""
+    Customer: ""
     Infra:
       TestingEnvironment: false
     Monitoring:

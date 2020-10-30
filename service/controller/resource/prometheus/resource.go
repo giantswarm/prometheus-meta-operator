@@ -29,8 +29,12 @@ type Config struct {
 	Address           string
 	Bastions          []string
 	CreatePVC         bool
+	Customer          string
+	Installation      string
+	Pipeline          string
+	Provider          string
+	Region            string
 	StorageSize       string
-	RemoteWriteURL    string
 	RetentionDuration string
 	RetentionSize     string
 	RemoteWriteURL    string
@@ -143,8 +147,13 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
 			ExternalLabels: map[string]string{
-				key.ClusterIDKey(): key.ClusterID(cluster),
-				"cluster_type":     key.ClusterType(cluster),
+				key.ClusterIDKey():    key.ClusterID(cluster),
+				"cluster_type":        key.ClusterType(cluster),
+				"customer":            config.Customer,
+				key.InstallationKey(): config.Installation,
+				"pipeline":            config.Pipeline,
+				"provider":            config.Provider,
+				"region":              config.Region,
 			},
 			ExternalURL: externalURL.String(),
 			RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
@@ -187,7 +196,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					corev1.ResourceMemory: *resource.NewQuantity(100*1024*1024, resource.BinarySI),
 				},
 			},
-
 			Retention:      config.RetentionDuration,
 			RetentionSize:  config.RetentionSize,
 			WALCompression: &walCompression,

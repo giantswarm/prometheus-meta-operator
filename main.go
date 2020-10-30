@@ -123,6 +123,8 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Name, "", "Name of the installation.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Pipeline, "", "Pipeline of the installation (stable or testing).")
+	daemonCommand.PersistentFlags().String(f.Service.Installation.Region, "", "Region where the installation is located.")
+	daemonCommand.PersistentFlags().String(f.Service.Installation.Customer, "", "Customer the installation belongs to.")
 	daemonCommand.PersistentFlags().String(f.Service.Vault.Host, "", "Host used to connect to Vault.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Security.RestrictedAccess.Enabled, false, "Is the access to the prometheus restricted to certain subnets?")
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")

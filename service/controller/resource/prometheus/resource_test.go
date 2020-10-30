@@ -17,11 +17,16 @@ func TestPrometheus(t *testing.T) {
 	}
 
 	config := Config{
+		Address:           "http://prometheus/cluster",
 		CreatePVC:         true,
+		Customer:          "Giant Swarm",
+		Installation:      "test-installation",
+		Pipeline:          "testing",
+		Provider:          "kvm",
+		Region:            "onprem",
 		StorageSize:       "50Gi",
 		RetentionDuration: "2w",
 		RetentionSize:     "45Gi",
-		Address:           "http://prometheus/cluster",
 	}
 
 	c := unittest.Config{

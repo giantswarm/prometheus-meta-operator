@@ -21,6 +21,8 @@ type ControllerConfig struct {
 	Provider                string
 	Installation            string
 	Pipeline                string
+	Region                  string
+	Customer                string
 	CreatePVC               bool
 	StorageSize             string
 	Vault                   string

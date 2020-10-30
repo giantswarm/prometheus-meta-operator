@@ -27,12 +27,15 @@ import (
 )
 
 type Config struct {
-	Address                 string
-	BaseDomain              string
-	Bastions                []string
-	Provider                string
-	Installation            string
-	Pipeline                string
+	Address      string
+	BaseDomain   string
+	Bastions     []string
+	Provider     string
+	Installation string
+	Pipeline     string
+	Region       string
+	Customer     string
+
 	CreatePVC               bool
 	StorageSize             string
 	RestrictedAccessEnabled bool
@@ -133,8 +136,12 @@ func New(config Config) ([]resource.Interface, error) {
 			PrometheusClient:  config.PrometheusClient,
 			Logger:            config.Logger,
 			CreatePVC:         config.CreatePVC,
+			Customer:          config.Customer,
+			Installation:      config.Installation,
+			Pipeline:          config.Pipeline,
+			Provider:          config.Provider,
+			Region:            config.Region,
 			StorageSize:       config.StorageSize,
-			RemoteWriteURL:    config.RemoteWriteURL,
 			RetentionDuration: config.RetentionDuration,
 			RetentionSize:     config.RetentionSize,
 			RemoteWriteURL:    config.RemoteWriteURL,

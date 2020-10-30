@@ -25,6 +25,11 @@ spec:
   externalLabels:
     cluster_id: foo
     cluster_type: tenant_cluster
+    customer: Giant Swarm
+    installation: test-installation
+    pipeline: testing
+    provider: kvm
+    region: onprem
   externalUrl: http://prometheus/foo
   podMetadata:
     labels:
