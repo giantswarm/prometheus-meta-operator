@@ -114,20 +114,23 @@ func New(config Config) (*Service, error) {
 	var clusterapiController *clusterapi.Controller
 	{
 		c := clusterapi.ControllerConfig{
-			K8sClient:         k8sClient,
-			Logger:            config.Logger,
-			PrometheusClient:  prometheusClient,
-			Address:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-			BaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Bastions:          config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Provider:          config.Viper.GetString(config.Flag.Service.Provider.Kind),
-			Installation:      config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Pipeline:          config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			CreatePVC:         config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			RetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-			RetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-			OpsgenieKey:       config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			K8sClient:           k8sClient,
+			Logger:              config.Logger,
+			PrometheusClient:    prometheusClient,
+			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Provider:            config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			Installation:        config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:            config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			CreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			StorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			RetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			RetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			OpsgenieKey:         config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+			RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+			RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
 		}
 		clusterapiController, err = clusterapi.NewController(c)
 		if err != nil {
@@ -138,20 +141,23 @@ func New(config Config) (*Service, error) {
 	var legacyController *legacy.Controller
 	{
 		c := legacy.ControllerConfig{
-			Address:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-			BaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Bastions:          config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Provider:          config.Viper.GetString(config.Flag.Service.Provider.Kind),
-			Installation:      config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Pipeline:          config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			CreatePVC:         config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			RetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-			RetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-			OpsgenieKey:       config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			K8sClient:         k8sClient,
-			Logger:            config.Logger,
-			PrometheusClient:  prometheusClient,
+			K8sClient:           k8sClient,
+			Logger:              config.Logger,
+			PrometheusClient:    prometheusClient,
+			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Provider:            config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			Installation:        config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:            config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			CreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			StorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			RetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			RetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			OpsgenieKey:         config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+			RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+			RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
 		}
 		legacyController, err = legacy.NewController(c)
 		if err != nil {
@@ -162,6 +168,9 @@ func New(config Config) (*Service, error) {
 	var controlplaneController *controlplane.Controller
 	{
 		c := controlplane.ControllerConfig{
+			K8sClient:               k8sClient,
+			Logger:                  config.Logger,
+			PrometheusClient:        prometheusClient,
 			Address:                 config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:              config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
@@ -176,9 +185,9 @@ func New(config Config) (*Service, error) {
 			RetentionDuration:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			RetentionSize:           config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
 			OpsgenieKey:             config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			K8sClient:               k8sClient,
-			Logger:                  config.Logger,
-			PrometheusClient:        prometheusClient,
+			RemoteWriteURL:          config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+			RemoteWriteUsername:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+			RemoteWritePassword:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
 		}
 		controlplaneController, err = controlplane.NewController(c)
 		if err != nil {
