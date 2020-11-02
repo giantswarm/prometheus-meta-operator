@@ -1,0 +1,58 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: gatekeeper
+  namespace: {{ .Namespace }}
+  labels:
+    cluster_id: {{ .ClusterID }}
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: {{ .ManagedBy }}
+    app.kubernetes.io/instance: {{ .ClusterID }}
+spec:
+  groups:
+  - name: gatekeeper
+    rules:
+    - alert: GatekeeperWebhookMissing
+      annotations:
+        description: Gatekeeper ValidatingWebhookConfiguration {{ $labels.validatingwebhookconfiguration }} is missing.
+        opsrecipe: gatekeeper-validatingwebhookconfiguration-missing/
+      expr: absent(kube_validatingwebhookconfiguration_info{validatingwebhookconfiguration="gatekeeper-validating-webhook-configuration"})
+      for: 5m
+      labels:
+        area: kaas
+        cancel_if_kube_state_metrics_down: "true"
+        cluster_id: {{ .ClusterID }}
+        installation: {{ .Installation }}
+        severity: page
+        team: atlas
+        topic: controlplane
+    - alert: GatekeeperDown
+      annotations:
+        description: |-
+            GateKeeper is not reachable ({{ if eq $labels.pod_ready "false" -}}
+            pod is failing{{ else if eq $labels.pod_ready "" -}}
+            service/endpoints are not finding the pod{{ end }})
+            {
+            node: {{ $labels.node }},
+            namespace: {{ $labels.namespace }},
+            app_instance: {{ $labels.app_instance }},
+            app_version: {{ $labels.app_version }},
+            pod_ready: {{ $labels.pod_ready }},
+            pod_phase: {{ $labels.pod_phase }},
+            instance: {{ $labels.instance }}
+            }
+        opsrecipe: gatekeeper-down/
+      expr: absent(up{app_name="gatekeeper-app"}) or up{app_name="gatekeeper-app"} == 0
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_apiserver_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cluster_id: {{ .ClusterID }}
+        installation: {{ .Installation }}
+        severity: page
+        team: atlas
+        topic: controlplane
+---

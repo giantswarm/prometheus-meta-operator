@@ -1,0 +1,34 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: alertmanager
+  namespace: {{ .Namespace }}
+  labels:
+    cluster_id: {{ .ClusterID }}
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: {{ .ManagedBy }}
+    app.kubernetes.io/instance: {{ .ClusterID }}
+spec:
+  groups:
+  - name: alertmanager
+    rules:
+    - alert: AlertManagerNotificationsFailing
+      annotations:
+        description: AlertManager {{ $labels.integration }} notifications are failing.
+        opsrecipe: alert-manager-notifications-failing/
+      expr: rate(alertmanager_notifications_failed_total[5m]) > 0
+{{- if or (eq .Installation "argali") (eq .Installation "axolotl") -}
+      for: 120m
+{{- else -}}
+      expr: rate(alertmanager_notifications_failed_total[5m]) > 0
+      for: 10m
+{{- end -}}
+      labels:
+        area: empowerment
+        cluster_id: {{ .ClusterID }}
+        installation: {{ .Installation }}
+        severity: page
+        team: atlas
+        topic: observability 
+---

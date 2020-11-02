@@ -16,12 +16,12 @@ spec:
     - alert: "Heartbeat"
       expr: "vector(1)"
       labels:
-        area: "empowerment"
+        area: empowerment
         cluster_id: {{ .ClusterID }}
         installation: {{ .Installation }}
-        team: "atlas"
-        topic: "observability"
-        type: "heartbeat"
+        team: atlas
+        topic: observability
+        type: heartbeat
       annotations:
         description: This alert is used to ensure the entire alerting pipeline is functional.
   - name: "labelling-schema"
@@ -36,16 +36,16 @@ spec:
           or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)|vault.*|bastion.*"}
         for: "10m"
         labels:
-          area: "empowerment"
+          area: empowerment
           cancel_if_cluster_status_creating: "true"
           cancel_if_cluster_status_updating: "true"
           cancel_if_cluster_status_deleting: "true"
           cancel_if_cluster_with_notready_nodepools: "true"
           cluster_id: {{ .ClusterID }}
           installation: {{ .Installation }}
-          severity: "notify"
-          team: "atlas"
-          topic: "observability"
+          severity: notify
+          team: atlas
+          topic: observability
         annotations:
           description: Labelling schema is invalid.
 ---

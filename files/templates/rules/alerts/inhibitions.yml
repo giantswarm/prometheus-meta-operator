@@ -1,0 +1,28 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: inhibitions
+  namespace: {{ .Namespace }}
+  labels:
+    cluster_id: {{ .ClusterID }}
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: {{ .ManagedBy }}
+    app.kubernetes.io/instance: {{ .ClusterID }}
+spec:
+  groups:
+  - name: inhibitions
+    rules:
+    - alert: InhibitionOutsideWorkingHours
+      annotations:
+        description: Fires outside working hours.
+      expr: (hour() <= 7 or hour() >= 16) or (day_of_week() > 5 or day_of_week() < 1)
+      labels:
+        area: empowerment
+        cluster_id: {{ .ClusterID }}
+        installation: {{ .Installation }}
+        nodes_down: "true"
+        outside_working_hours: "true"
+        team: atlas
+        topic: observability
+---

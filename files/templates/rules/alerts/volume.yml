@@ -1,0 +1,40 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: volume
+  namespace: {{ .Namespace }}
+  labels:
+    cluster_id: {{ .ClusterID }}
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: {{ .ManagedBy }}
+    app.kubernetes.io/instance: {{ .ClusterID }}
+spec:
+  groups:
+  - name: volume
+    rules:
+    - alert: VolumeUsedInodes
+      annotations:
+        description: Volume {{ $labels.persistentvolumeclaim }} has more than 90% inodes used.
+      expr: kubelet_volume_stats_inodes_used{cluster_type="control_plane"} / kubelet_volume_stats_inodes{cluster_type="control_plane"} > 0.9
+      for: 10m
+      labels:
+        area: kaas
+        cluster_id: {{ .ClusterID }}
+        installation: {{ .Installation }}
+        severity: notify
+        team: atlas
+        topic: controlplane
+    - alert: VolumeUsedSpace
+      annotations:
+        description: Volume {{ $labels.persistentvolumeclaim }} has more than 90% space used.
+      expr: kubelet_volume_stats_used_bytes{cluster_type="control_plane"} / kubelet_volume_stats_capacity_bytes{cluster_type="control_plane"} > 0.9
+      for: 10m
+      labels:
+        area: kaas
+        cluster_id: {{ .ClusterID }}
+        installation: {{ .Installation }}
+        severity: notify
+        team: atlas
+        topic: controlplane
+---

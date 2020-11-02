@@ -1,0 +1,29 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: microendpoint
+  namespace: {{ .Namespace }}
+  labels:
+    cluster_id: {{ .ClusterID }}
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: {{ .ManagedBy }}
+    app.kubernetes.io/instance: {{ .ClusterID }}
+spec:
+  groups:
+  - name: microendpoint
+    rules:
+    - alert: MultipleOperatorsRunningSameBundleVersion
+      annotations:
+        description: CR version {{ $labels.version }} in cluster {{ $labels.cluster_id }} is reconciled by multiple apps including {{ $labels.app }}.
+        opsrecipe: multiple-operators-running-same-version/
+      expr: sum(label_replace(giantswarm_build_info{reconciled_version!=""}, "version", "$1", "reconciled_version", "(.*)")) by (app,cluster_id,version) > 1
+      for: 5m
+      labels:
+        area: kaas
+        cluster_id: {{ .ClusterID }}
+        installation: {{ .Installation }}
+        severity: page
+        team: atlas
+        topic: controlplane
+---
