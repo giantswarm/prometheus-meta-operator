@@ -2,6 +2,7 @@ package alert
 
 import (
 	"bytes"
+	"path"
 	"reflect"
 
 	"github.com/giantswarm/microerror"
@@ -17,20 +18,24 @@ import (
 )
 
 const (
-	Name              = "alert"
-	rulesFileLocation = "/opt/prometheus-meta-operator/files/templates/rules/**/*.yml"
+	Name = "alert"
+
+	ruleFilesDirectory = "/opt/prometheus/meta-operator"
+	ruleFilesPath      = "files/templates/rules/**/*.yml"
 )
 
 type Config struct {
 	Installation     string
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
+	TemplatePath     string
 }
 
 type Resource struct {
 	prometheusClient promclient.Interface
 	logger           micrologger.Logger
 	installation     string
+	templatePath     string
 }
 
 func New(config Config) (*Resource, error) {
@@ -43,11 +48,15 @@ func New(config Config) (*Resource, error) {
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
 	}
+	if config.TemplatePath == "" {
+		config.TemplatePath = path.Join(ruleFilesDirectory, ruleFilesPath)
+	}
 
 	r := &Resource{
 		logger:           config.Logger,
 		prometheusClient: config.PrometheusClient,
 		installation:     config.Installation,
+		templatePath:     config.TemplatePath,
 	}
 
 	return r, nil
@@ -64,7 +73,7 @@ type TemplateData struct {
 	Namespace    string
 }
 
-func getRules(obj interface{}, installation string) ([]*promv1.PrometheusRule, error) {
+func (r *Resource) GetRules(obj interface{}) ([]*promv1.PrometheusRule, error) {
 	cluster, err := key.ToCluster(obj)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -72,12 +81,12 @@ func getRules(obj interface{}, installation string) ([]*promv1.PrometheusRule, e
 
 	var data TemplateData = TemplateData{
 		ClusterID:    key.ClusterID(cluster),
-		Installation: installation,
+		Installation: r.installation,
 		ManagedBy:    project.Name(),
 		Namespace:    key.Namespace(cluster),
 	}
 
-	template, err := template.RenderTemplate(data, rulesFileLocation)
+	template, err := template.RenderTemplate(data, r.templatePath)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -90,7 +99,7 @@ func getRules(obj interface{}, installation string) ([]*promv1.PrometheusRule, e
 		if len(bytes.TrimSpace(file)) > 0 {
 			var rule promv1.PrometheusRule = promv1.PrometheusRule{}
 
-			if err = yaml.Unmarshal(file, &rule); err != nil {
+			if err = yaml.UnmarshalStrict(file, &rule); err != nil {
 				return nil, microerror.Mask(err)
 			}
 

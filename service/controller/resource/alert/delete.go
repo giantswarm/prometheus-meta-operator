@@ -16,7 +16,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	rules, err := getRules(obj, r.installation)
+	rules, err := r.GetRules(obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
