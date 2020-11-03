@@ -15,8 +15,8 @@ spec:
     rules:
     - alert: VolumeUsedInodes
       annotations:
-        description: Volume {{ $labels.persistentvolumeclaim }} has more than 90% inodes used.
-      expr: kubelet_volume_stats_inodes_used{cluster_type="control_plane"} / kubelet_volume_stats_inodes{cluster_type="control_plane"} > 0.9
+        description: {{`Volume {{ $labels.persistentvolumeclaim }} has more than 90% inodes used.`}}
+      expr: "kubelet_volume_stats_inodes_used{cluster_type='control_plane'} / kubelet_volume_stats_inodes{cluster_type='control_plane'} > 0.9"
       for: 10m
       labels:
         area: kaas
@@ -27,8 +27,8 @@ spec:
         topic: controlplane
     - alert: VolumeUsedSpace
       annotations:
-        description: Volume {{ $labels.persistentvolumeclaim }} has more than 90% space used.
-      expr: kubelet_volume_stats_used_bytes{cluster_type="control_plane"} / kubelet_volume_stats_capacity_bytes{cluster_type="control_plane"} > 0.9
+        description: {{`Volume {{ $labels.persistentvolumeclaim }} has more than 90% space used.`}}
+      expr: "kubelet_volume_stats_used_bytes{cluster_type='control_plane'} / kubelet_volume_stats_capacity_bytes{cluster_type='control_plane'} > 0.9"
       for: 10m
       labels:
         area: kaas

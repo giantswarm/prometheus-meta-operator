@@ -15,9 +15,9 @@ spec:
     rules:
     - alert: GatekeeperWebhookMissing
       annotations:
-        description: Gatekeeper ValidatingWebhookConfiguration {{ $labels.validatingwebhookconfiguration }} is missing.
+        description: {{`Gatekeeper ValidatingWebhookConfiguration ({{ $labels.validatingwebhookconfiguration }}) is missing.`}}
         opsrecipe: gatekeeper-validatingwebhookconfiguration-missing/
-      expr: absent(kube_validatingwebhookconfiguration_info{validatingwebhookconfiguration="gatekeeper-validating-webhook-configuration"})
+      expr: "absent(kube_validatingwebhookconfiguration_info{validatingwebhookconfiguration='gatekeeper-validating-webhook-configuration'})"
       for: 5m
       labels:
         area: kaas
@@ -30,7 +30,7 @@ spec:
     - alert: GatekeeperDown
       annotations:
         description: |-
-            GateKeeper is not reachable ({{ if eq $labels.pod_ready "false" -}}
+          {{`GateKeeper is not reachable ({{ if eq $labels.pod_ready "false" -}}
             pod is failing{{ else if eq $labels.pod_ready "" -}}
             service/endpoints are not finding the pod{{ end }})
             {
@@ -40,10 +40,11 @@ spec:
             app_version: {{ $labels.app_version }},
             pod_ready: {{ $labels.pod_ready }},
             pod_phase: {{ $labels.pod_phase }},
-            instance: {{ $labels.instance }}
+            instance: {{ $labels.instance }},
             }
+          `}}
         opsrecipe: gatekeeper-down/
-      expr: absent(up{app_name="gatekeeper-app"}) or up{app_name="gatekeeper-app"} == 0
+      expr: "absent(up{app_name='gatekeeper-app'}) or up{app_name='gatekeeper-app'} == 0"
       for: 10m
       labels:
         area: kaas

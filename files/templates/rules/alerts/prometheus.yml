@@ -17,7 +17,7 @@ spec:
       annotations:
         description: Prometheus can't communicate with tenant cluster Kubernetes API.
         opsrecipe: prometheus-cant-communicate/
-      expr: rate(prometheus_sd_kubernetes_http_request_total{status_code="<error>"}[15m]) > 2
+      expr: "rate(prometheus_sd_kubernetes_http_request_total{status_code='<error>'}[15m]) > 2"
       for: 15m
       labels:
         area: empowerment
@@ -30,7 +30,7 @@ spec:
     - alert: PrometheusCompactionFailed
       annotations:
         description: Prometheus compaction has failed.
-      expr: prometheus_tsdb_compactions_failed_total > 1
+      expr: "prometheus_tsdb_compactions_failed_total > 1"
       for: 5m
       labels:
         area: empowerment
@@ -43,7 +43,7 @@ spec:
       annotations:
         description: Prometheus cpu usage is reaching the threshold. Monitoring of the installation might be unreliable.
         opsrecipe: prometheus-resource-limit-reached/
-      expr: sum(rate(container_cpu_usage_seconds_total{container="prometheus",cluster_type="control_plane"}[20m])) / kube_pod_container_resource_limits_cpu_cores{container="prometheus",cluster_type="control_plane"} > 0.93
+      expr: "sum(rate(container_cpu_usage_seconds_total{container='prometheus',cluster_type='control_plane'}[20m])) / kube_pod_container_resource_limits_cpu_cores{container='prometheus',cluster_type='control_plane'} > 0.93"
       for: 5m
       labels:
         area: empowerment
@@ -56,7 +56,7 @@ spec:
       annotations:
         description: Prometheus memory usage is reaching the threshold.
         opsrecipe: prometheus-resource-limit-reached/
-      expr: scalar(container_memory_working_set_bytes{cluster_type="control_plane", container="prometheus"}) / max(node_memory_MemTotal_bytes{cluster_type="control_plane"}) > 0.93
+      expr: "scalar(container_memory_working_set_bytes{cluster_type='control_plane', container='prometheus'}) / max(node_memory_MemTotal_bytes{cluster_type='control_plane'}) > 0.93"
       for: 5m
       labels:
         area: empowerment
@@ -68,7 +68,7 @@ spec:
     - alert: PrometheusWALCorrupted
       annotations:
         description: Prometheus WAL is corrupted.
-      expr: prometheus_tsdb_wal_corruptions_total > 1
+      expr: "prometheus_tsdb_wal_corruptions_total > 1"
       for: 5m
       labels:
         area: empowerment
@@ -79,8 +79,8 @@ spec:
         topic: observability
     - alert: PrometheusIsRestarting
       annotations:
-        description: Prometheus {{ $labels.exported_namespace }}/{{ $labels.pod }} is restarting too much probably due to OOM kills.
-      expr: kube_pod_container_status_restarts_total{container="prometheus",cluster_type="control_plane"} > 3
+        description: {{`Prometheus {{ $labels.namespace }}/{{ $labels.pod }} is restarting too much probably due to OOM kills.`}}
+      expr: "kube_pod_container_status_restarts_total{container='prometheus',cluster_type='control_plane'} > 3"
       for: 1m
       labels:
         area: empowerment
@@ -93,7 +93,7 @@ spec:
       annotations:
         description: Prometheus rule evaluation is taking too long.
         opsrecipe: prometheus-rule-evaluation/
-      expr: prometheus_rule_evaluation_duration_seconds{quantile="0.99"} > 0.3
+      expr: "prometheus_rule_evaluation_duration_seconds{quantile='0.99'} > 0.3"
       for: 1h
       labels:
         area: empowerment
@@ -106,9 +106,9 @@ spec:
     rules:
     - alert: ScrapeTakesTooLong
       annotations:
-        description: Scraping metrics for {{ $labels.app }} on instance {{ $labels.instance }} takes too long.
+        description: {{`Scraping metrics for {{ $labels.app }} on instance {{ $labels.instance }} takes too long.`}}
         opsrecipe: metric-scrape-timeout/
-      expr: scrape_duration_seconds >= 60
+      expr: "scrape_duration_seconds >= 60"
       for: 10m
       labels:
         area: empowerment

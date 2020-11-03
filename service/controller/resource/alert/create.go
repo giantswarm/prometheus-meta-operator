@@ -70,6 +70,16 @@ func updateMeta(c, d *v1.PrometheusRule) {
 	d.SetResourceVersion(c.GetResourceVersion())
 	d.SetGeneration(c.GetGeneration())
 	d.SetSelfLink(c.GetSelfLink())
+	labels := c.GetLabels()
+	for k, v := range d.GetLabels() {
+		labels[k] = v
+	}
+	d.SetLabels(labels)
+	annotations := c.GetAnnotations()
+	for k, v := range d.GetAnnotations() {
+		annotations[k] = v
+	}
+	d.SetAnnotations(annotations)
 	d.SetCreationTimestamp(c.GetCreationTimestamp())
 	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
 	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())

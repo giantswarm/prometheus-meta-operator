@@ -3,7 +3,7 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: fluentbit
-  namespace: {{ .Namespace }}
+  namespace: "{{ .Namespace }}"
   labels:
     cluster_id: {{ .ClusterID }}
     app.kubernetes.io/name: "prometheus"
@@ -14,9 +14,9 @@ spec:
   - name: fluentbit
     rules:
     - alert: FluentbitTooManyErrors
+      expr: "rate(fluentbit_output_retries_failed_total[10m]) > 0"
       annotations:
-        description: Fluentbit ({{ $labels.instance }}) is erroring.
-      expr: rate(fluentbit_output_retries_failed_total[10m]) > 0
+        description: "{{`Fluentbit ({{$labels.instance}}) is erroring.`}}"
       for: 10m
       labels:
         area: empowerment

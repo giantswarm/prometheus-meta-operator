@@ -15,15 +15,14 @@ spec:
     rules:
     - alert: AlertManagerNotificationsFailing
       annotations:
-        description: AlertManager {{ $labels.integration }} notifications are failing.
+        description: {{`AlertManager ({{ $labels.integration }}) notifications are failing.`}}
         opsrecipe: alert-manager-notifications-failing/
-      expr: rate(alertmanager_notifications_failed_total[5m]) > 0
-{{- if or (eq .Installation "argali") (eq .Installation "axolotl") -}
+      expr: "rate(alertmanager_notifications_failed_total[5m]) > 0"
+{{ if or (eq .Installation "argali") (eq .Installation "axolotl") }}
       for: 120m
-{{- else -}}
-      expr: rate(alertmanager_notifications_failed_total[5m]) > 0
+{{ else }}
       for: 10m
-{{- end -}}
+{{ end }}
       labels:
         area: empowerment
         cluster_id: {{ .ClusterID }}
