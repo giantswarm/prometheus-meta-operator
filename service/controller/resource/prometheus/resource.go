@@ -248,6 +248,18 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					},
 				},
 			},
+			TopologySpreadConstraints: []v1.TopologySpreadConstraint{
+				v1.TopologySpreadConstraint{
+					MaxSkew:           1,
+					TopologyKey:       "kubernetes.io/os",
+					WhenUnsatisfiable: v1.ScheduleAnyway,
+					LabelSelector: &metav1.LabelSelector{
+						MatchLabels: map[string]string{
+							"app": "prometheus",
+						},
+					},
+				},
+			},
 		},
 	}
 
