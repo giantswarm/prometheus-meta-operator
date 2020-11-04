@@ -95,4 +95,11 @@ spec:
           requests:
             storage: 50Gi
       status: {}
+  topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app: prometheus
+    maxSkew: 1
+    topologyKey: kubernetes.io/os
+    whenUnsatisfiable: ScheduleAnyway
   walCompression: true
