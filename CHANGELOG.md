@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support to remote write to Cortex
 - Added recording rules
 - Add node affinity to prefer not scheduling on master nodes
+- Add topologySpreadConstraint to evenly spread prometheus pods
 
 ### Fixed
 
