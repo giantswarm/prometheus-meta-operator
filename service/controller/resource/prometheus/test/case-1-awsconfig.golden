@@ -13,6 +13,16 @@ spec:
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - preference:
+          matchExpressions:
+          - key: role
+            operator: NotIn
+            values:
+            - master
+        weight: 60
   apiserverConfig:
     host: https://master.alice
     tlsConfig:
