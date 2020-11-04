@@ -228,6 +228,26 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				FSGroup:      &fsGroup,
 			},
 			Storage: &storage,
+			Affinity: &v1.Affinity{
+				NodeAffinity: &v1.NodeAffinity{
+					PreferredDuringSchedulingIgnoredDuringExecution: []v1.PreferredSchedulingTerm{
+						v1.PreferredSchedulingTerm{
+							Weight: 60,
+							Preference: v1.NodeSelectorTerm{
+								MatchExpressions: []v1.NodeSelectorRequirement{
+									v1.NodeSelectorRequirement{
+										Key:      "role",
+										Operator: v1.NodeSelectorOpNotIn,
+										Values: []string{
+											"master",
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 
