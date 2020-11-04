@@ -31,7 +31,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if apierrors.IsNotFound(err) {
 			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("rule %s needs to be created", ruleName))
 			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("creating rule %s", ruleName))
-			_, err := r.prometheusClient.MonitoringV1().PrometheusRules(key.Namespace(cluster)).Create(ctx, desiredRule, metav1.CreateOptions{})
+			currentRule, err = r.prometheusClient.MonitoringV1().PrometheusRules(key.Namespace(cluster)).Create(ctx, desiredRule, metav1.CreateOptions{})
 			if err != nil {
 				r.logger.LogCtx(ctx, "level", "error", "message", fmt.Sprintf("could not create rule %s", ruleName))
 				return microerror.Mask(err)
