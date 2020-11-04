@@ -20,7 +20,7 @@ import (
 const (
 	Name = "alert"
 
-	ruleFilesDirectory = "/opt/prometheus/meta-operator"
+	ruleFilesDirectory = "/opt/prometheus-meta-operator"
 	ruleFilesPath      = "files/templates/rules/**/*.yml"
 )
 
