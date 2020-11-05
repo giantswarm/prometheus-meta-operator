@@ -8,15 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-
-- Add support to remote write to Cortex
-- Added recording rules
-- Add node affinity to prefer not scheduling on master nodes
-
 ### Fixed
 
 - Fix kube-state-metrics scraping port on Control Planes.
+
+### Added
+
+- Added recording rules
+- Add node affinity to prefer not scheduling on master nodes
 
 ## [1.8.0] - 2020-10-21
 
