@@ -47,6 +47,21 @@ spec:
       app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: prometheus
       giantswarm.io/monitoring: "true"
+  remoteWrite:
+  - basicAuth:
+      password:
+        key: password
+        name: remote-write
+      username:
+        key: username
+        name: remote-write
+    name: kubernetes
+    url: http://grafana/api/prom/push
+    writeRelabelConfigs:
+    - action: keep
+      regex: (^aggregation:.+|prometheus_tsdb_head_series|^slo_.+)
+      sourceLabels:
+      - __name__
   replicas: 1
   resources:
     requests:
