@@ -13,10 +13,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support to remote write to Cortex
 - Added recording rules
 - Add node affinity to prefer not scheduling on master nodes
+- Added `pipeline` tag to _Hearbeat_ alert to be able to see if it affects
+  a stable or testing installation at first glance
+- Added initial support for `remote_write` that will eventually be used for
+  writing to Cortex
 
 ### Fixed
 
 - Fix kube-state-metrics scraping port on Control Planes.
+- Fixed creating of alerts, it was failing due to a typo in template path
 
 ## [1.8.0] - 2020-10-21
 
