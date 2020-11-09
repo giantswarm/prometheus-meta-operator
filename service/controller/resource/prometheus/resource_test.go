@@ -27,6 +27,7 @@ func TestPrometheus(t *testing.T) {
 		StorageSize:       "50Gi",
 		RetentionDuration: "2w",
 		RetentionSize:     "45Gi",
+		RemoteWriteURL:    "http://grafana/api/prom/push",
 	}
 
 	c := unittest.Config{

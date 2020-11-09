@@ -160,33 +160,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-			RemoteWrite: []promv1.RemoteWriteSpec{
-				promv1.RemoteWriteSpec{
-					URL: config.RemoteWriteURL,
-					BasicAuth: &promv1.BasicAuth{
-						Username: v1.SecretKeySelector{
-							LocalObjectReference: v1.LocalObjectReference{
-								Name: key.RemoteWriteSecretName(),
-							},
-							Key: key.RemoteWriteUsernameKey(),
-						},
-						Password: v1.SecretKeySelector{
-							LocalObjectReference: v1.LocalObjectReference{
-								Name: key.RemoteWriteSecretName(),
-							},
-							Key: key.RemoteWritePasswordKey(),
-						},
-					},
-					Name: key.ClusterID(cluster),
-					WriteRelabelConfigs: []promv1.RelabelConfig{
-						promv1.RelabelConfig{
-							SourceLabels: []string{"__name__"},
-							Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|^slo_.+)",
-							Action:       "keep",
-						},
-					},
-				},
-			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
@@ -249,6 +222,36 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				},
 			},
 		},
+	}
+
+	if config.RemoteWriteURL != "" {
+		prometheus.Spec.RemoteWrite = []promv1.RemoteWriteSpec{
+			promv1.RemoteWriteSpec{
+				URL: config.RemoteWriteURL,
+				BasicAuth: &promv1.BasicAuth{
+					Username: v1.SecretKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: key.RemoteWriteSecretName(),
+						},
+						Key: key.RemoteWriteUsernameKey(),
+					},
+					Password: v1.SecretKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: key.RemoteWriteSecretName(),
+						},
+						Key: key.RemoteWritePasswordKey(),
+					},
+				},
+				Name: key.ClusterID(cluster),
+				WriteRelabelConfigs: []promv1.RelabelConfig{
+					promv1.RelabelConfig{
+						SourceLabels: []string{"__name__"},
+						Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|^slo_.+)",
+						Action:       "keep",
+					},
+				},
+			},
+		}
 	}
 
 	if !key.IsInCluster(cluster) {
