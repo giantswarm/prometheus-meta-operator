@@ -66,7 +66,7 @@ spec:
   resources:
     requests:
       cpu: 100m
-      memory: 100Mi
+      memory: 5000Mi
   retention: 2w
   retentionSize: 45Gi
   routePrefix: /bob
