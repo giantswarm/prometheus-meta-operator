@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added initial support for `remote_write` that will eventually be used for
   writing to Cortex
 
+### Changed
+
+- Increase memory request from 100Mi to 5Gi
+
 ### Fixed
 
 - Fix kube-state-metrics scraping port on Control Planes.
