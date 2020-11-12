@@ -9,6 +9,7 @@ import (
 	"github.com/opsgenie/opsgenie-go-sdk-v2/client"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/heartbeat"
 	"github.com/opsgenie/opsgenie-go-sdk-v2/og"
+	"github.com/sirupsen/logrus"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -49,6 +50,7 @@ func New(config Config) (*Resource, error) {
 		ApiKey:         config.OpsgenieKey,
 		OpsGenieAPIURL: client.API_URL,
 		RetryCount:     1,
+		LogLevel:       logrus.FatalLevel,
 	}
 	client, err := heartbeat.NewClient(c)
 	if err != nil {
