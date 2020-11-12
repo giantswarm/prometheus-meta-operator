@@ -30,6 +30,7 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
 	github.com/prometheus/common v0.14.0
 	github.com/prometheus/prometheus v2.21.0+incompatible
+	github.com/sirupsen/logrus v1.6.0
 	github.com/spf13/viper v1.6.2
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
