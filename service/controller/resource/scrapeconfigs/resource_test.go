@@ -4,7 +4,6 @@ import (
 	"flag"
 	"path"
 	"path/filepath"
-	"runtime"
 	"testing"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
@@ -15,12 +14,7 @@ var update = flag.Bool("update", false, "update the ouput file")
 func TestAWSScrapeconfigs(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
-		_, filename, _, ok := runtime.Caller(0)
-		if !ok {
-			t.Fatal("cannot get current filename")
-		}
-
-		path := path.Join(path.Dir(filename), "../../../..", templatePath)
+		path := path.Join(unittest.ProjectRoot(), templatePath)
 
 		config := Config{
 			TemplatePath: path,
@@ -59,12 +53,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 func TestAzureScrapeconfigs(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
-		_, filename, _, ok := runtime.Caller(0)
-		if !ok {
-			t.Fatal("cannot get current filename")
-		}
-
-		path := path.Join(path.Dir(filename), "../../../..", templatePath)
+		path := path.Join(unittest.ProjectRoot(), templatePath)
 
 		config := Config{
 			TemplatePath: path,
@@ -103,12 +92,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 func TestKVMScrapeconfigs(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
-		_, filename, _, ok := runtime.Caller(0)
-		if !ok {
-			t.Fatal("cannot get current filename")
-		}
-
-		path := path.Join(path.Dir(filename), "../../../..", templatePath)
+		path := path.Join(unittest.ProjectRoot(), templatePath)
 
 		config := Config{
 			TemplatePath: path,
