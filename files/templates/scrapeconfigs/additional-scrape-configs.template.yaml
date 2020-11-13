@@ -1612,6 +1612,6 @@
     replacement: /${0}
 {{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
-  - target_label: cluster_id
-    replacement: __meta_kubernetes_pod_label_prometheus
+  - source_labels: [__meta_kubernetes_pod_label_prometheus]
+    target_label: cluster_id
 {{ end }}
