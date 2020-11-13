@@ -2631,6 +2631,10 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_prometheus,__metrics_path__]
+    separator:
+    target_label: __metrics_path__
+    replacement: /${0}
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2663,4 +2667,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  - target_label: cluster_id
+    replacement: __meta_kubernetes_pod_label_prometheus
 
