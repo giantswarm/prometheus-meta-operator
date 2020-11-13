@@ -1606,6 +1606,12 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_prometheus,__metrics_path__]
+    separator:
+    target_label: __metrics_path__
+    replacement: /${0}
 {{ include "_common" . | indent 2 }}
 {{ include "_labelingschema" . | indent 2 }}
+  - target_label: cluster_id
+    replacement: __meta_kubernetes_pod_label_prometheus
 {{ end }}
