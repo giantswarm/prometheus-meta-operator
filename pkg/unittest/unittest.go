@@ -188,3 +188,14 @@ func inputValue(inputFile string) (pkgruntime.Object, error) {
 
 	return input, nil
 }
+
+// ProjectRoot returns absolute path to prometheus-meta-operator root directory.
+// This comes in handy when you need to access files in this repository from a test.
+func ProjectRoot() string {
+	_, filename, _, ok := runtime.Caller(0)
+	if !ok {
+		panic("cannot get current filename")
+	}
+
+	return path.Join(path.Dir(filename), "../..")
+}
