@@ -177,11 +177,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					key.ClusterIDKey(): key.ClusterID(cluster),
 				},
 			},
-			RuleSelector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					key.ClusterIDKey(): key.ClusterID(cluster),
-				},
-			},
 			AdditionalScrapeConfigs: &corev1.SecretKeySelector{
 				LocalObjectReference: corev1.LocalObjectReference{
 					Name: key.PrometheusAdditionalScrapeConfigsSecretName(),
@@ -255,6 +250,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	if !key.IsInCluster(cluster) {
+		// Tenant cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			TLSConfig: &promv1.TLSConfig{
@@ -267,7 +263,24 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		prometheus.Spec.Secrets = []string{
 			key.Secret(),
 		}
+
+		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				metav1.LabelSelectorRequirement{
+					Key:      "cluster_type",
+					Operator: metav1.LabelSelectorOpNotIn,
+					Values:   []string{"control_plane"},
+				},
+			},
+		}
+
+		prometheus.Spec.RuleNamespaceSelector = &metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"name": "monitoring",
+			},
+		}
 	} else {
+		// Control plane
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			BearerTokenFile: key.ControlPlaneBearerToken(),
@@ -281,6 +294,12 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 		prometheus.Spec.Secrets = []string{
 			key.EtcdSecret(cluster),
+		}
+
+		prometheus.Spec.RuleNamespaceSelector = &metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"name": "monitoring",
+			},
 		}
 	}
 
