@@ -1,14 +1,10 @@
----
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: prometheus-meta-operator
-  namespace: [[ .Namespace ]]
+  namespace: {{ include "resource.default.namespace" . }}
   labels:
-    cluster_id: [[ .ClusterID ]]
-    app.kubernetes.io/name: "prometheus"
-    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
-    app.kubernetes.io/instance: [[ .ClusterID ]]
+    {{- include "labels.common" . | nindent 4 }}
 spec:
   groups:
   - name: heartbeat
@@ -48,4 +44,3 @@ spec:
           topic: "observability"
         annotations:
           description: Labelling schema is invalid.
----

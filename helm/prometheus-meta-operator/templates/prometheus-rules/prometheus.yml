@@ -1,14 +1,11 @@
-[[ if eq .ClusterType "control_plane" ]]
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: prometheus
-  namespace: [[ .Namespace ]]
+  namespace: {{ include "resource.default.namespace" . }}
   labels:
-    cluster_id: [[ .ClusterID ]]
-    app.kubernetes.io/name: "prometheus"
-    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
-    app.kubernetes.io/instance: [[ .ClusterID ]]
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "control_plane"
 spec:
   groups:
   - interval: 0s
@@ -26,4 +23,3 @@ spec:
         severity: page
         team: atlas
         topic: observability
-[[ end ]]
