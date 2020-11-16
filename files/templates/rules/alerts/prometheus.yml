@@ -4,7 +4,6 @@ kind: PrometheusRule
 metadata:
   creationTimestamp: null
   name: prometheus
-  namespace: monitoring
 spec:
   groups:
   - interval: 0s
