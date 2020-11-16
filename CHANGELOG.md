@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Set heartbeat client log level to fatal to avoid polluting our logs.
 
+### Fixed
+
+- Fix prometheus targets.
+
 ## [1.9.0] - 2020-11-11
 
 ### Added
