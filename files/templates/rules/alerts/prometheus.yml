@@ -1,0 +1,37 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus
+  namespace: {{ .Namespace }}
+  labels:
+    cluster_id: {{ .ClusterID }}
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: {{ .ManagedBy }}
+    app.kubernetes.io/instance: {{ .ClusterID }}
+spec:
+  groups:
+  - name: prometheus
+    rules:
+    - alert: PrometheusCantCommunicateWithTenantAPI
+      expr: rate(prometheus_sd_kubernetes_http_request_total{status_code="<error>"}[15m]) > 2
+      for: 15m
+      labels:
+        cancel_if_any_apiserver_down: true
+        severity: page
+        team: atlas
+        area: empowerment
+        topic: observability
+      annotations:
+        description: Prometheus can't communicate with tenant cluster Kubernetes API.
+        opsrecipe: prometheus-cant-communicate/
+    - alert: TargetDown
+      expr: up == 0
+      for: 2h
+      labels:
+        team: atlas
+        area: empowerment
+        topic: observability
+        severity: page
+      annotations:
+        description: Prometheus can't access {{ $labels.app }} app on {{ $labels.cluster_id }} cluster.
