@@ -1,3 +1,4 @@
+[[ if eq .ClusterType "control_plane" ]]
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -21,3 +22,4 @@ spec:
         severity: page
         team: atlas
         topic: observability
+[[ end ]]
