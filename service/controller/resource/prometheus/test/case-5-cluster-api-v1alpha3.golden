@@ -70,9 +70,15 @@ spec:
   retention: 2w
   retentionSize: 45Gi
   routePrefix: /baz
-  ruleSelector:
+  ruleNamespaceSelector:
     matchLabels:
-      cluster_id: baz
+      name: monitoring
+  ruleSelector:
+    matchExpressions:
+    - key: cluster_type
+      operator: NotIn
+      values:
+      - control_plane
   rules:
     alert: {}
   secrets:
