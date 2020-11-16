@@ -13,7 +13,7 @@ spec:
     rules:
     - alert: PrometheusCantCommunicateWithTenantAPI
       annotations:
-        description: Prometheus can't communicate with tenant cluster {{ $labels.cluster_id }} Kubernetes API.
+        description: "Prometheus can't communicate with tenant cluster {{ $labels.cluster_id }} Kubernetes API."
         opsrecipe: prometheus-cant-communicate/
       expr: rate(prometheus_sd_kubernetes_http_request_total{status_code="<error>"}[15m]) > 2
       for: 15m
