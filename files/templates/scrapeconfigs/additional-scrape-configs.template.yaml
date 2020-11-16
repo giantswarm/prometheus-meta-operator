@@ -1610,8 +1610,8 @@
     separator:
     target_label: __metrics_path__
     replacement: /${0}
-{{ include "_common" . | indent 2 }}
-{{ include "_labelingschema" . | indent 2 }}
+[[ include "_common" . | indent 2 ]]
+[[ include "_labelingschema" . | indent 2 ]]
   - source_labels: [__meta_kubernetes_pod_label_prometheus]
     target_label: cluster_id
-{{ end }}
+[[ end ]]
