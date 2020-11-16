@@ -1,14 +1,14 @@
-{{- define "_labelingschema" -}}
+[[- define "_labelingschema" -]]
 # Add cluster_id label.
 - target_label: cluster_id
-  replacement: {{ .ClusterID }}
+  replacement: [[ .ClusterID ]]
 # Add cluster_type label.
 - target_label: cluster_type
-  replacement: {{ .ClusterType }}
+  replacement: [[ .ClusterType ]]
 # Add provider label.
 - target_label: provider
-  replacement: {{ .Provider }}
+  replacement: [[ .Provider ]]
 # Add installation label.
 - target_label: installation
-  replacement: {{ .Installation }}
-{{- end -}}
+  replacement: [[ .Installation ]]
+[[- end -]]

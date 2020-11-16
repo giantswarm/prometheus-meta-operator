@@ -3,12 +3,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: prometheus-meta-operator
-  namespace: {{ .Namespace }}
+  namespace: [[ .Namespace ]]
   labels:
-    cluster_id: {{ .ClusterID }}
+    cluster_id: [[ .ClusterID ]]
     app.kubernetes.io/name: "prometheus"
-    app.kubernetes.io/managed-by: {{ .ManagedBy }}
-    app.kubernetes.io/instance: {{ .ClusterID }}
+    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
+    app.kubernetes.io/instance: [[ .ClusterID ]]
 spec:
   groups:
   - name: heartbeat
@@ -17,8 +17,8 @@ spec:
       expr: "vector(1)"
       labels:
         area: "empowerment"
-        cluster_id: {{ .ClusterID }}
-        installation: {{ .Installation }}
+        cluster_id: [[ .ClusterID ]]
+        installation: [[ .Installation ]]
         team: "atlas"
         topic: "observability"
         type: "heartbeat"
@@ -41,8 +41,8 @@ spec:
           cancel_if_cluster_status_updating: "true"
           cancel_if_cluster_status_deleting: "true"
           cancel_if_cluster_with_notready_nodepools: "true"
-          cluster_id: {{ .ClusterID }}
-          installation: {{ .Installation }}
+          cluster_id: [[ .ClusterID ]]
+          installation: [[ .Installation ]]
           severity: "notify"
           team: "atlas"
           topic: "observability"
