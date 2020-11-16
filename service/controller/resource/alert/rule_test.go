@@ -3,7 +3,6 @@ package alert
 import (
 	"path"
 	"reflect"
-	"runtime"
 	"testing"
 
 	"github.com/giantswarm/micrologger"
@@ -11,6 +10,8 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	v1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
 )
 
 var (
@@ -25,12 +26,7 @@ var (
 )
 
 func TestGetRules(t *testing.T) {
-	_, filename, _, ok := runtime.Caller(0)
-	if !ok {
-		t.Fatal("cannot get current filename")
-	}
-
-	path := path.Join(path.Dir(filename), "../../../..", ruleFilesPath)
+	path := path.Join(unittest.ProjectRoot(), ruleFilesPath)
 
 	logger, err := micrologger.New(micrologger.Config{})
 	if err != nil {
