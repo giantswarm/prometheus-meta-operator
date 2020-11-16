@@ -10,7 +10,7 @@ import (
 )
 
 func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, error) {
-	tpl := template.New("_base")
+	tpl := template.New("_base").Delims("[[", "]]")
 
 	var funcMap template.FuncMap = map[string]interface{}{}
 	// copied from: https://github.com/helm/helm/blob/8648ccf5d35d682dcd5f7a9c2082f0aaf071e817/pkg/engine/engine.go#L147-L154
@@ -32,7 +32,7 @@ func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, 
 		if strings.HasPrefix(t.Name(), "_") {
 			continue
 		}
-		err := t.Execute(&b, templateData)
+		err := t.Delims("[[", "]]").Execute(&b, templateData)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
