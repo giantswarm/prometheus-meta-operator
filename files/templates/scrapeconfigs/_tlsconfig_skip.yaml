@@ -1,14 +1,14 @@
-{{- define "_tlsconfig_skip" -}}
-{{- if ne .ClusterType "control_plane" -}}
+[[- define "_tlsconfig_skip" -]]
+[[- if ne .ClusterType "control_plane" -]]
 tls_config:
-  ca_file: /etc/prometheus/secrets/{{ .SecretName }}/ca
-  cert_file: /etc/prometheus/secrets/{{ .SecretName }}/crt
-  key_file: /etc/prometheus/secrets/{{ .SecretName }}/key
+  ca_file: /etc/prometheus/secrets/[[ .SecretName ]]/ca
+  cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
+  key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
   insecure_skip_verify: true
-{{- else -}}
+[[- else -]]
 bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 tls_config:
   ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   insecure_skip_verify: true
-{{- end -}}
-{{- end -}}
+[[- end -]]
+[[- end -]]

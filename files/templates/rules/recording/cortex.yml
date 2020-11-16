@@ -3,12 +3,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: cortex
-  namespace: {{ .Namespace }}
+  namespace: [[ .Namespace ]]
   labels:
-    cluster_id: {{ .ClusterID }}
+    cluster_id: [[ .ClusterID ]]
     app.kubernetes.io/name: "prometheus"
-    app.kubernetes.io/managed-by: {{ .ManagedBy }}
-    app.kubernetes.io/instance: {{ .ClusterID }}
+    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
+    app.kubernetes.io/instance: [[ .ClusterID ]]
 spec:
   groups:
   - name: cortex
