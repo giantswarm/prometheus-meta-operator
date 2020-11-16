@@ -68,6 +68,7 @@ func (r *Resource) Name() string {
 
 type TemplateData struct {
 	ClusterID    string
+	ClusterType  string
 	Installation string
 	ManagedBy    string
 	Namespace    string
@@ -81,6 +82,7 @@ func (r *Resource) GetRules(obj interface{}) ([]*promv1.PrometheusRule, error) {
 
 	var data TemplateData = TemplateData{
 		ClusterID:    key.ClusterID(cluster),
+		ClusterType:  key.ClusterType(cluster),
 		Installation: r.installation,
 		ManagedBy:    project.Name(),
 		Namespace:    key.Namespace(cluster),
