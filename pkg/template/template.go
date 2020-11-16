@@ -9,6 +9,9 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
+// RenderTemplate render all template files matching templateLocation glob filter, using templateData.
+// template files are using [[ and ]] as delimiters.
+// There's an additional 'include' template function provided taken from helm: https://helm.sh/docs/howto/charts_tips_and_tricks/#using-the-include-function
 func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, error) {
 	tpl := template.New("_base").Delims("[[", "]]")
 
