@@ -2,8 +2,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  creationTimestamp: null
   name: prometheus
+  namespace: [[ .Namespace ]]
+  labels:
+    cluster_id: [[ .ClusterID ]]
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
+    app.kubernetes.io/instance: [[ .ClusterID ]]
 spec:
   groups:
   - interval: 0s
