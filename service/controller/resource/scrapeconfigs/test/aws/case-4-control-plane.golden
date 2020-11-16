@@ -2667,6 +2667,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  - target_label: cluster_id
-    replacement: __meta_kubernetes_pod_label_prometheus
+  - source_labels: [__meta_kubernetes_pod_label_prometheus]
+    target_label: cluster_id
 
