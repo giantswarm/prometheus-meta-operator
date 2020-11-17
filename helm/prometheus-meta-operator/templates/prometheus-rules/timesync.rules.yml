@@ -12,7 +12,7 @@ spec:
     rules:
     - alert: ClockOutOfSync
       annotations:
-        description: Clock is out of sync on {{ $labels.instance }}.
+        description: {`Clock is out of sync on {{ $labels.instance }}.`}
         opsrecipe: heartbeat-expired/
       expr: abs(node_time_seconds - scalar(avg(node_time_seconds))) > 60
       for: 30m
