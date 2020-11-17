@@ -42,12 +42,21 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  # Add node name.
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+    target_label: node  
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
   metric_relabel_configs:
+[[- if eq .ClusterType "control_plane" ]]
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|vault-exporter)
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring)
     action: keep
+[[- else ]]
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*)
+    action: keep
+[[- end ]]
   - source_labels: [__name__]
     regex: container_network_.*
     action: drop
