@@ -13,8 +13,7 @@ spec:
       expr: "vector(1)"
       labels:
         area: "empowerment"
-        cluster_id: [[ .ClusterID ]]
-        installation: [[ .Installation ]]
+        installation: {{ .Values.Installation.V1.Name }}
         team: "atlas"
         topic: "observability"
         type: "heartbeat"
