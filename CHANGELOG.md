@@ -8,9 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add team atlas alerts (in helm chart).
+
 ### Changed
 
 - Set heartbeat client log level to fatal to avoid polluting our logs.
+- Set prometheus to select rules from monitoring namespace.
+
+### Removed
+
+- Set alert resource to delete PrometheusRules in cluster namespace.
 
 ### Fixed
 
