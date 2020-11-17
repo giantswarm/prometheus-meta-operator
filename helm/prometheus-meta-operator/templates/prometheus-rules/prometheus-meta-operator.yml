@@ -36,8 +36,7 @@ spec:
           cancel_if_cluster_status_updating: "true"
           cancel_if_cluster_status_deleting: "true"
           cancel_if_cluster_with_notready_nodepools: "true"
-          cluster_id: [[ .ClusterID ]]
-          installation: [[ .Installation ]]
+          installation: {{ .Values.Installation.V1.Name }}
           severity: "notify"
           team: "atlas"
           topic: "observability"
