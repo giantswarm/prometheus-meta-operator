@@ -29,6 +29,7 @@ type Config struct {
 	TemplatePath     string
 }
 
+// TODO: remove this resource in next release.
 type Resource struct {
 	prometheusClient promclient.Interface
 	logger           micrologger.Logger
