@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: inhibit.rules
+  namespace: '{{ include "resource.default.namespace" . }}'
+spec:
+  groups:
+  - name: inhibit
+    rules:
+    - alert: InhibitionOutsideWorkingHours
+      annotations:
+        description: Fires outside working hours.
+      expr: (hour() <= 7 or hour() >= 16) or (day_of_week() > 5 or day_of_week() < 1)
+      labels:
+        area: empowerment
+        nodes_down: "true"
+        outside_working_hours: "true"
+        team: atlas
+        topic: monitoring

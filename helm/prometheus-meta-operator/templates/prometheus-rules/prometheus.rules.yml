@@ -1,10 +1,11 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: prometheus
+  creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
     cluster_type: "control_plane"
+  name: prometheus.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:

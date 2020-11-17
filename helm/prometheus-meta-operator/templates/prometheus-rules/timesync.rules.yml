@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: timesync.rules
+  namespace: '{{ include "resource.default.namespace" . }}'
+spec:
+  groups:
+  - name: timesync
+    rules:
+    - alert: ClockOutOfSync
+      annotations:
+        description: Clock is out of sync on {{ $labels.instance }}.
+        opsrecipe: heartbeat-expired/
+      expr: abs(node_time_seconds - scalar(avg(node_time_seconds))) > 60
+      for: 30m
+      labels:
+        area: kaas
+        severity: page
+        team: atlas
+        topic: infrastructure

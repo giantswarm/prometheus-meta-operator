@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: heartbeat.rules
+  namespace: '{{ include "resource.default.namespace" . }}'
+spec:
+  groups:
+  - name: heartbeat
+    rules:
+    - alert: Heartbeat
+      expr: time() - max(container_start_time_seconds{cluster_type="host", namespace="monitoring", container="prometheus"}) > 20 * 60
+      labels:
+        severity: heartbeat
+        team: atlas
