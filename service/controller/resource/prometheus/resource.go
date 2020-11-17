@@ -216,6 +216,11 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					},
 				},
 			},
+			RuleNamespaceSelector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"name": key.NamespaceMonitoring(),
+				},
+			},
 		},
 	}
 
@@ -273,12 +278,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				},
 			},
 		}
-
-		prometheus.Spec.RuleNamespaceSelector = &metav1.LabelSelector{
-			MatchLabels: map[string]string{
-				"name": "monitoring",
-			},
-		}
 	} else {
 		// Control plane
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
@@ -296,11 +295,8 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			key.EtcdSecret(cluster),
 		}
 
-		prometheus.Spec.RuleNamespaceSelector = &metav1.LabelSelector{
-			MatchLabels: map[string]string{
-				"name": "monitoring",
-			},
-		}
+		// empty LabelSelector matches all objects.
+		prometheus.Spec.RuleSelector = &metav1.LabelSelector{}
 	}
 
 	return prometheus, nil
