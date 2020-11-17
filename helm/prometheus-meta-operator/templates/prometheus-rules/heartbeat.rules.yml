@@ -11,7 +11,12 @@ spec:
   - name: heartbeat
     rules:
     - alert: Heartbeat
-      expr: time() - max(container_start_time_seconds{cluster_type="host", namespace="monitoring", container="prometheus"}) > 20 * 60
+      expr: vector(1)
       labels:
+        area: empowerment
         severity: heartbeat
         team: atlas
+        type: heartbeat
+        topic: observability
+      annotations:
+        description: This alert is used to ensure the entire alerting pipeline is functional.
