@@ -218,7 +218,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			},
 			RuleNamespaceSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"name": key.NamespaceMonitoring(),
+					"name": key.NamespaceMonitoring(cluster),
 				},
 			},
 		},
