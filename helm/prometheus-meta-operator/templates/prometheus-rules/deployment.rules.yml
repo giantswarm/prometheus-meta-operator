@@ -12,9 +12,9 @@ spec:
     rules:
     - alert: DeploymentNotSatisfiedAtlas
       annotations:
-        description: '{{`Deployment {{ $labels.exported_namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="host", deployment=~"alertmanager.*|prometheus|prometheus-meta-operator.*|promxy.*", cluster_id!~"axolotl|argali"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="control_plane", deployment=~"alertmanager.*|prometheus|prometheus-meta-operator.*|promxy.*", cluster_id!~"axolotl|giraffe|argali"} > 0
       for: 30m
       labels:
         area: kaas
@@ -26,9 +26,9 @@ spec:
         topic: controlplane
     - alert: DeploymentNotSatisfiedChinaAtlas
       annotations:
-        description: '{{`Deployment {{ $labels.exported_namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="host", deployment=~"alertmanager.*|prometheus|prometheus-meta-operator.*|promxy.*", cluster_id=~"axolotl|argali"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="control_plane", deployment=~"alertmanager.*|prometheus|prometheus-meta-operator.*|promxy.*", cluster_id=~"axolotl|giraffe|argali"} > 0
       for: 30m
       labels:
         area: kaas
