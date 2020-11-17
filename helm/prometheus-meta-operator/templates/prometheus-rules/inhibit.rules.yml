@@ -18,5 +18,4 @@ spec:
         area: empowerment
         nodes_down: "true"
         outside_working_hours: "true"
-        team: atlas
         topic: monitoring
