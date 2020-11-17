@@ -12,7 +12,7 @@ spec:
     rules:
     - alert: InhibitionOutsideWorkingHours
       annotations:
-        description: Fires outside working hours.
+        description: '{{`Fires outside working hours.`}}'
       expr: (hour() <= 7 or hour() >= 16) or (day_of_week() > 5 or day_of_week() < 1)
       labels:
         area: empowerment
