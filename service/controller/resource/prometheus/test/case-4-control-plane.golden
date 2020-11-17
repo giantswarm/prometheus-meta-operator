@@ -70,9 +70,10 @@ spec:
   retention: 2w
   retentionSize: 45Gi
   routePrefix: /kubernetes
-  ruleSelector:
+  ruleNamespaceSelector:
     matchLabels:
-      cluster_id: kubernetes
+      name: monitoring
+  ruleSelector: {}
   rules:
     alert: {}
   secrets:

@@ -3,13 +3,11 @@ package alert
 import (
 	"bytes"
 	"path"
-	"reflect"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
@@ -31,6 +29,7 @@ type Config struct {
 	TemplatePath     string
 }
 
+// TODO: remove this resource in next release.
 type Resource struct {
 	prometheusClient promclient.Interface
 	logger           micrologger.Logger
@@ -110,11 +109,4 @@ func (r *Resource) GetRules(obj interface{}) ([]*promv1.PrometheusRule, error) {
 	}
 
 	return rules, nil
-}
-
-func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*promv1.PrometheusRule)
-	d := desired.(*promv1.PrometheusRule)
-
-	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
