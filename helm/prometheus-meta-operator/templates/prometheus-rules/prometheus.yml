@@ -2,14 +2,13 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: prometheus
-  namespace: {{ include "resource.default.namespace" . }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
     cluster_type: "control_plane"
+  namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
-  - interval: 0s
-    name: prometheus
+  - name: prometheus
     rules:
     - alert: PrometheusCantCommunicateWithTenantAPI
       annotations:
