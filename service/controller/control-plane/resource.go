@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/operatorkit/v2/pkg/resource/wrapper/retryresource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
@@ -192,6 +193,20 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var alertResource resource.Interface
+	{
+		c := alert.Config{
+			Installation:     config.Installation,
+			PrometheusClient: config.PrometheusClient,
+			Logger:           config.Logger,
+		}
+
+		alertResource, err = alert.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
@@ -277,6 +292,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		rbacResource,
 		alertmanagerConfig,
 		serviceMonitorResource,
+		alertResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
