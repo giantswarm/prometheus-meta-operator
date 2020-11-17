@@ -73,6 +73,7 @@ spec:
   ruleNamespaceSelector:
     matchLabels:
       name: monitoring
+  ruleSelector: {}
   rules:
     alert: {}
   secrets:
