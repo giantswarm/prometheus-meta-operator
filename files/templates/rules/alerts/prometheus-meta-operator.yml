@@ -1,0 +1,51 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: prometheus-meta-operator
+  namespace: [[ .Namespace ]]
+  labels:
+    cluster_id: [[ .ClusterID ]]
+    app.kubernetes.io/name: "prometheus"
+    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
+    app.kubernetes.io/instance: [[ .ClusterID ]]
+spec:
+  groups:
+  - name: heartbeat
+    rules:
+    - alert: "Heartbeat"
+      expr: "vector(1)"
+      labels:
+        area: "empowerment"
+        cluster_id: [[ .ClusterID ]]
+        installation: [[ .Installation ]]
+        team: "atlas"
+        topic: "observability"
+        type: "heartbeat"
+      annotations:
+        description: This alert is used to ensure the entire alerting pipeline is functional.
+  - name: "labelling-schema"
+    rules:
+      - alert: "InvalidLabellingSchema"
+        expr: |
+          up{cluster_type!~"control_plane|tenant_cluster"}
+          or up{app=""}
+          or up{installation=""}
+          or up{cluster_id=""}
+          or up{provider!~"aws|azure|kvm"}
+          or up{instance!~"(\\d+\\.\\d+\\.\\d+\\.\\d+:\\d+)|vault.*|bastion.*"}
+        for: "10m"
+        labels:
+          area: "empowerment"
+          cancel_if_cluster_status_creating: "true"
+          cancel_if_cluster_status_updating: "true"
+          cancel_if_cluster_status_deleting: "true"
+          cancel_if_cluster_with_notready_nodepools: "true"
+          cluster_id: [[ .ClusterID ]]
+          installation: [[ .Installation ]]
+          severity: "notify"
+          team: "atlas"
+          topic: "observability"
+        annotations:
+          description: Labelling schema is invalid.
+---
