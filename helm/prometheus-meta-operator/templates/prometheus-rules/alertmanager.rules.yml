@@ -13,7 +13,7 @@ spec:
     rules:
     - alert: AlertManagerNotificationsFailing
       annotations:
-        description: {`AlertManager {{ $labels.integration }} notifications are failing.`}
+        description: {{`AlertManager {{ $labels.integration }} notifications are failing.`}}
         opsrecipe: alert-manager-notifications-failing/
       expr: rate(alertmanager_notifications_failed_total{cluster_id!~"argali|axolotl"}[5m]) > 0
       for: 10m
@@ -24,7 +24,7 @@ spec:
         topic: monitoring
     - alert: AlertManagerNotificationsFailingChina
       annotations:
-        description: {`AlertManager {{ $labels.integration }} notifications are failing.`}
+        description: {{`AlertManager {{ $labels.integration }} notifications are failing.`}}
         opsrecipe: alert-manager-notifications-failing/
       expr: rate(alertmanager_notifications_failed_total{cluster_id=~"argali|axolotl"}[5m]) > 0
       for: 120m

@@ -13,7 +13,7 @@ spec:
     rules:
     - alert: ControlPlaneDaemonSetNotSatisfiedAtlas
       annotations:
-        description: {`Daemonset {{ $labels.exported_namespace}}/{{ $labels.daemonset }} is not satisfied.`}
+        description: {{`Daemonset {{ $labels.exported_namespace}}/{{ $labels.daemonset }} is not satisfied.`}}
       expr: kube_daemonset_status_number_unavailable{cluster_type="host", cluster_id!="axolotl|giraffe|argali", daemonset=~"fluentbit"} > 0
       for: 30m
       labels:
@@ -23,7 +23,7 @@ spec:
         topic: controlplane
     - alert: ControlPlaneDaemonSetNotSatisfiedChinaAtlas
       annotations:
-        description: {`Daemonset {{ $labels.exported_namespace}}/{{ $labels.daemonset }} is not satisfied.`}
+        description: {{`Daemonset {{ $labels.exported_namespace}}/{{ $labels.daemonset }} is not satisfied.`}}
       expr: kube_daemonset_status_number_unavailable{cluster_type="host", cluster_id="axolotl|giraffe|argali", daemonset=~"fluentbit"} > 0
       for: 3h
       labels:
