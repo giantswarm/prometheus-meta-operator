@@ -215,6 +215,21 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 						},
 					},
 				},
+				PodAntiAffinity: &v1.PodAntiAffinity{
+					PreferredDuringSchedulingIgnoredDuringExecution: []v1.WeightedPodAffinityTerm{
+						v1.WeightedPodAffinityTerm{
+							Weight: 50,
+							PodAffinityTerm: v1.PodAffinityTerm{
+								LabelSelector: &metav1.LabelSelector{
+									MatchLabels: map[string]string{
+										"app": "prometheus",
+									},
+								},
+								TopologyKey: "kubernetes.io/hostname",
+							},
+						},
+					},
+				},
 			},
 			RuleNamespaceSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{

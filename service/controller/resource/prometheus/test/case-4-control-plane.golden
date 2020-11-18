@@ -23,6 +23,14 @@ spec:
             values:
             - master
         weight: 60
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: prometheus
+          topologyKey: kubernetes.io/hostname
+        weight: 50
   apiserverConfig:
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     host: https://
