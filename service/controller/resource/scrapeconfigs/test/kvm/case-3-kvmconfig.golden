@@ -3,7 +3,7 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-    role: endpoints
+  - role: endpoints
 
     api_server: https://master.bar
     tls_config:
@@ -19,6 +19,9 @@
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    regex: https
     action: keep
   - source_labels: [__meta_kubernetes_service_label_giantswarm_io_monitoring]
     regex: "true"
@@ -43,6 +46,9 @@
     regex: null
     target_label: role
     replacement: worker
+
+
+
 # Add scrape configuration for docker
 - job_name: bar-prometheus/docker-bar/0
   honor_labels: true
