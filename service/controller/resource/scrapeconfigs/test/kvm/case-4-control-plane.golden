@@ -1,4 +1,41 @@
 # Additional scrape configuration for the tenant clusters components
+- job_name: kubernetes-prometheus/kubernetes-apiserver-kubernetes/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+    role: endpoints
+
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    regex: apiserver
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_giantswarm_io_monitoring]
+    regex: "true"
+    action: drop
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: control_plane
+  # Add provider label.
+  - target_label: provider
+    replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
 # Add scrape configuration for docker
 - job_name: kubernetes-prometheus/docker-kubernetes/0
   honor_labels: true

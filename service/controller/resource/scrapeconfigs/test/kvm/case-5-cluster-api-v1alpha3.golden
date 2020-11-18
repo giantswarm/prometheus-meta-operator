@@ -1,4 +1,48 @@
 # Additional scrape configuration for the tenant clusters components
+- job_name: baz-prometheus/kubernetes-apiserver-baz/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+    role: endpoints
+
+    api_server: https://master.baz
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    regex: apiserver
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_giantswarm_io_monitoring]
+    regex: "true"
+    action: drop
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: baz
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
 # Add scrape configuration for docker
 - job_name: baz-prometheus/docker-baz/0
   honor_labels: true
