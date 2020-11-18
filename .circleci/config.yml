@@ -16,6 +16,7 @@ workflows:
 
       - architect/go-test:
           name: test
+          resource_class: large
           filters:
             tags:
               only: /^v.*/
