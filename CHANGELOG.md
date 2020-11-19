@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix prometheus targets.
+- Fix duplicated scrapping of nginx-ingress-controller.
 
 ## [1.9.0] - 2020-11-11
 
