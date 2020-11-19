@@ -48,7 +48,7 @@
     replacement: worker
 
 
-- job_name: 05ri3-prometheus/cluster-autoscaler-05ri3/0
+- job_name: bob-prometheus/cluster-autoscaler-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
