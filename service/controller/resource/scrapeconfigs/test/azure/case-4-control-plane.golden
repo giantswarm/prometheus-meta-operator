@@ -920,55 +920,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-# nginx-ingress-controller
-- job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - kube-system
-
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
-    regex: "true"
-    action: drop
-  - source_labels: [__meta_kubernetes_service_label_k8s_app]
-    regex: nginx-ingress-controller.*
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_ip]
-    target_label: instance
-    replacement: ${1}:10254
-  - target_label: __address__
-    replacement: :443
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10254/proxy/metrics
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: control_plane
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
 
 # app-operator
 - job_name: kubernetes-prometheus/app-operator-kubernetes/0
@@ -2698,6 +2649,55 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+# nginx-ingress-controller
+- job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
+    regex: "true"
+    action: drop
+  - source_labels: [__meta_kubernetes_service_label_k8s_app]
+    regex: nginx-ingress-controller.*
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_ip]
+    target_label: instance
+    replacement: ${1}:10254
+  - target_label: __address__
+    replacement: :443
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10254/proxy/metrics
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: control_plane
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
 # prometheus
 - job_name: kubernetes-prometheus/prometheus-kubernetes/0
   honor_labels: true
