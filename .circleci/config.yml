@@ -9,12 +9,14 @@ workflows:
       - architect/go-build:
           name: build
           binary: prometheus-meta-operator
+          resource_class: large
           filters:
             tags:
               only: /^v.*/
 
       - architect/go-test:
           name: test
+          resource_class: large
           filters:
             tags:
               only: /^v.*/
