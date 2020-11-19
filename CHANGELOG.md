@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add team atlas alerts (in helm chart).
+- Add pod anti-affinity for prometheus pods, to avoid scheduling them on same nodes.
 
 ### Changed
 
