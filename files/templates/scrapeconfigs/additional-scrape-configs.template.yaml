@@ -5,7 +5,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 [[ include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
+[[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
