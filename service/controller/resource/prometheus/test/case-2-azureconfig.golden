@@ -23,7 +23,7 @@ spec:
             values:
             - master
         weight: 60
-    podAffinity:
+    podAntiAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
       - podAffinityTerm:
           labelSelector:

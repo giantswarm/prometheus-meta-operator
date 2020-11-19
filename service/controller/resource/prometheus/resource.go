@@ -215,7 +215,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 						},
 					},
 				},
-				PodAffinity: &v1.PodAffinity{
+				PodAntiAffinity: &v1.PodAntiAffinity{
 					PreferredDuringSchedulingIgnoredDuringExecution: []v1.WeightedPodAffinityTerm{
 						v1.WeightedPodAffinityTerm{
 							Weight: 50,
