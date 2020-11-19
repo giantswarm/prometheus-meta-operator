@@ -2654,7 +2654,7 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  - role: service
+  - role: endpoints
     namespaces:
       names:
       - kube-system
