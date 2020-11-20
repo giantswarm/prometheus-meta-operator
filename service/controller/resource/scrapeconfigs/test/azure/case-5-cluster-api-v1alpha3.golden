@@ -189,6 +189,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  # Add node name.
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+    target_label: node  
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -211,7 +214,7 @@
     replacement: worker
   metric_relabel_configs:
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|vault-exporter)
+    regex: (kube-system|giantswarm.*)
     action: keep
   - source_labels: [__name__]
     regex: container_network_.*
