@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Set prometheus pod request limits.
+- Set prometheus cpu requests and limits to 1 CPU.
+- Set prometheus memory requests and limits to 5Gi.
 
 ## [1.10.0] - 2020-11-20
 
