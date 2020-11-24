@@ -50,3 +50,15 @@ spec:
         severity: page
         team: biscuit
         topic: managementcluster
+        topic: controlplane
+    - alert: NoHealthyJumphost
+      annotations:
+        description: '{{`There are no healthy jumphosts available.`}}'
+        opsrecipe: no-healthy-jumphost/
+      expr: (up{app="node-exporter",role="bastion"} == 1 OR on() vector(0)) == 0
+      for: 15m
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: managementcluster
