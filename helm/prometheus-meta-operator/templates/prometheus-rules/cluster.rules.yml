@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "control_plane"
+  name: cluster.rules
+spec:
+  groups:
+  - name: cluster
+    rules:
+    - alert: ControlPlaneClusterHasLessThanThreeNodes
+      annotations:
+        description: '{{`Control plane cluster {{ $labels.cluster_id }} has less than 3 nodes.`}}'
+        opsrecipe: control-plane-cluster-less-than-three-workers/
+      expr: sum(kube_node_labels{cluster_type="control_plane", label_role="worker"}) < 3
+      for: 1h
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: controlplane
