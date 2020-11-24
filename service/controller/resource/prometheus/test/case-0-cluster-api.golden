@@ -64,8 +64,11 @@ spec:
       - __name__
   replicas: 1
   resources:
+    limits:
+      cpu: "1"
+      memory: 5000Mi
     requests:
-      cpu: 100m
+      cpu: "1"
       memory: 5000Mi
   retention: 2w
   retentionSize: 45Gi
