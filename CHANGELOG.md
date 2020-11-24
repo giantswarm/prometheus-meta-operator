@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Set prometheus pod request limits.
+
 ## [1.10.0] - 2020-11-20
 
 ### Added
