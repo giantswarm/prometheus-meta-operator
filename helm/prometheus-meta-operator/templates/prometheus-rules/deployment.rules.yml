@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "control_plane"
   name: deployment.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
@@ -38,3 +39,29 @@ spec:
         severity: page
         team: atlas
         topic: controlplane
+    - alert: DeploymentNotSatisfiedBiscuit
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="control_plane", deployment!~"aws-operator-.+|cluster-operator-.+|coredns-.+|nginx-ingress-controller-.+|worker-.+|master-.+|app-operator-.+|chart-operator-.+|.+-admission-controller-unique", cluster_id!~axolotl|giraffe|argali"} > 0
+      for: 30m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: biscuit
+        topic: controlplane
+    - alert: DeploymentNotSatisfiedChinaBiscuit
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied-china/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="control_plane", deployment!~"coredns|nginx-ingress-controller|.+-admission-controller-unique", cluster_id=~"axolotl|giraffe|argali"} > 0
+      for: 3h
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: controlplane
+

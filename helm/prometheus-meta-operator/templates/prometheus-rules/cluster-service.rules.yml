@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "control_plane"
+  name: cluster-service.rules
+spec:
+  groups:
+  - name: clusterservice
+    rules:
+    - alert: KeyPairStorageAlmostFull
+      annotations:
+        description: '{{`Number of keypairs limit almost reached in cluster-service storageconfig`}}'
+        opsrecipe: https://github.com/giantswarm/giantswarm/pull/11618
+      expr: cluster_service_key_pair_total > 2400
+      for: 10m
+      labels:
+        area: storage
+        severity: page
+        team: biscuit
+        topic: controlplane

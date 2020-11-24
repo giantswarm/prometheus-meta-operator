@@ -1,0 +1,49 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "control_plane"
+  name: vault.rules
+spec:
+  groups:
+  - name: vault
+    rules:
+    - alert: NodeVaultTokenAlmostExpired
+      annotations:
+        description: '{{`Node Vault token on {{ $labels.instance }} is expiring in less than 28 days.`}}'
+        opsrecipe: recreate-vault-tokens/
+      expr: (cert_exporter_token_not_after{path="/etc/tokens/node"} - time()) < (60 * 60 * 24 * 28)
+      for: 5m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: biscuit
+        topic: vault
+    - alert: VaultIsDown
+      annotations:
+        description: '{{`Vault is down.`}}'
+        opsrecipe: vault-is-down/
+      expr: vault_up == 0
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: vault
+    - alert: VaultIsSealed
+      annotations:
+        description: '{{`Vault is sealed.`}}'
+        opsrecipe: vault-is-sealed/
+      expr: vault_sealed == 1
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: vault
