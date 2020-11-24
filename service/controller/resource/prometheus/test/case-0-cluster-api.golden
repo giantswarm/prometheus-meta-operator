@@ -64,6 +64,9 @@ spec:
       - __name__
   replicas: 1
   resources:
+    limits:
+      cpu: 100m
+      memory: 5000Mi
     requests:
       cpu: 100m
       memory: 5000Mi
