@@ -45,11 +45,11 @@ spec:
     - record: aggregation:giantswarm:cluster_certificate_not_after_seconds
       expr: "min(cert_exporter_not_after) by (cluster_id, cluster_type)"
     - record: aggregation:giantswarm:cluster_release_version
-      expr: "label_replace(sum(cluster_service_cluster_info) by (release_version, cluster_id) / 2, 'cluster_id', '$1', 'cluster_id', '(.*)') or label_replace(sum(cluster_operator_cluster_status{release_version!=''}) by (release_version, cluster_id), 'cluster_id', '$1', 'cluster_id', '(.*)')"
+      expr: "sum(cluster_service_cluster_info) by (release_version, cluster_id) / 2 or sum(cluster_operator_cluster_status{release_version!=''}) by (release_version, cluster_id)"
     - record: aggregation:giantswarm:cluster_transition_create
-      expr: "label_replace(avg_over_time(cluster_operator_cluster_create_transition[1w]), 'cluster_id', '$1', 'cluster_id', '(.*)')"
+      expr: "avg_over_time(cluster_operator_cluster_create_transition[1w])"
     - record: aggregation:giantswarm:cluster_transition_update
-      expr: "label_replace(avg_over_time(cluster_operator_cluster_update_transition[1w]), 'cluster_id', '$1', 'cluster_id', '(.*)')"
+      expr: "avg_over_time(cluster_operator_cluster_update_transition[1w])"
     # Happa requests
     - record: aggregation:giantswarm:happa_requests
       expr: "sum(rate(nginx_ingress_controller_requests{namespace='giantswarm', ingress='happa'}[5m])) by (status)"
