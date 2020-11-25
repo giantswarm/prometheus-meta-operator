@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.2] - 2020-11-25
+
 ### Fixed
 
 - Set prometheus cpu requests and limits to 0.5 CPU.
@@ -281,7 +283,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.2...HEAD
+[1.10.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.1...v1.10.2
 [1.10.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.0...v1.10.1
 [1.10.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.9.0...v1.10.0
 [1.9.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.8.0...v1.9.0
