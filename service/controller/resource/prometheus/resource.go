@@ -163,14 +163,14 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
-					// cpu: 500m
-					corev1.ResourceCPU: *resource.NewMilliQuantity(500, resource.DecimalSI),
+					// cpu: 250m
+					corev1.ResourceCPU: *resource.NewMilliQuantity(250, resource.DecimalSI),
 					// memory: 5Gi
 					corev1.ResourceMemory: *resource.NewQuantity(5000*1024*1024, resource.BinarySI),
 				},
 				Limits: corev1.ResourceList{
-					// cpu: 500m
-					corev1.ResourceCPU: *resource.NewMilliQuantity(500, resource.DecimalSI),
+					// cpu: 250m
+					corev1.ResourceCPU: *resource.NewMilliQuantity(250, resource.DecimalSI),
 					// memory: 5Gi
 					corev1.ResourceMemory: *resource.NewQuantity(5000*1024*1024, resource.BinarySI),
 				},
