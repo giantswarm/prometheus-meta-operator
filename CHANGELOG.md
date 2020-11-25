@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Set prometheus cpu requests and limits to 0.5 CPU.
+- Set prometheus cpu requests and limits to 0.25 CPU.
 
 ## [1.10.1] - 2020-11-24
 

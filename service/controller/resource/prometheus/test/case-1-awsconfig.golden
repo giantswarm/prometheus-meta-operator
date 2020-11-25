@@ -65,10 +65,10 @@ spec:
   replicas: 1
   resources:
     limits:
-      cpu: 500m
+      cpu: 250m
       memory: 5000Mi
     requests:
-      cpu: 500m
+      cpu: 250m
       memory: 5000Mi
   retention: 2w
   retentionSize: 45Gi
