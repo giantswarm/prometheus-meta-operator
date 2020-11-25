@@ -1,0 +1,9 @@
+metadata:
+  creationTimestamp: null
+  name: prometheus
+spec:
+  targetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: prometheus
+status: {}
