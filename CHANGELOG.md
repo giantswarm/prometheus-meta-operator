@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix initial heartbeat ping so that it only triggers on creation.
+
 ## [1.10.2] - 2020-11-25
 
 ### Fixed

@@ -11,6 +11,7 @@ import (
 	"github.com/opsgenie/opsgenie-go-sdk-v2/og"
 	"github.com/sirupsen/logrus"
 
+	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -87,9 +88,10 @@ func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbea
 		OwnerTeam: og.OwnerTeam{
 			Name: "alerts_router_team",
 		},
+		// They need to be sorted alphabetically to avoid unecessary heartbeat update
 		AlertTags: []string{
+			fmt.Sprintf("managed-by: %s", project.Name()),
 			fmt.Sprintf("pipeline: %s", pipeline),
-			"managed-by: prometheus-meta-operator",
 		},
 		AlertPriority: "P3",
 		AlertMessage:  fmt.Sprintf("Heartbeat [%s] is expired.", key.HeartbeatName(cluster, installation)),
