@@ -46,8 +46,15 @@ func New(config Config) (*generic.Resource, error) {
 }
 
 func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return metav1.ObjectMeta{}, microerror.Mask(err)
+	}
+
 	return metav1.ObjectMeta{
-		Name: "prometheus",
+		Name:      "prometheus",
+		Namespace: key.Namespace(cluster),
+		Labels:    key.Labels(cluster),
 	}, nil
 }
 
