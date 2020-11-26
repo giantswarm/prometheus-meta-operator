@@ -3,7 +3,6 @@ package prometheusautoscaler
 import (
 	"reflect"
 
-	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	autoscaling "k8s.io/api/autoscaling/v1"
@@ -20,7 +19,6 @@ const (
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
 	VpaClient vpa_clientset.Interface
 	Logger    micrologger.Logger
 }
