@@ -5,5 +5,5 @@ spec:
   targetRef:
     apiVersion: apps/v1
     kind: StatefulSet
-    name: prometheus
+    name: prometheus-baz
 status: {}
