@@ -2,6 +2,9 @@ metadata:
   creationTimestamp: null
   name: prometheus
 spec:
+  resourcePolicy:
+    containerPolicies:
+    - containerName: prometheus
   targetRef:
     apiVersion: apps/v1
     kind: StatefulSet

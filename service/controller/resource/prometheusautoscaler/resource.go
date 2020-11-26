@@ -62,6 +62,9 @@ func getObject(v interface{}) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	// updateModeAuto := vpa_types.UpdateModeAuto
+	// containerScalingModeAuto := vpa_types.ContainerScalingModeAuto
+	// containerControlledValuesRequestsAndLimits := vpa_types.ContainerControlledValuesRequestsAndLimits
 	vpa := &vpa_types.VerticalPodAutoscaler{
 		ObjectMeta: objectMeta,
 		Spec: vpa_types.VerticalPodAutoscalerSpec{
@@ -69,6 +72,18 @@ func getObject(v interface{}) (metav1.Object, error) {
 				Kind:       "StatefulSet",
 				Name:       key.PrometheusSTSName(cluster),
 				APIVersion: "apps/v1",
+			},
+			// UpdatePolicy: &vpa_types.PodUpdatePolicy{
+			// 	UpdateMode: &updateModeAuto,
+			// },
+			ResourcePolicy: &vpa_types.PodResourcePolicy{
+				ContainerPolicies: []vpa_types.ContainerResourcePolicy{
+					{
+						ContainerName: key.PrometheusContainerName(),
+						// Mode:             &containerScalingModeAuto,
+						// ControlledValues: &containerControlledValuesRequestsAndLimits,
+					},
+				},
 			},
 		},
 	}

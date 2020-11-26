@@ -106,6 +106,10 @@ func PrometheusAdditionalScrapeConfigsName() string {
 	return "prometheus-additional.yaml"
 }
 
+func PrometheusContainerName() string {
+	return "prometheus"
+}
+
 func PrometheusSTSName(cluster metav1.Object) string {
 	return fmt.Sprintf("prometheus-%s", ClusterID(cluster))
 }
