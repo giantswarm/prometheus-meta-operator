@@ -12,6 +12,7 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 const (
@@ -58,12 +59,17 @@ func getObject(v interface{}) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	vpa := &vpa_types.VerticalPodAutoscaler{
 		ObjectMeta: objectMeta,
 		Spec: vpa_types.VerticalPodAutoscalerSpec{
 			TargetRef: &autoscaling.CrossVersionObjectReference{
 				Kind:       "StatefulSet",
-				Name:       "prometheus",
+				Name:       key.PrometheusSTSName(cluster),
 				APIVersion: "apps/v1",
 			},
 		},
