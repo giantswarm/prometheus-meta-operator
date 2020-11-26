@@ -8,6 +8,7 @@ import (
 	"github.com/giantswarm/operatorkit/v2/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v2/pkg/resource/wrapper/retryresource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
+	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alert"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
@@ -18,6 +19,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheusautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
@@ -51,6 +53,7 @@ type resourcesConfig struct {
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
+	VpaClient               vpa_clientset.Interface
 }
 
 func newResources(config resourcesConfig) ([]resource.Interface, error) {
@@ -159,6 +162,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		prometheusResource, err = prometheus.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var prometheusAutoScalerResource resource.Interface
+	{
+		c := prometheusautoscaler.Config{
+			Logger:    config.Logger,
+			VpaClient: config.VpaClient,
+		}
+
+		prometheusAutoScalerResource, err = prometheusautoscaler.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -296,6 +312,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
+		prometheusAutoScalerResource,
 		volumeResizeHack,
 		ingressResource,
 		promxyResource,
