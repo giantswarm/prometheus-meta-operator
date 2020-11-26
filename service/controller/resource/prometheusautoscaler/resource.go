@@ -1,6 +1,8 @@
 package prometheusautoscaler
 
 import (
+	"reflect"
+
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -34,6 +36,7 @@ func New(config Config) (*generic.Resource, error) {
 		Name:             Name,
 		GetObjectMeta:    getObjectMeta,
 		GetDesiredObject: getObject,
+		HasChangedFunc:   hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {
@@ -67,4 +70,11 @@ func getObject(v interface{}) (metav1.Object, error) {
 	}
 
 	return vpa, nil
+}
+
+func hasChanged(current, desired metav1.Object) bool {
+	c := current.(*vpa_types.VerticalPodAutoscaler)
+	d := desired.(*vpa_types.VerticalPodAutoscaler)
+
+	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
