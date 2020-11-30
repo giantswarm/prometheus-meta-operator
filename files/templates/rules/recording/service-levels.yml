@@ -13,33 +13,44 @@ spec:
   groups:
   - name: service-level
     rules:
-    - expr: "count(up{app='kubernetes'}) by (cluster_id)"
+    - expr: count(up{app="kubernetes"}) by (cluster_type, cluster_id)
       labels:
+        class: HIGH
         service: api-server
       record: raw_slo_requests
-    - expr: "sum((up{app='kubernetes'} * -1) + 1) by (cluster_id)"
+    - expr: sum((up{app="kubernetes"} * -1) + 1) by (cluster_type,  cluster_id)
       labels:
+        class: HIGH
         service: api-server
       record: raw_slo_errors
-    - expr: "kube_node_status_condition{condition='Ready'}"
+    - expr: kube_node_status_condition{condition="Ready"}
       labels:
+        class: MEDIUM
         service: kubelet
       record: raw_slo_requests
-    - expr: "kube_node_status_condition{condition='Ready', status=~'false|unknown'}"
+    - expr: |
+        (
+          kube_node_status_condition{condition="Ready", status!="true"}
+          and
+          on (node) kube_node_spec_unschedulable == 0
+        )
+        and
+        on (node) time() - kube_node_created > 10 * 60
       labels:
+        class: MEDIUM
         service: kubelet
       record: raw_slo_errors
-    - expr: "sum(raw_slo_requests) by (service, cluster_id)"
+    - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
-    - expr: "sum(raw_slo_errors) by (service, cluster_id)"
+    - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
       record: slo_errors
-    - expr: "sum(sum_over_time(raw_slo_errors[5m])) by (cluster_id, service) / sum(sum_over_time(raw_slo_requests[5m])) by (cluster_id, service)"
+    - expr: sum(sum_over_time(raw_slo_errors[5m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[5m])) by (cluster_type, cluster_id, service, class)
       record: slo_errors_per_request:ratio_rate5m
-    - expr: "sum(sum_over_time(raw_slo_errors[30m])) by (cluster_id, service) / sum(sum_over_time(raw_slo_requests[30m])) by (cluster_id, service)"
+    - expr: sum(sum_over_time(raw_slo_errors[30m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[30m])) by (cluster_type, cluster_id, service, class)
       record: slo_errors_per_request:ratio_rate30m
-    - expr: "sum(sum_over_time(raw_slo_errors[1h])) by (cluster_id, service) / sum(sum_over_time(raw_slo_requests[1h])) by (cluster_id, service)"
+    - expr: sum(sum_over_time(raw_slo_errors[1h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[1h])) by (cluster_type, cluster_id, service, class)
       record: slo_errors_per_request:ratio_rate1h
-    - expr: "sum(sum_over_time(raw_slo_errors[6h])) by (cluster_id, service) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_id, service)"
+    - expr: sum(sum_over_time(raw_slo_errors[6h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_type, cluster_id, service, class)
       record: slo_errors_per_request:ratio_rate6h
   - name: service-level-apps
     rules:
