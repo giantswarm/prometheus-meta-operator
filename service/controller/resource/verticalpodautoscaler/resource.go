@@ -71,6 +71,7 @@ func getObject(v interface{}) (metav1.Object, error) {
 
 	updateModeAuto := vpa_types.UpdateModeAuto
 	containerScalingModeAuto := vpa_types.ContainerScalingModeAuto
+	containerScalingModeOff := vpa_types.ContainerScalingModeOff
 	containerControlledValuesRequestsAndLimits := vpa_types.ContainerControlledValuesRequestsAndLimits
 	vpa := &vpa_types.VerticalPodAutoscaler{
 		ObjectMeta: objectMeta,
@@ -89,6 +90,14 @@ func getObject(v interface{}) (metav1.Object, error) {
 						ContainerName:    key.PrometheusContainerName(),
 						Mode:             &containerScalingModeAuto,
 						ControlledValues: &containerControlledValuesRequestsAndLimits,
+					},
+					{
+						ContainerName: "prometheus-config-reloader",
+						Mode:          &containerScalingModeOff,
+					},
+					{
+						ContainerName: "rules-configmap-reloader",
+						Mode:          &containerScalingModeOff,
 					},
 				},
 			},

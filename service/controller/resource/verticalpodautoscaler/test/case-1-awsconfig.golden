@@ -12,6 +12,10 @@ spec:
     - containerName: prometheus
       controlledValues: RequestsAndLimits
       mode: Auto
+    - containerName: prometheus-config-reloader
+      mode: "Off"
+    - containerName: rules-configmap-reloader
+      mode: "Off"
   targetRef:
     apiVersion: apps/v1
     kind: StatefulSet
