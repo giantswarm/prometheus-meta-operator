@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add inhibition rules.
+
 ## [1.10.3] - 2020-11-25
 
 ### Fixed
