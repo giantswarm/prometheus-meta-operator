@@ -19,12 +19,12 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheusautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -167,14 +167,14 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var prometheusAutoScalerResource resource.Interface
+	var verticalPodAutoScalerResource resource.Interface
 	{
-		c := prometheusautoscaler.Config{
+		c := verticalpodautoscaler.Config{
 			Logger:    config.Logger,
 			VpaClient: config.VpaClient,
 		}
 
-		prometheusAutoScalerResource, err = prometheusautoscaler.New(c)
+		verticalPodAutoScalerResource, err = verticalpodautoscaler.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -312,7 +312,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
-		prometheusAutoScalerResource,
+		verticalPodAutoScalerResource,
 		volumeResizeHack,
 		ingressResource,
 		promxyResource,

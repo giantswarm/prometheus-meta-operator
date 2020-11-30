@@ -1,4 +1,4 @@
-package prometheusautoscaler
+package verticalpodautoscaler
 
 import (
 	"reflect"
@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	Name = "prometheusautoscaler"
+	Name = "verticalpodautoscaler"
 )
 
 type Config struct {

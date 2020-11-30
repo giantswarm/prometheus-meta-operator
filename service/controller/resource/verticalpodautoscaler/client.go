@@ -1,4 +1,4 @@
-package prometheusautoscaler
+package verticalpodautoscaler
 
 import (
 	"context"

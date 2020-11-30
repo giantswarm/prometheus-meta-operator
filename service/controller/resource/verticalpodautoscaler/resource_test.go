@@ -1,4 +1,4 @@
-package prometheusautoscaler
+package verticalpodautoscaler
 
 import (
 	"flag"
@@ -10,7 +10,7 @@ import (
 
 var update = flag.Bool("update", false, "update the output file")
 
-func TestPrometheusAutoScaler(t *testing.T) {
+func TestVerticalPodAutoScaler(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
 	if err != nil {
 		t.Fatal(err)
