@@ -10,8 +10,12 @@ spec:
   resourcePolicy:
     containerPolicies:
     - containerName: prometheus
+      controlledValues: RequestsAndLimits
+      mode: Auto
   targetRef:
     apiVersion: apps/v1
     kind: StatefulSet
     name: prometheus-alice
+  updatePolicy:
+    updateMode: Auto
 status: {}
