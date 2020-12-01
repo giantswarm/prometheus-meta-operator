@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change PrometheusCantCommunicateWithTenantAPI to ignore promxy
+
 ## [1.11.0] - 2020-12-01
 
 ### Added
