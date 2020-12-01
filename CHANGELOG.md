@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   VPA to manage Prometheus pod requests and limits to allow dynamic scaling but
   prevent scheduling and OOM issues.
 
+### Changed
+
+- Change prometheus affinity from "Prefer" to "Required".
+
 ## [1.10.3] - 2020-11-25
 
 ### Fixed
