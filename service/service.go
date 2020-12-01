@@ -18,6 +18,7 @@ import (
 
 	providerv1alpha1 "github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
@@ -111,12 +112,21 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var vpaClient vpa_clientset.Interface
+	{
+		vpaClient, err = vpa_clientset.NewForConfig(restConfig)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var clusterapiController *clusterapi.Controller
 	{
 		c := clusterapi.ControllerConfig{
 			K8sClient:           k8sClient,
 			Logger:              config.Logger,
 			PrometheusClient:    prometheusClient,
+			VpaClient:           vpaClient,
 			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
@@ -146,6 +156,7 @@ func New(config Config) (*Service, error) {
 			K8sClient:           k8sClient,
 			Logger:              config.Logger,
 			PrometheusClient:    prometheusClient,
+			VpaClient:           vpaClient,
 			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
@@ -175,6 +186,7 @@ func New(config Config) (*Service, error) {
 			K8sClient:               k8sClient,
 			Logger:                  config.Logger,
 			PrometheusClient:        prometheusClient,
+			VpaClient:               vpaClient,
 			Address:                 config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:              config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),

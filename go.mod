@@ -43,6 +43,7 @@ require (
 	k8s.io/api v0.19.3
 	k8s.io/apiextensions-apiserver v0.19.3
 	k8s.io/apimachinery v0.19.3
+	k8s.io/autoscaler/vertical-pod-autoscaler v0.9.0
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20200923155610-8b5066479488 // indirect
 	k8s.io/utils v0.0.0-20201027101359-01387209bb0d // indirect

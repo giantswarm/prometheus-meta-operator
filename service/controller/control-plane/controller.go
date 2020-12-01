@@ -10,6 +10,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
+	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
@@ -37,6 +38,7 @@ type ControllerConfig struct {
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
+	VpaClient               vpa_clientset.Interface
 }
 
 type Controller struct {

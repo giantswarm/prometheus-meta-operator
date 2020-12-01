@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Create `VerticalPodAutoscaler` resource for each Prometheus configuring the
+  VPA to manage Prometheus pod requests and limits to allow dynamic scaling but
+  prevent scheduling and OOM issues.
+
 ### Changed
 
 - Change prometheus affinity from "Prefer" to "Required".
