@@ -8,10 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Changed
+### Changed
 
 - Change PrometheusCantCommunicateWithTenantAPI to ignore promxy
 - Set prometheus default resources to 100m of CPU and 1Gi of memory
+- Reduced number of metrics ingested from nginx-ingress-controller in order to
+  reduce memory requirements of Prometheus.
 
 ## [1.11.0] - 2020-12-01
 
