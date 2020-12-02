@@ -15,14 +15,13 @@ spec:
     name: additional-scrape-configs
   affinity:
     nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - preference:
-          matchExpressions:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
           - key: role
             operator: NotIn
             values:
             - master
-        weight: 60
   apiserverConfig:
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     host: https://

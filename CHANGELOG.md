@@ -12,6 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add inhibition rules.
 
+### Changed
+
+- Change PrometheusCantCommunicateWithTenantAPI to ignore promxy
+
+## [1.11.0] - 2020-12-01
+
+### Added
+
+- Create `VerticalPodAutoscaler` resource for each Prometheus configuring the
+  VPA to manage Prometheus pod requests and limits to allow dynamic scaling but
+  prevent scheduling and OOM issues.
+
+### Changed
+
+- Change prometheus affinity from "Prefer" to "Required".
+
 ## [1.10.3] - 2020-11-25
 
 ### Fixed
@@ -293,7 +309,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.11.0...HEAD
+[1.11.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.3...v1.11.0
 [1.10.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.2...v1.10.3
 [1.10.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.1...v1.10.2
 [1.10.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.0...v1.10.1

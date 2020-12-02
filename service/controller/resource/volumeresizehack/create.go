@@ -25,7 +25,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	namespace := key.Namespace(cluster)
 
 	// get sts
-	stsName := fmt.Sprintf("prometheus-%s", cluster.GetName())
+	stsName := key.PrometheusSTSName(cluster)
 	currentStS, err := r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).Get(ctx, stsName, metav1.GetOptions{})
 	if err != nil {
 		return microerror.Mask(err)
