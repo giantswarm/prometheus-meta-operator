@@ -143,6 +143,13 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 	labels["giantswarm.io/monitoring"] = "true"
 
+	prometheusResourceList := corev1.ResourceList{
+		// cpu: 100m
+		corev1.ResourceCPU: *resource.NewMilliQuantity(100, resource.DecimalSI),
+		// memory: 1Gi
+		corev1.ResourceMemory: *resource.NewQuantity(1000*1024*1024, resource.BinarySI),
+	}
+
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -162,18 +169,8 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					// cpu: 250m
-					corev1.ResourceCPU: *resource.NewMilliQuantity(250, resource.DecimalSI),
-					// memory: 5Gi
-					corev1.ResourceMemory: *resource.NewQuantity(5000*1024*1024, resource.BinarySI),
-				},
-				Limits: corev1.ResourceList{
-					// cpu: 250m
-					corev1.ResourceCPU: *resource.NewMilliQuantity(250, resource.DecimalSI),
-					// memory: 5Gi
-					corev1.ResourceMemory: *resource.NewQuantity(5000*1024*1024, resource.BinarySI),
-				},
+				Requests: prometheusResourceList,
+				Limits:   prometheusResourceList,
 			},
 			Retention:      config.RetentionDuration,
 			RetentionSize:  config.RetentionSize,
