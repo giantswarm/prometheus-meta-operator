@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Reduced number of metrics ingested from nginx-ingress-controller in order to
+  reduce memory requirements of Prometheus.
+
 ## [1.11.0] - 2020-12-01
 
 ### Added
