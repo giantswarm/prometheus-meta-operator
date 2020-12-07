@@ -864,20 +864,25 @@
   - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
     regex: (true)
     action: drop
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring_port]
-    regex: (true)
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring_path]
-    regex: (true)
-    action: keep
+    # if __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path is present, we use it as the metrics path
+  - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
+    action: replace
+    target_label: __metrics_path__
+    regex: (.+)
+    # if __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port, we use it as the metrics port
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
+    action: replace
+    target_label: __address__
+    regex: ([^:]+)(?::\d+)?;(\d+)
+    replacement: $1:$2
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __address__, __metrics_path__]
+    regex: (.*);(.*);(?:[^:]+:)(\d+);(.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}/proxy${4}
+    action: replace
   - regex: (.*)
     target_label: __address__
     replacement: :443
-    action: replace
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
-    regex: (.*);(.*);(.*);(.*)
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}/proxy${4}
     action: replace
   - source_labels: [__meta_kubernetes_service_name]
     regex: (.*)
