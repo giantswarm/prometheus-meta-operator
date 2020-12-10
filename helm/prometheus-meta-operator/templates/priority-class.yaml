@@ -1,0 +1,6 @@
+apiVersion: scheduling.k8s.io/v1alpha1
+kind: PriorityClass
+metadata:
+  name: prometheus-important
+value: 500000000
+description: "High-priority class for Prometheus service pods only."
