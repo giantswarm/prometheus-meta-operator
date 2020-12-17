@@ -24,3 +24,5 @@ kubernetes_sd_configs:
     names:
     - bar-prometheus
 path_prefix: /bar
+timeout: 5m0s
+ignore_error: true

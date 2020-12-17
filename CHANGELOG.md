@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Ignore missing unhealthy prometheus instances in promxy to avoid it from crash looping
+
 ## [1.12.0] - 2020-12-02
 
 ### Changed
