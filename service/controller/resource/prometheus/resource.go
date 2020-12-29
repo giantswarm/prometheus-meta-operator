@@ -223,7 +223,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					"name": key.NamespaceMonitoring(cluster),
 				},
 			},
-			PriorityClassName: "prometheus-important",
+			PriorityClassName: "prometheus",
 		},
 	}
 
