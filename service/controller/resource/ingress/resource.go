@@ -99,12 +99,6 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 		},
 		ObjectMeta: objectMeta,
 		Spec: extensionsv1beta1.IngressSpec{
-			TLS: []extensionsv1beta1.IngressTLS{
-				{
-					Hosts:      []string{config.BaseDomain},
-					SecretName: key.SecretTLSCertificates(cluster),
-				},
-			},
 			Rules: []extensionsv1beta1.IngressRule{
 				{
 					Host: config.BaseDomain,

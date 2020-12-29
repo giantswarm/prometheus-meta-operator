@@ -88,23 +88,6 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var tlsCertificatesResource resource.Interface
-	{
-		c := certificates.Config{
-			Name:                "tls-certificates",
-			K8sClient:           config.K8sClient,
-			Logger:              config.Logger,
-			SourceNameFunc:      key.SecretTLSCertificates,
-			SourceNamespaceFunc: key.NamespaceMonitoring,
-			TargetNameFunc:      key.SecretTLSCertificates,
-		}
-
-		tlsCertificatesResource, err = certificates.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var alertmanagerConfig resource.Interface
 	{
 		c := alertmanagerconfig.Config{
@@ -282,7 +265,6 @@ func New(config Config) ([]resource.Interface, error) {
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
-		tlsCertificatesResource,
 		alertmanagerConfig,
 		serviceMonitorResource,
 		scrapeConfigResource,

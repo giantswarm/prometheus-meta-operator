@@ -11,7 +11,6 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeatrouting"
@@ -26,7 +25,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 type resourcesConfig struct {
@@ -68,23 +66,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		namespaceResource, err = namespace.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var tlsCertificatesResource resource.Interface
-	{
-		c := certificates.Config{
-			Name:                "tls-certificates",
-			K8sClient:           config.K8sClient,
-			Logger:              config.Logger,
-			SourceNameFunc:      key.SecretTLSCertificates,
-			SourceNamespaceFunc: key.NamespaceMonitoring,
-			TargetNameFunc:      key.SecretTLSCertificates,
-		}
-
-		tlsCertificatesResource, err = certificates.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -293,7 +274,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
-		tlsCertificatesResource,
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfig,
