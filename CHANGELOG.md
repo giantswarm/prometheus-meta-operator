@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add priority class `prometheus` and use it for all managed Prometheus pods in
+  order to allow scheduler to evict other pods with lower priority to make
+  space for Prometheus
+
 ## [1.12.0] - 2020-12-02
 
 ### Changed
