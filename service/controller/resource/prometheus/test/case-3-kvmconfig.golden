@@ -46,6 +46,7 @@ spec:
       app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: prometheus
       giantswarm.io/monitoring: "true"
+  priorityClassName: prometheus
   remoteWrite:
   - basicAuth:
       password:
