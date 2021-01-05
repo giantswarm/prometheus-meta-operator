@@ -1100,3 +1100,7 @@
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
 
+- job_name: 'prometheus'
+  scrape_interval: 5s
+  static_configs:
+    - targets: ['localhost:9090']

@@ -2764,3 +2764,7 @@
   - source_labels: [__meta_kubernetes_pod_label_prometheus]
     target_label: cluster_id
 
+- job_name: 'prometheus'
+  scrape_interval: 5s
+  static_configs:
+    - targets: ['localhost:9090']
