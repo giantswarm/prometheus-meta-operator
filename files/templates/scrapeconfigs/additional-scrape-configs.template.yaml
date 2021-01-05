@@ -1712,5 +1712,6 @@
 [[ end ]]
 - job_name: 'prometheus'
   scrape_interval: 5s
+  metrics_path: /[[ .ClusterID ]]/metrics
   static_configs:
-    - targets: ['localhost:9090/[[ .ClusterID ]]']
+    - targets: ['localhost:9090']
