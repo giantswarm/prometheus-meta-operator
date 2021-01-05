@@ -1164,5 +1164,6 @@
 
 - job_name: 'prometheus'
   scrape_interval: 5s
+  metrics_path: /baz/metrics
   static_configs:
-    - targets: ['localhost:9090/baz']
+    - targets: ['localhost:9090']
