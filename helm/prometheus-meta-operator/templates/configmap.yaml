@@ -28,8 +28,8 @@ data:
         {{- range .Values.Installation.V1.Monitoring.Prometheus.Bastions }}
         - {{ . }}
         {{- end }}
-        remoteWrite:
-          url: https://prometheus-us-central1.grafana.net/api/prom/push
+        # remoteWrite:
+        #   url: https://prometheus-us-central1.grafana.net/api/prom/push
         retention:
           duration: 2w
           size: 90GB

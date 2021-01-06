@@ -1,17 +1,12 @@
 package project
 
 var (
-	bundleVersion = "0.0.1"
-	description   = "The prometheus-meta-operator does something."
-	gitSHA        = "n/a"
-	name          = "prometheus-meta-operator"
-	source        = "https://github.com/giantswarm/prometheus-meta-operator"
-	version       = "1.8.1-dev"
+	description = "The prometheus-meta-operator does something."
+	gitSHA      = "n/a"
+	name        = "prometheus-meta-operator"
+	source      = "https://github.com/giantswarm/prometheus-meta-operator"
+	version     = "1.13.1-dev"
 )
-
-func BundleVersion() string {
-	return bundleVersion
-}
 
 func Description() string {
 	return description

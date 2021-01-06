@@ -10,14 +10,96 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add topologySpreadConstraint to evenly spread prometheus pods
+
+## [1.13.0] - 2021-01-05
+
+### Added
+
+- Add priority class `prometheus` and use it for all managed Prometheus pods in
+  order to allow scheduler to evict other pods with lower priority to make
+  space for Prometheus
+
+## [1.12.0] - 2020-12-02
+
+### Changed
+
+- Change PrometheusCantCommunicateWithTenantAPI to ignore promxy
+- Set prometheus default resources to 100m of CPU and 1Gi of memory
+- Reduced number of metrics ingested from nginx-ingress-controller in order to
+  reduce memory requirements of Prometheus.
+
+## [1.11.0] - 2020-12-01
+
+### Added
+
+- Create `VerticalPodAutoscaler` resource for each Prometheus configuring the
+  VPA to manage Prometheus pod requests and limits to allow dynamic scaling but
+  prevent scheduling and OOM issues.
+
+### Changed
+
+- Change prometheus affinity from "Prefer" to "Required".
+
+## [1.10.3] - 2020-11-25
+
+### Fixed
+
+- Fix initial heartbeat ping so that it only triggers on creation.
+
+## [1.10.2] - 2020-11-25
+
+### Fixed
+
+- Set prometheus cpu requests and limits to 0.25 CPU.
+
+## [1.10.1] - 2020-11-24
+
+### Fixed
+
+- Set prometheus cpu requests and limits to 1 CPU.
+- Set prometheus memory requests and limits to 5Gi.
+
+## [1.10.0] - 2020-11-20
+
+### Added
+
+- Add team atlas alerts (in helm chart).
+
+### Changed
+
+- Set heartbeat client log level to fatal to avoid polluting our logs.
+- Set prometheus to select rules from monitoring namespace.
+
+### Removed
+
+- Set alert resource to delete PrometheusRules in cluster namespace.
+
+### Fixed
+
+- Fix prometheus targets.
+- Fix duplicated scrapping of nginx-ingress-controller.
+
+## [1.9.0] - 2020-11-11
+
+### Added
+
 - Add support to remote write to Cortex
 - Added recording rules
 - Add node affinity to prefer not scheduling on master nodes
-- Add topologySpreadConstraint to evenly spread prometheus pods
+- Added `pipeline` tag to _Hearbeat_ alert to be able to see if it affects
+  a stable or testing installation at first glance
+- Added initial support for `remote_write` that will eventually be used for
+  writing to Cortex
+
+### Changed
+
+- Increase memory request from 100Mi to 5Gi
 
 ### Fixed
 
 - Fix kube-state-metrics scraping port on Control Planes.
+- Fixed creating of alerts, it was failing due to a typo in template path
 
 ## [1.8.0] - 2020-10-21
 
@@ -240,7 +322,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.8.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.12.0...v1.13.0
+[1.12.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.11.0...v1.12.0
+[1.11.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.3...v1.11.0
+[1.10.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.2...v1.10.3
+[1.10.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.1...v1.10.2
+[1.10.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.0...v1.10.1
+[1.10.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.9.0...v1.10.0
+[1.9.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.8.0...v1.9.0
 [1.8.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.7.0...v1.8.0
 [1.7.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.6.0...v1.7.0
 [1.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.5.1...v1.6.0

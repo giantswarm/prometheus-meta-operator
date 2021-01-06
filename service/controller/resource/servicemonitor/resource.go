@@ -1,8 +1,6 @@
 package servicemonitor
 
 import (
-	"reflect"
-
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
@@ -24,6 +22,7 @@ type Config struct {
 	Provider         string
 }
 
+// TODO: remove this resource in the next release.
 type Resource struct {
 	prometheusClient promclient.Interface
 	logger           micrologger.Logger
@@ -67,8 +66,4 @@ func toServiceMonitors(cluster metav1.Object, provider string, installation stri
 	}
 
 	return serviceMonitors, nil
-}
-
-func hasChanged(current, desired *promv1.ServiceMonitor) bool {
-	return !reflect.DeepEqual(current.Spec, desired.Spec)
 }

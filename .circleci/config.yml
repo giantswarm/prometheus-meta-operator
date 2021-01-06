@@ -1,20 +1,21 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@0.10.1
-
+  architect: giantswarm/architect@1.0.0
 workflows:
   build:
     jobs:
       - architect/go-build:
           name: build
           binary: prometheus-meta-operator
+          resource_class: large
           filters:
             tags:
               only: /^v.*/
 
       - architect/go-test:
           name: test
+          resource_class: large
           filters:
             tags:
               only: /^v.*/
@@ -63,7 +64,6 @@ workflows:
           app_name: "prometheus-meta-operator"
           app_namespace: "monitoring"
           app_collection_repo: "aws-app-collection"
-          unique: "true"
           requires:
             - push-to-quay
             - push-to-aliyun
@@ -80,7 +80,6 @@ workflows:
           app_name: "prometheus-meta-operator"
           app_namespace: "monitoring"
           app_collection_repo: "azure-app-collection"
-          unique: "true"
           requires:
             - push-to-quay
             - push-to-aliyun
@@ -97,7 +96,6 @@ workflows:
           app_name: "prometheus-meta-operator"
           app_namespace: "monitoring"
           app_collection_repo: "kvm-app-collection"
-          unique: "true"
           requires:
             - push-to-quay
             - push-to-aliyun

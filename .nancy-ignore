@@ -1,0 +1,2 @@
+# Ignore CVE fixed in prometheus 2.7.1 as the tag version is using a newer prometheus version
+CVE-2019-3826

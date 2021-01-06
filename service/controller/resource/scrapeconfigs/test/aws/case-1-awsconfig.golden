@@ -1,4 +1,113 @@
 # Additional scrape configuration for the tenant clusters components
+- job_name: alice-prometheus/kubernetes-apiserver-alice/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+
+    api_server: https://master.alice
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    regex: apiserver
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    regex: https
+    action: keep
+  - source_labels: [__meta_kubernetes_service_label_giantswarm_io_monitoring]
+    regex: "true"
+    action: drop
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: alice
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
+
+
+- job_name: alice-prometheus/cluster-autoscaler-alice/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kube-system
+
+    api_server: https://master.alice
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: cluster-autoscaler
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    regex: metrics
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_ip]
+    target_label: instance
+    replacement: ${1}:8085
+  - target_label: __address__
+    replacement: master.alice:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics
+  - source_labels: [__meta_kubernetes_service_label_giantswarm_io_monitoring]
+    regex: "true"
+    action: drop
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: alice
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
+
+
 # Add scrape configuration for docker
 - job_name: alice-prometheus/docker-alice/0
   honor_labels: true
@@ -80,6 +189,9 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
+  # Add node name.
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+    target_label: node  
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: alice
@@ -102,7 +214,7 @@
     replacement: worker
   metric_relabel_configs:
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|vault-exporter)
+    regex: (kube-system|giantswarm.*)
     action: keep
   - source_labels: [__name__]
     regex: container_network_.*
@@ -998,7 +1110,7 @@
   - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
     regex: (.*);(.*);(.*);(.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}/proxy/${4}
+    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}/proxy${4}
     action: replace
   - source_labels: [__meta_kubernetes_service_name]
     regex: (.*)
@@ -1044,4 +1156,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  metric_relabel_configs:
+  # drop metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
+    action: drop
 

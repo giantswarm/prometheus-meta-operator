@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/operatorkit/v2/pkg/resource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"k8s.io/apimachinery/pkg/runtime"
+	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
@@ -36,6 +37,7 @@ type ControllerConfig struct {
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
+	VpaClient               vpa_clientset.Interface
 }
 
 type Controller struct {

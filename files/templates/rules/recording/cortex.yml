@@ -3,12 +3,12 @@ apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: cortex
-  namespace: {{ .Namespace }}
+  namespace: [[ .Namespace ]]
   labels:
-    cluster_id: {{ .ClusterID }}
+    cluster_id: [[ .ClusterID ]]
     app.kubernetes.io/name: "prometheus"
-    app.kubernetes.io/managed-by: {{ .ManagedBy }}
-    app.kubernetes.io/instance: {{ .ClusterID }}
+    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
+    app.kubernetes.io/instance: [[ .ClusterID ]]
 spec:
   groups:
   - name: cortex
@@ -186,9 +186,9 @@ spec:
     - record: aggregation:prometheus:alerts
       expr: "sum(ALERTS{alertstate='firing'}) by (alertname, cluster_id, area, severity, team, topic)"
     - record: aggregation:prometheus:memory_percentage
-      expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace='monitoring'} / on(cluster_type, cluster_id, ip) node_memory_MemTotal_bytes) by (cluster_type, cluster_id) * 100"
+      expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'} / on(cluster_type, cluster_id, node) group_left node_memory_MemTotal_bytes) by (cluster_type, cluster_id) * 100"
     - record: aggregation:prometheus:memory_usage
-      expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace='monitoring'}) by (cluster_type, cluster_id)"
+      expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'}) by (cluster_type, cluster_id)"
     # managed apps basic SLI metrics
     - record: aggregation:managed_apps:service_level:basic:error_budget_depleted
       expr: "sum(monitoring:managed_apps:service_level:primary:error_budget_used) by (cluster_type, cluster_id, workload_name, workload_type) >= 1"

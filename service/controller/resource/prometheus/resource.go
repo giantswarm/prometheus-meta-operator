@@ -143,6 +143,13 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 	labels["giantswarm.io/monitoring"] = "true"
 
+	prometheusResourceList := corev1.ResourceList{
+		// cpu: 100m
+		corev1.ResourceCPU: *resource.NewMilliQuantity(100, resource.DecimalSI),
+		// memory: 1Gi
+		corev1.ResourceMemory: *resource.NewQuantity(1000*1024*1024, resource.BinarySI),
+	}
+
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -160,51 +167,15 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-			RemoteWrite: []promv1.RemoteWriteSpec{
-				promv1.RemoteWriteSpec{
-					URL: config.RemoteWriteURL,
-					BasicAuth: &promv1.BasicAuth{
-						Username: v1.SecretKeySelector{
-							LocalObjectReference: v1.LocalObjectReference{
-								Name: key.RemoteWriteSecretName(),
-							},
-							Key: key.RemoteWriteUsernameKey(),
-						},
-						Password: v1.SecretKeySelector{
-							LocalObjectReference: v1.LocalObjectReference{
-								Name: key.RemoteWriteSecretName(),
-							},
-							Key: key.RemoteWritePasswordKey(),
-						},
-					},
-					Name: key.ClusterID(cluster),
-					WriteRelabelConfigs: []promv1.RelabelConfig{
-						promv1.RelabelConfig{
-							SourceLabels: []string{"__name__"},
-							Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|^slo_.+)",
-							Action:       "keep",
-						},
-					},
-				},
-			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					// cpu: 100m
-					corev1.ResourceCPU: *resource.NewMilliQuantity(100, resource.DecimalSI),
-					// memory: 5Gi
-					corev1.ResourceMemory: *resource.NewQuantity(5000*1024*1024, resource.BinarySI),
-				},
+				Requests: prometheusResourceList,
+				Limits:   prometheusResourceList,
 			},
 			Retention:      config.RetentionDuration,
 			RetentionSize:  config.RetentionSize,
 			WALCompression: &walCompression,
 			ServiceMonitorSelector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					key.ClusterIDKey(): key.ClusterID(cluster),
-				},
-			},
-			RuleSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					key.ClusterIDKey(): key.ClusterID(cluster),
 				},
@@ -230,10 +201,9 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			Storage: &storage,
 			Affinity: &v1.Affinity{
 				NodeAffinity: &v1.NodeAffinity{
-					PreferredDuringSchedulingIgnoredDuringExecution: []v1.PreferredSchedulingTerm{
-						v1.PreferredSchedulingTerm{
-							Weight: 60,
-							Preference: v1.NodeSelectorTerm{
+					RequiredDuringSchedulingIgnoredDuringExecution: &v1.NodeSelector{
+						NodeSelectorTerms: []v1.NodeSelectorTerm{
+							v1.NodeSelectorTerm{
 								MatchExpressions: []v1.NodeSelectorRequirement{
 									v1.NodeSelectorRequirement{
 										Key:      "role",
@@ -260,10 +230,47 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					},
 				},
 			},
+			RuleNamespaceSelector: &metav1.LabelSelector{
+				MatchLabels: map[string]string{
+					"name": key.NamespaceMonitoring(cluster),
+				},
+			},
+			PriorityClassName: "prometheus",
 		},
 	}
 
+	if config.RemoteWriteURL != "" {
+		prometheus.Spec.RemoteWrite = []promv1.RemoteWriteSpec{
+			promv1.RemoteWriteSpec{
+				URL: config.RemoteWriteURL,
+				BasicAuth: &promv1.BasicAuth{
+					Username: v1.SecretKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: key.RemoteWriteSecretName(),
+						},
+						Key: key.RemoteWriteUsernameKey(),
+					},
+					Password: v1.SecretKeySelector{
+						LocalObjectReference: v1.LocalObjectReference{
+							Name: key.RemoteWriteSecretName(),
+						},
+						Key: key.RemoteWritePasswordKey(),
+					},
+				},
+				Name: key.ClusterID(cluster),
+				WriteRelabelConfigs: []promv1.RelabelConfig{
+					promv1.RelabelConfig{
+						SourceLabels: []string{"__name__"},
+						Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|^slo_.+)",
+						Action:       "keep",
+					},
+				},
+			},
+		}
+	}
+
 	if !key.IsInCluster(cluster) {
+		// Tenant cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			TLSConfig: &promv1.TLSConfig{
@@ -276,7 +283,18 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		prometheus.Spec.Secrets = []string{
 			key.Secret(),
 		}
+
+		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				metav1.LabelSelectorRequirement{
+					Key:      "cluster_type",
+					Operator: metav1.LabelSelectorOpNotIn,
+					Values:   []string{"control_plane"},
+				},
+			},
+		}
 	} else {
+		// Control plane
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			BearerTokenFile: key.ControlPlaneBearerToken(),
@@ -291,6 +309,9 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		prometheus.Spec.Secrets = []string{
 			key.EtcdSecret(cluster),
 		}
+
+		// empty LabelSelector matches all objects.
+		prometheus.Spec.RuleSelector = &metav1.LabelSelector{}
 	}
 
 	return prometheus, nil

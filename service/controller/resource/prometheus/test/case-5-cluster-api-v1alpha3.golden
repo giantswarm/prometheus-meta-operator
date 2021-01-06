@@ -15,14 +15,13 @@ spec:
     name: additional-scrape-configs
   affinity:
     nodeAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - preference:
-          matchExpressions:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
           - key: role
             operator: NotIn
             values:
             - master
-        weight: 60
   apiserverConfig:
     host: https://master.baz
     tlsConfig:
@@ -47,6 +46,7 @@ spec:
       app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: prometheus
       giantswarm.io/monitoring: "true"
+  priorityClassName: prometheus
   remoteWrite:
   - basicAuth:
       password:
@@ -56,7 +56,7 @@ spec:
         key: username
         name: remote-write
     name: baz
-    url: ""
+    url: http://grafana/api/prom/push
     writeRelabelConfigs:
     - action: keep
       regex: (^aggregation:.+|prometheus_tsdb_head_series|^slo_.+)
@@ -64,15 +64,24 @@ spec:
       - __name__
   replicas: 1
   resources:
+    limits:
+      cpu: 100m
+      memory: 1000Mi
     requests:
       cpu: 100m
-      memory: 5000Mi
+      memory: 1000Mi
   retention: 2w
   retentionSize: 45Gi
   routePrefix: /baz
-  ruleSelector:
+  ruleNamespaceSelector:
     matchLabels:
-      cluster_id: baz
+      name: monitoring
+  ruleSelector:
+    matchExpressions:
+    - key: cluster_type
+      operator: NotIn
+      values:
+      - control_plane
   rules:
     alert: {}
   secrets:
