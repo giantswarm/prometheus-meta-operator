@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add topologySpreadConstraint to evenly spread prometheus pods
+
 ## [1.13.0] - 2021-01-05
 
 ### Added
