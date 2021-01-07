@@ -11,6 +11,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Ignore missing unhealthy prometheus instances in promxy to avoid it from crash looping
+- Add topologySpreadConstraint to evenly spread prometheus pods
+
+## [1.13.0] - 2021-01-05
+
+### Added
+
+- Add priority class `prometheus` and use it for all managed Prometheus pods in
+  order to allow scheduler to evict other pods with lower priority to make
+  space for Prometheus
 
 ## [1.12.0] - 2020-12-02
 
@@ -314,7 +323,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.12.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.12.0...v1.13.0
 [1.12.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.11.0...v1.12.0
 [1.11.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.3...v1.11.0
 [1.10.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.2...v1.10.3

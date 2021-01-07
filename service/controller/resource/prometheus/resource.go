@@ -218,11 +218,24 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					},
 				},
 			},
+			TopologySpreadConstraints: []v1.TopologySpreadConstraint{
+				v1.TopologySpreadConstraint{
+					MaxSkew:           1,
+					TopologyKey:       "kubernetes.io/hostname",
+					WhenUnsatisfiable: v1.ScheduleAnyway,
+					LabelSelector: &metav1.LabelSelector{
+						MatchLabels: map[string]string{
+							"app": "prometheus",
+						},
+					},
+				},
+			},
 			RuleNamespaceSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					"name": key.NamespaceMonitoring(cluster),
 				},
 			},
+			PriorityClassName: "prometheus",
 		},
 	}
 
