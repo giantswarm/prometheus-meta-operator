@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add inhibition rules.
+
+### Changed
 - Ignore missing unhealthy prometheus instances in promxy to avoid it from crash looping
 - Added the biscuit alerts to PMO:
   - `ControlPlaneCertificateWillExpireInLessThanTwoWeeks`
