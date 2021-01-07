@@ -123,7 +123,7 @@ type ServerGroup struct {
 	// So in reality its "the same", the difference is in prometheus these apply to the labels/targets of a scrape job,
 	// in promxy they apply to the prometheus hosts in the servergroup - but the behavior is the same.
 	RelabelConfigs []*relabel.Config `json:"relabel_configs,omitempty" yaml:"relabel_configs,omitempty"`
-	// Hosts is a set of discovery.Config options that allow promxy to discover
+	// Hosts is a set of kubernetes.SDConfig options that allow promxy to discover
 	// all hosts in the server_group
 	KubernetesSDConfigs []*kubernetes.SDConfig `json:"kubernetes_sd_configs,omitempty" yaml:"kubernetes_sd_configs,omitempty"`
 	// PathPrefix to prepend to all queries to hosts in this servergroup
@@ -144,6 +144,12 @@ type ServerGroup struct {
 	// come from different points in time. Best practice for this value is to set it to your scrape interval
 	AntiAffinity time.Duration `json:"anti_affinity,omitempty" yaml:"anti_affinity,omitempty"`
 
+	// Timeout, if non-zero, specifies the amount of
+	// time to wait for a server's response headers after fully
+	// writing the request (including its body, if any). This
+	// time does not include the time to read the response body.
+	Timeout time.Duration `json:"timeout,omitempty" yaml:"timeout,omitempty"`
+
 	// IgnoreError will hide all errors from this given servergroup effectively making
 	// the responses from this servergroup "not required" for the result.
 	// Note: this allows you to make the tradeoff between availability of queries and consistency of results
@@ -157,7 +163,7 @@ type ServerGroup struct {
 	// AbsoluteTimeRangeConfig defines an absolute time range that this servergroup will respond to
 	// An example use-case would be if a specific servergroup was was "deprecated" and wasn't getting
 	// any new data after a specific given point in time
-	*AbsoluteTimeRangeConfig `json:"absolute_time_range" yaml:"absolute_time_range,omitempty"`
+	*AbsoluteTimeRangeConfig `json:"absolute_time_range,omitempty" yaml:"absolute_time_range,omitempty"`
 }
 
 // GetScheme returns the scheme for this servergroup

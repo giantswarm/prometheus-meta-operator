@@ -46,6 +46,7 @@ spec:
       app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: prometheus
       giantswarm.io/monitoring: "true"
+  priorityClassName: prometheus
   remoteWrite:
   - basicAuth:
       password:
@@ -64,11 +65,11 @@ spec:
   replicas: 1
   resources:
     limits:
-      cpu: 250m
-      memory: 5000Mi
+      cpu: 100m
+      memory: 1000Mi
     requests:
-      cpu: 250m
-      memory: 5000Mi
+      cpu: 100m
+      memory: 1000Mi
   retention: 2w
   retentionSize: 45Gi
   routePrefix: /alice
@@ -103,4 +104,11 @@ spec:
           requests:
             storage: 50Gi
       status: {}
+  topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app: prometheus
+    maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
   walCompression: true

@@ -8,7 +8,8 @@ labels:
   installation: test-installation
   provider: kvm
 relabel_configs:
-- source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_managed_by, __meta_kubernetes_pod_label_app_kubernetes_io_name, __meta_kubernetes_pod_label_app_kubernetes_io_instance]
+- source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_managed_by, __meta_kubernetes_pod_label_app_kubernetes_io_name,
+    __meta_kubernetes_pod_label_app_kubernetes_io_instance]
   separator: ;
   regex: prometheus-meta-operator;prometheus;bob
   action: keep
@@ -23,3 +24,5 @@ kubernetes_sd_configs:
     names:
     - bob-prometheus
 path_prefix: /bob
+timeout: 5m0s
+ignore_error: true
