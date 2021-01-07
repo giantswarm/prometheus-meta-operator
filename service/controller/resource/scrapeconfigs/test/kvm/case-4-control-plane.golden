@@ -2808,16 +2808,14 @@
     regex: null
     target_label: role
     replacement: worker
+
 # prometheus
 - job_name: kubernetes-prometheus/prometheus-kubernetes/0
+  metrics_path: /kubernetes/metrics
   honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
+  scrape_interval: 5s
+  static_configs:
+    - targets: ['localhost:9090']
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_labelpresent_giantswarm_io_monitoring]
     regex: (true)
@@ -2865,9 +2863,3 @@
     replacement: test-installation
   - source_labels: [__meta_kubernetes_pod_label_prometheus]
     target_label: cluster_id
-
-- job_name: 'prometheus'
-  scrape_interval: 5s
-  metrics_path: /kubernetes/metrics
-  static_configs:
-    - targets: ['localhost:9090']

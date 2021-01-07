@@ -1100,8 +1100,57 @@
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
 
-- job_name: 'prometheus'
-  scrape_interval: 5s
+# prometheus
+- job_name: alice-prometheus/prometheus-alice/0
   metrics_path: /alice/metrics
+  honor_labels: true
+  scrape_interval: 5s
   static_configs:
     - targets: ['localhost:9090']
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_labelpresent_giantswarm_io_monitoring]
+    regex: (true)
+    action: keep
+  - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
+    regex: (true)
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_prometheus,__metrics_path__]
+    separator:
+    target_label: __metrics_path__
+    replacement: /${0}
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: alice
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  - source_labels: [__meta_kubernetes_pod_label_prometheus]
+    target_label: cluster_id
