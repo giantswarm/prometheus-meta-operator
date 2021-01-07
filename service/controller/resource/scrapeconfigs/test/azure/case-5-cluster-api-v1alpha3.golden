@@ -1102,11 +1102,14 @@
 
 # prometheus
 - job_name: baz-prometheus/prometheus-baz/0
-  metrics_path: /baz/metrics
   honor_labels: true
-  scrape_interval: 5s
-  static_configs:
-    - targets: ['localhost:9090']
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_pod_labelpresent_giantswarm_io_monitoring]
     regex: (true)
