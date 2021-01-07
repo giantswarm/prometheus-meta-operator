@@ -24,3 +24,5 @@ kubernetes_sd_configs:
     names:
     - bob-prometheus
 path_prefix: /bob
+timeout: 5m0s
+ignore_error: true

@@ -24,3 +24,5 @@ kubernetes_sd_configs:
     names:
     - alice-prometheus
 path_prefix: /alice
+timeout: 5m0s
+ignore_error: true

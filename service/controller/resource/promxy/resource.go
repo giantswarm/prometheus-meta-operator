@@ -69,7 +69,10 @@ func toServerGroup(cluster metav1.Object, apiServerURL *url.URL, installation st
 	}
 
 	return &ServerGroup{
-		Scheme:         "http",
+		Scheme:  "http",
+		Timeout: 5 * time.Minute,
+		// We ignore error coming from prometheus instances
+		IgnoreError:    true,
 		RemoteReadPath: "api/v1/read",
 		RemoteRead:     true,
 		HTTPConfig: HTTPClientConfig{
