@@ -12,6 +12,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added the biscuit alerts to PMO:
   - `ControlPlaneCertificateWillExpireInLessThanTwoWeeks`
+- Add topologySpreadConstraint to evenly spread prometheus pods
+
+## [1.13.0] - 2021-01-05
+
+### Added
+
+- Add priority class `prometheus` and use it for all managed Prometheus pods in
+  order to allow scheduler to evict other pods with lower priority to make
+  space for Prometheus
+
+## [1.12.0] - 2020-12-02
+
+### Changed
+
+- Change PrometheusCantCommunicateWithTenantAPI to ignore promxy
+- Set prometheus default resources to 100m of CPU and 1Gi of memory
+- Reduced number of metrics ingested from nginx-ingress-controller in order to
+  reduce memory requirements of Prometheus.
+
+## [1.11.0] - 2020-12-01
+
+### Added
+
+- Create `VerticalPodAutoscaler` resource for each Prometheus configuring the
+  VPA to manage Prometheus pod requests and limits to allow dynamic scaling but
+  prevent scheduling and OOM issues.
+
+### Changed
+
+- Change prometheus affinity from "Prefer" to "Required".
 
 ## [1.10.3] - 2020-11-25
 
@@ -294,7 +324,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.13.0...HEAD
+[1.13.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.12.0...v1.13.0
+[1.12.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.11.0...v1.12.0
+[1.11.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.3...v1.11.0
 [1.10.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.2...v1.10.3
 [1.10.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.1...v1.10.2
 [1.10.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.10.0...v1.10.1

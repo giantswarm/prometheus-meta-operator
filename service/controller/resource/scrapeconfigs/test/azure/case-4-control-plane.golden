@@ -923,6 +923,11 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  metric_relabel_configs:
+  # drop metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
+    action: drop
 
 # app-operator
 - job_name: kubernetes-prometheus/app-operator-kubernetes/0
