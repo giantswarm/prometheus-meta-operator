@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Added the biscuit alerts to PMO:
+  - `ControlPlaneCertificateWillExpireInLessThanTwoWeeks`
 - Add topologySpreadConstraint to evenly spread prometheus pods
 
 ## [1.13.0] - 2021-01-05
