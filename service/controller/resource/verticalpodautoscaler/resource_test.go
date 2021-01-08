@@ -1,6 +1,7 @@
 package verticalpodautoscaler
 
 import (
+	"context"
 	"flag"
 	"path/filepath"
 	"testing"
@@ -21,7 +22,7 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
 			r := Resource{}
-			return r.getObject(v)
+			return r.getObject(context.TODO(), v)
 		},
 		Update: *update,
 	}

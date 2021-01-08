@@ -1,6 +1,8 @@
 package verticalpodautoscaler
 
 import (
+	"context"
+	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
@@ -69,13 +71,18 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func (r *Resource) getObject(v interface{}) (*vpa_types.VerticalPodAutoscaler, error) {
+func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.VerticalPodAutoscaler, error) {
 	objectMeta, err := r.getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	maxMemory, err := r.getMaxMemory(ctx)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -102,7 +109,7 @@ func (r *Resource) getObject(v interface{}) (*vpa_types.VerticalPodAutoscaler, e
 						Mode:             &containerScalingModeAuto,
 						ControlledValues: &containerControlledValuesRequestsAndLimits,
 						MaxAllowed: v1.ResourceList{
-							v1.ResourceMemory: resource.Quantity{},
+							v1.ResourceMemory: *maxMemory,
 						},
 					},
 					{
@@ -119,6 +126,31 @@ func (r *Resource) getObject(v interface{}) (*vpa_types.VerticalPodAutoscaler, e
 	}
 
 	return vpa, nil
+}
+
+func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error) {
+	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	var lowestQuantity *resource.Quantity
+	if len(nodes.Items) > 0 {
+		n := nodes.Items[0]
+		s, ok := n.Status.Allocatable[v1.ResourceMemory]
+		if ok {
+			lowestQuantity = &s
+		}
+	}
+	for _, n := range nodes.Items[1:] {
+		s, ok := n.Status.Allocatable[v1.ResourceMemory]
+		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("%s: %d %v", n.GetName(), n.Size(), s))
+		if ok && lowestQuantity.Cmp(s) == -1 {
+			lowestQuantity = &s
+		}
+	}
+
+	return lowestQuantity, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
