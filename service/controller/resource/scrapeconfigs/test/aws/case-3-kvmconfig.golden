@@ -1168,14 +1168,14 @@
   scheme: http
   kubernetes_sd_configs:
   - role: endpoints
+    namespaces:
+      names:
+      - bar-prometheus
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_labelpresent_giantswarm_io_monitoring]
-    regex: (true)
-    action: keep
   - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
     regex: (true)
     action: keep
