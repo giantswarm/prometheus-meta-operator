@@ -101,6 +101,9 @@ func (r *Resource) getObject(v interface{}) (*vpa_types.VerticalPodAutoscaler, e
 						ContainerName:    key.PrometheusContainerName(),
 						Mode:             &containerScalingModeAuto,
 						ControlledValues: &containerControlledValuesRequestsAndLimits,
+						MaxAllowed: v1.ResourceList{
+							v1.ResourceMemory: resource.Quantity{},
+						},
 					},
 					{
 						ContainerName: "prometheus-config-reloader",

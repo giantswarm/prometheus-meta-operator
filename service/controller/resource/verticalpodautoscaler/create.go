@@ -2,6 +2,7 @@ package verticalpodautoscaler
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
@@ -12,6 +13,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	desired, err := r.getObject(obj)
 	if err != nil {
 		return microerror.Mask(err)
+	}
+
+	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	for _, n := range nodes.Items {
+		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("%s: %d", n.GetName(), n.Size()))
 	}
 
 	r.logger.LogCtx(ctx, "level", "debug", "message", "creating")
