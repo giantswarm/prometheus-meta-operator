@@ -160,6 +160,7 @@ func New(config Config) ([]resource.Interface, error) {
 	{
 		c := verticalpodautoscaler.Config{
 			Logger:    config.Logger,
+			K8sClient: config.K8sClient,
 			VpaClient: config.VpaClient,
 		}
 
