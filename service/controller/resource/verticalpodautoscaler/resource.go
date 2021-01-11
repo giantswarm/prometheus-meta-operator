@@ -150,7 +150,25 @@ func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error)
 		}
 	}
 
-	return lowestQuantity, nil
+	q, err := quantityMultiply(lowestQuantity, 0.9)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return q, nil
+}
+
+func quantityMultiply(q *resource.Quantity, multiplier float64) (*resource.Quantity, error) {
+	i, ok := q.AsInt64()
+	if !ok {
+		return nil, microerror.Maskf(cannotConvertQuantityToInt64, q.String())
+	}
+
+	n := float64(i) * multiplier
+
+	q.Set(int64(n))
+
+	return q, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
