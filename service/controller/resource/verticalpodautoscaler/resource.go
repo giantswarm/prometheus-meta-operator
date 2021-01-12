@@ -2,7 +2,6 @@ package verticalpodautoscaler
 
 import (
 	"context"
-	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
@@ -144,7 +143,6 @@ func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error)
 
 		for _, n := range nodes.Items[1:] {
 			s, ok := n.Status.Allocatable[v1.ResourceMemory]
-			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("%s: %d %v", n.GetName(), n.Size(), s))
 			if ok && nodeMemory.Cmp(s) == -1 {
 				nodeMemory = &s
 			}
