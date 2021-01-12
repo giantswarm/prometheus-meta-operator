@@ -1651,7 +1651,7 @@
 - job_name: [[ .ClusterID ]]-prometheus/prometheus-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
-  metric_path: /[[ .ClusterID ]]/metrics
+  metrics_path: /[[ .ClusterID ]]/metrics
   static_configs:
     - targets: ['localhost:9090']
   relabel_configs:

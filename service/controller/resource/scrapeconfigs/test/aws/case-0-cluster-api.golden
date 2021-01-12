@@ -1166,7 +1166,7 @@
 - job_name: bob-prometheus/prometheus-bob/0
   honor_labels: true
   scheme: http
-  metric_path: /bob/metrics
+  metrics_path: /bob/metrics
   static_configs:
     - targets: ['localhost:9090']
   relabel_configs:
