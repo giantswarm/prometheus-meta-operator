@@ -134,23 +134,27 @@ func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error)
 		return nil, microerror.Mask(err)
 	}
 
-	var lowestQuantity *resource.Quantity
+	var nodeMemory *resource.Quantity
 	if len(nodes.Items) > 0 {
 		n := nodes.Items[0]
 		s, ok := n.Status.Allocatable[v1.ResourceMemory]
 		if ok {
-			lowestQuantity = &s
+			nodeMemory = &s
+		}
+
+		for _, n := range nodes.Items[1:] {
+			s, ok := n.Status.Allocatable[v1.ResourceMemory]
+			r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("%s: %d %v", n.GetName(), n.Size(), s))
+			if ok && nodeMemory.Cmp(s) == -1 {
+				nodeMemory = &s
+			}
 		}
 	}
-	for _, n := range nodes.Items[1:] {
-		s, ok := n.Status.Allocatable[v1.ResourceMemory]
-		r.logger.LogCtx(ctx, "level", "debug", "message", fmt.Sprintf("%s: %d %v", n.GetName(), n.Size(), s))
-		if ok && lowestQuantity.Cmp(s) == -1 {
-			lowestQuantity = &s
-		}
+	if nodeMemory.IsZero() {
+		return nil, microerror.Mask(nodeMemoryNotFoundError)
 	}
 
-	q, err := quantityMultiply(lowestQuantity, 0.9)
+	q, err := quantityMultiply(nodeMemory, 0.9)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -161,7 +165,7 @@ func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error)
 func quantityMultiply(q *resource.Quantity, multiplier float64) (*resource.Quantity, error) {
 	i, ok := q.AsInt64()
 	if !ok {
-		return nil, microerror.Maskf(cannotConvertQuantityToInt64, q.String())
+		return nil, microerror.Maskf(quantityConvertionError, q.String())
 	}
 
 	n := float64(i) * multiplier
