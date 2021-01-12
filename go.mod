@@ -8,7 +8,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/giantswarm/apiextensions/v2 v2.6.2
 	github.com/giantswarm/backoff v0.2.0
-	github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112101354-73dde38e7535
+	github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112105216-2a9eb31d062a
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/microkit v0.2.2

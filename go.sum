@@ -390,6 +390,8 @@ github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112094458-00006649057e h1:5NLhb
 github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112094458-00006649057e/go.mod h1:jTwQ8q0YbJJu3ZxbjoI6hkXeuvKm15xyI/c+zwxnUH0=
 github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112101354-73dde38e7535 h1:vqCcq+sGhkmU6lB7cbDFyBamgbwsha0LN5kZafOGNXU=
 github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112101354-73dde38e7535/go.mod h1:jTwQ8q0YbJJu3ZxbjoI6hkXeuvKm15xyI/c+zwxnUH0=
+github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112105216-2a9eb31d062a h1:yG0t1GbUdWwMy6O5NsF8IbhdrSu8NJuG54U2QGaY8ow=
+github.com/giantswarm/k8sclient/v4 v4.0.1-0.20210112105216-2a9eb31d062a/go.mod h1:jTwQ8q0YbJJu3ZxbjoI6hkXeuvKm15xyI/c+zwxnUH0=
 github.com/giantswarm/microendpoint v0.2.0 h1:xCAqAVRjTw/4ifEuBeNavALdbQsLk6+k/ukzdy0GWZE=
 github.com/giantswarm/microendpoint v0.2.0/go.mod h1:SSkSp4Q4iSW7vwkil+/E3IXy9Q8To8vXmT5VCg24RDg=
 github.com/giantswarm/microerror v0.2.0 h1:SaE7S34mp/wEiQkgtPiq8wQbNUTCj1gjiCWPjO3wgJo=
