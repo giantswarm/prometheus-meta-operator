@@ -1166,48 +1166,12 @@
 - job_name: alice-prometheus/prometheus-alice/0
   honor_labels: true
   scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - alice-prometheus
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
+  metric_path: /alice/metrics
+  static_configs:
+    - targets: ['localhost:9090']
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
-    regex: (true)
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    regex: (prometheus)
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+  - replacement: prometheus
     target_label: app
-  - source_labels: [__meta_kubernetes_pod_label_prometheus,__metrics_path__]
-    separator:
-    target_label: __metrics_path__
-    replacement: /${0}
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
-  - source_labels: [__meta_kubernetes_pod_node_name]
-    target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: alice
@@ -1220,5 +1184,3 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  - source_labels: [__meta_kubernetes_pod_label_prometheus]
-    target_label: cluster_id
