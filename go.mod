@@ -43,7 +43,6 @@ require (
 	k8s.io/autoscaler/vertical-pod-autoscaler v0.9.0
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd // indirect
-	k8s.io/kubectl v0.19.4
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920 // indirect
 	sigs.k8s.io/cluster-api v0.3.7
 	sigs.k8s.io/controller-runtime v0.6.4
