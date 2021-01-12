@@ -3,6 +3,7 @@ package verticalpodautoscaler
 import (
 	"reflect"
 
+	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	autoscaling "k8s.io/api/autoscaling/v1"
@@ -10,7 +11,6 @@ import (
 	vpa_types "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/apis/autoscaling.k8s.io/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
@@ -19,33 +19,42 @@ const (
 )
 
 type Config struct {
+	K8sClient k8sclient.Interface
 	VpaClient vpa_clientset.Interface
 	Logger    micrologger.Logger
 }
 
-func New(config Config) (*generic.Resource, error) {
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.VpaClient.AutoscalingV1().VerticalPodAutoscalers(namespace)
-		return wrappedClient{client: c}
+type Resource struct {
+	k8sClient k8sclient.Interface
+	vpaClient vpa_clientset.Interface
+	logger    micrologger.Logger
+}
+
+func New(config Config) (*Resource, error) {
+	if config.K8sClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
+	}
+	if config.VpaClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.VpaClient must not be empty", config)
+	}
+	if config.Logger == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
-	c := generic.Config{
-		ClientFunc:       clientFunc,
-		Logger:           config.Logger,
-		Name:             Name,
-		GetObjectMeta:    getObjectMeta,
-		GetDesiredObject: getObject,
-		HasChangedFunc:   hasChanged,
-	}
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	r := &Resource{
+		k8sClient: config.K8sClient,
+		vpaClient: config.VpaClient,
+		logger:    config.Logger,
 	}
 
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func (r *Resource) Name() string {
+	return Name
+}
+
+func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -58,8 +67,8 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func getObject(v interface{}) (metav1.Object, error) {
-	objectMeta, err := getObjectMeta(v)
+func (r *Resource) getObject(v interface{}) (*vpa_types.VerticalPodAutoscaler, error) {
+	objectMeta, err := r.getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
