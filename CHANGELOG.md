@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add inhibition rules.
+- Set Prometheus pod max memory usage (via vpa) to 90% of lowest node allocatable memory
+
+### Changed
+
+- Ignore missing unhealthy prometheus instances in promxy to avoid it from crash looping
+- Added the biscuit alerts to PMO:
+  - `ControlPlaneCertificateWillExpireInLessThanTwoWeeks`
+- Add topologySpreadConstraint to evenly spread prometheus pods
+
 ## [1.13.0] - 2021-01-05
 
 ### Added

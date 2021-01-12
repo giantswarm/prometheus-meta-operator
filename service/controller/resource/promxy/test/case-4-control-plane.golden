@@ -24,3 +24,5 @@ kubernetes_sd_configs:
     names:
     - kubernetes-prometheus
 path_prefix: /kubernetes
+timeout: 5m0s
+ignore_error: true
