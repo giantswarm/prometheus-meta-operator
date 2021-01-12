@@ -20,7 +20,8 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return getObject(v)
+			r := Resource{}
+			return r.getObject(v)
 		},
 		Update: *update,
 	}
