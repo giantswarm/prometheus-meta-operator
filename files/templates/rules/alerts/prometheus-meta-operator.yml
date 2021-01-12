@@ -14,7 +14,8 @@ spec:
   - name: heartbeat
     rules:
     - alert: "Heartbeat"
-      expr: "vector(1)"
+      expr: up{app="prometheus"}
+      for: 10m
       labels:
         area: "empowerment"
         cluster_id: [[ .ClusterID ]]

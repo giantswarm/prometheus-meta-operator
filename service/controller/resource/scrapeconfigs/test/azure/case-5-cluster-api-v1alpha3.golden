@@ -1100,3 +1100,25 @@
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
 
+# prometheus
+- job_name: baz-prometheus/prometheus-baz/0
+  honor_labels: true
+  scheme: http
+  metrics_path: /baz/metrics
+  static_configs:
+    - targets: ['localhost:9090']
+  relabel_configs:
+  - replacement: prometheus
+    target_label: app
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: baz
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: tenant_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
