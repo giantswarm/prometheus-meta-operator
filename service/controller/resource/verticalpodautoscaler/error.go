@@ -13,13 +13,13 @@ func IsInvalidConfig(err error) bool {
 	return microerror.Cause(err) == invalidConfigError
 }
 
-var quantityConvertionError = &microerror.Error{
-	Kind: "quantityConvertionError",
+var quantityConversionError = &microerror.Error{
+	Kind: "quantityConversionError",
 }
 
-// IsQuantityConvertion asserts quantityConvertionError.
-func IsQuantityConvertion(err error) bool {
-	return microerror.Cause(err) == quantityConvertionError
+// IsQuantityConversion asserts quantityConversionError.
+func IsQuantityConversion(err error) bool {
+	return microerror.Cause(err) == quantityConversionError
 }
 
 var nodeMemoryNotFoundError = &microerror.Error{

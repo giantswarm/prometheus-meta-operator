@@ -163,7 +163,7 @@ func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error)
 func quantityMultiply(q *resource.Quantity, multiplier float64) (*resource.Quantity, error) {
 	i, ok := q.AsInt64()
 	if !ok {
-		return nil, microerror.Maskf(quantityConvertionError, q.String())
+		return nil, microerror.Maskf(quantityConversionError, q.String())
 	}
 
 	n := float64(i) * multiplier
