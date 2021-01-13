@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `ControlPlaneCertificateWillExpireInLessThanTwoWeeks`
 - Add topologySpreadConstraint to evenly spread prometheus pods
 - Ignore Slack in `AlertManagerNotificationsFailing` alert.
+- Set heartbeat alert to up for 10mn
 
 ### Removed
 
