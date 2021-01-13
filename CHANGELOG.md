@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the biscuit alerts to PMO:
   - `ControlPlaneCertificateWillExpireInLessThanTwoWeeks`
 - Add topologySpreadConstraint to evenly spread prometheus pods
+- Set heartbeat alert to up for 10mn
 
 ### Removed
 
