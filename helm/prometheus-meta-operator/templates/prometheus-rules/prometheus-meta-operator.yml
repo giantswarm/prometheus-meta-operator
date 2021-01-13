@@ -10,7 +10,8 @@ spec:
   - name: heartbeat
     rules:
     - alert: "Heartbeat"
-      expr: "vector(1)"
+      expr: up{app="prometheus"}
+      for: 10m
       labels:
         area: "empowerment"
         installation: {{ .Values.Installation.V1.Name }}
