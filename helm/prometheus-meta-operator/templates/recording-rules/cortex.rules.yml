@@ -1,14 +1,11 @@
----
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: cortex
-  namespace: [[ .Namespace ]]
   labels:
-    cluster_id: [[ .ClusterID ]]
-    app.kubernetes.io/name: "prometheus"
-    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
-    app.kubernetes.io/instance: [[ .ClusterID ]]
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "control_plane"
+  name: cortex
+  namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
   - name: cortex
@@ -194,4 +191,3 @@ spec:
       expr: "sum(monitoring:managed_apps:service_level:primary:error_budget_used) by (cluster_type, cluster_id, workload_name, workload_type) >= 1"
     - record: aggregation:managed_apps:service_level:basic:error_budget_low
       expr: "sum(monitoring:managed_apps:service_level:primary:error_budget_used) by (cluster_type, cluster_id, workload_name, workload_type) >= 0.75"
----

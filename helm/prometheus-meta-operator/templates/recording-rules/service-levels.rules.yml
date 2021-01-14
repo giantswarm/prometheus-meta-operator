@@ -1,14 +1,11 @@
----
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: service-level
-  namespace: [[ .Namespace ]]
   labels:
-    cluster_id: [[ .ClusterID ]]
-    app.kubernetes.io/name: "prometheus"
-    app.kubernetes.io/managed-by: [[ .ManagedBy ]]
-    app.kubernetes.io/instance: [[ .ClusterID ]]
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "control_plane"
+  name: service-level
+  namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
   - name: service-level
@@ -83,4 +80,3 @@ spec:
         (30*24*60*(1-scalar(monitoring:managed_apps:service_level:primary:slo)))
     - record: monitoring:managed_apps:service_level:primary:slo
       expr: "scalar(vector(0.995))"
----
