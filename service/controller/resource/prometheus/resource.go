@@ -34,6 +34,7 @@ type Config struct {
 	Pipeline          string
 	Provider          string
 	Region            string
+	Registry          string
 	StorageSize       string
 	RetentionDuration string
 	RetentionSize     string

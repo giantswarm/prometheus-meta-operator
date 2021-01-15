@@ -28,6 +28,7 @@ type ControllerConfig struct {
 	Installation            string
 	Pipeline                string
 	Region                  string
+	Registry                string
 	Customer                string
 	CreatePVC               bool
 	StorageSize             string
