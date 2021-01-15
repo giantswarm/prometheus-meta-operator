@@ -5,4 +5,5 @@ type Installation struct {
 	Name     string
 	Pipeline string
 	Region   string
+	Registry string
 }
