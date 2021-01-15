@@ -40,6 +40,7 @@ spec:
     provider: kvm
     region: onprem
   externalUrl: http://prometheus/bob
+  image: registry:///giantswarm/prometheus
   podMetadata:
     labels:
       app.kubernetes.io/instance: bob
