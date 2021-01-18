@@ -37,7 +37,7 @@ spec:
     customer: Giant Swarm
     installation: test-installation
     pipeline: testing
-    provider: kvm
+    provider: provider
     region: onprem
   externalUrl: http://prometheus/bar
   podMetadata:

@@ -22,7 +22,7 @@ func TestPrometheus(t *testing.T) {
 		Customer:          "Giant Swarm",
 		Installation:      "test-installation",
 		Pipeline:          "testing",
-		Provider:          "kvm",
+		Provider:          "provider",
 		Region:            "onprem",
 		StorageSize:       "50Gi",
 		RetentionDuration: "2w",
