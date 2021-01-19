@@ -35,6 +35,7 @@ type Config struct {
 	Installation string
 	Pipeline     string
 	Region       string
+	Registry     string
 	Customer     string
 
 	CreatePVC               bool
@@ -143,6 +144,7 @@ func New(config Config) ([]resource.Interface, error) {
 			Pipeline:          config.Pipeline,
 			Provider:          config.Provider,
 			Region:            config.Region,
+			Registry:          config.Registry,
 			StorageSize:       config.StorageSize,
 			RetentionDuration: config.RetentionDuration,
 			RetentionSize:     config.RetentionSize,

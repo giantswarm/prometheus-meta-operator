@@ -40,6 +40,7 @@ spec:
     provider: provider
     region: onprem
   externalUrl: http://prometheus/alice
+  image: quay.io/giantswarm/prometheus
   podMetadata:
     labels:
       app.kubernetes.io/instance: alice

@@ -24,6 +24,7 @@ func TestPrometheus(t *testing.T) {
 		Pipeline:          "testing",
 		Provider:          "provider",
 		Region:            "onprem",
+		Registry:          "quay.io",
 		StorageSize:       "50Gi",
 		RetentionDuration: "2w",
 		RetentionSize:     "45Gi",

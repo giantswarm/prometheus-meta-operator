@@ -57,5 +57,6 @@ data:
         {{- else }}
         region: onprem
         {{- end }}
+        registry: {{ .Values.Installation.V1.Registry.Domain }}
       vault:
         host: {{ .Values.Installation.V1.Auth.Vault.Host }}

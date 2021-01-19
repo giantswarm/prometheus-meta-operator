@@ -34,6 +34,7 @@ type Config struct {
 	Pipeline          string
 	Provider          string
 	Region            string
+	Registry          string
 	StorageSize       string
 	RetentionDuration string
 	RetentionSize     string
@@ -150,6 +151,8 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		corev1.ResourceMemory: *resource.NewQuantity(1000*1024*1024, resource.BinarySI),
 	}
 
+	image := fmt.Sprintf("%s/giantswarm/prometheus", config.Registry)
+
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -167,6 +170,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
+			Image:    &image,
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
 				Requests: prometheusResourceList,
