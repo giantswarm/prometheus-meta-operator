@@ -40,7 +40,7 @@ spec:
     provider: provider
     region: onprem
   externalUrl: http://prometheus/baz
-  image: quay.io/giantswarm/prometheus
+  image: quay.io/giantswarm/prometheus:v2.24.0
   podMetadata:
     labels:
       app.kubernetes.io/instance: baz

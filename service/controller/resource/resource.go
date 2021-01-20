@@ -28,15 +28,16 @@ import (
 )
 
 type Config struct {
-	Address      string
-	BaseDomain   string
-	Bastions     []string
-	Provider     string
-	Installation string
-	Pipeline     string
-	Region       string
-	Registry     string
-	Customer     string
+	Address           string
+	BaseDomain        string
+	Bastions          []string
+	Provider          string
+	Installation      string
+	Pipeline          string
+	Region            string
+	Registry          string
+	PrometheusVersion string
+	Customer          string
 
 	CreatePVC               bool
 	StorageSize             string
@@ -142,6 +143,7 @@ func New(config Config) ([]resource.Interface, error) {
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
+			PrometheusVersion: config.PrometheusVersion,
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
