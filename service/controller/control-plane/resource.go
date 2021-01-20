@@ -38,6 +38,7 @@ type resourcesConfig struct {
 	Pipeline                string
 	Region                  string
 	Registry                string
+	PrometheusVersion       string
 	Customer                string
 	CreatePVC               bool
 	StorageSize             string
@@ -153,6 +154,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
+			PrometheusVersion: config.PrometheusVersion,
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,

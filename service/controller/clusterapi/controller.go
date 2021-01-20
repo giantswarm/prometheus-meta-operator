@@ -29,6 +29,7 @@ type ControllerConfig struct {
 	Pipeline                string
 	Region                  string
 	Registry                string
+	PrometheusVersion       string
 	Customer                string
 	CreatePVC               bool
 	StorageSize             string

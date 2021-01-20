@@ -32,6 +32,7 @@ type Config struct {
 	Customer          string
 	Installation      string
 	Pipeline          string
+	PrometheusVersion string
 	Provider          string
 	Region            string
 	Registry          string
@@ -151,7 +152,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		corev1.ResourceMemory: *resource.NewQuantity(1000*1024*1024, resource.BinarySI),
 	}
 
-	image := fmt.Sprintf("%s/giantswarm/prometheus", config.Registry)
+	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.PrometheusVersion)
 
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
