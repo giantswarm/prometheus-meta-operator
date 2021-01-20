@@ -5,6 +5,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
@@ -64,6 +65,14 @@ func Labels(cluster metav1.Object) map[string]string {
 		"app.kubernetes.io/managed-by": project.Name(),
 		"app.kubernetes.io/instance":   ClusterID(cluster),
 	}
+}
+
+func PrometheusDefaultCPU() *resource.Quantity {
+	return resource.NewMilliQuantity(100, resource.DecimalSI)
+}
+
+func PrometheusDefaultMemory() *resource.Quantity {
+	return resource.NewQuantity(1024*1024*1024, resource.BinarySI)
 }
 
 func PrometheusPort() int32 {

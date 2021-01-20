@@ -81,6 +81,8 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 		return nil, microerror.Mask(err)
 	}
 
+	minMemory := key.PrometheusDefaultMemory()
+
 	maxMemory, err := r.getMaxMemory(ctx)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -107,6 +109,9 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 						ContainerName:    key.PrometheusContainerName(),
 						Mode:             &containerScalingModeAuto,
 						ControlledValues: &containerControlledValuesRequestsAndLimits,
+						MinAllowed: v1.ResourceList{
+							v1.ResourceMemory: *minMemory,
+						},
 						MaxAllowed: v1.ResourceList{
 							v1.ResourceMemory: *maxMemory,
 						},

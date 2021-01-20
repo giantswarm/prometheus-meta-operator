@@ -13,6 +13,8 @@ spec:
       controlledValues: RequestsAndLimits
       maxAllowed:
         memory: "9"
+      minAllowed:
+        memory: 1Gi
       mode: Auto
     - containerName: prometheus-config-reloader
       mode: "Off"

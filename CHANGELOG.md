@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix recording rules creation
 - Fix prometheus container image tag to not use latest
+- Fix prometheus minimal memory in VPA
 
 ## [1.14.0] - 2021-01-13
 
