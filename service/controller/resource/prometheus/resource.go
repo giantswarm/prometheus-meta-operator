@@ -147,9 +147,9 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 	prometheusResourceList := corev1.ResourceList{
 		// cpu: 100m
-		corev1.ResourceCPU: *resource.NewMilliQuantity(100, resource.DecimalSI),
+		corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
 		// memory: 1Gi
-		corev1.ResourceMemory: *resource.NewQuantity(1000*1024*1024, resource.BinarySI),
+		corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
 	}
 
 	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.PrometheusVersion)

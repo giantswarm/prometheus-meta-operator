@@ -67,10 +67,10 @@ spec:
   resources:
     limits:
       cpu: 100m
-      memory: 1000Mi
+      memory: 1Gi
     requests:
       cpu: 100m
-      memory: 1000Mi
+      memory: 1Gi
   retention: 2w
   retentionSize: 45Gi
   routePrefix: /foo
