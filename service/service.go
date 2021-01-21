@@ -25,8 +25,8 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
-	controlplane "github.com/giantswarm/prometheus-meta-operator/service/controller/control-plane"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/legacy"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/managementcluster"
 )
 
 // Config represents the configuration used to create a new service.
@@ -40,10 +40,10 @@ type Config struct {
 type Service struct {
 	Version *version.Service
 
-	bootOnce               sync.Once
-	legacyController       *legacy.Controller
-	clusterapiController   *clusterapi.Controller
-	controlplaneController *controlplane.Controller
+	bootOnce                    sync.Once
+	legacyController            *legacy.Controller
+	clusterapiController        *clusterapi.Controller
+	managementclusterController *managementcluster.Controller
 }
 
 // New creates a new configured service object.
@@ -184,9 +184,9 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var controlplaneController *controlplane.Controller
+	var managementclusterController *managementcluster.Controller
 	{
-		c := controlplane.ControllerConfig{
+		c := managementcluster.ControllerConfig{
 			K8sClient:               k8sClient,
 			Logger:                  config.Logger,
 			PrometheusClient:        prometheusClient,
@@ -213,7 +213,7 @@ func New(config Config) (*Service, error) {
 			RemoteWriteUsername:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
 			RemoteWritePassword:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
 		}
-		controlplaneController, err = controlplane.NewController(c)
+		managementclusterController, err = managementcluster.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -239,10 +239,10 @@ func New(config Config) (*Service, error) {
 	s := &Service{
 		Version: versionService,
 
-		bootOnce:               sync.Once{},
-		legacyController:       legacyController,
-		clusterapiController:   clusterapiController,
-		controlplaneController: controlplaneController,
+		bootOnce:                    sync.Once{},
+		legacyController:            legacyController,
+		clusterapiController:        clusterapiController,
+		managementclusterController: managementclusterController,
 	}
 
 	return s, nil
@@ -253,6 +253,6 @@ func (s *Service) Boot(ctx context.Context) {
 
 		go s.legacyController.Boot(ctx)
 		go s.clusterapiController.Boot(ctx)
-		go s.controlplaneController.Boot(ctx)
+		go s.managementclusterController.Boot(ctx)
 	})
 }

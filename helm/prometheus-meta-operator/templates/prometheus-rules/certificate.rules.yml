@@ -4,17 +4,17 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
-    cluster_type: "control_plane"
+    cluster_type: "management_cluster"
   name: certificate.rules
 spec:
   groups:
   - name: certificate
     rules:
-    - alert: ControlPlaneCertificateWillExpireInLessThanTwoWeeks
+    - alert: ManagementClusterCertificateWillExpireInLessThanTwoWeeks
       annotations:
         description: '{{`Certificate {{ $labels.path }} on {{ $labels.instance }} will expire in less than two weeks.`}}'
         opsrecipe: renew-certificates/
-      expr: (cert_exporter_not_after{cluster_type="control_plane", path!="/etc/kubernetes/ssl/service-account-crt.pem"} - time()) < 2 * 7 * 24 * 60 * 60
+      expr: (cert_exporter_not_after{cluster_type="management_cluster", path!="/etc/kubernetes/ssl/service-account-crt.pem"} - time()) < 2 * 7 * 24 * 60 * 60
       for: 5m
       labels:
         area: kaas

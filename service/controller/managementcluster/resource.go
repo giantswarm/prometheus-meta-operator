@@ -1,4 +1,4 @@
-package controlplane
+package managementcluster
 
 import (
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
@@ -330,7 +330,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	}
 
 	{
-		resources, err = ControlPlaneWrap(resources, config)
+		resources, err = Wrap(resources, config)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

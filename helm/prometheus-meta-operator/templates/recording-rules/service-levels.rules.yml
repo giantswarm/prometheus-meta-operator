@@ -3,7 +3,7 @@ kind: PrometheusRule
 metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
-    cluster_type: "control_plane"
+    cluster_type: "management_clustemanagement_cluster"
   name: service-level
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:

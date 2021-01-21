@@ -153,17 +153,17 @@ func IsInCluster(obj interface{}) bool {
 
 func ClusterType(obj interface{}) string {
 	if IsInCluster(obj) {
-		return "control_plane"
+		return "management_cluster"
 	}
 
-	return "tenant_cluster"
+	return "workload_cluster"
 }
 
-func ControlPlaneBearerToken() string {
+func BearerTokenPath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/token"
 }
 
-func ControlPlaneCAFile() string {
+func CAFilePath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 }
 

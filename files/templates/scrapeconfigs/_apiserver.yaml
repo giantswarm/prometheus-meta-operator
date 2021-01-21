@@ -1,5 +1,5 @@
 [[- define "_apiserver" -]]
-[[- if ne .ClusterType "control_plane" ]]
+[[- if ne .ClusterType "management_cluster" ]]
     api_server: https://[[ .APIServerURL ]]
     tls_config:
       ca_file: /etc/prometheus/secrets/[[ .SecretName ]]/ca
