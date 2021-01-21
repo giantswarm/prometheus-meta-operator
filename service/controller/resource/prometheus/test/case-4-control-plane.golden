@@ -33,7 +33,7 @@ spec:
   arbitraryFSAccessThroughSMs: {}
   externalLabels:
     cluster_id: kubernetes
-    cluster_type: control_plane
+    cluster_type: management_cluster
     customer: Giant Swarm
     installation: test-installation
     pipeline: testing

@@ -1,4 +1,3 @@
-# Additional scrape configuration for the tenant clusters components
 - job_name: alice-prometheus/kubernetes-apiserver-alice/0
   honor_labels: true
   scheme: https
@@ -31,7 +30,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -91,7 +90,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -142,7 +141,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -197,7 +196,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -276,7 +275,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -324,7 +323,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -367,7 +366,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -437,7 +436,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -507,7 +506,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -575,7 +574,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -642,7 +641,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -711,7 +710,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -782,7 +781,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -853,7 +852,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -929,7 +928,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -1000,7 +999,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -1087,7 +1086,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
@@ -1115,7 +1114,7 @@
     replacement: alice
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: azure
