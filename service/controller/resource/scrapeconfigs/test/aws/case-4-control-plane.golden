@@ -16,8 +16,8 @@
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     regex: https
     action: keep
-  - source_labels: [__meta_kubernetes_service_label_giantswarm_io_monitoring]
-    regex: "true"
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
     action: drop
   # Add cluster_id label.
   - target_label: cluster_id
@@ -422,6 +422,9 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -543,6 +546,9 @@
     replacement: /api/v1/namespaces/kube-system/pods/${1}:9153/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -605,6 +611,9 @@
     replacement: /api/v1/namespaces/giantswarm/pods/${1}:8000/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -669,6 +678,9 @@
 
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -733,6 +745,9 @@
 
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -802,6 +817,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -866,6 +884,9 @@
 
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -898,7 +919,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-- job_name: kubernetes-prometheus/managed-app-kubernetes/0
+- job_name: kubernetes-prometheus/workload-kubernetes/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -909,16 +930,9 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_ip, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
-    regex: (.*);(.*)
-    replacement: $1:$2
-    target_label: instance
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: keep
-  - source_labels: [__meta_kubernetes_service_labelpresent_operated_prometheus]
-    regex: (true)
-    action: drop
     # if __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path is present, we use it as the metrics path
   - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
     action: replace
@@ -928,12 +942,16 @@
   - source_labels: [__address__, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
     action: replace
     target_label: __address__
-    regex: ([^:]+)(?::\d+)?;(\d+)
-    replacement: $1:$2
+    regex: ([^:]+):(\d+);(\d+)
+    replacement: $1:$3
+  - source_labels: [__meta_kubernetes_pod_ip, __address__]
+    regex: (.*);([^:]+):(\d+)
+    replacement: $1:$3
+    target_label: instance
   - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __address__, __metrics_path__]
-    regex: (.*);(.*);(?:[^:]+:)(\d+);(.*)
+    regex: (.*);(.*);(.+:)(\d+);(.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}/proxy${4}
+    replacement: /api/v1/namespaces/${1}/pods/${2}:${4}/proxy${5}
     action: replace
   - regex: (.*)
     target_label: __address__
@@ -942,14 +960,6 @@
   - source_labels: [__meta_kubernetes_service_name]
     regex: (.*)
     target_label: app
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_type]
-    regex: (optional|default)
-    target_label: app_type
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
-    regex: (true)
-    target_label: is_managed_app
     action: replace
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
@@ -1023,6 +1033,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1157,6 +1170,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1223,6 +1239,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1289,6 +1308,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1357,6 +1379,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1425,6 +1450,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1493,6 +1521,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1561,6 +1592,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1627,6 +1661,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1695,6 +1732,9 @@
     target_label: __scheme__
     replacement: $1
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1763,6 +1803,9 @@
     target_label:  instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1829,6 +1872,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1895,6 +1941,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -1961,6 +2010,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2026,6 +2078,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2091,6 +2146,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2156,6 +2214,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2221,6 +2282,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2286,6 +2350,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2351,6 +2418,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2416,6 +2486,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2484,6 +2557,9 @@
     action: replace
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2568,6 +2644,9 @@
     replacement: /api/v1/namespaces/gatekeeper-system/pods/${1}:8888/proxy/metrics
   - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -2629,6 +2708,9 @@
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10254/proxy/metrics
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
