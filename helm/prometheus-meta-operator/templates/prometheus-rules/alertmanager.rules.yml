@@ -15,7 +15,7 @@ spec:
       annotations:
         description: '{{`AlertManager {{ $labels.integration }} notifications are failing.`}}'
         opsrecipe: alert-manager-notifications-failing/
-      expr: rate(alertmanager_notifications_failed_total{cluster_id!~"argali|axolotl|giraffe", integration!="slack"}[5m]) > 0
+      expr: rate(alertmanager_notifications_failed_total{cluster_id!~"argali|axolotl|giraffe", integration!~"slack|webhook"}[5m]) > 0
       for: 10m
       labels:
         area: empowerment
@@ -26,7 +26,7 @@ spec:
       annotations:
         description: '{{`AlertManager {{ $labels.integration }} notifications are failing.`}}'
         opsrecipe: alert-manager-notifications-failing/
-      expr: rate(alertmanager_notifications_failed_total{cluster_id=~"argali|axolotl|giraffe", integration!="slack"}[5m]) > 0
+      expr: rate(alertmanager_notifications_failed_total{cluster_id=~"argali|axolotl|giraffe", integration!~"slack|webhook"}[5m]) > 0
       for: 120m
       labels:
         area: empowerment
