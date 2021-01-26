@@ -19,6 +19,14 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	} else if err != nil {
 		return microerror.Mask(err)
 	} else {
+		r.logger.LogCtx(ctx, "level", "debug", "message", "triggering final heartbeat ping")
+		// The final ping to the heartbeat cleans up any opened heartbeat alerts for the cluster being deleted.
+		_, err = r.heartbeatClient.Ping(ctx, desired.Name)
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		r.logger.LogCtx(ctx, "level", "debug", "message", "triggered final heartbeat ping")
+
 		r.logger.LogCtx(ctx, "level", "debug", "message", "deleting heartbeat")
 		_, err = r.heartbeatClient.Delete(ctx, desired.Name)
 		if err != nil {
