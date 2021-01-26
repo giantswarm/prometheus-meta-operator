@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Trigger final heartbeat before deleting the cluster to clean up opened heartbeat alerts
+
 ## [1.15.0] - 2021-01-22
 
 ### Changed
