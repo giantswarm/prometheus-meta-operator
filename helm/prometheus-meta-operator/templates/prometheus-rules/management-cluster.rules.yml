@@ -10,6 +10,18 @@ spec:
   groups:
   - name: management-cluster
     rules:
+    - alert: ManagementClusterPodPending
+      annotations:
+        description: '{{`Pod {{ $labels.pod }} is stuck in Pending.`}}'
+        opsrecipe: management-cluster-pod-pending/
+      expr: (kube_pod_status_phase{cluster_type="management_cluster", phase="Pending", namespace!~".*-prometheus"} * on (pod,namespace) group_left(node) kube_pod_info{}) == 1
+      for: 1h
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: biscuit
+        topic: managementcluster
     - alert: ManagementClusterCPUUsageTooHigh
       annotations:
         description: '{{`Management cluster {{ $labels.cluster_id }} cpu usage is too high.`}}'

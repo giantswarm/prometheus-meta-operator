@@ -10,6 +10,20 @@ spec:
   groups:
   - name: up
     rules:
+    - alert: EtcdDown
+      annotations:
+        description: '{{`Etcd ({{ $labels.ip }}) is down.`}}'
+        opsrecipe: etcd-down/
+      expr: up{app="etcd"} == 0
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: biscuit
+        topic: etcd
     - alert: GatekeeperDown
       annotations:
         description: |-

@@ -12,7 +12,6 @@ Installation:
       Prometheus:
         Address: "https://prometheus:9090"
         Bastions: []
-        ClusterLabel: test
         Host: "prometheus:9090"
         Letsencrypt: false
         Storage:
