@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Reenable `Remote Write` to Cortex
+
 ### Added
 
 - Trigger final heartbeat before deleting the cluster to clean up opened heartbeat alerts
@@ -122,13 +126,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support to remote write to Cortex
+- Add support for `Remote Write` to Cortex
 - Added recording rules
 - Add node affinity to prefer not scheduling on master nodes
 - Added `pipeline` tag to _Hearbeat_ alert to be able to see if it affects
   a stable or testing installation at first glance
-- Added initial support for `remote_write` that will eventually be used for
-  writing to Cortex
 
 ### Changed
 
