@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix recording rules to apply them to all prometheuses
+
+
 ## [1.16.0] - 2021-01-28
 
 ### Changed
