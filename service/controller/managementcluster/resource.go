@@ -16,6 +16,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/legacyfinalizer"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
@@ -68,6 +69,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		namespaceResource, err = namespace.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var legacyfinalizerResource resource.Interface
+	{
+		c := legacyfinalizer.Config{
+			CtrlClient: config.K8sClient.CtrlClient(),
+			Logger:     config.Logger,
+		}
+
+		legacyfinalizerResource, err = legacyfinalizer.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -293,6 +307,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
+		legacyfinalizerResource,
 		tlsCertificatesResource,
 		etcdCertificatesResource,
 		rbacResource,
