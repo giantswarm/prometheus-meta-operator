@@ -7,6 +7,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
@@ -17,6 +18,20 @@ func ToCluster(obj interface{}) (metav1.Object, error) {
 	clusterMetaObject, ok := obj.(metav1.Object)
 	if !ok {
 		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements 'metav1.Object'", obj)
+	}
+
+	return clusterMetaObject, nil
+}
+
+type MetaRuner interface {
+	metav1.Object
+	runtime.Object
+}
+
+func ToClusterMR(obj interface{}) (MetaRuner, error) {
+	clusterMetaObject, ok := obj.(MetaRuner)
+	if !ok {
+		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements 'MetaRuner'", obj)
 	}
 
 	return clusterMetaObject, nil
@@ -153,17 +168,17 @@ func IsInCluster(obj interface{}) bool {
 
 func ClusterType(obj interface{}) string {
 	if IsInCluster(obj) {
-		return "control_plane"
+		return "management_cluster"
 	}
 
-	return "tenant_cluster"
+	return "workload_cluster"
 }
 
-func ControlPlaneBearerToken() string {
+func BearerTokenPath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/token"
 }
 
-func ControlPlaneCAFile() string {
+func CAFilePath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 }
 

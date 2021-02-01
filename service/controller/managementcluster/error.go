@@ -1,4 +1,4 @@
-package controlplane
+package managementcluster
 
 import (
 	"github.com/giantswarm/microerror"

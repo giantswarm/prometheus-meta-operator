@@ -11,7 +11,7 @@ import (
 
 func NginxIngressController(cluster metav1.Object, provider string, installation string) *promv1.ServiceMonitor {
 	var labelSelectors map[string]string
-	if key.ClusterType(cluster) == "control_plane" {
+	if key.ClusterType(cluster) == "management_cluster" {
 		labelSelectors = map[string]string{
 			"k8s-app": "nginx-ingress-controller",
 		}
@@ -103,12 +103,12 @@ func NginxIngressController(cluster metav1.Object, provider string, installation
 		}
 	} else {
 		serviceMonitor.Spec.Endpoints[0].TLSConfig = &promv1.TLSConfig{
-			CAFile: key.ControlPlaneCAFile(),
+			CAFile: key.CAFilePath(),
 			SafeTLSConfig: promv1.SafeTLSConfig{
 				InsecureSkipVerify: true,
 			},
 		}
-		serviceMonitor.Spec.Endpoints[0].BearerTokenFile = key.ControlPlaneBearerToken()
+		serviceMonitor.Spec.Endpoints[0].BearerTokenFile = key.BearerTokenPath()
 	}
 
 	return serviceMonitor

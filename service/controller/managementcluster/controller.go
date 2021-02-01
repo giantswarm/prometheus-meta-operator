@@ -1,4 +1,4 @@
-package controlplane
+package managementcluster
 
 import (
 	"github.com/giantswarm/k8sclient/v4/pkg/k8sclient"
@@ -73,7 +73,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		c := controller.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
-			Name:      project.Name() + "-control-plane-controller",
+			Name:      project.Name() + "-management-cluster-controller",
 			NewRuntimeObjectFunc: func() runtime.Object {
 				return new(v1.Service)
 			},

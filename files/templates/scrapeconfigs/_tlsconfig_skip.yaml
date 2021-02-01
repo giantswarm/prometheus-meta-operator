@@ -1,5 +1,5 @@
 [[- define "_tlsconfig_skip" -]]
-[[- if ne .ClusterType "control_plane" -]]
+[[- if ne .ClusterType "management_cluster" -]]
 tls_config:
   ca_file: /etc/prometheus/secrets/[[ .SecretName ]]/ca
   cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
