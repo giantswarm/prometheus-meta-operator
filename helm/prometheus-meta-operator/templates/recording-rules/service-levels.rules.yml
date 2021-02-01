@@ -19,7 +19,7 @@ spec:
         class: HIGH
         service: api-server
       record: raw_slo_errors
-    - expr: kube_node_status_condition{condition="Ready"}
+    - expr: "kube_node_status_condition{condition='Ready'}"
       labels:
         class: MEDIUM
         service: kubelet
