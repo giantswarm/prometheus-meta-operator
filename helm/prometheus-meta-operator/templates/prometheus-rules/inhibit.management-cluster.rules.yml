@@ -4,30 +4,13 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
   name: inhibit.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
   - name: inhibit
     rules:
-    - alert: InhibitionOutsideWorkingHours
-      annotations:
-        description: '{{`Fires outside working hours.`}}'
-      expr: (hour() <= 7 or hour() >= 16) or (day_of_week() > 5 or day_of_week() < 1)
-      labels:
-        area: empowerment
-        nodes_down: "true"
-        outside_working_hours: "true"
-        topic: monitoring
-    - alert: InhibitionKubeStateMetricsDown
-      annotations:
-        description: '{{`KubeStateMetrics ({{ $labels.instance }}) is down.`}}'
-      expr: up{app="kube-state-metrics"} == 0 or absent(up{app="kube-state-metrics"}) == 1
-      labels:
-        area: kaas
-        kube_state_metrics_down: "true"
-        team: ludacris
-        topic: status
     - alert: InhibitionClusterStatusCreating
       annotations:
         description: '{{`Cluster {{ $labels.cluster_id }} has status condition ''Creating''.`}}'
@@ -109,6 +92,7 @@ spec:
         instance_state_not_running: "true"
         team: firecracker
         topic: status
+    {{- if eq .Values.Installation.V1.Provider.Kind "kvm" }}
     - alert: InhibitionKVMClusterHasNoRunningCPNodes
       annotations:
         description: '{{`KVM Cluster {{ $labels.cluster_id }} has nodes down.`}}'
@@ -118,6 +102,8 @@ spec:
         nodes_down: "true"
         team: ludacris
         topic: status
+    {{- end }}
+    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
     - alert: InhibitionKiamErrors
       annotations:
         description: '{{`Kiam on cluster {{ $labels.cluster_id }} has increased error rate.`}}'
@@ -127,3 +113,4 @@ spec:
         kiam_has_errors: "true"
         team: firecracker
         topic: kiam
+    {{- end }}
