@@ -1,0 +1,23 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
+  name: cluster.rules
+spec:
+  groups:
+  - name: cluster
+    rules:
+    - alert: ManagementClusterHasLessThanThreeNodes
+      annotations:
+        description: '{{`Management cluster {{ $labels.cluster_id }} has less than 3 nodes.`}}'
+        opsrecipe: management-cluster-less-than-three-workers/
+      expr: sum(kube_node_labels{cluster_type="management_cluster", label_role="worker"}) < 3
+      for: 1h
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: managementcluster

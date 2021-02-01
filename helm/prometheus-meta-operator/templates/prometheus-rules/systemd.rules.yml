@@ -1,0 +1,54 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
+  name: systemd.rules
+spec:
+  groups:
+  - name: systemd
+    rules:
+    - alert: ManagementClusterSystemdUnitFailed
+      annotations:
+        description: '{{`Systemd unit {{ $labels.name }} is failed on {{ $labels.instance }}.`}}'
+      expr: node_systemd_unit_state{cluster_type="management_cluster",name!~"coreos-metadata-sshkeys@core.service|debug-tools.service|k8s-addons.service|locksmithd.service|sshd.+service|systemd-coredump.+service|systemd-networkd.service|update-engine.service|update-engine-stub.service", state="failed"} == 1
+      for: 5m
+      labels:
+        area: kaas
+        severity: notify
+        team: biscuit
+        topic: infrastructure
+    - alert: ManagementClusterCriticalSystemdUnitFailed
+      annotations:
+        description: '{{`Critical systemd unit {{ $labels.name }} is failed on {{ $labels.instance }}.`}}'
+        opsrecipe: critical-systemd-unit-failed/
+      expr: node_systemd_unit_state{cluster_type="management_cluster",name=~"k8s-addons.service|systemd-networkd.service", state="failed"} == 1
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: infrastructure
+    - alert: ManagementClusterDisabledSystemdUnitActive
+      annotations:
+        description: '{{`Disabled Systemd unit {{ $labels.name }} is active on {{ $labels.ip }}.`}}'
+        opsrecipe: disabled-systemd-unit-active/
+      expr: node_systemd_unit_state{cluster_type="management_cluster",name=~"locksmithd.service|update-engine.service", state="active"} == 1
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: biscuit
+        topic: infrastructure
+    - alert: ManagementClusterHighNumberSystemdUnits
+      annotations:
+        description: '{{`Node {{ $labels.ip }} has too many systemd units active.`}}'
+      expr: sum(node_systemd_unit_state{cluster_type="management_cluster", state="active"}) by (ip) > 1500
+      for: 10m
+      labels:
+        area: kaas
+        severity: notify
+        team: biscuit
+        topic: infrastructure

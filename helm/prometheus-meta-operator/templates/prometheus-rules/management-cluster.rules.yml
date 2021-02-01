@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
+  name: management-cluster.rules
+spec:
+  groups:
+  - name: management-cluster
+    rules:
+    - alert: ManagementClusterPodPending
+      annotations:
+        description: '{{`Pod {{ $labels.pod }} is stuck in Pending.`}}'
+        opsrecipe: management-cluster-pod-pending/
+      expr: (kube_pod_status_phase{cluster_type="management_cluster", phase="Pending", namespace!~".*-prometheus"} * on (pod,namespace) group_left(node) kube_pod_info{}) == 1
+      for: 1h
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: biscuit
+        topic: managementcluster
+    - alert: ManagementClusterCPUUsageTooHigh
+      annotations:
+        description: '{{`Management cluster {{ $labels.cluster_id }} cpu usage is too high.`}}'
+        opsrecipe: management-cluster-resource-limit-reached/
+      expr: avg_over_time(aggregation:kubernetes:pod_resource_requests_cpu_cores{cluster_type="management_cluster"}[2d]) / avg_over_time(aggregation:kubernetes:node_allocatable_cpu_cores_total{cluster_type="management_cluster"}[2d]) > 0.93
+      for: 1h
+      labels:
+        area: kass
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: biscuit
+        topic: managementcluster
+    - alert: ManagementClusterMemoryUsageTooHigh
+      annotations:
+        description: '{{`Management cluster {{ $labels.cluster_id }} memory usage is too high.`}}'
+        opsrecipe: management-cluster-resource-limit-reached/
+      expr: avg_over_time(aggregation:kubernetes:pod_resource_requests_memory_bytes{cluster_type="management_cluster"}[2d]) / avg_over_time(aggregation:kubernetes:node_allocatable_memory_bytes{cluster_type="management_cluster"}[2d]) > 0.93
+      for: 1h
+      labels:
+        area: kass
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: biscuit
+        topic: managementcluster

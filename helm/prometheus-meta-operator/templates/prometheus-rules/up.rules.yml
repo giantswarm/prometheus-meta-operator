@@ -1,0 +1,52 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
+  name: up.rules
+spec:
+  groups:
+  - name: up
+    rules:
+    - alert: EtcdDown
+      annotations:
+        description: '{{`Etcd ({{ $labels.ip }}) is down.`}}'
+        opsrecipe: etcd-down/
+      expr: up{app="etcd"} == 0
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: biscuit
+        topic: etcd
+    - alert: GatekeeperDown
+      annotations:
+        description: |-
+          {{`GateKeeper is not reachable ({{ if eq $labels.pod_ready "false" -}}
+          pod is failing{{ else if eq $labels.pod_ready "" -}}
+          service/endpoints are not finding the pod{{ end }})
+          {
+            node: {{ $labels.node }},
+            namespace: {{ $labels.namespace }},
+            app_instance: {{ $labels.app_instance }},
+            app_version: {{ $labels.app_version }},
+            pod_ready: {{ $labels.pod_ready }},
+            pod_phase: {{ $labels.pod_phase }},
+            instance: {{ $labels.instance }}
+          }`}}
+        opsrecipe: gatekeeper-down/
+      expr: absent(up{app_name="gatekeeper-app"}) or up{app_name="gatekeeper-app"} == 0
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_apiserver_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        severity: page
+        team: biscuit
+        topic: managementcluster

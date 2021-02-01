@@ -8,6 +8,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added the biscuit alerts to PMO:
+  - `AppCollectionDeploymentFailed`
+  - `CalicoNodeMemoryHighUtilization`
+  - `CrsyncDeploymentNotSatisfied`
+  - `CrsyncTooManyTagsMissing`
+  - `DeploymentNotSatisfiedBiscuit`
+  - `DeploymentNotSatisfiedChinaBiscuit`
+  - `DraughtsmanRateLimitAlmostReached`
+  - `EtcdDown`
+  - `GatekeeperDown`
+  - `GatekeeperWebhookMissing`
+  - `KeyPairStorageAlmostFull`
+  - `ManagementClusterHasLessThanThreeNodes`
+  - `ManagementClusterCriticalSystemdUnitFailed`
+  - `ManagementClusterDisabledSystemdUnitActive`
+  - `ManagementClusterEtcdCommitDurationTooHigh`
+  - `ManagementClusterEtcdDBSizeTooLarge`
+  - `ManagementClusterEtcdHasNoLeader`
+  - `ManagementClusterEtcdNumberOfLeaderChangesTooHigh`
+  - `ManagementClusterHighNumberSystemdUnits`
+  - `ManagementClusterPodPending`
+  - `ManagementClusterSystemdUnitFailed`
+  - `VaultIsDown`
+  - `VaultIsSealed`
+
 ### Changed
 
 - Renamed control plane and tenant cluster respectively to management cluster and
@@ -22,7 +49,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix recording rules to apply them to all prometheuses
-
 
 ## [1.16.0] - 2021-01-28
 
