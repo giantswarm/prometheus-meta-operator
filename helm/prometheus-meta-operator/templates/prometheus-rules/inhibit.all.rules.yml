@@ -28,4 +28,3 @@ spec:
         kube_state_metrics_down: "true"
         team: ludacris
         topic: status
-
