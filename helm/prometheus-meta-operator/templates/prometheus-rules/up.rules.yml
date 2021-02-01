@@ -4,7 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
-    cluster_type: "control_plane"
+    cluster_type: "management_cluster"
   name: up.rules
 spec:
   groups:
@@ -35,7 +35,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         severity: page
         team: biscuit
-        topic: controlplane
+        topic: managementcluster
     - alert: NoHealthyJumphost
       annotations:
         description: '{{`There are no healthy jumphosts available.`}}'
@@ -46,4 +46,4 @@ spec:
         area: kaas
         severity: page
         team: biscuit
-        topic: controlplane
+        topic: managementcluster
