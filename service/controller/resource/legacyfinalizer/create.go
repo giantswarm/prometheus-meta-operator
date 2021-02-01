@@ -5,8 +5,9 @@ import (
 	"strings"
 
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 // EnsureCreated ensures that reconciled AzureConfig CR gets orphaned finalizer
