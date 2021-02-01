@@ -18,7 +18,11 @@ type Config struct {
 	Logger     micrologger.Logger
 }
 
-// Resource does garbage collection on the AzureConfig CR finalizers.
+// Resource does garbage collection of the CR finalizers.
+// Since the control-plane-controller got renamed to management-cluster-controller
+// finalizers in place need to be updated. This resource achieve this by deleting
+// the old finalizer; new finalizer will be added by operatorkit.
+// TODO: remove this resource in next release.
 type Resource struct {
 	ctrlClient client.Client
 	logger     micrologger.Logger
