@@ -74,19 +74,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var legacyfinalizerResource resource.Interface
-	{
-		c := legacyfinalizer.Config{
-			CtrlClient: config.K8sClient.CtrlClient(),
-			Logger:     config.Logger,
-		}
-
-		legacyfinalizerResource, err = legacyfinalizer.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var tlsCertificatesResource resource.Interface
 	{
 		c := certificates.Config{
@@ -360,6 +347,21 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
+
+	var legacyfinalizerResource resource.Interface
+	{
+		c := legacyfinalizer.Config{
+			CtrlClient: config.K8sClient.CtrlClient(),
+			Logger:     config.Logger,
+		}
+
+		legacyfinalizerResource, err = legacyfinalizer.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	resources = append([]resource.Interface{legacyfinalizerResource}, resources...)
 
 	return resources, nil
 }
