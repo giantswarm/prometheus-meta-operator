@@ -4,33 +4,33 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
-    cluster_type: "control_plane"
-  name: control-plane.rules
+    cluster_type: "management_cluster"
+  name: management-cluster.rules
 spec:
   groups:
-  - name: control-plane
+  - name: management-cluster
     rules:
-    - alert: ControlPlaneCPUUsageTooHigh
+    - alert: ManagementClusterCPUUsageTooHigh
       annotations:
-        description: '{{`Control plane {{ $labels.cluster_id }} cpu usage is too high.`}}'
-        opsrecipe: control-plane-resource-limit-reached/
-      expr: avg_over_time(aggregation:kubernetes:pod_resource_requests_cpu_cores{cluster_type="control_plane"}[2d]) / avg_over_time(aggregation:kubernetes:node_allocatable_cpu_cores_total{cluster_type="control_plane"}[2d]) > 0.93
+        description: '{{`Management cluster {{ $labels.cluster_id }} cpu usage is too high.`}}'
+        opsrecipe: management-cluster-resource-limit-reached/
+      expr: avg_over_time(aggregation:kubernetes:pod_resource_requests_cpu_cores{cluster_type="management_cluster"}[2d]) / avg_over_time(aggregation:kubernetes:node_allocatable_cpu_cores_total{cluster_type="management_cluster"}[2d]) > 0.93
       for: 1h
       labels:
         area: kass
         cancel_if_outside_working_hours: "true"
         severity: page
         team: biscuit
-        topic: controlplane
-    - alert: ControlPlaneMemoryUsageTooHigh
+        topic: managementcluster
+    - alert: ManagementClusterMemoryUsageTooHigh
       annotations:
-        description: '{{`Control plane {{ $labels.cluster_id }} memory usage is too high.`}}'
-        opsrecipe: control-plane-resource-limit-reached/
-      expr: avg_over_time(aggregation:kubernetes:pod_resource_requests_memory_bytes{cluster_type="control_plane"}[2d]) / avg_over_time(aggregation:kubernetes:node_allocatable_memory_bytes{cluster_type="control_plane"}[2d]) > 0.93
+        description: '{{`Management cluster {{ $labels.cluster_id }} memory usage is too high.`}}'
+        opsrecipe: management-cluster-resource-limit-reached/
+      expr: avg_over_time(aggregation:kubernetes:pod_resource_requests_memory_bytes{cluster_type="management_cluster"}[2d]) / avg_over_time(aggregation:kubernetes:node_allocatable_memory_bytes{cluster_type="management_cluster"}[2d]) > 0.93
       for: 1h
       labels:
         area: kass
         cancel_if_outside_working_hours: "true"
         severity: page
         team: biscuit
-        topic: controlplane
+        topic: managementcluster

@@ -50,7 +50,6 @@ spec:
         severity: page
         team: biscuit
         topic: managementcluster
-        topic: controlplane
     - alert: NoHealthyJumphost
       annotations:
         description: '{{`There are no healthy jumphosts available.`}}'
