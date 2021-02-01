@@ -294,7 +294,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
-		legacyfinalizerResource,
 		tlsCertificatesResource,
 		etcdCertificatesResource,
 		rbacResource,
