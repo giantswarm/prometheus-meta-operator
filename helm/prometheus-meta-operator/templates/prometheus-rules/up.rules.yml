@@ -40,7 +40,7 @@ spec:
             instance: {{ $labels.instance }}
           }`}}
         opsrecipe: gatekeeper-down/
-      expr: absent(up{app_name="gatekeeper-app"}) or up{app_name="gatekeeper-app"} == 0
+      expr: absent(up{app="gatekeeper-app"}) or up{app="gatekeeper-app"} == 0
       for: 10m
       labels:
         area: kaas
