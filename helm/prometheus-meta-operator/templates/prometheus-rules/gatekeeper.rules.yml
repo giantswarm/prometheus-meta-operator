@@ -1,0 +1,24 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
+  name: gatekeeper.rules
+spec:
+  groups:
+  - name: gatekeeper
+    rules:
+    - alert: GatekeeperWebhookMissing
+      annotations:
+        description: '{{`Gatekeeper ValidatingWebhookConfiguration {{ $labels.validatingwebhookconfiguration }} is missing.`}}'
+        opsrecipe: gatekeeper-validatingwebhookconfiguration-missing/
+      expr: absent(kube_validatingwebhookconfiguration_info{validatingwebhookconfiguration="gatekeeper-validating-webhook-configuration"})
+      for: 5m
+      labels:
+        area: kaas
+        cancel_if_kube_state_metrics_down: "true"
+        severity: page
+        team: biscuit
+        topic: managementcluster

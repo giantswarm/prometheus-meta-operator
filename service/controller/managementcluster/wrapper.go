@@ -1,4 +1,4 @@
-package controlplane
+package managementcluster
 
 import (
 	"context"
@@ -18,8 +18,8 @@ type cpResource struct {
 	installation string
 }
 
-// ControlPlaneWrap wrap resource and replace the input object with a Service which is named after the installation.
-func ControlPlaneWrap(resources []resource.Interface, config resourcesConfig) ([]resource.Interface, error) {
+// Wrap wrap resource and replace the input object with a Service which is named after the installation.
+func Wrap(resources []resource.Interface, config resourcesConfig) ([]resource.Interface, error) {
 	var wrapped []resource.Interface
 
 	for _, r := range resources {

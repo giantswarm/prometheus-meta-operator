@@ -61,7 +61,7 @@ func toServiceMonitors(cluster metav1.Object, provider string, installation stri
 		service.NginxIngressController(cluster, provider, installation),
 	}
 
-	if (provider == "aws" || provider == "azure") && key.ClusterType(cluster) == "tenant_cluster" {
+	if (provider == "aws" || provider == "azure") && key.ClusterType(cluster) == "workload_cluster" {
 		serviceMonitors = append(serviceMonitors, service.ClusterAutoscaler(cluster, provider, installation))
 	}
 

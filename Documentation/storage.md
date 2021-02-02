@@ -4,8 +4,8 @@ When possible on customers installations, we decided to use dynamic provisioning
 
 As some installations do not support dynamic provisioning (some on-prem installations), we decided to ask customers to provision volumes in the following pattern:
 
-- 1 Volume for the control plane.
-- 1 Volume per tenant cluster managed by the control plane.
+- 1 Volume for the management cluster.
+- 1 Volume per workload cluster managed by the management cluster.
 - 1 extra volume that we can use in case a new cluster is created.
 
 ## Retention

@@ -8,12 +8,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added the biscuit alerts to PMO:
+  - `AppCollectionDeploymentFailed`
+  - `CalicoNodeMemoryHighUtilization`
+  - `CrsyncDeploymentNotSatisfied`
+  - `CrsyncTooManyTagsMissing`
+  - `DeploymentNotSatisfiedBiscuit`
+  - `DeploymentNotSatisfiedChinaBiscuit`
+  - `DraughtsmanRateLimitAlmostReached`
+  - `EtcdDown`
+  - `GatekeeperDown`
+  - `GatekeeperWebhookMissing`
+  - `KeyPairStorageAlmostFull`
+  - `ManagementClusterHasLessThanThreeNodes`
+  - `ManagementClusterCriticalSystemdUnitFailed`
+  - `ManagementClusterDisabledSystemdUnitActive`
+  - `ManagementClusterEtcdCommitDurationTooHigh`
+  - `ManagementClusterEtcdDBSizeTooLarge`
+  - `ManagementClusterEtcdHasNoLeader`
+  - `ManagementClusterEtcdNumberOfLeaderChangesTooHigh`
+  - `ManagementClusterHighNumberSystemdUnits`
+  - `ManagementClusterPodPending`
+  - `ManagementClusterSystemdUnitFailed`
+  - `VaultIsDown`
+  - `VaultIsSealed`
+
+### Changed
+
+- Renamed control plane and tenant cluster respectively to management cluster and
+  workload cluster. Renamed some alerts:
+  - ControlPlaneCertificateWillExpireInLessThanTwoWeeks > ManagementClusterCertificateWillExpireInLessThanTwoWeeks
+  - ControlPlaneDaemonSetNotSatisfiedAtlas > ManagementClusterDaemonSetNotSatisfiedAtlas
+  - ControlPlaneDaemonSetNotSatisfiedChinaAtlas > ManagementClusterDaemonSetNotSatisfiedChinaAtlas
+  - PrometheusCantCommunicateWithTenantAPI > PrometheusCantCommunicateWithKubernetesAPI
+- Rename ETCDDown alert to ManagementClusterEtcdDown
+- Enable alerts only on the corresponding providers
+
 ## [1.16.1] - 2021-01-28
 
 ### Fixed
 
 - Fix recording rules to apply them to all prometheuses
-
 
 ## [1.16.0] - 2021-01-28
 
