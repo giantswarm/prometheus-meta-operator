@@ -15,6 +15,8 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
+  - target_label: app
+    replacement: kubernetes
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
 [[ if ne .ClusterType "management_cluster" ]]
@@ -1742,6 +1744,8 @@
     replacement: ${1}:10254
   - target_label: __address__
     replacement: [[ .APIServerURL ]]:443
+  - target_label: app
+    replacement: nginx-ingress-controller
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10254/proxy/metrics
