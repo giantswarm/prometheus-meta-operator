@@ -10,11 +10,11 @@ spec:
   groups:
   - name: up
     rules:
-    - alert: EtcdDown
+    - alert: ManagementClusterEtcdDown
       annotations:
         description: '{{`Etcd ({{ $labels.ip }}) is down.`}}'
         opsrecipe: etcd-down/
-      expr: up{app="etcd"} == 0
+      expr: up{app="etcd",cluster_type="management_cluster"} == 0
       for: 10m
       labels:
         area: kaas

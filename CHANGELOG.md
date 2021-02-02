@@ -43,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - ControlPlaneDaemonSetNotSatisfiedAtlas > ManagementClusterDaemonSetNotSatisfiedAtlas
   - ControlPlaneDaemonSetNotSatisfiedChinaAtlas > ManagementClusterDaemonSetNotSatisfiedChinaAtlas
   - PrometheusCantCommunicateWithTenantAPI > PrometheusCantCommunicateWithKubernetesAPI
+- Rename ETCDDown alert to ManagementClusterEtcdDown
+- Enable alerts only on the corresponding providers
 
 ## [1.16.1] - 2021-01-28
 
