@@ -2,7 +2,7 @@
 // from the shard namespace. These were created by earlier versions but are now
 // unused so we ensure to remove them to not leave them dangling.
 //
-// TODO: this resource can be removed after a couple of releases
+// TODO: this resource can be removed in next release.
 // TODO: when removing, check and remove `key.SecretTLSCertificates` function
 package tlscleanup
 
