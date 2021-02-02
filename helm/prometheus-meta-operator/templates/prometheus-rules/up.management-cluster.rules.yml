@@ -5,11 +5,28 @@ metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
     cluster_type: "management_cluster"
-  name: up.rules
+  name: up.management-cluster.rules
+  namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
   - name: up
     rules:
+    - alert: AppExporterDown
+      annotations:
+        description: '{{`App-exporter ({{ $labels.instance }}) is down.`}}'
+        opsrecipe: app-exporter-down/
+      expr: up{app="app-exporter"} == 0
+      for: 15m
+      labels:
+        area: managedservices
+        cancel_if_apiserver_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_scrape_timeout: "true"
+        severity: page
+        team: batman
+        topic: releng
     - alert: ManagementClusterEtcdDown
       annotations:
         description: '{{`Etcd ({{ $labels.ip }}) is down.`}}'

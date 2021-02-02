@@ -5,7 +5,8 @@ metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
     cluster_type: "management_cluster"
-  name: certificate.rules
+  name: certificate.management-cluster.rules
+  namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
   - name: certificate
