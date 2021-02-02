@@ -22,6 +22,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/tlscleanup"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
@@ -66,6 +67,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		namespaceResource, err = namespace.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var tlsCleanupResource resource.Interface
+	{
+		c := tlscleanup.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		tlsCleanupResource, err = tlscleanup.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -274,6 +288,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
+		tlsCleanupResource,
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfig,
