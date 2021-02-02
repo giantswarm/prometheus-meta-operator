@@ -25,6 +25,8 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
+  - target_label: app
+    replacement: kubernetes
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
