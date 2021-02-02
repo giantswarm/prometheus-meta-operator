@@ -4,16 +4,16 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
-    cluster_type: "control_plane"
+    cluster_type: "management_cluster"
   name: prometheus.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
   - name: prometheus
     rules:
-    - alert: PrometheusCantCommunicateWithTenantAPI
+    - alert: PrometheusCantCommunicateWithKubernetesAPI
       annotations:
-        description: '{{`Prometheus can''t communicate with tenant cluster Kubernetes API.`}}'
+        description: '{{`Prometheus can''t communicate with Kubernetes API.`}}'
         opsrecipe: prometheus-cant-communicate/
       expr: rate(prometheus_sd_kubernetes_http_request_total{app!="promxy-app-unique", status_code="<error>"}[15m]) > 2
       for: 15m

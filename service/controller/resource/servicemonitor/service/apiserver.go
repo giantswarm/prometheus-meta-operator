@@ -79,12 +79,12 @@ func APIServer(cluster metav1.Object, provider string, installation string) *pro
 		}
 	} else {
 		serviceMonitor.Spec.Endpoints[0].TLSConfig = &promv1.TLSConfig{
-			CAFile: key.ControlPlaneCAFile(),
+			CAFile: key.CAFilePath(),
 			SafeTLSConfig: promv1.SafeTLSConfig{
 				InsecureSkipVerify: true,
 			},
 		}
-		serviceMonitor.Spec.Endpoints[0].BearerTokenFile = key.ControlPlaneBearerToken()
+		serviceMonitor.Spec.Endpoints[0].BearerTokenFile = key.BearerTokenPath()
 	}
 
 	return serviceMonitor

@@ -1,4 +1,3 @@
-# Additional scrape configuration for the tenant clusters components
 - job_name: baz-prometheus/kubernetes-apiserver-baz/0
   honor_labels: true
   scheme: https
@@ -26,12 +25,14 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
+  - target_label: app
+    replacement: kubernetes
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -91,7 +92,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -142,7 +143,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -197,7 +198,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -276,7 +277,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -338,7 +339,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -386,7 +387,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -429,7 +430,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -499,7 +500,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -572,7 +573,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -640,7 +641,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -710,7 +711,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -782,7 +783,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -856,7 +857,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -930,7 +931,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -1009,7 +1010,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -1083,7 +1084,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -1164,7 +1165,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws
@@ -1192,7 +1193,7 @@
     replacement: baz
   # Add cluster_type label.
   - target_label: cluster_type
-    replacement: tenant_cluster
+    replacement: workload_cluster
   # Add provider label.
   - target_label: provider
     replacement: aws

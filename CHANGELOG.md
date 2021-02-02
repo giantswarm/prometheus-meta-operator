@@ -10,6 +10,63 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+
+- Added the `NoHealthyJumphost` alert
+- Added the biscuit alerts to PMO:
+  - `AppCollectionDeploymentFailed`
+  - `CalicoNodeMemoryHighUtilization`
+  - `CrsyncDeploymentNotSatisfied`
+  - `CrsyncTooManyTagsMissing`
+  - `DeploymentNotSatisfiedBiscuit`
+  - `DeploymentNotSatisfiedChinaBiscuit`
+  - `DraughtsmanRateLimitAlmostReached`
+  - `EtcdDown`
+  - `GatekeeperDown`
+  - `GatekeeperWebhookMissing`
+  - `KeyPairStorageAlmostFull`
+  - `ManagementClusterHasLessThanThreeNodes`
+  - `ManagementClusterCriticalSystemdUnitFailed`
+  - `ManagementClusterDisabledSystemdUnitActive`
+  - `ManagementClusterEtcdCommitDurationTooHigh`
+  - `ManagementClusterEtcdDBSizeTooLarge`
+  - `ManagementClusterEtcdHasNoLeader`
+  - `ManagementClusterEtcdNumberOfLeaderChangesTooHigh`
+  - `ManagementClusterHighNumberSystemdUnits`
+  - `ManagementClusterPodPending`
+  - `ManagementClusterSystemdUnitFailed`
+  - `VaultIsDown`
+  - `VaultIsSealed`
+
+### Changed
+
+- Renamed control plane and tenant cluster respectively to management cluster and
+  workload cluster. Renamed some alerts:
+  - ControlPlaneCertificateWillExpireInLessThanTwoWeeks > ManagementClusterCertificateWillExpireInLessThanTwoWeeks
+  - ControlPlaneDaemonSetNotSatisfiedAtlas > ManagementClusterDaemonSetNotSatisfiedAtlas
+  - ControlPlaneDaemonSetNotSatisfiedChinaAtlas > ManagementClusterDaemonSetNotSatisfiedChinaAtlas
+  - PrometheusCantCommunicateWithTenantAPI > PrometheusCantCommunicateWithKubernetesAPI
+- Rename ETCDDown alert to ManagementClusterEtcdDown
+- Enable alerts only on the corresponding providers
+
+### Fixed
+
+- Fix missing app label on kube-apiserver target
+- Fix missing app label on nginx-ingress-controller target
+
+## [1.16.1] - 2021-01-28
+
+### Fixed
+
+- Fix recording rules to apply them to all prometheuses
+
+## [1.16.0] - 2021-01-28
+
+### Changed
+
+- Reenable `Remote Write` to Cortex
+
+### Added
+
 - Trigger final heartbeat before deleting the cluster to clean up opened heartbeat alerts
 
 ### Removed
@@ -122,13 +179,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add support to remote write to Cortex
+- Add support for `Remote Write` to Cortex
 - Added recording rules
 - Add node affinity to prefer not scheduling on master nodes
 - Added `pipeline` tag to _Hearbeat_ alert to be able to see if it affects
   a stable or testing installation at first glance
-- Added initial support for `remote_write` that will eventually be used for
-  writing to Cortex
 
 ### Changed
 
@@ -360,7 +415,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.15.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.16.1...HEAD
+[1.16.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.16.0...v1.16.1
+[1.16.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.15.0...v1.16.0
 [1.15.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.14.0...v1.15.0
 [1.14.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.13.0...v1.14.0
 [1.13.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.12.0...v1.13.0

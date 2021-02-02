@@ -33,7 +33,7 @@ spec:
   arbitraryFSAccessThroughSMs: {}
   externalLabels:
     cluster_id: baz
-    cluster_type: tenant_cluster
+    cluster_type: workload_cluster
     customer: Giant Swarm
     installation: test-installation
     pipeline: testing
@@ -82,7 +82,7 @@ spec:
     - key: cluster_type
       operator: NotIn
       values:
-      - control_plane
+      - management_cluster
   rules:
     alert: {}
   secrets:

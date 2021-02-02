@@ -24,7 +24,7 @@ spec:
     rules:
       - alert: "InvalidLabellingSchema"
         expr: |
-          up{cluster_type!~"control_plane|tenant_cluster"}
+          up{cluster_type!~"management_cluster|workload_cluster"}
           or up{app=""}
           or up{installation=""}
           or up{cluster_id=""}

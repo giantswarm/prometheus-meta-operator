@@ -275,7 +275,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	if !key.IsInCluster(cluster) {
-		// Tenant cluster
+		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			TLSConfig: &promv1.TLSConfig{
@@ -294,17 +294,17 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				metav1.LabelSelectorRequirement{
 					Key:      "cluster_type",
 					Operator: metav1.LabelSelectorOpNotIn,
-					Values:   []string{"control_plane"},
+					Values:   []string{"management_cluster"},
 				},
 			},
 		}
 	} else {
-		// Control plane
+		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
-			BearerTokenFile: key.ControlPlaneBearerToken(),
+			BearerTokenFile: key.BearerTokenPath(),
 			TLSConfig: &promv1.TLSConfig{
-				CAFile: key.ControlPlaneCAFile(),
+				CAFile: key.CAFilePath(),
 				SafeTLSConfig: promv1.SafeTLSConfig{
 					InsecureSkipVerify: true,
 				},
