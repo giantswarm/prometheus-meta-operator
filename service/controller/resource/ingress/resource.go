@@ -92,6 +92,9 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	// Note we only configure an ingress path that will add a location/HTTP
+	// path to the proxy for the base domain. The common server configuration
+	// like TLS is configured in Ingress installed by PMO chart itself.
 	ingress := &extensionsv1beta1.Ingress{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: extensionsv1beta1.SchemeGroupVersion.Version,
