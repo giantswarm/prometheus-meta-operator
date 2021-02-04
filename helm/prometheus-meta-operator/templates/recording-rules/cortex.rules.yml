@@ -37,7 +37,7 @@ spec:
     - expr: count(app_operator_app_info{status="deployed",namespace="giantswarm"}) by (name,version)
       record: aggregation:giantswarm:app_deployed_management_cluster_total
     - expr: count(app_operator_app_info{status=~"deployed|DEPLOYED",namespace!="giantswarm"}) by (name,version)
-      record: aggregation:giantswarm:app_deployed_tenant_total
+      record: aggregation:giantswarm:app_deployed_workload_cluster_total
     - expr: min(cert_exporter_not_after) by (cluster_id, cluster_type)
       record: aggregation:giantswarm:cluster_certificate_not_after_seconds
     - expr: label_replace(sum(azure_operator_cluster_release{release_version!=""}) by (release_version, cluster_id), "cluster_id", "$1", "cluster_id", "(.*)") or label_replace(sum(cluster_service_cluster_info) by (release_version, cluster_id) / 2, "cluster_id", "$1", "cluster_id", "(.*)") or label_replace(sum(cluster_operator_cluster_status{release_version!=""}) by (release_version, cluster_id), "cluster_id", "$1", "cluster_id", "(.*)")
@@ -177,9 +177,9 @@ spec:
       record: aggregation:node:network_transmit_bytes_total
     - expr: sum(ALERTS{alertstate="firing"}) by (alertname, cluster_id, area, severity, team, topic)
       record: aggregation:prometheus:alerts
-    - expr: sum(container_memory_working_set_bytes{container="prometheus", namespace="monitoring"} / on(cluster_type, cluster_id, ip) node_memory_MemTotal_bytes) by (cluster_type, cluster_id) * 100
+    - expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'} / on(cluster_type, cluster_id, node) group_left node_memory_MemTotal_bytes) by (cluster_type, cluster_id) * 100"
       record: aggregation:prometheus:memory_percentage
-    - expr: sum(container_memory_working_set_bytes{container="prometheus", namespace="monitoring"}) by (cluster_type, cluster_id)
+    - expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'}) by (cluster_type, cluster_id)"
       record: aggregation:prometheus:memory_usage
     # Managed apps basic SLI metrics
     - expr: sum(monitoring:managed_apps:service_level:primary:error_budget_used) by (cluster_type, cluster_id,workload_name,workload_type) >= 1
