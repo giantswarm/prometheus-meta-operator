@@ -21,9 +21,5 @@ spec:
           serviceName: prometheus-operated
           servicePort: 9090
         path: /alice
-  tls:
-  - hosts:
-    - https://prometheus
-    secretName: prometheus-tls
 status:
   loadBalancer: {}

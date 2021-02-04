@@ -92,6 +92,21 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	// Note we only configure a path that will cause a location/HTTP path to be
+	// added to the proxy for the base domain here.
+	//
+	// The common server configuration like TLS is configured in the `Ingress`
+	// installed by PMO chart itself. We want to avoid duplicating the TLS
+	// configuration here as only one certificate can be used for a given
+	// domain, and if multiple `Ingress` resources specify that configuration
+	// the Ingress Controller just picks a random one (first one it finds). And
+	// if it picks up a copied certificate, and that copy happens to become out
+	// of date at some point, it would break HTTPS access to that domain.
+	//
+	// So we want TLS configuration to be controlled only by the `Ingress`
+	// resource that also defines the source of the certificates (i.e. the
+	// Let's Encrypt annotation or the static source for the installation)
+	// so we know as soon as it's updated IC will be using it.
 	ingress := &extensionsv1beta1.Ingress{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: extensionsv1beta1.SchemeGroupVersion.Version,
@@ -99,12 +114,6 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 		},
 		ObjectMeta: objectMeta,
 		Spec: extensionsv1beta1.IngressSpec{
-			TLS: []extensionsv1beta1.IngressTLS{
-				{
-					Hosts:      []string{config.BaseDomain},
-					SecretName: key.SecretTLSCertificates(cluster),
-				},
-			},
 			Rules: []extensionsv1beta1.IngressRule{
 				{
 					Host: config.BaseDomain,

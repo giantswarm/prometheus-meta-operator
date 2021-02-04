@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- (internal) Rely on `Ingress` for OAuth2 proxy to configure TLS for Prometheus
+  domain, as it also configures management of the certificates, instead of
+  creating copies which could break access in case they became out of date.
+
 ### Fixed
 
 - Fix incorrect prometheus memory usage recording rule
