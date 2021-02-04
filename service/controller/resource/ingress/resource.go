@@ -96,7 +96,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 	// added to the proxy for the base domain here.
 	//
 	// The common server configuration like TLS is configured in the `Ingress`
-	// installed by PMO chart itself. We want to avoid duplicating thr TLS
+	// installed by PMO chart itself. We want to avoid duplicating the TLS
 	// configuration here as only one certificate can be used for a given
 	// domain, and if multiple `Ingress` resources specify that  configuration
 	// the Ingress Controller just picks a random one (first one it finds), and
