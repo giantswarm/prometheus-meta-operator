@@ -10,19 +10,6 @@ spec:
   groups:
   - name: chart
     rules:
-    - alert: ChartNamespaceMismatch
-      annotations:
-        description: '{{`Chart {{ $labels.chart_name }} should be located in {{ $labels.namespace }} but found in {{ $labels.placed_namespace }} namespace.`}}'
-      expr: chart_operator_namespace_mismatch == 1
-      for: 10m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: batman
-        topic: releng
     - alert: ChartOrphanConfigMap
       annotations:
         description: '{{`Chart configmaps have not been deleted.`}}'

@@ -4,7 +4,8 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
-  name: configmap.rules
+    cluster_type: "workload_cluster"
+  name: configmap.workload-cluster.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
@@ -14,7 +15,7 @@ spec:
       annotations:
         description: '{{`Tiller Helm release ConfigMap count too high.`}}'
         opsrecipe: clean-up-configmaps/
-      expr: sum(kube_configmap_info{cluster_type="workload_cluster",namespace="giantswarm",configmap=~".+\\.v.+"}) by (cluster_id) > 1000 or sum(kube_configmap_info{cluster_type="management_cluster",namespace="kube-system",configmap=~".+\\.v.+"}) by (cluster_id) > 1000
+      expr: sum(kube_configmap_info{namespace="giantswarm",configmap=~".+\\.v.+"}) > 1000
       for: 15m
       labels:
         area: managedservices

@@ -1,9 +1,11 @@
+{{- if (or (eq .Values.Installation.V1.Provider.Kind "aws") (eq .Values.Installation.V1.Provider.Kind "azure")) }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "workload_cluster"
   name: external-dns.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
@@ -40,3 +42,4 @@ spec:
         severity: page
         team: batman
         topic: external-dns
+{{- end }}

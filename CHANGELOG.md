@@ -8,6 +8,52 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed 
+
+- Added the batman alerts to PMO:
+  - `AppExporterDown`
+  - `AppOperatorNotReady`
+  - `AppWithoutTeamLabel`
+  - `CertManagerPodHighMemoryUsage`
+  - `CertificateSecretWillExpireInLessThanTwoWeeks`
+  - `ChartOperatorDown`
+  - `ChartOrphanConfigMap`
+  - `ChartOrphanSecret`
+  - `CollidingOperatorsBatman`
+  - `CordonedAppExpired`
+  - `DeploymentNotSatisfiedBatman`
+  - `DeploymentNotSatisfiedChinaBatman`
+  - `ElasticsearchClusterHealthStatusRed`
+  - `ElasticsearchClusterHealthStatusYellow`
+  - `ElasticsearchDataVolumeSpaceTooLow`
+  - `ElasticsearchHeapUsageWarning`
+  - `ElasticsearchPendingTasksTooHigh`
+  - `ExternalDNSCantAccessRegistry`
+  - `ExternalDNSCantAccessSource`
+  - `HelmHistorySecretCountTooHigh`
+  - `IngressControllerDeploymentNotSatisfied`
+  - `IngressControllerMemoryUsageTooHigh`
+  - `IngressControllerReloadIsFailing`
+  - `IngressControllerReplicaSetNumberTooHigh`
+  - `IngressControllerSSLCertificateWillExpireSoon`
+  - `IngressControllerServiceHasNoEndpoints`
+  - `ManagedAppBasicErrorBudgetBurnRateAboveSafeLevel`
+  - `ManagedAppBasicErrorBudgetBurnRateInLast10mTooHigh`
+  - `ManagedAppBasicErrorBudgetEstimationWarning`
+  - `ManagedLoggingElasticsearchClusterDown`
+  - `ManagedLoggingElasticsearchDataNodesNotSatisfied`
+  - `ManagementClusterAppFailed`
+  - `OperatorNotReconcilingBatman`
+  - `OperatorkitErrorRateTooHighBatman`
+  - `RepeatedHelmOperation`
+  - `TillerHistoryConfigMapCountTooHigh`
+  - `TillerRunningPods`
+  - `TillerUnreachable`
+  - `WorkloadClusterAppFailed`
+  - `WorkloadClusterDeploymentNotSatisfied`
+  - `WorkloadClusterDeploymentScaledDownToZero`
+  - `WorkloadClusterManagedDeploymentNotSatisfied`
+
 ## [1.17.2] - 2021-02-04
 
 ### Changed

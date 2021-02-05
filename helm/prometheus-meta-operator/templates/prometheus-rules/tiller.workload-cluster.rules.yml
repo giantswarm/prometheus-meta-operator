@@ -4,25 +4,13 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
-  name: tiller.rules
+    cluster_type: "workload_cluster"
+  name: tiller.workload-cluster.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
   - name: tiller
     rules:
-    - alert: TillerRunningPods
-      annotations:
-        description: '{{`Tiller deployment has too many running pods.`}}'
-      expr: chart_operator_tiller_running_pods > 1
-      for: 10m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: batman
-        topic: releng
     - alert: TillerUnreachable
       annotations:
         description: '{{`Tiller is not reachable from chart-operator.`}}'

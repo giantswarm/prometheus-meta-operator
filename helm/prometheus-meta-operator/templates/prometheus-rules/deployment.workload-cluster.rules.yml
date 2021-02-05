@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "workload_cluster"
   name: deployment.workload-cluster.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:

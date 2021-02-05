@@ -4,6 +4,7 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "workload_cluster"
   name: managed-logging.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:

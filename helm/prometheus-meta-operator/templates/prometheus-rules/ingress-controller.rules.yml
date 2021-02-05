@@ -28,13 +28,14 @@ spec:
       annotations:
         description: '{{`Ingress Controller {{ $labels.pod }} memory usage is too high.`}}'
         opsrecipe: ic-memory-too-high/
-      expr: sum (container_memory_usage_bytes{pod=~"^nginx.*"}) by (ip, pod, cluster_id) / ignoring (pod) group_left sum (node_memory_MemTotal_bytes) by (ip, cluster_id) * 100 > 33
+      expr: sum by (node, pod, cluster_id) (container_memory_usage_bytes{pod=~"^nginx.*", container=""}) / ignoring (pod) group_left sum (node_memory_MemTotal_bytes) by (node, cluster_id) * 100 > 33
       for: 3m
       labels:
         area: managedservices
         severity: notify
         team: batman
         topic: ingress
+        ## TODO remove?
     - alert: IngressControllerReloadIsFailing
       annotations:
         description: '{{`Ingress Controller cannot reload new configuration. Please check IC logs.`}}'
@@ -64,7 +65,7 @@ spec:
       annotations:
         description: '{{`SSL certificate for {{ $labels.host }} will expire in less than 10 days.`}}'
         opsrecipe: ic-ssl-is-going-to-expire/
-      expr: avg(ingress_controller_ssl_expire_time_seconds{cluster_type="management_cluster",control_plane!~"(etcd|api).*"}) without (instance) < (time() + (10 * 24 * 3600))
+      expr: avg without(instance) (nginx_ingress_controller_ssl_expire_time_seconds{cluster_type="management_cluster",control_plane!~"(etcd|api).*"}) < (time() + (10 * 24 * 3600))
       for: 5m
       labels:
         area: managedservices
