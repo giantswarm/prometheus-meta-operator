@@ -89,4 +89,30 @@ spec:
         severity: page
         team: biscuit
         topic: managementcluster
+    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
+    - alert: AzureManagementClusterDeploymentScaledDownToZero
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} on Azure has been scaled down to zero for prolonged period of time.`}}'
+      expr: kube_deployment_status_replicas_available{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z,-]*)",provider="azure"} + kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z,-]*)",provider="azure"} == 0
+      for: 4h
+      labels:
+        area: kaas
+        severity: notify
+        team: celestial
+        topic: managementcluster
+    - alert: DeploymentNotSatisfiedCelestial
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"azure-admission-controller-.+|azure-operator.*|azure-collector.*"} > 0
+      for: 30m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: celestial
+        topic: managementcluster
+    {{- end }}
 

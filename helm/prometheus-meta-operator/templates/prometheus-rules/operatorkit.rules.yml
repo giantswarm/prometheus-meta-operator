@@ -35,3 +35,37 @@ spec:
         severity: notify
         team: batman
         topic: releng
+    - alert: OperatorkitErrorRateTooHighCelestial
+      annotations:
+        description: '{{`{{ $labels.namespace }}/{{ $labels.app }}@{{ $labels.app_version }} has reported errors. Please check the logs.`}}'
+        opsrecipe: check-operator-error-rate-high/
+      expr: operatorkit_controller_error_total{app=~"azure-operator"} > 5
+      for: 1m
+      labels:
+        area: kaas
+        severity: page
+        team: celestial
+        topic: qa
+    - alert: OperatorkitCRNotDeletedCelestial
+      annotations:
+        description: '{{`{{ $labels.namespace }}/{{ $labels.app }}@{{ $labels.app_version }} has not deleted object {{ $labels.namespace }}/{{ $labels.name }} of type {{ $labels.kind }} for too long.`}}'
+        opsrecipe: check-not-deleted-object/
+      expr: (time() - operatorkit_controller_deletion_timestamp{app=~"azure-operator|cluster-operator", provider="azure"}) > 18000
+      for: 5m
+      labels:
+        area: kaas
+        severity: notify
+        team: celestial
+        topic: qa
+    - alert: OperatorNotReconcilingCelestial
+      annotations:
+        description: '{{`{{ $labels.namespace }}/{{ $labels.app }}@{{ $labels.app_version }} has stopped the reconciliation. Please check logs.`}}'
+        opsrecipe: operator-not-reconciling/
+      expr: (sum by (instance, app, app_version, namespace)(increase(operatorkit_controller_event_count{app=~"azure-operator"}[10m])) == 0 and on (instance) (operatorkit_controller_deletion_timestamp or operatorkit_controller_creation_timestamp))
+      for: 20m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: notify
+        team: celestial
+        topic: qa

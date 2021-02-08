@@ -31,3 +31,15 @@ spec:
         severity: notify
         team: atlas
         topic: managementcluster
+    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
+    - alert: ManagementClusterDaemonSetNotSatisfiedCelestial
+      annotations:
+        description: '{{`Daemonset {{ $labels.namespace}}/{{ $labels.daemonset }} is not satisfied.`}}'
+      expr: kube_daemonset_status_number_unavailable{cluster_type="management_cluster", daemonset=~"azure-imds-agent-app"} > 0
+      for: 30m
+      labels:
+        area: kaas
+        severity: notify
+        team: celestial
+        topic: managementcluster
+    {{- end }}
