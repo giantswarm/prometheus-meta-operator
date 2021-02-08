@@ -8,7 +8,8 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/giantswarm/apiextensions/v2 v2.6.2
 	github.com/giantswarm/backoff v0.2.0
-	github.com/giantswarm/k8sclient/v4 v4.1.0
+	github.com/giantswarm/k8sclient/v4 v4.1.0 // indirect
+	github.com/giantswarm/k8sclient/v5 v5.10.0
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/microkit v0.2.2
@@ -44,7 +45,7 @@ require (
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd // indirect
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920 // indirect
-	sigs.k8s.io/cluster-api v0.3.7
+	sigs.k8s.io/cluster-api v0.3.13
 	sigs.k8s.io/controller-runtime v0.6.4
 	sigs.k8s.io/yaml v1.2.0
 )
