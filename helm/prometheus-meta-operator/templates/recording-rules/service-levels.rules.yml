@@ -53,21 +53,21 @@ spec:
     # record when pods of a daemonset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - record: monitoring:managed_apps:number_of_pods_unavailable
       expr: |
-        kube_daemonset_status_number_unavailable{kube_state_metrics_for_managed_app='true'}
+        kube_daemonset_status_number_unavailable
         and on(daemonset,cluster_id,cluster_type,namespace)
-        kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true',kube_state_metrics_for_managed_app='true'}
+        kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
     # record when pods of a deployment with label "label_giantswarm_io_monitoring_basic_sli" are down
     - record: monitoring:managed_apps:number_of_pods_unavailable
       expr: |
-        kube_deployment_status_replicas_unavailable{kube_state_metrics_for_managed_app='true'}
+        kube_deployment_status_replicas_unavailable
         and on(deployment,cluster_id,cluster_type,namespace) 
-        kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true',kube_state_metrics_for_managed_app='true'}
+        kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
     # record when pods of a statefulset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - record: monitoring:managed_apps:number_of_pods_unavailable
       expr: |
-        kube_statefulset_status_replicas{kube_state_metrics_for_managed_app='true'} - kube_statefulset_status_replicas_current{kube_state_metrics_for_managed_app='true'}
+        kube_statefulset_status_replicas - kube_statefulset_status_replicas_current
         and on(statefulset,cluster_id,cluster_type,namespace) 
-        kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true',kube_state_metrics_for_managed_app='true'}
+        kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
     # count how many down times there were for each pod that were longer than 5 mins (dont cut shorter ones)
     # we do that by counting how many times there was more than 5 pod-minute downtime in the last 5 mins,
     # then we need to add 4 minutes to each one of them (as each means 5 pod-minutes downtime, not 1, so 4 pod-minutes

@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
     cluster_type: "management_cluster"
-  name: deployment.rules
+  name: deployment.management-cluster.rules
   namespace: '{{ include "resource.default.namespace" . }}'
 spec:
   groups:
@@ -39,6 +39,31 @@ spec:
         severity: page
         team: atlas
         topic: managementcluster
+    - alert: DeploymentNotSatisfiedBatman
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"app-admission-controller-.+|app-operator-.+|chart-operator-.+", cluster_id!~"axolotl|giraffe|argali"} > 0
+      for: 30m
+      labels:
+        area: managedservices
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: batman
+        topic: managementcluster
+    - alert: DeploymentNotSatisfiedChinaBatman
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied-china/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"app-admission-controller-.+|app-operator-.+|chart-operator-.+", cluster_id=~"axolotl|giraffe|argali"} > 0
+      for: 3h
+      labels:
+        area: managedservices
+        severity: page
+        team: batman
+        topic: managementcluster
     - alert: DeploymentNotSatisfiedBiscuit
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
@@ -64,3 +89,4 @@ spec:
         severity: page
         team: biscuit
         topic: managementcluster
+

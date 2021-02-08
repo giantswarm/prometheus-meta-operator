@@ -1,0 +1,28 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: up.all.rules
+  namespace: '{{ include "resource.default.namespace" . }}'
+spec:
+  groups:
+  - name: up
+    rules:
+    - alert: ChartOperatorDown
+      annotations:
+        description: '{{`ChartOperator ({{ $labels.instance }}) is down.`}}'
+        opsrecipe: chart-operator-down/
+      expr: up{app=~"chart-operator.*"} == 0
+      for: 15m
+      labels:
+        area: managedservices
+        cancel_if_apiserver_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_scrape_timeout: "true"
+        severity: page
+        team: batman
+        topic: releng

@@ -1,0 +1,83 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
+  name: app.rules
+  namespace: '{{ include "resource.default.namespace" . }}'
+spec:
+  groups:
+  - name: app
+    rules:
+    - alert: ManagementClusterAppFailed
+      annotations:
+        description: '{{`Management Cluster App {{ $labels.name }}, version {{ $labels.version }} is {{if $labels.status }} in {{ $labels.status }} state. {{else}} not installed. {{end}}`}}'
+        opsrecipe: app-failed/
+      expr: app_operator_app_info{status!~"(?i:(deployed|cordoned))", catalog=~"control-plane-.*"}
+      for: 30m
+      labels:
+        area: managedservices
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        sig: none
+        team: batman
+        topic: releng
+    - alert: WorkloadClusterAppFailed
+      annotations:
+        description: '{{`Workload Cluster App {{ $labels.name }}, version {{ $labels.version }} is {{if $labels.status }} in {{ $labels.status }} state. {{else}} not installed. {{end}}`}}'
+        opsrecipe: app-failed/
+      expr: label_replace(app_operator_app_info{status!~"(?i:(deployed|cordoned))", catalog!~"control-plane-.*", name!="cluster-autoscaler"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      for: 30m
+      labels:
+        area: managedservices
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        sig: none
+        team: batman
+        topic: releng
+    - alert: AppWithoutTeamLabel
+      annotations:
+        description: '{{`App {{ $labels.name }} has no team label.`}}'
+        opsrecipe: app-without-team-label/
+      expr: label_replace(app_operator_app_info{team=""}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      for: 40m
+      labels:
+        area: managedservices
+        cancel_if_apiserver_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        team: batman
+        topic: releng
+    - alert: CordonedAppExpired
+      annotations:
+        description: '{{`Cordoned app {{ $labels.name }} in {{ $labels.namespace}} is expired.`}}'
+        opsrecipe: expired-cordon-charts/
+      expr: (app_operator_app_cordon_expire_time_seconds - time()) < 0
+      for: 30m
+      labels:
+        area: managedservices
+        severity: notify
+        team: batman
+        topic: releng
+    - alert: AppOperatorNotReady
+      annotations:
+        description: '{{`app CR version ({{ $labels.version }}) has no ready app-operator.`}}'
+        opsrecipe: app-operator-not-ready/
+      expr: app_operator_ready_total != 1
+      for: 15m
+      labels:
+        area: managedservices
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: batman
+        topic: releng
