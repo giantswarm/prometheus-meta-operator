@@ -33,7 +33,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `HelmHistorySecretCountTooHigh`
   - `IngressControllerDeploymentNotSatisfied`
   - `IngressControllerMemoryUsageTooHigh`
-  - `IngressControllerReloadIsFailing`
   - `IngressControllerReplicaSetNumberTooHigh`
   - `IngressControllerSSLCertificateWillExpireSoon`
   - `IngressControllerServiceHasNoEndpoints`
