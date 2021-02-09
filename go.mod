@@ -8,13 +8,12 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/giantswarm/apiextensions/v3 v3.17.0
 	github.com/giantswarm/backoff v0.2.0
-	github.com/giantswarm/k8sclient/v4 v4.1.0 // indirect
 	github.com/giantswarm/k8sclient/v5 v5.10.0
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/microkit v0.2.2
 	github.com/giantswarm/micrologger v0.5.0
-	github.com/giantswarm/operatorkit/v2 v2.0.2
+	github.com/giantswarm/operatorkit/v4 v4.2.0
 	github.com/giantswarm/versionbundle v0.2.0
 	github.com/go-logr/logr v0.3.0 // indirect
 	github.com/google/go-cmp v0.5.4

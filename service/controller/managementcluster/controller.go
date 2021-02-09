@@ -4,8 +4,8 @@ import (
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/operatorkit/v2/pkg/controller"
-	"github.com/giantswarm/operatorkit/v2/pkg/resource"
+	"github.com/giantswarm/operatorkit/v4/pkg/controller"
+	"github.com/giantswarm/operatorkit/v4/pkg/resource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
@@ -60,14 +60,6 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		}
 	}
 
-	var selector controller.Selector
-	{
-		set := labels.Set{
-			"component": "apiserver",
-		}
-		selector = set.AsSelector()
-	}
-
 	var operatorkitController *controller.Controller
 	{
 		c := controller.Config{
@@ -78,7 +70,9 @@ func NewController(config ControllerConfig) (*Controller, error) {
 				return new(v1.Service)
 			},
 			Resources: resources,
-			Selector:  selector,
+			Selector: labels.SelectorFromSet(labels.Set{
+				"component": "apiserver",
+			}),
 		}
 
 		operatorkitController, err = controller.New(c)
