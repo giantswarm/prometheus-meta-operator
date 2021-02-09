@@ -26,7 +26,9 @@ spec:
       annotations:
         description: '{{`Cluster {{ $labels.cluster_id }} creation is taking longer than expected.`}}'
         opsrecipe: cluster-creation-failed/
-      expr: (statusresource_cluster_status{app="azure-operator", status="Creating"} == 1 or cluster_operator_cluster_status{app="cluster-operator", status="Updating", provider="azure"} == 1)
+      # statusresource_cluster_status{app="azure-operator.*", status="Creating"} give us a vector with all cluster statuses
+      # in Azure clusters which stays at 'Creating' state.
+      expr: (statusresource_cluster_status{app=~"azure-operator.*", status="Creating"} == 1 or cluster_operator_cluster_status{app=~"cluster-operator.*", status="Updating", provider="azure"} == 1)
       for: 40m
       labels:
         area: kaas
@@ -34,19 +36,5 @@ spec:
         severity: notify
         team: celestial
         topic: azure
-    - alert: AzureClusterWithNoAPIServer
-      annotations:
-        description: '{{`Cluster {{ $labels.cluster_id }} has no api server.`}}'
-        opsrecipe: no-workload-cluster-metric/
-      expr: sum(cluster_service_cluster_info{provider="azure"} or cluster_operator_cluster_status{provider="azure"}) by (cluster_id) unless on(cluster_id)label_replace(up{app="kubernetes", cluster_type="workload_cluster"}==1, "cluster_id", "$1", "cluster_id", "(.*)")
-      for: 1h
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: celestial
-        topic: kubernetes
     {{- end }}
 

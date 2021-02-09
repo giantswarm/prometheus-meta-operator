@@ -4,12 +4,13 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
   name: etcdbackup.rules
 spec:
   groups:
   - name: etcdbackup
     rules:
-    - alert: BackupJobFailedOrStuck
+    - alert: ETCDBackupJobFailedOrStuck
       annotations:
         description: '{{`Job {{ $labels.job }} failed or has not been completed for more than 30 minutes.`}}'
         opsrecipe: etcd-backup-failed/
@@ -53,7 +54,7 @@ spec:
       annotations:
         description: '{{`{{ $labels.cluster_id }} management cluster''s ETCD backup was unsuccessful.`}}'
         opsrecipe: etcd-backup-failed/
-      expr: time() - etcd_backup_latest_success{etcd_version="v2",tenant_cluster_id="Control Plane"} > 60*60*24 or time() - etcd_backup_latest_success{etcd_version="v3",tenant_cluster_id="Control Plane"} > 60*60*24
+      expr: time() - etcd_backup_latest_success{etcd_version="V2",tenant_cluster_id="Control Plane"} > 60*60*24 or time() - etcd_backup_latest_success{etcd_version="V3",tenant_cluster_id="Control Plane"} > 60*60*24
       for: 5m
       labels:
         area: kaas

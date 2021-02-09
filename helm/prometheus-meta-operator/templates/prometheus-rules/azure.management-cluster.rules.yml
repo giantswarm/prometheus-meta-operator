@@ -5,7 +5,8 @@ metadata:
   creationTimestamp: null
   labels:
     {{- include "labels.common" . | nindent 4 }}
-  name: azure.rules
+    cluster_type: "management_cluster"
+  name: azure.management-cluster.rules
 spec:
   groups:
   - name: azure
@@ -38,7 +39,7 @@ spec:
     - alert: ClusterAutoscalerAppFailedAzure
       annotations:
         description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'
-      expr: label_replace(app_operator_app_info{status="FAILED",name="cluster-autoscaler"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      expr: label_replace(app_operator_app_info{status="FAILED",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
       for: 10m
       labels:
         area: managedservices
@@ -51,7 +52,7 @@ spec:
     - alert: ClusterAutoscalerAppPendingInstallAzure
       annotations:
         description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending install state.`}}'
-      expr: label_replace(app_operator_app_info{status="PENDING_INSTALL",name="cluster-autoscaler"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      expr: label_replace(app_operator_app_info{status="PENDING_INSTALL",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
       for: 30m
       labels:
         area: managedservices
@@ -64,7 +65,7 @@ spec:
     - alert: ClusterAutoscalerAppPendingUpgradeAzure
       annotations:
         description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending upgrade state.`}}'
-      expr: label_replace(app_operator_app_info{status="PENDING_UPGRADE",name="cluster-autoscaler"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      expr: label_replace(app_operator_app_info{status="PENDING_UPGRADE",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
       for: 30m
       labels:
         area: managedservices
@@ -77,7 +78,7 @@ spec:
     - alert: ClusterAutoscalerAppNotInstalledAzure
       annotations:
         description: '{{`App {{ $labels.name }} was not installed in {{ $labels.namespace }} namespace.`}}'
-      expr: label_replace(app_operator_app_info{status="",name="cluster-autoscaler"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      expr: label_replace(app_operator_app_info{status="",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
       for: 40m
       labels:
         area: managedservices
@@ -98,43 +99,7 @@ spec:
         severity: notify
         team: celestial
         topic: azure
-    - alert: CriticalPodNotRunningAzure
-      annotations:
-        description: '{{`Critical pod {{ $labels.namespace }}/{{ $labels.pod }} is not running.`}}'
-        opsrecipe: critical-pod-is-not-running/
-      expr: kube_pod_container_status_running{container=~"(k8s-api-server|k8s-controller-manager|k8s-scheduler)"} != 1
-      for: 5m
-      labels:
-        area: kaas
-        severity: page
-        team: celestial
-        topic: kubernetes
-    - alert: CriticalPodMetricMissingAzure
-      annotations:
-        description: '{{`Critical pod {{ $labels.container }} does not have metrics.`}}'
-        opsrecipe: critical-pod-is-not-running/
-      expr: absent(kube_pod_container_status_running{container="k8s-api-server"}) == 1 or absent(kube_pod_container_status_running{container="k8s-controller-manager"}) == 1 or absent(kube_pod_container_status_running{container="k8s-scheduler"}) == 1
-      for: 5m
-      labels:
-        area: kaas
-        cancel_if_kube_state_metrics_down: "true"
-        severity: page
-        team: celestial
-        topic: kubernetes
-    - alert: PodLimitAlmostReachedAzure
-      annotations:
-        description: '{{`Cluster {{ $labels.cluster_id }} is almost exceeding its pod limit.`}}'
-      expr: (sum(kube_pod_info) by (cluster_id) / sum(kube_node_status_capacity_pods) by (cluster_id)) > 0.8
-      for: 5m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: celestial
-        topic: kubernetes
-    - alert: PodStuckAzure
+    - alert: ManagementClusterPodStuckAzure
       annotations:
         description: '{{`Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in Pending.`}}'
       expr: kube_pod_status_phase{cluster_type="management_cluster", phase="Pending"} == 1
@@ -144,21 +109,6 @@ spec:
         severity: notify
         team: celestial
         topic: managementcluster
-    - alert: MasterNodeMissingCelestial
-      annotations:
-        description: '{{`Master node is missing.`}}'
-        opsrecipe: master-node-missing/
-      expr: kubernetes_build_info{app="kubelet"} unless on(cluster_id) kubernetes_build_info{app="kubelet", role="master"}
-      for: 10m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        master_node_down: "true"
-        severity: page
-        team: celestial
-        topic: kubernetes
     - alert: VPNConnectionStatusBad
       annotations:
         description: '{{`VPC Connection is in connection status {{ $labels.connection_status }}.`}}'

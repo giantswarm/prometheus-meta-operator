@@ -214,6 +214,7 @@
   - source_labels: [__address__]
     target_label: instance
 [[ include "_labelingschema" . | indent 2 ]]
+[[ include "_node_role" . | indent 2 ]]
 # kube-controller-manager
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
   honor_labels: true

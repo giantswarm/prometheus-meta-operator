@@ -1,0 +1,64 @@
+{{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: azure.all.rules
+spec:
+  groups:
+  - name: azure
+    rules:
+    - alert: CriticalPodNotRunningAzure
+      annotations:
+        description: '{{`Critical pod {{ $labels.namespace }}/{{ $labels.pod }} is not running.`}}'
+        opsrecipe: critical-pod-is-not-running/
+      expr: kube_pod_container_status_running{container=~"(k8s-api-server|k8s-controller-manager|k8s-scheduler)"} != 1
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: celestial
+        topic: kubernetes
+    - alert: CriticalPodMetricMissingAzure
+      annotations:
+        description: '{{`Critical pod {{ $labels.container }} does not have metrics.`}}'
+        opsrecipe: critical-pod-is-not-running/
+      expr: absent(kube_pod_container_status_running{container="k8s-api-server"}) == 1 or absent(kube_pod_container_status_running{container="k8s-controller-manager"}) == 1 or absent(kube_pod_container_status_running{container="k8s-scheduler"}) == 1
+      for: 5m
+      labels:
+        area: kaas
+        cancel_if_kube_state_metrics_down: "true"
+        severity: page
+        team: celestial
+        topic: kubernetes
+    - alert: PodLimitAlmostReachedAzure
+      annotations:
+        description: '{{`Cluster {{ $labels.cluster_id }} is almost exceeding its pod limit.`}}'
+      expr: (sum(kube_pod_info) by (cluster_id) / sum(kube_node_status_capacity_pods) by (cluster_id)) > 0.8
+      for: 5m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        team: celestial
+        topic: kubernetes
+    - alert: MasterNodeMissingCelestial
+      annotations:
+        description: '{{`Master node is missing.`}}'
+        opsrecipe: master-node-missing/
+      expr: kubernetes_build_info{app="kubelet"} unless on(cluster_id) kubernetes_build_info{app="kubelet", role="master"}
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        master_node_down: "true"
+        severity: page
+        team: celestial
+        topic: kubernetes
+{{- end }}

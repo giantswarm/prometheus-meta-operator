@@ -11,7 +11,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added the celestial rules to PMO:
   - `AzureClusterAutoscalerIsRestartingFrequently`
   - `AzureClusterCreationFailed`
-  - `AzureClusterWithNoAPIServer`
   - `AzureDeploymentIsRunningForTooLong`
   - `AzureDeploymentStatusFailed`
   - `AzureManagementClusterDeploymentScaledDownToZero`
@@ -39,7 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `EtcdWorkloadClusterDownAzure`
   - `LatestETCDBackup1DayOld`
   - `LatestETCDBackup2DaysOld`
-  - `ManagementClusterDaemonSetNotSatisfiedCelestial`
   - `ManagementClusterNotBackedUp24h`
   - `MasterNodeMissingCelestial`
   - `OperatorNotReconcilingCelestial`

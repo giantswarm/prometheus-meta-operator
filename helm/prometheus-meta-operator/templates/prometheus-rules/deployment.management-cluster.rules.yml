@@ -82,7 +82,7 @@ spec:
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied-china/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"coredns|nginx-ingress-controller|.+-admission-controller-unique", cluster_id=~"axolotl|giraffe|argali"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"coredns|nginx-ingress-controller|alertmanager.*|prometheus.*|promxy.*|.+-admission-controller-unique", cluster_id=~"axolotl|giraffe|argali"} > 0
       for: 3h
       labels:
         area: kaas
