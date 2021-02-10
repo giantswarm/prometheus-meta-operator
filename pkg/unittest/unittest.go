@@ -9,7 +9,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/giantswarm/apiextensions/v2/pkg/apis/provider/v1alpha1"
+	"github.com/giantswarm/apiextensions/v3/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/microerror"
 	"github.com/google/go-cmp/cmp"
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
