@@ -8,6 +8,56 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added the celestial rules to PMO:
+  - `AzureClusterAutoscalerIsRestartingFrequently`
+  - `AzureClusterCreationFailed`
+  - `AzureDeploymentIsRunningForTooLong`
+  - `AzureDeploymentStatusFailed`
+  - `AzureManagementClusterDeploymentScaledDownToZero`
+  - `AzureManagementClusterMissingNodes`
+  - `AzureNetworkErrorRateTooHigh`
+  - `AzureServicePrincipalExpirationDateUnknown`
+  - `AzureServicePrincipalExpiresInOneMonth`
+  - `AzureServicePrincipalExpiresInOneWeek`
+  - `AzureVMSSRateLimit30MinutesAlmostReached`
+  - `AzureVMSSRateLimit30MinutesReached`
+  - `AzureVMSSRateLimit3MinutesAlmostReached`
+  - `AzureVMSSRateLimit3MinutesReached`
+  - `ClockOutOfSyncAzure`
+  - `ClusterAutoscalerAppFailedAzure`
+  - `ClusterAutoscalerAppNotInstalledAzure`
+  - `ClusterAutoscalerAppPendingInstallAzure`
+  - `ClusterAutoscalerAppPendingUpgradeAzure`
+  - `ClusterWithNoResourceGroup`
+  - `CollidingOperatorsCelestial`
+  - `CriticalPodMetricMissingAzure`
+  - `CriticalPodNotRunningAzure`
+  - `DNSCheckErrorRateTooHighAzure`
+  - `DNSErrorRateTooHighAzure`
+  - `DeploymentNotSatisfiedCelestial`
+  - `EtcdWorkloadClusterDownAzure`
+  - `LatestETCDBackup1DayOld`
+  - `LatestETCDBackup2DaysOld`
+  - `ManagementClusterNotBackedUp24h`
+  - `MasterNodeMissingCelestial`
+  - `OperatorNotReconcilingCelestial`
+  - `OperatorkitCRNotDeletedCelestial`
+  - `OperatorkitErrorRateTooHighCelestial`
+  - `PodLimitAlmostReachedAzure`
+  - `ManagementClusterPodStuckAzure` (renamed from `PodStuckAzure`)
+  - `ReadsRateLimitAlmostReached`
+  - `VPNConnectionProvisioningStateBad`
+  - `VPNConnectionStatusBad`
+  - `WorkloadClusterEtcdCommitDurationTooHighAzure`
+  - `WorkloadClusterEtcdDBSizeTooLargeAzure`
+  - `WorkloadClusterEtcdHasNoLeaderAzure`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighAzure`
+  - `WritesRateLimitAlmostReached`
+  - `ETCDBackupJobFailedOrStuck` (renamed from `BackupJobFailedOrStuck`)
+- Added node `role` label to `kubelet` metrics as it's needed by `MasterNodeMissingCelestial` alert
+
 ### Removed
 
 - Removed axolotl from Chinese rules as the installation has been decommissioned
