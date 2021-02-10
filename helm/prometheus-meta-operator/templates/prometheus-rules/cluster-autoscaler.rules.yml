@@ -1,4 +1,4 @@
-
+{{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -10,7 +10,6 @@ spec:
   groups:
   - name: cluster-autoscaler
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
     - alert: AzureClusterAutoscalerIsRestartingFrequently
       annotations:
         description: '{{`Cluster-Autoscaler {{ $labels.cluster_id }}/{{ $labels.pod_name }} /{{ $labels.pod }} is restarting often.`}}'
@@ -22,4 +21,4 @@ spec:
         severity: notify
         team: celestial
         topic: kubernetes
-    {{- end }}
+{{- end }}
