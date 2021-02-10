@@ -1,3 +1,4 @@
+{{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -10,7 +11,6 @@ spec:
   groups:
   - name: etcd
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
     - alert: WorkloadClusterEtcdCommitDurationTooHighAzure
       annotations:
         description: '{{`Etcd ({{ $labels.instance }}) has a too high commit duration.`}}'
@@ -53,4 +53,4 @@ spec:
         severity: page
         team: celestial
         topic: etcd
-    {{- end }}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -9,7 +10,6 @@ spec:
   groups:
   - name: network
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
     - alert: DNSErrorRateTooHighAzure
       annotations:
         description: '{{`DNS error rate is too high for {{ or $labels.pod_name $labels.instance }} to {{ $labels.host }}, using {{ $labels.proto }}.`}}'
@@ -58,4 +58,4 @@ spec:
         severity: page
         team: celestial
         topic: network
-    {{- end }}
+{{- end }}
