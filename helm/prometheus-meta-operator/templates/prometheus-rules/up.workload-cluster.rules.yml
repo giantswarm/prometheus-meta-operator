@@ -1,3 +1,4 @@
+{{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -11,7 +12,6 @@ spec:
   groups:
   - name: up
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
     - alert: EtcdWorkloadClusterDownAzure
       annotations:
         description: '{{`Etcd ({{ $labels.instance }}) on workload cluster {{ $labels.cluster_id }} is down.`}}'
@@ -27,4 +27,4 @@ spec:
         severity: page
         team: celestial
         topic: etcd
-    {{- end }}
+{{- end }}

@@ -1,3 +1,4 @@
+{{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -10,7 +11,6 @@ spec:
   groups:
   - name: cloud
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
     - alert: AzureManagementClusterMissingNodes
       annotations:
         description: '{{`Management cluster {{ $labels.cluster_id }} has less than 4 minimum nodes.`}}'
@@ -21,4 +21,4 @@ spec:
         severity: notify
         team: celestial
         topic: managementcluster
-    {{- end }}
+{{- end }}

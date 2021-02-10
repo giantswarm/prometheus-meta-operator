@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix empty prometheus rules in helm template issues for aws and kvm installations
+
 ## [1.19.0] - 2021-02-10
 
 ### Added
