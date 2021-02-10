@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removing service monitor resource used to clean up unused service monitor CR
+
 ## [1.19.0] - 2021-02-10
 
 ### Added

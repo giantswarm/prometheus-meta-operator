@@ -22,7 +22,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/servicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/tlscleanup"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
@@ -194,21 +193,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var serviceMonitorResource resource.Interface
-	{
-		c := servicemonitor.Config{
-			PrometheusClient: config.PrometheusClient,
-			Logger:           config.Logger,
-			Provider:         config.Provider,
-			Installation:     config.Installation,
-		}
-
-		serviceMonitorResource, err = servicemonitor.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
@@ -293,7 +277,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfig,
-		serviceMonitorResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
