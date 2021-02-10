@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed axolotl from Chinese rules as the installation has been decommissioned
+
 ## [1.18.0] - 2021-02-08
 
 ### Removed 
