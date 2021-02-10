@@ -26,7 +26,7 @@ require (
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.6
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator v0.43.0
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.45.0
 	github.com/prometheus/common v0.15.0
 	github.com/prometheus/prometheus v2.23.0+incompatible
 	github.com/sirupsen/logrus v1.7.0
