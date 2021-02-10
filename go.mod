@@ -37,15 +37,14 @@ require (
 	gomodules.xyz/jsonpatch/v2 v2.1.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0
-	k8s.io/api v0.19.4
-	k8s.io/apiextensions-apiserver v0.19.4
-	k8s.io/apimachinery v0.19.4
+	k8s.io/api v0.20.2
+	k8s.io/apiextensions-apiserver v0.20.1
+	k8s.io/apimachinery v0.20.2
 	k8s.io/autoscaler/vertical-pod-autoscaler v0.9.2
 	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd // indirect
-	k8s.io/utils v0.0.0-20201110183641-67b214c5f920 // indirect
 	sigs.k8s.io/cluster-api v0.3.13
-	sigs.k8s.io/controller-runtime v0.6.4
+	sigs.k8s.io/controller-runtime v0.8.1
 	sigs.k8s.io/yaml v1.2.0
 )
 
