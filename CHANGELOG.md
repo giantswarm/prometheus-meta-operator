@@ -54,6 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighAzure`
   - `WritesRateLimitAlmostReached`
   - `ETCDBackupJobFailedOrStuck` (renamed from `BackupJobFailedOrStuck`)
+- Added node `role` label to `kubelet` metrics as it's needed by `MasterNodeMissingCelestial` alert
 
 ## [1.18.0] - 2021-02-08
 
