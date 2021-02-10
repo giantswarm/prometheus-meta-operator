@@ -1,0 +1,25 @@
+
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: cluster-autoscaler.rules
+spec:
+  groups:
+  - name: cluster-autoscaler
+    rules:
+    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
+    - alert: AzureClusterAutoscalerIsRestartingFrequently
+      annotations:
+        description: '{{`Cluster-Autoscaler {{ $labels.cluster_id }}/{{ $labels.pod_name }} /{{ $labels.pod }} is restarting often.`}}'
+        opsrecipe: cluster-autoscaler-is-restarting-often/
+      expr: increase(kube_pod_container_status_restarts_total{container="cluster-autoscaler", provider="azure"}[3h]) > 3
+      for: 5m
+      labels:
+        area: kaas
+        severity: notify
+        team: celestial
+        topic: kubernetes
+    {{- end }}

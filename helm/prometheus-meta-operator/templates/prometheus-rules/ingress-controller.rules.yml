@@ -35,21 +35,6 @@ spec:
         severity: notify
         team: batman
         topic: ingress
-        ## TODO remove?
-    - alert: IngressControllerReloadIsFailing
-      annotations:
-        description: '{{`Ingress Controller cannot reload new configuration. Please check IC logs.`}}'
-        opsrecipe: ic-failed-to-reload/
-      expr: increase(ingress_controller_errors{count="reloads"}[5m]) > 1
-      for: 5m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: batman
-        topic: ingress
     - alert: IngressControllerReplicaSetNumberTooHigh
       annotations:
         description: '{{`Ingress Controller ReplicaSet in namespace {{ $labels.namespace}} has {{ $value }} pods.`}}'
