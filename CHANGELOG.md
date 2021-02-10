@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix incorrect prometheus memory usage recording rules after we migrated to the new monitoring setup
 
+## [1.19.1] - 2021-02-10
+
+### Fixed
+
+- Fix empty prometheus rules in helm template issues for aws and kvm installations
+
 ## [1.19.0] - 2021-02-10
 
 ### Added
@@ -541,7 +547,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.1...HEAD
+[1.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.17.2...v1.18.0
 [1.17.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.17.1...v1.17.2
