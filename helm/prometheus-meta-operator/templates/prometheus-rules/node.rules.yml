@@ -1,0 +1,45 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: workload_cluster
+  name: node.rules
+spec:
+  groups:
+  - name: node
+    rules:
+    - alert: WorkloadClusterNodeIsUnschedulable
+      annotations:
+        description: '{{`Node {{ $labels.node }} is unschedulable.`}}'
+        opsrecipe: node-is-unschedulable/
+      expr: kube_node_spec_unschedulable != 0
+      for: 45m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else }}
+        team: rocket
+        {{- end }}
+        topic: kubernetes
+    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+    - alert: WorkloadClusterNodeUnexpectedTaintNodeWithImpairedVolumes
+      annotations:
+        description: '{{`Node {{ $labels.node }} has unexpected taint NodeWithImpairedVolumes`}}'
+        opsrecipe: aws-node-taint-NodeWithImpairedVolumes/
+      expr: kube_node_spec_taint{key="NodeWithImpairedVolumes"}
+      for: 30m
+      labels:
+        area: kaas
+        severity: notify
+        team: firecracker
+        topic: kubernetes
+    {{- end }}

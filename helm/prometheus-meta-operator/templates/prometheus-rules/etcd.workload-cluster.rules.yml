@@ -1,4 +1,4 @@
-{{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
+{{- if (or (eq .Values.Installation.V1.Provider.Kind "aws") (eq .Values.Installation.V1.Provider.Kind "azure")) }}
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
@@ -11,6 +11,51 @@ spec:
   groups:
   - name: etcd
     rules:
+    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+    - alert: WorkloadClusterEtcdCommitDurationTooHighAWS
+      annotations:
+        description: '{{`Etcd ({{ $labels.instance }}) has a too high commit duration.`}}'
+        opsrecipe: https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/etcd-high-commit-duration/
+      expr: histogram_quantile(0.95, rate(etcd_disk_backend_commit_duration_seconds_bucket{cluster_type="workload_cluster", provider="aws"}[5m])) > 1.0
+      for: 15m
+      labels:
+        area: kaas
+        severity: notify
+        team: firecracker
+        topic: etcd
+    - alert: WorkloadClusterEtcdDBSizeTooLargeAWS
+      annotations:
+        description: '{{`Etcd ({{ $labels.instance }}) has a too large database.`}}'
+        opsrecipe: etcd-db-size-too-large/
+      expr: etcd_debugging_mvcc_db_total_size_in_bytes{cluster_type="workload_cluster", provider="aws"} > 500 * 1024 * 1024
+      for: 10m
+      labels:
+        area: kaas
+        severity: page
+        team: firecracker
+        topic: etcd
+    - alert: WorkloadClusterEtcdNumberOfLeaderChangesTooHighAWS
+      annotations:
+        description: '{{`Etcd has too many leader changes.`}}'
+      expr: increase(etcd_server_leader_changes_seen_total{cluster_type="workload_cluster",provider="aws"}[1h]) > 8
+      labels:
+        area: kaas
+        severity: notify
+        team: firecracker
+        topic: etcd
+    - alert: WorkloadClusterEtcdHasNoLeaderAWS
+      annotations:
+        description: '{{`Etcd has no leader.`}}'
+        opsrecipe: etcd-has-no-leader/
+      expr: etcd_server_has_leader{cluster_type="workload_cluster", provider="aws"} == 0
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: firecracker
+        topic: etcd
+    {{- end }}
+    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
     - alert: WorkloadClusterEtcdCommitDurationTooHighAzure
       annotations:
         description: '{{`Etcd ({{ $labels.instance }}) has a too high commit duration.`}}'
@@ -53,4 +98,5 @@ spec:
         severity: page
         team: celestial
         topic: etcd
+    {{- end }}
 {{- end }}

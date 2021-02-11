@@ -28,3 +28,14 @@ spec:
         kube_state_metrics_down: "true"
         team: ludacris
         topic: status
+    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+    - alert: InhibitionKiamErrors
+      annotations:
+        description: '{{`Kiam on cluster {{ $labels.cluster_id }} has increased error rate.`}}'
+      expr: increase(kiam_metadata_credential_fetch_errors_total[10m]) > 0 or increase(kiam_metadata_find_role_errors_total[10m]) > 0 or increase(kiam_sts_issuing_errors_total[10m]) > 0
+      labels:
+        area: kaas
+        kiam_has_errors: "true"
+        team: firecracker
+        topic: kiam
+    {{- end }}

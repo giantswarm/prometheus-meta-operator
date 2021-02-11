@@ -10,20 +10,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add a small part of the firecracker alerts:
+- Added the firecracker rules to PMO:
   - `AWSClusterCreationFailed`
   - `AWSClusterUpdateFailed`
+  - `AWSManagementClusterDeploymentScaledDownToZero`
+  - `AWSManagementClusterMissingNodes`
+  - `AWSNetworkErrorRateTooHigh`
+  - `ClockOutOfSyncAWS`
   - `CloudFormationStackFailed`
   - `CloudFormationStackRollback`
   - `ClusterAutoscalerAppFailedAWS`
   - `ClusterAutoscalerAppNotInstalledAWS`
   - `ClusterAutoscalerAppPendingInstallAWS`
   - `ClusterAutoscalerAppPendingUpgradeAWS`
+  - `CollidingOperatorsFirecracker`
+  - `ContainerIsRestartingTooFrequentlyFirecracker`
+  - `CredentialdCantReachKubernetes`
+  - `DNSCheckErrorRateTooHighAWS`
+  - `DNSErrorRateTooHighAWS`
+  - `DefaultCredentialsMissing`
+  - `DeploymentNotSatisfiedChinaFirecracker`
+  - `DeploymentNotSatisfiedFirecracker`
   - `ELBHostsOutOfService`
+  - `EtcdWorkloadClusterDownAWS`
+  - `FluentdMemoryHighUtilization`
+  - `JobHasNotBeenScheduledForTooLong`
+  - `KiamMetadataFindRoleErrors`
+  - `ManagementClusterDaemonSetNotSatisfiedChinaFirecracker`
+  - `ManagementClusterDaemonSetNotSatisfiedFirecracker`
+  - `OperatorNotReconcilingFirecracker`
+  - `OperatorkitCRNotDeletedFirecracker`
+  - `OperatorkitErrorRateTooHighFirecracker`
+  - `TooManyCredentialsForOrganization`
+  - `TrustedAdvisorErroring`
   - `WorkloadClusterCriticalPodNotRunningAWS`
   - `WorkloadClusterCriticalPodMetricMissingAWS`
-  - `WorkloadClusterPodLimitAlmostReachedAWS`
+  - `WorkloadClusterDaemonSetNotSatisfiedFirecracker`
+  - `WorkloadClusterEtcdCommitDurationTooHighAWS`
+  - `WorkloadClusterEtcdDBSizeTooLargeAWS`
+  - `WorkloadClusterEtcdHasNoLeaderAWS`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighAWS`
   - `WorkloadClusterMasterNodeMissingFirecracker`
+  - `WorkloadClusterPodLimitAlmostReachedAWS`
+- Splitting `NodeIsUnschedulable` per team
+- Split `ContainerIsRestartingTooFrequentlyFirecracker` into `WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker` and `ManagementClusterContainerIsRestartingTooFrequentlyFirecracker`
 - Add the following biscuit alerts to split alerts between workload and management cluster:
   - `ManagementClusterCriticalPodNotRunning`
   - `ManagementClusterCriticalPodMetricMissing`
@@ -34,10 +64,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move `AzureManagementClusterMissingNodes` and `AWSManagementClusterMissingNodes` to team biscuit `ManagementClusterMissingNodes`
 - Move `ManagementClusterPodStuckAzure` and `ManagementClusterPodStuckAWS` to team biscuit `ManagementClusterPodPendingFor15Min`
 - Renamed the following alerts:
+  - `AzureClusterAutoscalerIsRestartingFrequently` -> `WorkloadClusterAutoscalerIsRestartingFrequentlyAzure`
   - `CriticalPodNotRunningAzure` -> `WorkloadClusterCriticalPodNotRunningAzure`
   - `CriticalPodMetricMissingAzure` -> `WorkloadClusterCriticalPodMetricMissingAzure`
-  - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
   - `MasterNodeMissingCelestial` -> `WorkloadClusterMasterNodeMissingCelestial`
+  - `NodeUnexpectedTaintNodeWithImpairedVolumes` -> `WorkloadClusterNodeUnexpectedTaintNodeWithImpairedVolumes`
+  - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
 
 ### Fixed
 
