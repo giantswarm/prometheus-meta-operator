@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `WorkloadClusterCriticalPodMetricMissingAWS`
   - `WorkloadClusterPodLimitAlmostReachedAWS`
   - `WorkloadClusterMasterNodeMissingFirecracker`
-- Add tbe following biscuit alerts to split alerts between workload and management cluster:
+- Add the following biscuit alerts to split alerts between workload and management cluster:
   - `ManagementClusterCriticalPodNotRunning`
   - `ManagementClusterCriticalPodMetricMissing`
   - `ManagementClusterPodLimitAlmostReached`
