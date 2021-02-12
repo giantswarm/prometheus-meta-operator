@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `CriticalPodMetricMissingAzure` -> `WorkloadClusterCriticalPodMetricMissingAzure`
   - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
   - `MasterNodeMissingCelestial` -> `WorkloadClusterMasterNodeMissingCelestial`
+- Split `ManagementClusterAppFailed` per team
 
 ### Fixed
 
