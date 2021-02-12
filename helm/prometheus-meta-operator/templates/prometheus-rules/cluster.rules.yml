@@ -28,7 +28,7 @@ spec:
         opsrecipe: cluster-creation-failed/
       # statusresource_cluster_status{app="azure-operator.*", status="Creating"} give us a vector with all cluster statuses
       # in Azure clusters which stays at 'Creating' state.
-      expr: (statusresource_cluster_status{app=~"azure-operator.*", status="Creating"} == 1 or cluster_operator_cluster_status{app=~"cluster-operator.*", status="Updating", provider="azure"} == 1)
+      expr: (statusresource_cluster_status{app=~"azure-collector.*", status="Creating"} == 1 or cluster_operator_cluster_status{app=~"cluster-operator.*", status="Updating", provider="azure"} == 1)
       for: 40m
       labels:
         area: kaas

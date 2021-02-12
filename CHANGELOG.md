@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix incorrect prometheus memory usage recording rules after we migrated to the new monitoring setup
 
+### Changed
+
+- Use azure-collector instead of azure-operator in `AzureClusterCreationFailed` alert
+
+### Removed
+
+- Removing service monitor resource used to clean up unused service monitor CR
+
 ## [1.19.1] - 2021-02-10
 
 ### Fixed
