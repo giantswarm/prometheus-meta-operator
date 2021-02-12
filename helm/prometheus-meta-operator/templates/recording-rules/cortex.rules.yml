@@ -177,9 +177,12 @@ spec:
       record: aggregation:node:network_transmit_bytes_total
     - expr: sum(ALERTS{alertstate="firing"}) by (alertname, cluster_id, area, severity, team, topic)
       record: aggregation:prometheus:alerts
-    - expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'} / on(cluster_type, cluster_id, node) group_left node_memory_MemTotal_bytes) by (cluster_type, cluster_id) * 100"
+    # Metric container_memory_working_set_bytes comes from the cAdvisor component scraped on management clusters which is then scraped by the management cluster prometheus.
+    # This means the cluster_id label on this metric will be the cluster_id of the management cluster for all the series, not the workload cluster id.
+    # As we want to record the memory usage of the prometheis per cluster, we need to extract the cluster id from the prometheus pod name (i.e. pod=prometheus-xyz-ordinal => cluster_id=xyz).
+    - expr: sum(label_replace(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'}, "cluster_id", "$2", "pod", "(prometheus-)(.+)(-.+)") / on(node) group_left node_memory_MemTotal_bytes{role!="bastion"}) by (cluster_type, cluster_id, node) * 100
       record: aggregation:prometheus:memory_percentage
-    - expr: "sum(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'}) by (cluster_type, cluster_id)"
+    - expr: sum(label_replace(container_memory_working_set_bytes{container='prometheus', namespace=~'.*-prometheus'}, "cluster_id", "$2", "pod", "(prometheus-)(.+)(-.+)")) by (cluster_type , cluster_id)
       record: aggregation:prometheus:memory_usage
     # Managed apps basic SLI metrics
     - expr: sum(monitoring:managed_apps:service_level:primary:error_budget_used) by (cluster_type, cluster_id,workload_name,workload_type) >= 1

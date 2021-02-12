@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix incorrect prometheus memory usage recording rules after we migrated to the new monitoring setup
+
 ### Changed
 
 - Use azure-collector instead of azure-operator in `AzureClusterCreationFailed` alert
