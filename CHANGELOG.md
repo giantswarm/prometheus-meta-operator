@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.2] - 2021-02-12
+
 ### Fixed
 
 - Fix incorrect prometheus memory usage recording rules after we migrated to the new monitoring setup
@@ -555,7 +557,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.2...HEAD
+[1.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.17.2...v1.18.0
