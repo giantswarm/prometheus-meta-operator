@@ -1,0 +1,129 @@
+{{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+    cluster_type: "management_cluster"
+  name: aws.management-cluster.rules
+spec:
+  groups:
+  - name: aws
+    rules:
+    - alert: AWSClusterCreationFailed
+      annotations:
+        description: '{{`Cluster {{ $labels.cluster_id }} creation is taking longer than expected.`}}'
+        opsrecipe: cluster-creation-failed/
+      expr: (statusresource_cluster_status{app=~"aws-operator.*", status="Creating"} == 1 or cluster_operator_cluster_status{app=~"cluster-operator.*", status="Creating", provider="aws"} == 1)
+      for: 20m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: notify
+        team: firecracker
+        topic: aws
+    - alert: AWSClusterUpdateFailed
+      annotations:
+        description: '{{`Cluster {{ $labels.cluster_id }} update is taking longer than expected.`}}'
+        opsrecipe: cluster-update-failed/
+      expr: (statusresource_cluster_status{app=~"aws-operator.*", status="Updating"} == 1 or cluster_operator_cluster_status{app=~"cluster-operator.*", status="Updating", provider="aws"} == 1)
+      for: 4h
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: notify
+        team: firecracker
+        topic: aws
+    - alert: CloudFormationStackFailed
+      annotations:
+        description: '{{`CloudFormation Stack "{{ $labels.stack_type }}" for {{ $labels.installation }}/{{ $labels.cluster_id }}, id "{{ $labels.id }}" remains in {{$labels.state }} state.`}}'
+        opsrecipe: aws-cloudformation-failed-state/
+      expr: aws_operator_cloudformation_info{state=~"CREATE_FAILED|DELETE_FAILED|ROLLBACK_FAILED|UPDATE_ROLLBACK_FAILED"}
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: firecracker
+        topic: aws
+    - alert: CloudFormationStackRollback
+      annotations:
+        description: '{{`Creation or update of CloudFormation Stack "{{ $labels.stack_type }}" for {{ $labels.installation }}/{{ $labels.cluster_id }}, id "{{ $labels.id }}" is rolled back and remains in {{ $labels.state }} state.`}}'
+        opsrecipe: aws-cloudformation-rollback/
+      expr: aws_operator_cloudformation_info{state=~"ROLLBACK_COMPLETE|ROLLBACK_IN_PROGRESS|UPDATE_ROLLBACK_IN_PROGRESS|UPDATE_ROLLBACK_COMPLETE|UPDATE_ROLLBACK_COMPLETE_CLEANUP_IN_PROGRESS"}
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: firecracker
+        topic: aws
+    - alert: ClusterAutoscalerAppFailedAWS
+      annotations:
+        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'
+      expr: label_replace(app_operator_app_info{status="FAILED",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      for: 10m
+      labels:
+        area: managedservices
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        team: firecracker
+        topic: releng
+    - alert: ClusterAutoscalerAppNotInstalledAWS
+      annotations:
+        description: '{{`App {{ $labels.name }} was not installed in {{ $labels.namespace }} namespace.`}}'
+      expr: label_replace(app_operator_app_info{status="",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      for: 40m
+      labels:
+        area: managedservices
+        cancel_if_apiserver_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        team: firecracker
+        topic: releng
+    - alert: ClusterAutoscalerAppPendingInstallAWS
+      annotations:
+        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending install state.`}}'
+      expr: label_replace(app_operator_app_info{status="PENDING_INSTALL",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      for: 30m
+      labels:
+        area: managedservices
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        team: firecracker
+        topic: releng
+    - alert: ClusterAutoscalerAppPendingUpgradeAWS
+      annotations:
+        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending upgrade state.`}}'
+      expr: label_replace(app_operator_app_info{status="PENDING_UPGRADE",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
+      for: 30m
+      labels:
+        area: managedservices
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        team: firecracker
+        topic: releng
+    - alert: ELBHostsOutOfService
+      annotations:
+        description: '{{`ELB {{ $labels.elb }} has unhealthy hosts.`}}'
+        opsrecipe: elb-has-unhealthy-hosts/
+      expr: aws_operator_elb_instance_out_of_service_count{elb=~"([a-z0-9]*)-(api|ingress)"} > 0
+      for: 10m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: firecracker
+        topic: aws
+{{- end }}

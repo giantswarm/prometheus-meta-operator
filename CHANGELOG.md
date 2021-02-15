@@ -8,6 +8,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add a small part of the firecracker alerts:
+  - `AWSClusterCreationFailed`
+  - `AWSClusterUpdateFailed`
+  - `CloudFormationStackFailed`
+  - `CloudFormationStackRollback`
+  - `ClusterAutoscalerAppFailedAWS`
+  - `ClusterAutoscalerAppNotInstalledAWS`
+  - `ClusterAutoscalerAppPendingInstallAWS`
+  - `ClusterAutoscalerAppPendingUpgradeAWS`
+  - `ELBHostsOutOfService`
+  - `WorkloadClusterCriticalPodNotRunningAWS`
+  - `WorkloadClusterCriticalPodMetricMissingAWS`
+  - `WorkloadClusterPodLimitAlmostReachedAWS`
+  - `WorkloadClusterMasterNodeMissingFirecracker`
+- Add the following biscuit alerts to split alerts between workload and management cluster:
+  - `ManagementClusterCriticalPodNotRunning`
+  - `ManagementClusterCriticalPodMetricMissing`
+  - `ManagementClusterPodLimitAlmostReached`
+
+### Changed
+
+- Move `AzureManagementClusterMissingNodes` and `AWSManagementClusterMissingNodes` to team biscuit `ManagementClusterMissingNodes`
+- Move `ManagementClusterPodStuckAzure` and `ManagementClusterPodStuckAWS` to team biscuit `ManagementClusterPodPendingFor15Min`
+- Renamed the following alerts:
+  - `CriticalPodNotRunningAzure` -> `WorkloadClusterCriticalPodNotRunningAzure`
+  - `CriticalPodMetricMissingAzure` -> `WorkloadClusterCriticalPodMetricMissingAzure`
+  - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
+  - `MasterNodeMissingCelestial` -> `WorkloadClusterMasterNodeMissingCelestial`
+
 ### Fixed
 
 - Do not page biscuit for a failing prometheus
