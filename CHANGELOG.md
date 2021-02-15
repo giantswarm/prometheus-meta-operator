@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add the solution engineer alerts:
+  - `AzureQuotaUsageApproachingLimit`
+  - `NATGatewaysPerVPCApproachingLimit`
+  - `ServiceUsageApproachingLimit`
 - Add a small part of the firecracker alerts:
   - `AWSClusterCreationFailed`
   - `AWSClusterUpdateFailed`

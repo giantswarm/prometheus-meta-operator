@@ -126,4 +126,26 @@ spec:
         severity: page
         team: firecracker
         topic: aws
+    - alert: NATGatewaysPerVPCApproachingLimit
+      annotations:
+        description: '{{`AWS number of NAT Gateways for {{ $labels.vpc }} in account {{ $labels.account_id }} is too close to limit.`}}'
+        opsrecipe: service-usage-approaching-limit/
+      expr: sum by (vpc, availability_zone, account_id) (aws_operator_nat_info) / ignoring(vpc, availability_zone) group_left count by (account_id) (aws_operator_servicequota_info) * 100 > 80
+      for: 10m
+      labels:
+        area: kaas
+        severity: notify
+        team: se
+        topic: aws
+    - alert: ServiceUsageApproachingLimit
+      annotations:
+        description: '{{`AWS service usage for {{ $labels.service }} - {{ $labels.name }} ({{ $labels.account_id}}/{{ $labels.region }}) is too close to limit.`}}'
+        opsrecipe: service-usage-approaching-limit/
+      expr: aws_operator_service_usage / aws_operator_service_limit * 100 > 80
+      for: 10m
+      labels:
+        area: kaas
+        severity: notify
+        team: se
+        topic: aws
 {{- end }}
