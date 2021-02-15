@@ -39,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
   - `MasterNodeMissingCelestial` -> `WorkloadClusterMasterNodeMissingCelestial`
 
+### Fixed
+
+- Do not page biscuit for a failing prometheus
 
 ## [1.19.2] - 2021-02-12
 
