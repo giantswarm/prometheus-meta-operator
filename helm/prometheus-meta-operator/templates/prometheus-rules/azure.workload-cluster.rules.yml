@@ -11,6 +11,17 @@ spec:
   groups:
   - name: azure
     rules:
+    - alert: WorkloadClusterAutoscalerIsRestartingFrequentlyAzure
+      annotations:
+        description: '{{`Cluster-Autoscaler {{ $labels.cluster_id }}/{{ $labels.pod_name }} /{{ $labels.pod }} is restarting often.`}}'
+        opsrecipe: cluster-autoscaler-is-restarting-often/
+      expr: increase(kube_pod_container_status_restarts_total{container="cluster-autoscaler", provider="azure"}[3h]) > 3
+      for: 5m
+      labels:
+        area: kaas
+        severity: notify
+        team: celestial
+        topic: kubernetes
     - alert: WorkloadClusterCriticalPodNotRunningAzure
       annotations:
         description: '{{`Critical pod {{ $labels.namespace }}/{{ $labels.pod }} is not running.`}}'

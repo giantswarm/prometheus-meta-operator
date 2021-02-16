@@ -68,24 +68,6 @@ spec:
         topic: status
     {{- end }}
     {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
-    - alert: InhibitionInstanceStateNotRunning
-      annotations:
-        description: '{{`Instance at {{ $labels.private_dns }} is not in ''running'' state.`}}'
-      expr: label_replace( aws_operator_ec2_instance_status {private_dns!=""} == 0, "node", "$1", "private_dns", "(.*)")
-      labels:
-        area: kaas
-        instance_state_not_running: "true"
-        team: firecracker
-        topic: status
-    - alert: InhibitionKiamErrors
-      annotations:
-        description: '{{`Kiam on cluster {{ $labels.cluster_id }} has increased error rate.`}}'
-      expr: increase(kiam_metadata_credential_fetch_errors_total[10m]) > 0 or increase(kiam_metadata_find_role_errors_total[10m]) > 0 or increase(kiam_sts_issuing_errors_total[10m]) > 0
-      labels:
-        area: kaas
-        kiam_has_errors: "true"
-        team: firecracker
-        topic: kiam
     - alert: InhibitionClusterWithNoNodePools
       annotations:
         description: '{{`Cluster {{ $labels.cluster_id }} doesn''t have any node pools.`}}'
@@ -111,6 +93,15 @@ spec:
       labels:
         area: kaas
         cluster_with_notready_nodepools: "true"
+        team: firecracker
+        topic: status
+    - alert: InhibitionInstanceStateNotRunning
+      annotations:
+        description: '{{`Instance at {{ $labels.private_dns }} is not in ''running'' state.`}}'
+      expr: label_replace( aws_operator_ec2_instance_status {private_dns!=""} == 0, "node", "$1", "private_dns", "(.*)")
+      labels:
+        area: kaas
+        instance_state_not_running: "true"
         team: firecracker
         topic: status
     {{- end }}
