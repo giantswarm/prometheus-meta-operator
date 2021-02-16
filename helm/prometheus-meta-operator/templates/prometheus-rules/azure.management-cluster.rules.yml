@@ -185,7 +185,7 @@ spec:
         severity: notify
         team: celestial
         topic: azure
-        - alert: ClusterAutoscalerAppFailedAzure
+    - alert: ClusterAutoscalerAppFailedAzure
       annotations:
         description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'
       expr: label_replace(app_operator_app_info{status="FAILED",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
