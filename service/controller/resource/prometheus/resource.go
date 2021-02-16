@@ -315,8 +315,15 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			key.EtcdSecret(cluster),
 		}
 
-		// empty LabelSelector matches all objects.
-		prometheus.Spec.RuleSelector = &metav1.LabelSelector{}
+		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				metav1.LabelSelectorRequirement{
+					Key:      "cluster_type",
+					Operator: metav1.LabelSelectorOpNotIn,
+					Values:   []string{"workload_cluster"},
+				},
+			},
+		}
 	}
 
 	return prometheus, nil

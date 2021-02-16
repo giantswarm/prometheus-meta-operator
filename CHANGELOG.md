@@ -14,20 +14,85 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `AzureQuotaUsageApproachingLimit`
   - `NATGatewaysPerVPCApproachingLimit`
   - `ServiceUsageApproachingLimit`
-- Add a small part of the firecracker alerts:
+
+## [1.20.0] - 2021-02-16
+
+### Added
+
+- Add the rocket alerts:
+  - `BackendServerUP`
+  - `ClockOutOfSyncKVM`
+  - `CollidingOperatorsRocket`
+  - `DNSCheckErrorRateTooHighKVM`
+  - `DNSErrorRateTooHighKVM`
+  - `EtcdWorkloadClusterDownKVM`
+  - `IngressExporterDown`
+  - `KVMManagementClusterDeploymentScaledDownToZero`
+  - `KVMNetworkErrorRateTooHigh`
+  - `ManagementClusterCriticalPodMetricMissingKVM`
+  - `ManagementClusterCriticalPodNotRunningKVM`
+  - `ManagementClusterMasterNodeMissingRocket`
+  - `ManagementClusterPodLimitAlmostReachedKVM`
+  - `ManagementClusterPodPendingFor15Min`
+  - `MayuSystemdUnitIsNotRunning`
+  - `NetworkInterfaceLeftoverWithoutCluster`
+  - `OnpremManagementClusterMissingNodes`
+  - `OperatorNotReconcilingRocket`
+  - `OperatorkitCRNotDeletedRocket`
+  - `OperatorkitErrorRateTooHighRocket`
+  - `WorkloadClusterCriticalPodMetricMissingKVM`
+  - `WorkloadClusterCriticalPodNotRunningKVM`
+  - `WorkloadClusterEndpointIPDown`
+  - `WorkloadClusterEtcdCommitDurationTooHighKVM`
+  - `WorkloadClusterEtcdDBSizeTooLargeKVM`
+  - `WorkloadClusterEtcdHasNoLeaderKVM`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighKVM`
+  - `WorkloadClusterMasterNodeMissingRocket`
+  - `WorkloadClusterPodLimitAlmostReachedKVM`
+- Added the firecracker rules to PMO:
   - `AWSClusterCreationFailed`
   - `AWSClusterUpdateFailed`
+  - `AWSManagementClusterDeploymentScaledDownToZero`
+  - `AWSManagementClusterMissingNodes`
+  - `AWSNetworkErrorRateTooHigh`
+  - `ClockOutOfSyncAWS`
   - `CloudFormationStackFailed`
   - `CloudFormationStackRollback`
   - `ClusterAutoscalerAppFailedAWS`
   - `ClusterAutoscalerAppNotInstalledAWS`
   - `ClusterAutoscalerAppPendingInstallAWS`
   - `ClusterAutoscalerAppPendingUpgradeAWS`
+  - `CollidingOperatorsFirecracker`
+  - `ContainerIsRestartingTooFrequentlyFirecracker`
+  - `CredentialdCantReachKubernetes`
+  - `DNSCheckErrorRateTooHighAWS`
+  - `DNSErrorRateTooHighAWS`
+  - `DefaultCredentialsMissing`
+  - `DeploymentNotSatisfiedChinaFirecracker`
+  - `DeploymentNotSatisfiedFirecracker`
   - `ELBHostsOutOfService`
+  - `EtcdWorkloadClusterDownAWS`
+  - `FluentdMemoryHighUtilization`
+  - `JobHasNotBeenScheduledForTooLong`
+  - `KiamMetadataFindRoleErrors`
+  - `ManagementClusterDaemonSetNotSatisfiedChinaFirecracker`
+  - `ManagementClusterDaemonSetNotSatisfiedFirecracker`
+  - `OperatorNotReconcilingFirecracker`
+  - `OperatorkitCRNotDeletedFirecracker`
+  - `OperatorkitErrorRateTooHighFirecracker`
+  - `TooManyCredentialsForOrganization`
+  - `TrustedAdvisorErroring`
   - `WorkloadClusterCriticalPodNotRunningAWS`
   - `WorkloadClusterCriticalPodMetricMissingAWS`
-  - `WorkloadClusterPodLimitAlmostReachedAWS`
+  - `WorkloadClusterDaemonSetNotSatisfiedFirecracker`
+  - `WorkloadClusterEtcdCommitDurationTooHighAWS`
+  - `WorkloadClusterEtcdDBSizeTooLargeAWS`
+  - `WorkloadClusterEtcdHasNoLeaderAWS`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighAWS`
   - `WorkloadClusterMasterNodeMissingFirecracker`
+  - `WorkloadClusterPodLimitAlmostReachedAWS`
+- Splitting `NodeIsUnschedulable` per team
+- Split `ContainerIsRestartingTooFrequentlyFirecracker` into `WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker` and `ManagementClusterContainerIsRestartingTooFrequentlyFirecracker`
 - Add the following biscuit alerts to split alerts between workload and management cluster:
   - `ManagementClusterCriticalPodNotRunning`
   - `ManagementClusterCriticalPodMetricMissing`
@@ -38,10 +103,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move `AzureManagementClusterMissingNodes` and `AWSManagementClusterMissingNodes` to team biscuit `ManagementClusterMissingNodes`
 - Move `ManagementClusterPodStuckAzure` and `ManagementClusterPodStuckAWS` to team biscuit `ManagementClusterPodPendingFor15Min`
 - Renamed the following alerts:
+  - `AzureClusterAutoscalerIsRestartingFrequently` -> `WorkloadClusterAutoscalerIsRestartingFrequentlyAzure`
   - `CriticalPodNotRunningAzure` -> `WorkloadClusterCriticalPodNotRunningAzure`
   - `CriticalPodMetricMissingAzure` -> `WorkloadClusterCriticalPodMetricMissingAzure`
-  - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
   - `MasterNodeMissingCelestial` -> `WorkloadClusterMasterNodeMissingCelestial`
+  - `NodeUnexpectedTaintNodeWithImpairedVolumes` -> `WorkloadClusterNodeUnexpectedTaintNodeWithImpairedVolumes`
+  - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
 
 ### Fixed
 
@@ -596,7 +663,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.2...v1.20.0
 [1.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.18.0...v1.19.0
