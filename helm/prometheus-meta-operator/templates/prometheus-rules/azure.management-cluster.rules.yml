@@ -238,4 +238,15 @@ spec:
         severity: notify
         team: celestial
         topic: releng
+    - alert: AzureQuotaUsageApproachingLimit
+      annotations:
+        description: '{{`Azure quota usage for {{ $labels.name }} on subscription {{ $labels.subscription }} is too close to limit.`}}'
+        opsrecipe: service-usage-approaching-limit/
+      expr: azure_operator_usage_current / azure_operator_usage_limit * 100 > 80
+      for: 10m
+      labels:
+        area: kaas
+        severity: notify
+        team: se
+        topic: azure
 {{- end }}
