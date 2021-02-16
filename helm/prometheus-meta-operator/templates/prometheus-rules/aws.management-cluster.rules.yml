@@ -59,59 +59,6 @@ spec:
         severity: page
         team: firecracker
         topic: aws
-    - alert: ClusterAutoscalerAppFailedAWS
-      annotations:
-        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'
-      expr: label_replace(app_operator_app_info{status="FAILED",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 10m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: firecracker
-        topic: releng
-    - alert: ClusterAutoscalerAppNotInstalledAWS
-      annotations:
-        description: '{{`App {{ $labels.name }} was not installed in {{ $labels.namespace }} namespace.`}}'
-      expr: label_replace(app_operator_app_info{status="",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 40m
-      labels:
-        area: managedservices
-        cancel_if_apiserver_down: "true"
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: firecracker
-        topic: releng
-    - alert: ClusterAutoscalerAppPendingInstallAWS
-      annotations:
-        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending install state.`}}'
-      expr: label_replace(app_operator_app_info{status="PENDING_INSTALL",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 30m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: firecracker
-        topic: releng
-    - alert: ClusterAutoscalerAppPendingUpgradeAWS
-      annotations:
-        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending upgrade state.`}}'
-      expr: label_replace(app_operator_app_info{status="PENDING_UPGRADE",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 30m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: firecracker
-        topic: releng
     - alert: ELBHostsOutOfService
       annotations:
         description: '{{`ELB {{ $labels.elb }} has unhealthy hosts.`}}'
@@ -125,6 +72,28 @@ spec:
         cancel_if_cluster_status_updating: "true"
         severity: page
         team: firecracker
+        topic: aws
+    - alert: NATGatewaysPerVPCApproachingLimit
+      annotations:
+        description: '{{`AWS number of NAT Gateways for {{ $labels.vpc }} in account {{ $labels.account_id }} is too close to limit.`}}'
+        opsrecipe: service-usage-approaching-limit/
+      expr: sum by (vpc, availability_zone, account_id) (aws_operator_nat_info) / ignoring(vpc, availability_zone) group_left count by (account_id) (aws_operator_servicequota_info) * 100 > 80
+      for: 10m
+      labels:
+        area: kaas
+        severity: notify
+        team: se
+        topic: aws
+    - alert: ServiceUsageApproachingLimit
+      annotations:
+        description: '{{`AWS service usage for {{ $labels.service }} - {{ $labels.name }} ({{ $labels.account_id}}/{{ $labels.region }}) is too close to limit.`}}'
+        opsrecipe: service-usage-approaching-limit/
+      expr: aws_operator_service_usage / aws_operator_service_limit * 100 > 80
+      for: 10m
+      labels:
+        area: kaas
+        severity: notify
+        team: se
         topic: aws
     - alert: ManagementClusterContainerIsRestartingTooFrequentlyFirecracker
       annotations:

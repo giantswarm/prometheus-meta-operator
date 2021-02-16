@@ -185,7 +185,7 @@ spec:
         severity: notify
         team: celestial
         topic: azure
-        - alert: ClusterAutoscalerAppFailedAzure
+    - alert: ClusterAutoscalerAppFailedAzure
       annotations:
         description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'
       expr: label_replace(app_operator_app_info{status="FAILED",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
@@ -238,4 +238,15 @@ spec:
         severity: notify
         team: celestial
         topic: releng
+    - alert: AzureQuotaUsageApproachingLimit
+      annotations:
+        description: '{{`Azure quota usage for {{ $labels.name }} on subscription {{ $labels.subscription }} is too close to limit.`}}'
+        opsrecipe: service-usage-approaching-limit/
+      expr: azure_operator_usage_current / azure_operator_usage_limit * 100 > 80
+      for: 10m
+      labels:
+        area: kaas
+        severity: notify
+        team: se
+        topic: azure
 {{- end }}
