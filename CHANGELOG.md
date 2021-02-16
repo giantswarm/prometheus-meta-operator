@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Split `ManagementClusterAppFailed` per team
 
+### Added
+
+- Add the solution engineer alerts:
+  - `AzureQuotaUsageApproachingLimit`
+  - `NATGatewaysPerVPCApproachingLimit`
+  - `ServiceUsageApproachingLimit`
+
 ## [1.20.0] - 2021-02-16
 
 ### Added
