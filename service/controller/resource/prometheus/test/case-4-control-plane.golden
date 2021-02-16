@@ -77,7 +77,12 @@ spec:
   ruleNamespaceSelector:
     matchLabels:
       name: monitoring
-  ruleSelector: {}
+  ruleSelector:
+    matchExpressions:
+    - key: cluster_type
+      operator: NotIn
+      values:
+      - workload_cluster
   rules:
     alert: {}
   secrets:
