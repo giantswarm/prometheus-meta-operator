@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improved inhibition alert `InhibitionClusterStatusUpdating` to  inhibit alerts 10 minutes after the update has finished to avoid unecessery pages.
+
 ## [1.20.0] - 2021-02-16
 
 ### Added
