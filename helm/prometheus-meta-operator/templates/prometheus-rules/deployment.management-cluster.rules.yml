@@ -82,7 +82,7 @@ spec:
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied-china/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"aws-operator-.+|cluster-operator-.+|coredns-.+|nginx-ingress-controller-.+|app-operator-.+|chart-operator-.+|.+-admission-controller-unique|alertmanager.*|prometheus.*|promxy.*", cluster_id=~"argali|giraffe"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"aws-operator-.+|cluster-operator-.+|coredns-.+|nginx-ingress-controller.*|app-operator-.+|chart-operator-.+|.+-admission-controller-unique|alertmanager.*|prometheus.*|promxy.*", cluster_id=~"argali|giraffe"} > 0
       for: 3h
       labels:
         area: kaas
@@ -153,5 +153,17 @@ spec:
         cancel_if_cluster_status_updating: "true"
         severity: page
         team: celestial
+        topic: managementcluster
+    {{- end }}
+    {{- if eq .Values.Installation.V1.Provider.Kind "kvm" }}
+    - alert: KVMManagementClusterDeploymentScaledDownToZero
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} on KVM has been scaled down to zero for prolonged period of time.`}}'
+      expr: kube_deployment_status_replicas_available{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z,-]*)",provider="kvm"} + kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z],-]*)",provider="kvm"} == 0
+      for: 4h
+      labels:
+        area: kaas
+        severity: notify
+        team: rocket
         topic: managementcluster
     {{- end }}

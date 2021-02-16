@@ -8,8 +8,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.20.0] - 2021-02-16
+
 ### Added
 
+- Add the rocket alerts:
+  - `BackendServerUP`
+  - `ClockOutOfSyncKVM`
+  - `CollidingOperatorsRocket`
+  - `DNSCheckErrorRateTooHighKVM`
+  - `DNSErrorRateTooHighKVM`
+  - `EtcdWorkloadClusterDownKVM`
+  - `IngressExporterDown`
+  - `KVMManagementClusterDeploymentScaledDownToZero`
+  - `KVMNetworkErrorRateTooHigh`
+  - `ManagementClusterCriticalPodMetricMissingKVM`
+  - `ManagementClusterCriticalPodNotRunningKVM`
+  - `ManagementClusterMasterNodeMissingRocket`
+  - `ManagementClusterPodLimitAlmostReachedKVM`
+  - `ManagementClusterPodPendingFor15Min`
+  - `MayuSystemdUnitIsNotRunning`
+  - `NetworkInterfaceLeftoverWithoutCluster`
+  - `OnpremManagementClusterMissingNodes`
+  - `OperatorNotReconcilingRocket`
+  - `OperatorkitCRNotDeletedRocket`
+  - `OperatorkitErrorRateTooHighRocket`
+  - `WorkloadClusterCriticalPodMetricMissingKVM`
+  - `WorkloadClusterCriticalPodNotRunningKVM`
+  - `WorkloadClusterEndpointIPDown`
+  - `WorkloadClusterEtcdCommitDurationTooHighKVM`
+  - `WorkloadClusterEtcdDBSizeTooLargeKVM`
+  - `WorkloadClusterEtcdHasNoLeaderKVM`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighKVM`
+  - `WorkloadClusterMasterNodeMissingRocket`
+  - `WorkloadClusterPodLimitAlmostReachedKVM`
 - Added the firecracker rules to PMO:
   - `AWSClusterCreationFailed`
   - `AWSClusterUpdateFailed`
@@ -624,7 +656,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.20.0...HEAD
+[1.20.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.2...v1.20.0
 [1.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.18.0...v1.19.0
