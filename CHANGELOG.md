@@ -10,6 +10,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add the rocket alerts:
+  - `BackendServerUP`
+  - `ClockOutOfSyncKVM`
+  - `CollidingOperatorsRocket`
+  - `DNSCheckErrorRateTooHighKVM`
+  - `DNSErrorRateTooHighKVM`
+  - `EtcdWorkloadClusterDownKVM`
+  - `IngressExporterDown`
+  - `KVMManagementClusterDeploymentScaledDownToZero`
+  - `KVMNetworkErrorRateTooHigh`
+  - `ManagementClusterCriticalPodMetricMissingKVM`
+  - `ManagementClusterCriticalPodNotRunningKVM`
+  - `ManagementClusterMasterNodeMissingRocket`
+  - `ManagementClusterPodLimitAlmostReachedKVM`
+  - `ManagementClusterPodPendingFor15Min`
+  - `MayuSystemdUnitIsNotRunning`
+  - `NetworkInterfaceLeftoverWithoutCluster`
+  - `OnpremManagementClusterMissingNodes`
+  - `OperatorNotReconcilingRocket`
+  - `OperatorkitCRNotDeletedRocket`
+  - `OperatorkitErrorRateTooHighRocket`
+  - `WorkloadClusterCriticalPodMetricMissingKVM`
+  - `WorkloadClusterCriticalPodNotRunningKVM`
+  - `WorkloadClusterEndpointIPDown`
+  - `WorkloadClusterEtcdCommitDurationTooHighKVM`
+  - `WorkloadClusterEtcdDBSizeTooLargeKVM`
+  - `WorkloadClusterEtcdHasNoLeaderKVM`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighKVM`
+  - `WorkloadClusterMasterNodeMissingRocket`
+  - `WorkloadClusterPodLimitAlmostReachedKVM`
 - Added the firecracker rules to PMO:
   - `AWSClusterCreationFailed`
   - `AWSClusterUpdateFailed`
