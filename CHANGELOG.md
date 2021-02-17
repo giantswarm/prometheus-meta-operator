@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Apply prometheus rule group (which includes
+  `PrometheusCantCommunicateWithKubernetesAPI` alert) to Workload Clusters
+
 ## [1.23.0] - 2021-02-17
 
 ### Added
