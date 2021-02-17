@@ -32,7 +32,7 @@ spec:
     - alert: InhibitionClusterStatusUpdating
       annotations:
         description: '{{`Cluster {{ $labels.cluster_id }} has status condition ''Updating''.`}}'
-      expr: statusresource_cluster_status{status="Updating"} == 1 or cluster_operator_cluster_status{status="Updating"} == 1
+      expr: statusresource_cluster_status{status="Updating"} == 1 or cluster_operator_cluster_status{status="Updating"} == 1 or changes(statusresource_cluster_status{status="Updating"}[10m]) == 1 or changes(cluster_operator_cluster_status{status="Updating"}[10m]) == 1
       labels:
         area: kaas
         cluster_status_updating: "true"
