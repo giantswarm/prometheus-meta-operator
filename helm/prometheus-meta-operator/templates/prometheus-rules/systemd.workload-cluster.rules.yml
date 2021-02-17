@@ -13,7 +13,7 @@ spec:
     - alert: WorkloadClusterSystemdUnitFailed
       annotations:
         description: '{{`Systemd unit {{ $labels.name }} is failed on {{ $labels.instance }}.`}}'
-      expr: node_systemd_unit_state{cluster_type="workload_cluster",name!~"coreos-metadata-sshkeys@core.service|debug-tools.service|k8s-addons.service|locksmithd.service|sshd.+service|systemd-coredump.+service|systemd-networkd.service|update-engine.service|update-engine-stub.service", state="failed"} == 1
+      expr: node_systemd_unit_state{cluster_type="workload_cluster",name!~"debug-tools.service|k8s-addons.service|sshd.+service|systemd-coredump.+service|systemd-networkd.service|update-engine-stub.service",state="failed"} == 1
       for: 5m
       labels:
         area: kaas
@@ -35,7 +35,7 @@ spec:
       annotations:
         description: '{{`Disabled Systemd unit {{ $labels.name }} is active on {{ $labels.ip }}.`}}'
         opsrecipe: disabled-systemd-unit-active/
-      expr: node_systemd_unit_state{cluster_type="workload_cluster",name=~"locksmithd.service|update-engine.service", state="active"} == 1
+      expr: node_systemd_unit_state{cluster_type="workload_cluster",name=~"update-engine-stub.service",state="active"} == 1
       for: 5m
       labels:
         area: kaas
