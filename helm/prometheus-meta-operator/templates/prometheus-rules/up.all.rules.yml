@@ -26,3 +26,49 @@ spec:
         severity: page
         team: batman
         topic: releng
+    - alert: CadvisorDown
+      annotations:
+        description: '{{`Cadvisor ({{ $labels.ip }}) is down.`}}'
+      expr: up{app="cadvisor"} == 0
+      for: 15m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_kubelet_down: "true"
+        severity: notify
+        team: ludacris
+        topic: observability
+    - alert: KubeStateMetricsDown
+      annotations:
+        description: '{{`KubeStateMetrics ({{ $labels.instance }}) is down.`}}'
+        opsrecipe: kube-state-metrics-down/
+      expr: up{app="kube-state-metrics"} == 0 or absent(up{app="kube-state-metrics"}) == 1
+      for: 15m
+      labels:
+        area: kaas
+        cancel_if_apiserver_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        kube_state_metrics_down: "true"
+        severity: page
+        team: ludacris
+        topic: observability
+    - alert: NodeExporterDown
+      annotations:
+        description: '{{`NodeExporter ({{ $labels.ip }}) is down.`}}'
+        opsrecipe: node-exporter-is-down/
+      expr: up{app="node-exporter",role!="bastion"} == 0
+      for: 30m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_cluster_with_scaling_nodepools: "true"
+        cancel_if_kubelet_down: "true"
+        severity: page
+        team: ludacris
+        topic: observability

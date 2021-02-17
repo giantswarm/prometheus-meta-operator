@@ -8,9 +8,224 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add the sig-customer alerts:
+  - `WorkloadClusterCertificateWillExpireInLessThanAMonth`
+  - `WorkloadClusterCertificateWillExpireMetricMissing`
+- Add the ludacris alerts:
+  - `CadvisorDown`
+  - `CalicoRestartRateTooHigh`
+  - `CertOperatorVaultTokenAlmostExpiredMissing`
+  - `CertOperatorVaultTokenAlmostExpired`
+  - `ClusterServiceVaultTokenAlmostExpiredMissing`
+  - `ClusterServiceVaultTokenAlmostExpired`
+  - `CollidingOperatorsLudacris`
+  - `CoreDNSCPUUsageTooHigh`
+  - `CoreDNSDeploymentNotSatisfied`
+  - `CoreDNSLatencyTooHigh`
+  - `DeploymentNotSatisfiedLudacris` and assign it to rocket `DeploymentNotSatisfiedRocket`
+  - `DockerMemoryUsageTooHigh` for both Ludacris and Biscuit
+  - `DockerVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `EtcdVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `JobFailed` renamed to `ManagementClusterJobFailed`
+  - `KubeConfigMapCreatedMetricMissing`
+  - `KubeDaemonSetCreatedMetricMissing`
+  - `KubeDeploymentCreatedMetricMissing`
+  - `KubeEndpointCreatedMetricMissing`
+  - `KubeNamespaceCreatedMetricMissing`
+  - `KubeNodeCreatedMetricMissing`
+  - `KubePodCreatedMetricMissing`
+  - `KubeReplicaSetCreatedMetricMissing`
+  - `KubeSecretCreatedMetricMissing`
+  - `KubeServiceCreatedMetricMissing`
+  - `KubeStateMetricsDown`
+  - `KubeletConditionBad`
+  - `KubeletDockerOperationsErrorsTooHigh`
+  - `KubeletDockerOperationsLatencyTooHigh`
+  - `KubeletPLEGLatencyTooHigh`
+  - `KubeletVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `LogVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `MachineAllocatedFileDescriptorsTooHigh`
+  - `MachineEntropyTooLow`
+  - `MachineLoadTooHigh` and moved it to biscuit
+  - `MachineMemoryUsageTooHigh` and moved it to biscuit
+  - `ManagementClusterAPIServerAdmissionWebhookErrors`
+  - `ManagementClusterAPIServerLatencyTooHigh`
+  - `ManagementClusterContainerIsRestartingTooFrequently`
+  - `ManagementClusterCriticalSystemdUnitFailed`
+  - `ManagementClusterDaemonSetNotSatisfiedLudacris`
+  - `ManagementClusterDaemonSetNotSatisfiedLudacris`
+  - `ManagementClusterDisabledSystemdUnitActive`
+  - `ManagementClusterHighNumberSystemdUnits`
+  - `ManagementClusterNetExporterCPUUsageTooHigh`
+  - `ManagementClusterSystemdUnitFailed`
+  - `ManagementClusterWebhookDurationExceedsTimeout`
+  - `Network95thPercentileLatencyTooHigh`
+  - `NetworkCheckErrorRateTooHigh`
+  - `NodeConnTrackAlmostExhausted`
+  - `NodeExporterCollectorFailed`
+  - `NodeExporterDeviceError`
+  - `NodeExporterDown`
+  - `NodeExporterMissing`
+  - `NodeHasConstantOOMKills`
+  - `NodeStateFlappingUnderLoad`
+  - `OperatorNotReconcilingLudacris`
+  - `OperatorkitErrorRateTooHighLudacris`
+  - `PersistentVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `ReleaseNotReady`
+  - `RootVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `SYNRetransmissionRateTooHigh`
+  - `ServiceLevelBurnRateTooHigh`
+  - `WorkloadClusterAPIServerAdmissionWebhookErrors`
+  - `WorkloadClusterAPIServerLatencyTooHigh`
+  - `WorkloadClusterCriticalSystemdUnitFailed`
+  - `WorkloadClusterDaemonSetNotSatisfiedLudacris`
+  - `WorkloadClusterDisabledSystemdUnitActive`
+  - `WorkloadClusterHighNumberSystemdUnits`
+  - `WorkloadClusterNetExporterCPUUsageTooHigh`
+  - `WorkloadClusterSystemdUnitFailed`
+  - `WorkloadClusterWebhookDurationExceedsTimeout`
+
+### Changed
+
+- Migrate and rename `EBSVolumeMountErrors` to `ManagementClusterEBSVolumeMountErrors` and `WorkloadClusterEBSVolumeMountErrors`
+
 ### Removed
 
 - Removing legacy finalizers resource used to remove old custom resource finalizers
+
+## [1.22.0] - 2021-02-16
+
+### Changed
+
+- Improved inhibition alert `InhibitionClusterStatusUpdating` to  inhibit alerts 10 minutes after the update has finished to avoid unecessery pages.
+
+## [1.21.0] - 2021-02-16
+
+### Changed
+
+- Split `ManagementClusterAppFailed` per team
+
+### Added
+
+- Add the solution engineer alerts:
+  - `AzureQuotaUsageApproachingLimit`
+  - `NATGatewaysPerVPCApproachingLimit`
+  - `ServiceUsageApproachingLimit`
+
+## [1.20.0] - 2021-02-16
+
+### Added
+
+- Add the rocket alerts:
+  - `BackendServerUP`
+  - `ClockOutOfSyncKVM`
+  - `CollidingOperatorsRocket`
+  - `DNSCheckErrorRateTooHighKVM`
+  - `DNSErrorRateTooHighKVM`
+  - `EtcdWorkloadClusterDownKVM`
+  - `IngressExporterDown`
+  - `KVMManagementClusterDeploymentScaledDownToZero`
+  - `KVMNetworkErrorRateTooHigh`
+  - `ManagementClusterCriticalPodMetricMissingKVM`
+  - `ManagementClusterCriticalPodNotRunningKVM`
+  - `ManagementClusterMasterNodeMissingRocket`
+  - `ManagementClusterPodLimitAlmostReachedKVM`
+  - `ManagementClusterPodPendingFor15Min`
+  - `MayuSystemdUnitIsNotRunning`
+  - `NetworkInterfaceLeftoverWithoutCluster`
+  - `OnpremManagementClusterMissingNodes`
+  - `OperatorNotReconcilingRocket`
+  - `OperatorkitCRNotDeletedRocket`
+  - `OperatorkitErrorRateTooHighRocket`
+  - `WorkloadClusterCriticalPodMetricMissingKVM`
+  - `WorkloadClusterCriticalPodNotRunningKVM`
+  - `WorkloadClusterEndpointIPDown`
+  - `WorkloadClusterEtcdCommitDurationTooHighKVM`
+  - `WorkloadClusterEtcdDBSizeTooLargeKVM`
+  - `WorkloadClusterEtcdHasNoLeaderKVM`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighKVM`
+  - `WorkloadClusterMasterNodeMissingRocket`
+  - `WorkloadClusterPodLimitAlmostReachedKVM`
+- Added the firecracker rules to PMO:
+  - `AWSClusterCreationFailed`
+  - `AWSClusterUpdateFailed`
+  - `AWSManagementClusterDeploymentScaledDownToZero`
+  - `AWSManagementClusterMissingNodes`
+  - `AWSNetworkErrorRateTooHigh`
+  - `ClockOutOfSyncAWS`
+  - `CloudFormationStackFailed`
+  - `CloudFormationStackRollback`
+  - `ClusterAutoscalerAppFailedAWS`
+  - `ClusterAutoscalerAppNotInstalledAWS`
+  - `ClusterAutoscalerAppPendingInstallAWS`
+  - `ClusterAutoscalerAppPendingUpgradeAWS`
+  - `CollidingOperatorsFirecracker`
+  - `ContainerIsRestartingTooFrequentlyFirecracker`
+  - `CredentialdCantReachKubernetes`
+  - `DNSCheckErrorRateTooHighAWS`
+  - `DNSErrorRateTooHighAWS`
+  - `DefaultCredentialsMissing`
+  - `DeploymentNotSatisfiedChinaFirecracker`
+  - `DeploymentNotSatisfiedFirecracker`
+  - `ELBHostsOutOfService`
+  - `EtcdWorkloadClusterDownAWS`
+  - `FluentdMemoryHighUtilization`
+  - `JobHasNotBeenScheduledForTooLong`
+  - `KiamMetadataFindRoleErrors`
+  - `ManagementClusterDaemonSetNotSatisfiedChinaFirecracker`
+  - `ManagementClusterDaemonSetNotSatisfiedFirecracker`
+  - `OperatorNotReconcilingFirecracker`
+  - `OperatorkitCRNotDeletedFirecracker`
+  - `OperatorkitErrorRateTooHighFirecracker`
+  - `TooManyCredentialsForOrganization`
+  - `TrustedAdvisorErroring`
+  - `WorkloadClusterCriticalPodNotRunningAWS`
+  - `WorkloadClusterCriticalPodMetricMissingAWS`
+  - `WorkloadClusterDaemonSetNotSatisfiedFirecracker`
+  - `WorkloadClusterEtcdCommitDurationTooHighAWS`
+  - `WorkloadClusterEtcdDBSizeTooLargeAWS`
+  - `WorkloadClusterEtcdHasNoLeaderAWS`
+  - `WorkloadClusterEtcdNumberOfLeaderChangesTooHighAWS`
+  - `WorkloadClusterMasterNodeMissingFirecracker`
+  - `WorkloadClusterPodLimitAlmostReachedAWS`
+- Splitting `NodeIsUnschedulable` per team
+- Split `ContainerIsRestartingTooFrequentlyFirecracker` into `WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker` and `ManagementClusterContainerIsRestartingTooFrequentlyFirecracker`
+- Add the following biscuit alerts to split alerts between workload and management cluster:
+  - `ManagementClusterCriticalPodNotRunning`
+  - `ManagementClusterCriticalPodMetricMissing`
+  - `ManagementClusterPodLimitAlmostReached`
+
+### Changed
+
+- Move `AzureManagementClusterMissingNodes` and `AWSManagementClusterMissingNodes` to team biscuit `ManagementClusterMissingNodes`
+- Move `ManagementClusterPodStuckAzure` and `ManagementClusterPodStuckAWS` to team biscuit `ManagementClusterPodPendingFor15Min`
+- Renamed the following alerts:
+  - `AzureClusterAutoscalerIsRestartingFrequently` -> `WorkloadClusterAutoscalerIsRestartingFrequentlyAzure`
+  - `CriticalPodNotRunningAzure` -> `WorkloadClusterCriticalPodNotRunningAzure`
+  - `CriticalPodMetricMissingAzure` -> `WorkloadClusterCriticalPodMetricMissingAzure`
+  - `MasterNodeMissingCelestial` -> `WorkloadClusterMasterNodeMissingCelestial`
+  - `NodeUnexpectedTaintNodeWithImpairedVolumes` -> `WorkloadClusterNodeUnexpectedTaintNodeWithImpairedVolumes`
+  - `PodLimitAlmostReachedAzure` -> `WorkloadClusterPodLimitAlmostReachedAzure`
+
+### Fixed
+
+- Do not page biscuit for a failing prometheus
+
+## [1.19.2] - 2021-02-12
+
+### Fixed
+
+- Fix incorrect prometheus memory usage recording rules after we migrated to the new monitoring setup
+
+### Changed
+
+- Use azure-collector instead of azure-operator in `AzureClusterCreationFailed` alert
+
+### Removed
+
+- Removing service monitor resource used to clean up unused service monitor CR
 
 ## [1.19.1] - 2021-02-10
 
@@ -547,7 +762,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.22.0...HEAD
+[1.22.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.21.0...v1.22.0
+[1.21.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.20.0...v1.21.0
+[1.20.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.2...v1.20.0
+[1.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.1...v1.19.2
 [1.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.19.0...v1.19.1
 [1.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.18.0...v1.19.0
 [1.18.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.17.2...v1.18.0

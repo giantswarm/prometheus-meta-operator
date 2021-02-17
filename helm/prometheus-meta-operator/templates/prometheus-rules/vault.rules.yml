@@ -32,3 +32,49 @@ spec:
         severity: page
         team: biscuit
         topic: vault
+    - alert: ClusterServiceVaultTokenAlmostExpired
+      annotations:
+        description: '{{`Vault token for {{ $labels.app }} ({{ $labels.instance }}) is about to expire.`}}'
+        opsrecipe: recreate-vault-tokens/
+      expr: sum((cluster_service_vault_token_expire_time - time()) < (60 * 60 * 24 * 7)) BY (app, instance)
+      for: 5m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: ludacris
+        topic: vault
+    - alert: ClusterServiceVaultTokenAlmostExpiredMissing
+      annotations:
+        description: '{{`Metric cluster_service_vault_token_expire_time_seconds is missing.`}}'
+        opsrecipe: absent-metrics/
+      expr: absent(cluster_service_vault_token_expire_time) == 1
+      for: 120m
+      labels:
+        area: kaas
+        severity: page
+        team: ludacris
+        topic: vault
+    - alert: CertOperatorVaultTokenAlmostExpired
+      annotations:
+        description: '{{`Vault token for {{ $labels.app }} ({{ $labels.instance }}) is about to expire.`}}'
+        opsrecipe: recreate-vault-tokens/
+      expr: sum((cert_operator_vault_token_expire_time_seconds - time()) < (60 * 60 * 24 * 7)) BY (app, instance)
+      for: 5m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: ludacris
+        topic: vault
+    - alert: CertOperatorVaultTokenAlmostExpiredMissing
+      annotations:
+        description: '{{`Metric cert_operator_vault_token_expire_time_seconds is missing.`}}'
+        opsrecipe: absent-metrics/
+      expr: absent(cert_operator_vault_token_expire_time_seconds) == 1
+      for: 120m
+      labels:
+        area: kaas
+        severity: page
+        team: ludacris
+        topic: vault

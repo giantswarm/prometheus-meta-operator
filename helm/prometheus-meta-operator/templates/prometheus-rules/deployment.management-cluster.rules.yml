@@ -15,7 +15,7 @@ spec:
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"alertmanager.*|prometheus|prometheus-meta-operator.*|promxy.*", cluster_id!~"argali|giraffe"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"alertmanager.*|prometheus.*|promxy.*", cluster_id!~"argali|giraffe"} > 0
       for: 30m
       labels:
         area: kaas
@@ -29,7 +29,7 @@ spec:
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"alertmanager.*|prometheus|prometheus-meta-operator.*|promxy.*", cluster_id=~"argali|giraffe"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"alertmanager.*|prometheus.*|promxy.*", cluster_id=~"argali|giraffe"} > 0
       for: 30m
       labels:
         area: kaas
@@ -68,7 +68,7 @@ spec:
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"aws-operator-.+|cluster-operator-.+|coredns-.+|nginx-ingress-controller-.+|worker-.+|master-.+|app-operator-.+|chart-operator-.+|.+-admission-controller-unique", cluster_id!~"argali|giraffe"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"aws-operator-.+|azure-operator-.+|cluster-operator-.+|coredns-.+|nginx-ingress-controller-.+|worker-.+|master-.+|app-operator-.+|chart-operator-.+|.+-admission-controller-unique|alertmanager.*|prometheus.*|promxy.*", cluster_id!~"argali|giraffe"} > 0
       for: 30m
       labels:
         area: kaas
@@ -82,13 +82,53 @@ spec:
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
         opsrecipe: deployment-not-satisfied-china/
-      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"coredns|nginx-ingress-controller|alertmanager.*|prometheus.*|promxy.*|.+-admission-controller-unique", cluster_id=~"argali|giraffe"} > 0
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment!~"aws-operator-.+|cluster-operator-.+|coredns-.+|nginx-ingress-controller.*|app-operator-.+|chart-operator-.+|.+-admission-controller-unique|alertmanager.*|prometheus.*|promxy.*", cluster_id=~"argali|giraffe"} > 0
       for: 3h
       labels:
         area: kaas
         severity: page
         team: biscuit
         topic: managementcluster
+    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+    - alert: AWSManagementClusterDeploymentScaledDownToZero
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} on AWS has been scaled down to zero for prolonged period of time.`}}'
+      expr: kube_deployment_status_replicas_available{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z,-]*)",provider="aws"} + kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z,-]*)",provider="aws"} == 0
+      for: 4h
+      labels:
+        area: kaas
+        severity: notify
+        team: firecracker
+        topic: managementcluster
+    - alert: DeploymentNotSatisfiedFirecracker
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"aws-admission-controller.*|aws-operator.*|cluster-operator.*"} > 0
+      for: 30m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: firecracker
+        topic: managementcluster
+    - alert: DeploymentNotSatisfiedChinaFirecracker
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"aws-admission-controller.*|aws-operator.*|cluster-operator.*", cluster_id=~"argali|giraffe"} > 0
+      for: 3h
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: firecracker
+        topic: managementcluster
+    {{- end }}
     {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
     - alert: AzureManagementClusterDeploymentScaledDownToZero
       annotations:
@@ -115,4 +155,29 @@ spec:
         team: celestial
         topic: managementcluster
     {{- end }}
-
+    {{- if eq .Values.Installation.V1.Provider.Kind "kvm" }}
+    - alert: KVMManagementClusterDeploymentScaledDownToZero
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} on KVM has been scaled down to zero for prolonged period of time.`}}'
+      expr: kube_deployment_status_replicas_available{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z,-]*)",provider="kvm"} + kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"([a-z]*)-operator([a-z],-]*)",provider="kvm"} == 0
+      for: 4h
+      labels:
+        area: kaas
+        severity: notify
+        team: rocket
+        topic: managementcluster
+    - alert: DeploymentNotSatisfiedRocket
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: deployment-not-satisfied/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="management_cluster", deployment=~"worker-.+|master-.+"} > 0
+      for: 30m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: rocket
+        topic: managementcluster
+    {{- end }}

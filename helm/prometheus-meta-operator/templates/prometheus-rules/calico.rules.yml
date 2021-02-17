@@ -9,6 +9,17 @@ spec:
   groups:
   - name: calico
     rules:
+    - alert: CalicoRestartRateTooHigh
+      annotations:
+        description: '{{`Calico-node {{ $labels.namespace }}/{{ $labels.pod }} restarted {{ $value }} times.`}}'
+        opsrecipe: calico-restarts-high/
+      expr: increase(kube_pod_container_status_restarts_total{container="calico-node"}[30m]) > 3
+      for: 5m
+      labels:
+        area: kaas
+        severity: notify
+        team: ludacris
+        topic: kubernetes
     - alert: CalicoNodeMemoryHighUtilization
       annotations:
         description: |-
@@ -21,5 +32,5 @@ spec:
       labels:
         area: kaas
         severity: notify
-        team: biscuit
+        team: ludacris
         topic: kubernetes
