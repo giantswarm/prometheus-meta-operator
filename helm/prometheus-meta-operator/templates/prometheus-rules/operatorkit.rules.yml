@@ -159,3 +159,29 @@ spec:
         severity: notify
         team: rocket
         topic: qa
+    - alert: OperatorkitErrorRateTooHighLudacris
+      #  Ludacris is responsible ignition-operator,cert-operator,node-operator.
+      annotations:
+        description: '{{`{{ $labels.namespace }}/{{ $labels.app }}@{{ $labels.app_version }} has reported errors. Please check the logs.`}}'
+        opsrecipe: check-operator-error-rate-high/
+      expr: operatorkit_controller_error_total{app=~"ignition-operator|cert-operator|node-operator"} > 5
+      for: 1m
+      labels:
+        area: kaas
+        severity: notify
+        team: ludacris
+        topic: qa
+    # In case something stops an operator from reconciling CRs we want to
+    # be paged to be able to fix the issue immediately.
+    - alert: OperatorNotReconcilingLudacris
+      annotations:
+        description: '{{`{{ $labels.namespace }}/{{ $labels.app }}@{{ $labels.app_version }} has stopped the reconciliation. Please check logs.`}}'
+        opsrecipe: operator-not-reconciling/
+      expr: (sum by (instance, app, app_version, namespace)(increase(operatorkit_controller_event_count{app=~"cert-operator|node-operator"}[10m])) == 0 and on (instance) (operatorkit_controller_deletion_timestamp or operatorkit_controller_creation_timestamp))
+      for: 20m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: notify
+        team: ludacris
+        topic: qa
