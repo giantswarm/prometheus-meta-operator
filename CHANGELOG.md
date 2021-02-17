@@ -8,6 +8,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add the sig-customer alerts:
+  - `WorkloadClusterCertificateWillExpireInLessThanAMonth`
+  - `WorkloadClusterCertificateWillExpireMetricMissing`
+- Add the ludacris alerts:
+  - `CadvisorDown`
+  - `CalicoRestartRateTooHigh`
+  - `CertOperatorVaultTokenAlmostExpiredMissing`
+  - `CertOperatorVaultTokenAlmostExpired`
+  - `ClusterServiceVaultTokenAlmostExpiredMissing`
+  - `ClusterServiceVaultTokenAlmostExpired`
+  - `CollidingOperatorsLudacris`
+  - `CoreDNSCPUUsageTooHigh`
+  - `CoreDNSDeploymentNotSatisfied`
+  - `CoreDNSLatencyTooHigh`
+  - `DeploymentNotSatisfiedLudacris` and assign it to rocket `DeploymentNotSatisfiedRocket`
+  - `DockerMemoryUsageTooHigh` for both Ludacris and Biscuit
+  - `DockerVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `EtcdVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `JobFailed` renamed to `ManagementClusterJobFailed`
+  - `KubeConfigMapCreatedMetricMissing`
+  - `KubeDaemonSetCreatedMetricMissing`
+  - `KubeDeploymentCreatedMetricMissing`
+  - `KubeEndpointCreatedMetricMissing`
+  - `KubeNamespaceCreatedMetricMissing`
+  - `KubeNodeCreatedMetricMissing`
+  - `KubePodCreatedMetricMissing`
+  - `KubeReplicaSetCreatedMetricMissing`
+  - `KubeSecretCreatedMetricMissing`
+  - `KubeServiceCreatedMetricMissing`
+  - `KubeStateMetricsDown`
+  - `KubeletConditionBad`
+  - `KubeletDockerOperationsErrorsTooHigh`
+  - `KubeletDockerOperationsLatencyTooHigh`
+  - `KubeletPLEGLatencyTooHigh`
+  - `KubeletVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `LogVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `MachineAllocatedFileDescriptorsTooHigh`
+  - `MachineEntropyTooLow`
+  - `MachineLoadTooHigh` and moved it to biscuit
+  - `MachineMemoryUsageTooHigh` and moved it to biscuit
+  - `ManagementClusterAPIServerAdmissionWebhookErrors`
+  - `ManagementClusterAPIServerLatencyTooHigh`
+  - `ManagementClusterContainerIsRestartingTooFrequently`
+  - `ManagementClusterCriticalSystemdUnitFailed`
+  - `ManagementClusterDaemonSetNotSatisfiedLudacris`
+  - `ManagementClusterDaemonSetNotSatisfiedLudacris`
+  - `ManagementClusterDisabledSystemdUnitActive`
+  - `ManagementClusterHighNumberSystemdUnits`
+  - `ManagementClusterNetExporterCPUUsageTooHigh`
+  - `ManagementClusterSystemdUnitFailed`
+  - `ManagementClusterWebhookDurationExceedsTimeout`
+  - `Network95thPercentileLatencyTooHigh`
+  - `NetworkCheckErrorRateTooHigh`
+  - `NodeConnTrackAlmostExhausted`
+  - `NodeExporterCollectorFailed`
+  - `NodeExporterDeviceError`
+  - `NodeExporterDown`
+  - `NodeExporterMissing`
+  - `NodeHasConstantOOMKills`
+  - `NodeStateFlappingUnderLoad`
+  - `OperatorNotReconcilingLudacris`
+  - `OperatorkitErrorRateTooHighLudacris`
+  - `PersistentVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `ReleaseNotReady`
+  - `RootVolumeSpaceTooLow` for both Ludacris and Biscuit
+  - `SYNRetransmissionRateTooHigh`
+  - `ServiceLevelBurnRateTooHigh`
+  - `WorkloadClusterAPIServerAdmissionWebhookErrors`
+  - `WorkloadClusterAPIServerLatencyTooHigh`
+  - `WorkloadClusterCriticalSystemdUnitFailed`
+  - `WorkloadClusterDaemonSetNotSatisfiedLudacris`
+  - `WorkloadClusterDisabledSystemdUnitActive`
+  - `WorkloadClusterHighNumberSystemdUnits`
+  - `WorkloadClusterNetExporterCPUUsageTooHigh`
+  - `WorkloadClusterSystemdUnitFailed`
+  - `WorkloadClusterWebhookDurationExceedsTimeout`
+
+### Changed
+
+- Migrate and rename `EBSVolumeMountErrors` to `ManagementClusterEBSVolumeMountErrors` and `WorkloadClusterEBSVolumeMountErrors`
+
 ## [1.22.0] - 2021-02-16
 
 ### Changed

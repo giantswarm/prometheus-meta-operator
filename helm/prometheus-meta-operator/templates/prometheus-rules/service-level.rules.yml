@@ -1,0 +1,29 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  creationTimestamp: null
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: service-level.rules
+spec:
+  groups:
+  - name: service-level
+    rules:
+    - alert: ServiceLevelBurnRateTooHigh
+      annotations:
+        description: '{{`Service level burn rate is too high for {{ $labels.service }} service.`}}'
+        opsrecipe: service-level-burn-rate-too-high/
+      expr: |
+        slo_errors_per_request:ratio_rate1h > 36 * 0.001
+        and
+        slo_errors_per_request:ratio_rate5m > 36 * 0.001
+        or
+        slo_errors_per_request:ratio_rate6h > 12 * 0.001
+        and
+        slo_errors_per_request:ratio_rate30m > 12 * 0.001
+      for: 5m
+      labels:
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
