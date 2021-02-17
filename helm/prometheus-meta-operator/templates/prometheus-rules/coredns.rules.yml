@@ -12,7 +12,7 @@ spec:
     - alert: CoreDNSCPUUsageTooHigh
       annotations:
         description: '{{`CoreDNS CPU usage is too high.`}}'
-      expr: rate(container_cpu_user_seconds_total{pod_name=~"coredns-.*"}[5m]) > 0.15
+      expr: rate(container_cpu_user_seconds_total{pod=~"coredns-.*"}[5m]) > 0.15
       for: 5m
       labels:
         area: kaas

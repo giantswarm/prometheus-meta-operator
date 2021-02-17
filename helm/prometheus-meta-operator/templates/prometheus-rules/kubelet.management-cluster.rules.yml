@@ -27,7 +27,7 @@ spec:
         topic: managementcluster
     - alert: KubeletDockerOperationsErrorsTooHigh
       annotations:
-        description: '{{`Kubelet ({{ $labels.ip }}) is reporting errors rates while performing Docker {{ $labels.operation_type }} operations.`}}'
+        description: '{{`Kubelet ({{ $labels.instance }}) is reporting errors rates while performing Docker {{ $labels.operation_type }} operations.`}}'
       expr: rate(kubelet_docker_operations_errors[5m]) > 1
       for: 10m
       labels:
@@ -41,7 +41,7 @@ spec:
         topic: managementcluster
     - alert: KubeletDockerOperationsLatencyTooHigh
       annotations:
-        description: '{{`Kubelet ({{ $labels.ip }}) is taking too long to perform Docker {{ $labels.operation_type }} operations.`}}'
+        description: '{{`Kubelet ({{ $labels.instance }}) is taking too long to perform Docker {{ $labels.operation_type }} operations.`}}'
       expr: kubelet_docker_operations_latency_microseconds{quantile="0.9", operation_type!="pull_image"} > 115000000
       for: 10m
       labels:
@@ -55,8 +55,8 @@ spec:
         topic: managementcluster
     - alert: KubeletPLEGLatencyTooHigh
       annotations:
-        description: '{{`Kubelet ({{ $labels.ip }}) PLEG latency is too high.`}}'
-      expr: histogram_quantile(0.99, sum(rate(kubelet_pleg_relist_duration_seconds_bucket[5m])) by (cluster_id, ip, le)) > 100
+        description: '{{`Kubelet ({{ $labels.instance }}) PLEG latency is too high.`}}'
+      expr: histogram_quantile(0.99, sum(rate(kubelet_pleg_relist_duration_seconds_bucket[5m])) by (cluster_id, instance, le)) > 100
       for: 10m
       labels:
         area: kaas
