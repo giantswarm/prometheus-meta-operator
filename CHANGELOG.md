@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `TestClusterTooOld` for testing installations
+
 ## [1.23.0] - 2021-02-17
 
 ### Added
