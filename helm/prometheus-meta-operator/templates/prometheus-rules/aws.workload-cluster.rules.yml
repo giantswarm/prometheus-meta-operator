@@ -11,6 +11,20 @@ spec:
   groups:
   - name: aws
     rules:
+    - alert: WorkloadClusterEBSVolumeMountErrors
+      annotations:
+        description: '{{`EBS Volume mount error on the node {{ $labels.instance }}.`}}'
+        opsrecipe: aws-volume-mount-issues/
+      expr: rate(storage_operation_errors_total{volume_plugin="kubernetes.io/aws-ebs"}[15m]) > 0
+      for: 30m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: notify
+        team: firecracker
+        topic: aws
     - alert: WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker
       annotations:
         description: '{{`Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} is restarting too often.`}}'
