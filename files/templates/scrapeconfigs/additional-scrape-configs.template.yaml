@@ -195,7 +195,7 @@
     replacement: etcd
   - source_labels: [__address__]
     target_label: instance
-[[ if and (ne .ClusterType "management_cluster") (.WorkloadClusterETCDDomain) ]]
+[[ if and (eq .ClusterType "workload_cluster") (.WorkloadClusterETCDDomain) ]]
   - source_labels: [__address__]
     target_label: __address__
     replacement: [[ .WorkloadClusterETCDDomain ]]
