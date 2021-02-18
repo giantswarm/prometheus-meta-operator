@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `TestClusterTooOld` for testing installations
+
 ### Changed
 
 - Apply prometheus rule group (which includes
