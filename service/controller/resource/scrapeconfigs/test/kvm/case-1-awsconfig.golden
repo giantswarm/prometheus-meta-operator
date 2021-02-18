@@ -258,6 +258,7 @@
     replacement: etcd
   - source_labels: [__address__]
     target_label: instance
+
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]    

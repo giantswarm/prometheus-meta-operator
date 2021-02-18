@@ -1,6 +1,7 @@
 package scrapeconfigs
 
 import (
+	"context"
 	"path"
 	"reflect"
 
@@ -32,16 +33,17 @@ type Config struct {
 }
 
 type TemplateData struct {
-	APIServerURL   string
-	Bastions       []string
-	Provider       string
-	ClusterID      string
-	ClusterType    string
-	SecretName     string
-	EtcdSecretName string
-	Installation   string
-	IsInCluster    bool
-	Vault          string
+	APIServerURL              string
+	Bastions                  []string
+	Provider                  string
+	ClusterID                 string
+	ClusterType               string
+	SecretName                string
+	EtcdSecretName            string
+	Installation              string
+	IsInCluster               bool
+	Vault                     string
+	WorkloadClusterETCDDomain string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -85,7 +87,23 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 }
 
 func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
-	scrapeConfigs, err := toData(v, config)
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	var workloadClusterETCDDomain string = ""
+	if "workload_cluster" == key.ClusterType(v) {
+		clusterID := key.ClusterID(cluster)
+		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(context.Background(), "master", metav1.GetOptions{})
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		if value, ok := service.Annotations["giantswarm.io/etcd-domain"]; ok {
+			workloadClusterETCDDomain = value
+		}
+	}
+
+	scrapeConfigs, err := toData(v, config, workloadClusterETCDDomain)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -106,13 +124,13 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	return scrapeConfigsSecret, nil
 }
 
-func toData(v interface{}, config Config) ([]byte, error) {
+func toData(v interface{}, config Config, workloadClusterETCDDomain string) ([]byte, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	templateData, err := getTemplateData(cluster, config)
+	templateData, err := getTemplateData(cluster, config, workloadClusterETCDDomain)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -125,19 +143,20 @@ func toData(v interface{}, config Config) ([]byte, error) {
 	return scrapeConfigs, nil
 }
 
-func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
+func getTemplateData(cluster metav1.Object, config Config, workloadClusterETCDDomain string) (*TemplateData, error) {
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
-		APIServerURL:   key.APIUrl(cluster),
-		Bastions:       config.Bastions,
-		ClusterID:      clusterID,
-		ClusterType:    key.ClusterType(cluster),
-		Provider:       config.Provider,
-		Installation:   config.Installation,
-		SecretName:     key.Secret(),
-		EtcdSecretName: key.EtcdSecret(cluster),
-		Vault:          config.Vault,
+		APIServerURL:              key.APIUrl(cluster),
+		Bastions:                  config.Bastions,
+		ClusterID:                 clusterID,
+		ClusterType:               key.ClusterType(cluster),
+		Provider:                  config.Provider,
+		Installation:              config.Installation,
+		SecretName:                key.Secret(),
+		EtcdSecretName:            key.EtcdSecret(cluster),
+		Vault:                     config.Vault,
+		WorkloadClusterETCDDomain: workloadClusterETCDDomain,
 	}
 
 	return d, nil
