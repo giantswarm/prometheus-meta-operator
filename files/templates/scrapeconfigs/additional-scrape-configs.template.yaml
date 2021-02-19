@@ -195,6 +195,12 @@
     replacement: etcd
   - source_labels: [__address__]
     target_label: instance
+[[- if and (eq .ClusterType "workload_cluster") (.WorkloadClusterETCDDomain) ]]
+  - source_labels: [__address__]
+    target_label: __address__
+    replacement: [[ .WorkloadClusterETCDDomain ]]
+    action: replace
+[[- end ]]
   # Add ip label.
   - target_label: ip
     source_labels: [__meta_kubernetes_node_address_InternalIP]    
