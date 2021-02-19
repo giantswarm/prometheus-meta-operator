@@ -103,7 +103,7 @@ spec:
         topic: kubernetes
     - alert: WorkloadClusterPodStuckFirecracker
       annotations:
-        description: Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in Pending.
+        description: '{{`Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in Pending.`}}'
       expr: kube_pod_status_phase{namespace="kube-system",pod=~"(aws-node.*|kiam.*|cluster-autoscaler.*)",phase="Pending"} == 1
       for: 15m
       labels:
@@ -112,6 +112,7 @@ spec:
         cancel_if_cluster_status_creating: "true"
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
+        cancel_if_kube_state_metrics_down: "true"
         severity: page
         team: firecracker
         topic: managementcluster
