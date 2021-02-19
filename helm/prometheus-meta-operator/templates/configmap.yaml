@@ -28,6 +28,7 @@ data:
         {{- range .Values.Installation.V1.Monitoring.Prometheus.Bastions }}
         - {{ . }}
         {{- end }}
+        mayu: {{ .Values.Installation.V1.Monitoring.Prometheus.Mayu }}
         remoteWrite:
           url: https://prometheus-us-central1.grafana.net/api/prom/push
         retention:

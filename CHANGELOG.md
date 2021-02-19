@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `TestClusterTooOld` for testing installations
+- Added Mayu as a scrape target as well as puma's pods
 
 ### Changed
 

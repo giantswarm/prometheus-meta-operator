@@ -195,6 +195,7 @@ func New(config Config) (*Service, error) {
 			BaseDomain:              config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 			Provider:                config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			Mayu:                    config.Viper.GetString(config.Flag.Service.Prometheus.Mayu),
 			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
 			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
 			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),

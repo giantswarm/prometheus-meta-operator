@@ -1684,6 +1684,132 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+# Mayu
+- job_name: [[ .ClusterID ]]-prometheus/mayu-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: https
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  static_configs:
+  - targets: 
+    - [[ .Mayu ]]:4080
+    labels:
+      app: mayu
+  relabel_configs:
+[[ include "_labelingschema" . | indent 2 ]]
+[[- if eq .Installation "puma" ]]
+- job_name: management-cluster-blackbox-ingress-http
+  honor_labels: true
+  metrics_path: /probe
+  params:
+    module: [upstream_check]
+  static_configs:
+  - targets:
+    - 10.127.3.131:30038
+    - 10.127.3.131:30040
+    - 10.127.3.131:30042
+    - 10.127.3.131:30044
+    - 10.127.3.132:30038
+    - 10.127.3.132:30040
+    - 10.127.3.132:30042
+    - 10.127.3.132:30044
+    - 10.127.3.133:30038
+    - 10.127.3.133:30040
+    - 10.127.3.133:30042
+    - 10.127.3.133:30044
+    - 10.127.3.134:30038
+    - 10.127.3.134:30040
+    - 10.127.3.134:30042
+    - 10.127.3.134:30044
+    - 10.127.3.135:30038
+    - 10.127.3.135:30040
+    - 10.127.3.135:30042
+    - 10.127.3.135:30044
+    - 10.127.3.136:30038
+    - 10.127.3.136:30040
+    - 10.127.3.136:30042
+    - 10.127.3.136:30044
+    - 10.127.3.137:30038
+    - 10.127.3.137:30040
+    - 10.127.3.137:30042
+    - 10.127.3.137:30044
+    - 10.127.3.138:30038
+    - 10.127.3.138:30040
+    - 10.127.3.138:30042
+    - 10.127.3.138:30044
+    - 10.127.3.139:30038
+    - 10.127.3.139:30040
+    - 10.127.3.139:30042
+    - 10.127.3.139:30044
+    - 10.127.3.140:30038
+    - 10.127.3.140:30040
+    - 10.127.3.140:30042
+    - 10.127.3.140:30044
+    - 10.127.3.141:30038
+    - 10.127.3.141:30040
+    - 10.127.3.141:30042
+    - 10.127.3.141:30044
+    - 10.127.3.142:30038
+    - 10.127.3.142:30040
+    - 10.127.3.142:30042
+    - 10.127.3.142:30044
+    - 10.127.3.143:30038
+    - 10.127.3.143:30040
+    - 10.127.3.143:30042
+    - 10.127.3.143:30044
+    - 10.127.3.144:30038
+    - 10.127.3.144:30040
+    - 10.127.3.144:30042
+    - 10.127.3.144:30044
+    - 10.127.3.145:30038
+    - 10.127.3.145:30040
+    - 10.127.3.145:30042
+    - 10.127.3.145:30044
+    - 10.127.3.146:30038
+    - 10.127.3.146:30040
+    - 10.127.3.146:30042
+    - 10.127.3.146:30044
+    - 10.127.3.147:30038
+    - 10.127.3.147:30040
+    - 10.127.3.147:30042
+    - 10.127.3.147:30044
+    - 10.127.3.148:30038
+    - 10.127.3.148:30040
+    - 10.127.3.148:30042
+    - 10.127.3.148:30044
+    - 10.127.3.149:30038
+    - 10.127.3.149:30040
+    - 10.127.3.149:30042
+    - 10.127.3.149:30044
+    - 10.127.3.150:30038
+    - 10.127.3.150:30040
+    - 10.127.3.150:30042
+    - 10.127.3.150:30044
+    - 10.127.3.151:30038
+    - 10.127.3.151:30040
+    - 10.127.3.151:30042
+    - 10.127.3.151:30044
+    - 10.127.3.152:30038
+    - 10.127.3.152:30040
+    - 10.127.3.152:30042
+    - 10.127.3.152:30044
+    - 10.127.3.153:30038
+    - 10.127.3.153:30040
+    - 10.127.3.153:30042
+    - 10.127.3.153:30044
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+  - source_labels: [module]
+    target_label: __param_module
+  - source_labels: [__param_target]
+    target_label: instance
+  - target_label: __address__
+    replacement: tenant-clusters-prometheus-blackbox-exporter:9115
+[[ include "_labelingschema" . | indent 2 ]]
+[[- end ]]
 [[ end ]]
 - job_name: [[ .ClusterID ]]-prometheus/vault-[[ .ClusterID ]]/0
   honor_labels: true
@@ -1697,6 +1823,14 @@
     - [[ .Vault ]]:9005
     labels:
       app: cert-exporter
+[[- if or (eq .Installation "dragon") (eq .Installation "dinosaur") ]]q
+# DVAG uses HAProxy to allow traffic inside the management clusters. 
+# We added an haproxy exporter on the vault node to ensure we can access vault from the management cluster
+  - targets: 
+    - [[ .Vault ]]:9101
+    labels:
+      app: haproxy-exporter
+[[- end ]]
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
 # gatekeeper
