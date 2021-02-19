@@ -101,7 +101,7 @@ spec:
         severity: page
         team: firecracker
         topic: kubernetes
-    - alert: WorkloadClusterPodStuckFirecracker
+    - alert: WorkloadClusterPodPendingFirecracker
       annotations:
         description: '{{`Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in Pending.`}}'
         opsrecipe: pod-stuck-in-pending/
