@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `TestClusterTooOld` for testing installations
+- Add `ManagementClusterPodStuckFirecracker` and `WorkloadClusterPodStuckFirecracker` alerts for Firecracker.
 
 ## [1.23.0] - 2021-02-17
 
