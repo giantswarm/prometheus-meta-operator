@@ -19,6 +19,7 @@ type ControllerConfig struct {
 	Address                 string
 	BaseDomain              string
 	Bastions                []string
+	Mayu                    string
 	Provider                string
 	Installation            string
 	Pipeline                string

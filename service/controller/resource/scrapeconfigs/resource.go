@@ -28,6 +28,7 @@ type Config struct {
 	Bastions                  []string
 	Installation              string
 	Provider                  string
+	Mayu                      string
 	Vault                     string
 	TemplatePath              string
 	WorkloadClusterETCDDomain string
@@ -43,6 +44,7 @@ type TemplateData struct {
 	EtcdSecretName            string
 	Installation              string
 	IsInCluster               bool
+	Mayu                      string
 	Vault                     string
 	WorkloadClusterETCDDomain string
 }
@@ -159,6 +161,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		SecretName:                key.Secret(),
 		EtcdSecretName:            key.EtcdSecret(cluster),
 		Vault:                     config.Vault,
+		Mayu:                      config.Mayu,
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
 	}
 
