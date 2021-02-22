@@ -30,6 +30,7 @@ spec:
       labels:
         area: "empowerment"
         installation: {{ .Values.Installation.V1.Name }}
+        severity: "page"
         team: "atlas"
         topic: "observability"
   - name: "labelling-schema"
