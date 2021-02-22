@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Apply prometheus rule group (which includes
 - Discover ETCD targets through the LoadBalancer using the `giantswarm.io/etcd-domain` annotation
 
 ### Fixed
