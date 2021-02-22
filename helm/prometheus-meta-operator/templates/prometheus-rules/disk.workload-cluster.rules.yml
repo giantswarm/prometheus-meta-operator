@@ -57,18 +57,6 @@ spec:
         severity: page
         team: ludacris
         topic: storage
-    - alert: PersistentVolumeSpaceTooLow
-      annotations:
-        description: '{{`Persistent volume {{ $labels.mountpoint}} on {{ $labels.instance }} does not have enough free space.`}}'
-        opsrecipe: low-disk-space/#persistent-volume
-      expr: 100 * node_filesystem_free_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*"} / node_filesystem_size_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*"} < 10
-      for: 10m
-      labels:
-        area: kaas
-        cancel_if_outside_working_hours: "true"
-        severity: page
-        team: ludacris
-        topic: storage
     - alert: RootVolumeSpaceTooLow
       annotations:
         description: '{{`Root volume {{ $labels.mountpoint}} on {{ $labels.instance }} does not have enough free space.`}}'
