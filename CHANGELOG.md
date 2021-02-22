@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Discover ETCD targets through the LoadBalancer using the `giantswarm.io/etcd-domain` annotation
 
+### Fixed
+
+- Remove `PersistentVolumeSpaceTooLow` from Workload Clusters.
+
 ## [1.23.0] - 2021-02-17
 
 ### Added
