@@ -136,7 +136,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: firecracker
+        team: batman
         topic: releng
     - alert: ClusterAutoscalerAppNotInstalledAWS
       annotations:
@@ -150,7 +150,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: firecracker
+        team: batman
         topic: releng
     - alert: ClusterAutoscalerAppPendingInstallAWS
       annotations:
@@ -163,7 +163,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: firecracker
+        team: batman
         topic: releng
     - alert: ClusterAutoscalerAppPendingUpgradeAWS
       annotations:
@@ -176,7 +176,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: firecracker
+        team: batman
         topic: releng
     {{- end }}
     {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
@@ -191,7 +191,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: celestial
+        team: batman
         topic: releng
     - alert: ClusterAutoscalerAppPendingInstallAzure
       annotations:
@@ -204,7 +204,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: celestial
+        team: batman
         topic: releng
     - alert: ClusterAutoscalerAppPendingUpgradeAzure
       annotations:
@@ -217,7 +217,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: celestial
+        team: batman
         topic: releng
     - alert: ClusterAutoscalerAppNotInstalledAzure
       annotations:
@@ -231,7 +231,7 @@ spec:
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
         severity: notify
-        team: celestial
+        team: batman
         topic: releng
     {{- end }}
     - alert: AppWithoutTeamLabel
