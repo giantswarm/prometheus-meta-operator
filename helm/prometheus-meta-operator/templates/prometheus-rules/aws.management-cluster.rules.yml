@@ -87,6 +87,22 @@ spec:
         severity: notify
         team: firecracker
         topic: aws
+    - alert: ManagementClusterPodPendingFirecracker
+      annotations:
+        description: '{{`Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in Pending.`}}'
+        opsrecipe: pod-stuck-in-pending/
+      expr: kube_pod_status_phase{namespace="giantswarm",pod=~"(aws-operator.*|cluster-operator.*)",phase="Pending"} == 1
+      for: 25m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_kube_state_metrics_down: "true"
+        severity: page
+        team: firecracker
+        topic: managementcluster
     - alert: NATGatewaysPerVPCApproachingLimit
       annotations:
         description: '{{`AWS number of NAT Gateways for {{ $labels.vpc }} in account {{ $labels.account_id }} is too close to limit.`}}'

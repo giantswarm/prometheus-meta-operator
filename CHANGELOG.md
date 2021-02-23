@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
 - Add Alert for missing prometheus for a workload cluster
+- Add `ManagementClusterPodStuckFirecracker` and `WorkloadClusterPodStuckFirecracker` alerts for Firecracker.
+- Add `ManagementClusterPodStuckCelestial` alert for Celestial.
 
 ## [1.23.1] - 2021-02-22
 
@@ -19,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Apply prometheus rule group (which includes
 - Discover ETCD targets through the LoadBalancer using the `giantswarm.io/etcd-domain` annotation
 
 ### Fixed
