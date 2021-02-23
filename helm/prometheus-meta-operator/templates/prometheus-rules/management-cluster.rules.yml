@@ -14,7 +14,7 @@ spec:
     - alert: ManagementClusterPodPendingFor15Min
       annotations:
         description: '{{`Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in Pending.`}}'
-      expr: (kube_pod_status_phase{cluster_type="management_cluster", phase="Pending",pod~!"(aws-operator.*|azure-operator.*|cluster-operator.*)", namespace!~".*-prometheus"} * on (pod,namespace) group_left(node) kube_pod_info{}) == 1
+      expr: (kube_pod_status_phase{cluster_type="management_cluster", phase="Pending",pod!~"(aws-operator.*|azure-operator.*|cluster-operator.*)", namespace!~".*-prometheus"} * on (pod,namespace) group_left(node) kube_pod_info{}) == 1
       for: 15m
       labels:
         area: kaas
@@ -25,7 +25,7 @@ spec:
       annotations:
         description: '{{`Pod {{ $labels.pod }} is stuck in Pending.`}}'
         opsrecipe: management-cluster-pod-pending/
-      expr: (kube_pod_status_phase{cluster_type="management_cluster", phase="Pending", pod~!"(aws-operator.*|azure-operator.*|cluster-operator.*)", namespace!~".*-prometheus"} * on (pod,namespace) group_left(node) kube_pod_info{}) == 1
+      expr: (kube_pod_status_phase{cluster_type="management_cluster", phase="Pending", pod!~"(aws-operator.*|azure-operator.*|cluster-operator.*)", namespace!~".*-prometheus"} * on (pod,namespace) group_left(node) kube_pod_info{}) == 1
       for: 1h
       labels:
         area: kaas
