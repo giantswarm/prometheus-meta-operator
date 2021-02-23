@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.0] - 2021-02-23
+
 ### Added
 
 - Add Alert for missing prometheus for a workload cluster
@@ -787,7 +789,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.0...HEAD
+[1.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.1...v1.24.0
 [1.23.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.0...v1.23.1
 [1.23.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.21.0...v1.22.0
