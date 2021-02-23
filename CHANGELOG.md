@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add `ManagementClusterPodStuckCelestial` alert for Celestial.
 - Send samples per second to cortex
 
+### Changed
+
+- Move Cluster Autoscaller app installation/upgrade related alerts to team Batman.
+
 ## [1.23.1] - 2021-02-22
 
 ### Added
