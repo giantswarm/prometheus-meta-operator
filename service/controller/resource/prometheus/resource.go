@@ -266,7 +266,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				WriteRelabelConfigs: []promv1.RelabelConfig{
 					promv1.RelabelConfig{
 						SourceLabels: []string{"__name__"},
-						Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|^slo_.+)",
+						Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|prometheus_tsdb_head_samples_appended_total|^slo_.+)",
 						Action:       "keep",
 					},
 				},
