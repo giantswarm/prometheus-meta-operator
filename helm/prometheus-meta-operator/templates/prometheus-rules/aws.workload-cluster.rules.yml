@@ -40,22 +40,13 @@ spec:
       annotations:
         description: '{{`Critical pod {{ $labels.namespace }}/{{ $labels.pod }} is not running.`}}'
         opsrecipe: critical-pod-is-not-running/
-      expr: kube_pod_container_status_running{container=~"(k8s-api-server|k8s-controller-manager|k8s-scheduler)"} != 1
+      expr: kube_pod_container_status_running{container=~"(k8s-api-server|k8s-controller-manager|k8s-scheduler)"} != 1 or absent(kube_pod_container_status_running{container="k8s-api-server"}) == 1 or absent(kube_pod_container_status_running{container="k8s-controller-manager"}) == 1 or absent(kube_pod_container_status_running{container="k8s-scheduler"}) == 1
       for: 5m
       labels:
         area: kaas
-        severity: page
-        team: firecracker
-        topic: kubernetes
-    - alert: WorkloadClusterCriticalPodMetricMissingAWS
-      annotations:
-        description: '{{`Critical pod {{ $labels.container }} does not have metrics.`}}'
-        opsrecipe: critical-pod-is-not-running/
-      expr: absent(kube_pod_container_status_running{container="k8s-api-server"}) == 1 or absent(kube_pod_container_status_running{container="k8s-controller-manager"}) == 1 or absent(kube_pod_container_status_running{container="k8s-scheduler"}) == 1
-      for: 5m
-      labels:
-        area: kaas
-        cancel_if_kube_state_metrics_down: "true"
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
         severity: page
         team: firecracker
         topic: kubernetes

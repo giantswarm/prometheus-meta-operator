@@ -31,6 +31,7 @@ type resourcesConfig struct {
 	Address                 string
 	BaseDomain              string
 	Bastions                []string
+	Mayu                    string
 	Provider                string
 	Installation            string
 	Pipeline                string
@@ -200,6 +201,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Bastions:     config.Bastions,
 			Provider:     config.Provider,
 			Installation: config.Installation,
+			Mayu:         config.Mayu,
 			Vault:        config.Vault,
 		}
 

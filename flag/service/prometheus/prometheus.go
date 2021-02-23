@@ -4,6 +4,7 @@ type Prometheus struct {
 	Address     string
 	BaseDomain  string
 	Bastions    string
+	Mayu        string
 	Storage     PrometheusStorage
 	Retention   PrometheusRetention
 	RemoteWrite PrometheusRemoteWrite

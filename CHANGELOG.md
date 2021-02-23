@@ -9,10 +9,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-
-- Add `TestClusterTooOld` for testing installations
 - Add `ManagementClusterPodStuckFirecracker` and `WorkloadClusterPodStuckFirecracker` alerts for Firecracker.
 - Add `ManagementClusterPodStuckCelestial` alert for Celestial.
+
+## [1.23.1] - 2021-02-22
+
+### Added
+
+- Add `TestClusterTooOld` for testing installations
+- Added Mayu as a scrape target as well as puma's pods
+
+### Changed
+
+- Apply prometheus rule group (which includes
+- Discover ETCD targets through the LoadBalancer using the `giantswarm.io/etcd-domain` annotation
+
+### Fixed
+
+- Remove `PersistentVolumeSpaceTooLow` from Workload Clusters.
 
 ## [1.23.0] - 2021-02-17
 
@@ -770,7 +784,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.1...HEAD
+[1.23.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.0...v1.23.1
 [1.23.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.22.0...v1.23.0
 [1.22.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.21.0...v1.22.0
 [1.21.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.20.0...v1.21.0
