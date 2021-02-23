@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Add `ManagementClusterPodStuckFirecracker` and `WorkloadClusterPodStuckFirecracker` alerts for Firecracker.
+- Add `ManagementClusterPodStuckCelestial` alert for Celestial.
+
 ## [1.23.1] - 2021-02-22
 
 ### Added
