@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Add Alert for missing prometheus for a workload cluster
 - Add `ManagementClusterPodStuckFirecracker` and `WorkloadClusterPodStuckFirecracker` alerts for Firecracker.
 - Add `ManagementClusterPodStuckCelestial` alert for Celestial.
 
