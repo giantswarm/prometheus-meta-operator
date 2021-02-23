@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.1] - 2021-02-23
+
 ### Fixed
 
 - Fixed syntax error in expressions of `ManagementClusterPodPending*` alerts
@@ -793,7 +795,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.1...HEAD
+[1.24.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.0...v1.24.1
 [1.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.1...v1.24.0
 [1.23.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.0...v1.23.1
 [1.23.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.22.0...v1.23.0
