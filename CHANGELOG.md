@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use `resident_memory` when calculating docker memory usage.
+
 ## [1.24.2] - 2021-02-24
 
 ### Added
@@ -334,7 +338,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.18.0] - 2021-02-08
 
-### Removed 
+### Removed
 
 - Added the batman alerts to PMO:
   - `AppExporterDown`
