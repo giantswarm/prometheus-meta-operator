@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.3] - 2021-02-24
+
 ### Changed
 
 - Use `resident_memory` when calculating docker memory usage.
@@ -809,7 +811,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.3...HEAD
+[1.24.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.2...v1.24.3
 [1.24.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.1...v1.24.2
 [1.24.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.0...v1.24.1
 [1.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.23.1...v1.24.0
