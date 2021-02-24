@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add 'catalog' label to metrics pushed from `app-exporter` to cortex
+
 ## [1.24.1] - 2021-02-23
 
 ### Fixed
