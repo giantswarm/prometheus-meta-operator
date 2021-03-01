@@ -27,7 +27,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator v0.43.0
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
-	github.com/prometheus/common v0.17.0
+	github.com/prometheus/common v0.18.0
 	github.com/prometheus/prometheus v2.23.0+incompatible
 	github.com/sirupsen/logrus v1.8.0
 	github.com/spf13/viper v1.7.1
