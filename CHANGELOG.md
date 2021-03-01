@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix equality check on the VPA CR to prevent it being overriden and losing it's status information on every prometheus-meta-operator deployment.
 
+### Added
+
+- Set the prometheus UI Web page title.
+
 ## [1.24.4] - 2021-02-26
 
 ### Changed
