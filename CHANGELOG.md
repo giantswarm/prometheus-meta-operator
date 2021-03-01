@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Set the prometheus UI Web page title.
 
+## [1.24.4] - 2021-02-26
+
+### Changed
+
+- Avoid alerting for ETCD backups outside business hours.
+
 ## [1.24.3] - 2021-02-24
 
 ### Changed
@@ -815,7 +821,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.4...HEAD
+[1.24.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.3...v1.24.4
 [1.24.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.2...v1.24.3
 [1.24.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.1...v1.24.2
 [1.24.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.0...v1.24.1
