@@ -153,7 +153,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.PrometheusVersion)
-
+	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -171,7 +171,11 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-			Image:    &image,
+
+			Image: &image,
+			Web: &promv1.WebSpec{
+				PageTitle: &pageTitle,
+			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
 				Requests: prometheusResourceList,
