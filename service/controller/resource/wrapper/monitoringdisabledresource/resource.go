@@ -48,7 +48,7 @@ func (r *monitoringDisabledWrapper) EnsureCreated(ctx context.Context, obj inter
 	}
 
 	if key.IsMonitoringDisabled(cluster) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "monitoring disabled, cleaning up existing monitoring")
+		r.logger.Debugf(ctx, "monitoring disabled, cleaning up existing monitoring")
 		return r.resource.EnsureDeleted(ctx, obj)
 	}
 

@@ -20,7 +20,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if pvc need to be re-created")
+	r.logger.Debugf(ctx, "checking if pvc need to be re-created")
 
 	namespace := key.Namespace(cluster)
 
@@ -33,7 +33,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	if len(currentStS.Spec.VolumeClaimTemplates) < 1 {
 		// No pvc template found in sts, nothing to resize. Skip this resource.
-		r.logger.LogCtx(ctx, "level", "debug", "message", "skipping, no pvc found in sts volumeclaimtemplates")
+		r.logger.Debugf(ctx, "skipping, no pvc found in sts volumeclaimtemplates")
 		return nil
 	}
 
@@ -43,13 +43,13 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	pvcName := fmt.Sprintf("%s-%s-%d", desiredPVC.GetName(), currentStS.GetName(), index)
 	currentPVC, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).Get(ctx, pvcName, metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "pvc is missing, need to be re-created")
+		r.logger.Debugf(ctx, "pvc is missing, need to be re-created")
 	} else {
 		if err != nil {
 			return microerror.Mask(err)
 		}
 		if !reflect.DeepEqual(desiredPVC.Spec.Resources.Requests, currentPVC.Spec.Resources.Requests) {
-			r.logger.LogCtx(ctx, "level", "debug", "message", "pvc has wrong size, need to be re-created")
+			r.logger.Debugf(ctx, "pvc has wrong size, need to be re-created")
 
 			// delete pvc
 			{
@@ -85,7 +85,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				}
 			}
 		} else {
-			r.logger.LogCtx(ctx, "level", "debug", "message", "pvc do not need to be re-created")
+			r.logger.Debugf(ctx, "pvc do not need to be re-created")
 			return nil
 		}
 	}
@@ -101,7 +101,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "pvc re-created")
+	r.logger.Debugf(ctx, "pvc re-created")
 
 	return nil
 }
