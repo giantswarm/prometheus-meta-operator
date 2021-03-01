@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-Fix VPA crazyness
+- Fix equality check on the VPA CR to prevent it being overriden and losing it's status information on every prometheus-meta-operator deployment.
 
 ## [1.24.4] - 2021-02-26
 
