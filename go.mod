@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/giantswarm/apiextensions/v3 v3.18.2
+	github.com/giantswarm/apiextensions/v3 v3.19.0
 	github.com/giantswarm/backoff v0.2.0
 	github.com/giantswarm/k8sclient/v5 v5.11.0
 	github.com/giantswarm/microendpoint v0.2.0
