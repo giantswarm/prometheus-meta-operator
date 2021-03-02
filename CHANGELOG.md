@@ -8,9 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix equality check on the VPA CR to prevent it being overriden and losing it's status information on every prometheus-meta-operator deployment.
+- Inhibit `MatchingNumberOfPrometheusAndCluster` when kube-state-metrics is down
+  to prevent bogus pages when `kube_pod_container_status_running` metric
+  isn't available
+
+## [1.24.5] - 2021-03-02
+
 ### Added
 
 - Set the prometheus UI Web page title.
+- Add 'app' label to metrics pushed from `app-exporter` to cortex
 
 ## [1.24.4] - 2021-02-26
 
@@ -821,7 +831,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.4...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.5...HEAD
+[1.24.5]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.4...v1.24.5
 [1.24.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.3...v1.24.4
 [1.24.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.2...v1.24.3
 [1.24.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.1...v1.24.2

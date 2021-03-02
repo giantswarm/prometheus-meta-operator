@@ -14,24 +14,30 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.Debugf(ctx, "creating")
+	r.logger.Debugf(ctx, "checking if vpa cr already exists")
 	current, err := r.vpaClient.AutoscalingV1().VerticalPodAutoscalers(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		current, err = r.vpaClient.AutoscalingV1().VerticalPodAutoscalers(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
-	}
-
-	if err != nil {
+		r.logger.Debugf(ctx, "creating")
+		_, err = r.vpaClient.AutoscalingV1().VerticalPodAutoscalers(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
+		if err != nil {
+			return microerror.Mask(err)
+		}
+		r.logger.Debugf(ctx, "created")
+		return nil
+	} else if err != nil {
 		return microerror.Mask(err)
 	}
 
+	r.logger.Debugf(ctx, "checking if vpa cr needs to be updated")
 	if hasChanged(current, desired) {
+		r.logger.Debugf(ctx, "updating")
 		updateMeta(current, desired)
 		_, err = r.vpaClient.AutoscalingV1().VerticalPodAutoscalers(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
+		r.logger.Debugf(ctx, "updated")
 	}
-	r.logger.Debugf(ctx, "created")
 
 	return nil
 }
