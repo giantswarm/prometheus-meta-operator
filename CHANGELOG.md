@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Inhibit `MatchingNumberOfPrometheusAndCluster` when kube-state-metrics is down
+  to prevent bogus pages when `kube_pod_container_status_running` metric
+  isn't available
 
 ## [1.24.5] - 2021-03-02
 
