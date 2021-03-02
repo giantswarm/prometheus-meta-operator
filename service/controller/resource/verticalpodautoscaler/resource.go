@@ -2,13 +2,14 @@ package verticalpodautoscaler
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	autoscaling "k8s.io/api/autoscaling/v1"
 	v1 "k8s.io/api/core/v1"
+
+	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	vpa_types "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/apis/autoscaling.k8s.io/v1"
@@ -182,5 +183,5 @@ func hasChanged(current, desired metav1.Object) bool {
 	c := current.(*vpa_types.VerticalPodAutoscaler)
 	d := desired.(*vpa_types.VerticalPodAutoscaler)
 
-	return !reflect.DeepEqual(c.Spec, d.Spec)
+	return !apiequality.Semantic.DeepEqual(c.Spec, d.Spec)
 }

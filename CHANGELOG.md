@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix equality check on the VPA CR to prevent it being overriden and losing it's status information on every prometheus-meta-operator deployment.
 - Inhibit `MatchingNumberOfPrometheusAndCluster` when kube-state-metrics is down
   to prevent bogus pages when `kube_pod_container_status_running` metric
   isn't available
