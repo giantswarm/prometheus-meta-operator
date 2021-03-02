@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Inhibit `MatchingNumberOfPrometheusAndCluster` when kube-state-metrics is down
+
 ## [1.24.5] - 2021-03-02
 
 ### Added
