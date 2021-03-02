@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add `ManagementClusterAppFailedLudacris` alert for Ludacris.
 - Set the prometheus UI Web page title.
 
 ### Fixed
