@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.5] - 2021-03-02
+
 ### Added
 
 - Set the prometheus UI Web page title.
@@ -822,7 +824,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.4...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.5...HEAD
+[1.24.5]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.4...v1.24.5
 [1.24.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.3...v1.24.4
 [1.24.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.2...v1.24.3
 [1.24.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.1...v1.24.2
