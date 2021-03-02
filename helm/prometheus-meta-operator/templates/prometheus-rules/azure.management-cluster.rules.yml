@@ -185,59 +185,6 @@ spec:
         severity: notify
         team: celestial
         topic: azure
-    - alert: ClusterAutoscalerAppFailedAzure
-      annotations:
-        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'
-      expr: label_replace(app_operator_app_info{status="FAILED",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 10m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: celestial
-        topic: releng
-    - alert: ClusterAutoscalerAppPendingInstallAzure
-      annotations:
-        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending install state.`}}'
-      expr: label_replace(app_operator_app_info{status="PENDING_INSTALL",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 30m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: celestial
-        topic: releng
-    - alert: ClusterAutoscalerAppPendingUpgradeAzure
-      annotations:
-        description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in pending upgrade state.`}}'
-      expr: label_replace(app_operator_app_info{status="PENDING_UPGRADE",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 30m
-      labels:
-        area: managedservices
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: celestial
-        topic: releng
-    - alert: ClusterAutoscalerAppNotInstalledAzure
-      annotations:
-        description: '{{`App {{ $labels.name }} was not installed in {{ $labels.namespace }} namespace.`}}'
-      expr: label_replace(app_operator_app_info{status="",name=~"cluster-autoscaler.*"}, "cluster_id", "$1", "namespace", "(([^g]|g[^i]|gi[^a]|gia[^n]|gian[^t]|giant[^s]|giants[^w]|giantsw[^a]|giantswa[^r]|giantswar[^m])*)") == 1
-      for: 40m
-      labels:
-        area: managedservices
-        cancel_if_apiserver_down: "true"
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: celestial
-        topic: releng
     - alert: AzureQuotaUsageApproachingLimit
       annotations:
         description: '{{`Azure quota usage for {{ $labels.name }} on subscription {{ $labels.subscription }} is too close to limit.`}}'
