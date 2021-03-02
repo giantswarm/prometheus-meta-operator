@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Set the prometheus UI Web page title.
+- Add 'app' label to metrics pushed from `app-exporter` to cortex
 
 ## [1.24.4] - 2021-02-26
 
