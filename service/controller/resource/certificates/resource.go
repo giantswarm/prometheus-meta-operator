@@ -2,35 +2,41 @@ package certificates
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
+	v1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 type Config struct {
-	Name                string
-	SourceNameFunc      NameFunc
-	SourceNamespaceFunc NameFunc
-	TargetNameFunc      NameFunc
-	K8sClient           k8sclient.Interface
-	Logger              micrologger.Logger
+	Name      string
+	Sources   []CertificateSource
+	Target    NameFunc
+	K8sClient k8sclient.Interface
+	Logger    micrologger.Logger
 }
 
 type NameFunc func(metav1.Object) string
 
+type CertificateSource struct {
+	NameFunc      NameFunc
+	NamespaceFunc NameFunc
+}
+
 type Resource struct {
-	name                string
-	sourceNameFunc      NameFunc
-	sourceNamespaceFunc NameFunc
-	targetNameFunc      NameFunc
-	k8sClient           k8sclient.Interface
-	logger              micrologger.Logger
+	name      string
+	sources   []CertificateSource
+	target    NameFunc
+	k8sClient k8sclient.Interface
+	logger    micrologger.Logger
 }
 
 func New(config Config) (*Resource, error) {
@@ -43,23 +49,19 @@ func New(config Config) (*Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-	if config.SourceNameFunc == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.SourceNameFunc must not be empty", config)
+	if len(config.Sources) == 0 {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Sources must not be empty", config)
 	}
-	if config.SourceNamespaceFunc == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.SourceNamespaceFunc must not be empty", config)
-	}
-	if config.TargetNameFunc == nil {
-		return nil, microerror.Maskf(invalidConfigError, "%T.TargetNameFunc must not be empty", config)
+	if config.Target == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Target must not be empty", config)
 	}
 
 	r := &Resource{
-		name:                config.Name,
-		logger:              config.Logger,
-		k8sClient:           config.K8sClient,
-		sourceNameFunc:      config.SourceNameFunc,
-		sourceNamespaceFunc: config.SourceNamespaceFunc,
-		targetNameFunc:      config.TargetNameFunc,
+		name:      config.Name,
+		logger:    config.Logger,
+		k8sClient: config.K8sClient,
+		sources:   config.Sources,
+		target:    config.Target,
 	}
 
 	return r, nil
@@ -76,7 +78,7 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:      r.targetNameFunc(cluster),
+		Name:      r.target(cluster),
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
@@ -108,14 +110,25 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	secretName := r.sourceNameFunc(cluster)
-	secretNamespace := r.sourceNamespaceFunc(cluster)
+	var secret *v1.Secret
+	for _, source := range r.sources {
+		secretName := source.NameFunc(cluster)
+		secretNamespace := source.NamespaceFunc(cluster)
 
-	s, err := r.k8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
-	if err != nil {
+		secret, err = r.k8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
+		if apierrors.IsNotFound(err) {
+			// fall through
+		} else if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	if secret == nil {
+		err := fmt.Errorf("No certificates found for %s", key.ClusterID(cluster))
 		return nil, microerror.Mask(err)
 	}
-	return s, nil
+
+	return secret, nil
 }
 
 func (r *Resource) hasChanged(current, desired *corev1.Secret) bool {
