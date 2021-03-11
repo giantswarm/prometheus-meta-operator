@@ -4,7 +4,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -19,12 +19,11 @@
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
     action: keep
+  - target_label: __address__
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     regex: https
     action: keep
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
   - target_label: app
     replacement: kubernetes
   # Add cluster_id label.
@@ -58,7 +57,7 @@
       names:
       - kube-system
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -80,7 +79,7 @@
     target_label: instance
     replacement: ${1}:8085
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics
@@ -116,7 +115,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -129,7 +128,7 @@
     insecure_skip_verify: false
   relabel_configs:
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
@@ -169,7 +168,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -184,7 +183,7 @@
   - source_labels: [__address__]
     target_label: instance
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
@@ -226,7 +225,7 @@
   kubernetes_sd_configs:
   - role: pod
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -242,7 +241,7 @@
     replacement: ${1}:9091
     target_label: instance
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (calico-node.*)
     target_label: __metrics_path__
@@ -291,7 +290,7 @@
   kubernetes_sd_configs:
   - role: pod
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -304,7 +303,7 @@
     insecure_skip_verify: false
   relabel_configs:
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (aws-node.*)
     target_label: __metrics_path__
@@ -354,7 +353,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -367,13 +366,14 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: master
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (etcd)
     action: keep
-  - source_labels: [__address__]
-    regex: (.*):10250
-    target_label: __address__
-    replacement: ${1}:2379
+  - target_label: __address__
+    replacement: apiserver.amazonaws.com:6443
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:2381/proxy/metrics
     action: replace
   - target_label: app
     replacement: etcd
@@ -409,7 +409,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -425,6 +425,11 @@
     replacement: kubelet
   - source_labels: [__address__]
     target_label: instance
+  - target_label: __address__
+    replacement: apiserver.amazonaws.com:6443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -455,7 +460,7 @@
       names:
       - kube-system
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -470,17 +475,14 @@
   - source_labels: [__address__]
     replacement: $1:10252
     target_label: instance
-
-  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
-    regex: controller-manager
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (k8s-controller-manager|kube-controller-manager)
     action: keep
-
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
-    regex: (k8s-controller-manager.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10257/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
   # Add namespace label.
@@ -525,7 +527,7 @@
       names:
       - kube-system
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -540,22 +542,16 @@
   - source_labels: [__address__]
     replacement: $1:10251
     target_label: instance
-
-  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
-    regex: scheduler
-    action: keep
-
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (k8s-scheduler|kube-scheduler)
+    action: keep  
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
-    regex: (k8s-scheduler.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10259/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -598,7 +594,7 @@
       names:
       - kube-system
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -617,7 +613,7 @@
     regex: (kube-proxy.*)
     action: keep
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-proxy.*)
     target_label: __metrics_path__
@@ -666,7 +662,7 @@
       names:
       - kube-system
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -680,11 +676,11 @@
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
-  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
+  - source_labels: [__meta_kubernetes_pod_container_name]
     regex: coredns
     action: keep
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (coredns.*)
     target_label: __metrics_path__
@@ -736,7 +732,7 @@
       names:
       - giantswarm
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -756,7 +752,7 @@
     action: keep
 
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (chart-operator.*)
     target_label: __metrics_path__
@@ -810,7 +806,7 @@
       - kube-system
 
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -828,7 +824,7 @@
     regex: net-exporter
     action: keep
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (net-exporter.*)
     target_label: __metrics_path__
@@ -884,7 +880,7 @@
       - kube-system
 
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -902,7 +898,7 @@
     regex: cert-exporter
     action: keep
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (cert-exporter.*)
     target_label: __metrics_path__
@@ -958,7 +954,7 @@
       - kube-system
 
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -1037,7 +1033,7 @@
       - kube-system
 
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -1055,7 +1051,7 @@
     regex: kube-state-metrics
     action: keep
   - target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-state-metrics.*)
     target_label: __metrics_path__
@@ -1105,7 +1101,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://master.baz
+    api_server: https://apiserver.amazonaws.com:6443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -1142,7 +1138,7 @@
     action: replace
   - regex: (.*)
     target_label: __address__
-    replacement: master.baz:443
+    replacement: apiserver.amazonaws.com:6443
     action: replace
   - source_labels: [__meta_kubernetes_service_name]
     regex: (.*)

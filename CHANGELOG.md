@@ -19,6 +19,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support to copy CAPI cluster's certificates
 - Add aggregation `aggregation:giantswarm:api_auth_giantswarm_successful_attempts_total`.
+- Add support to get the API Server URL from CAPI CR
+
+### Changed
+
+- Upgrade ingress versions to networking.k8s.io/v1beta1
+
+### Fixed
+
+- Fix scrapeconfig to use secured ports for kubernetes control plane components for CAPI clusters
+- Fix scrapeconfig to proxy all calls through the API Server for CAPI clusters
 
 ## [1.24.6] - 2021-03-02
 
