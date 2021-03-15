@@ -4,3 +4,5 @@ description: The prometheus-meta-operator manages Kubernetes clusters monitoring
 home: https://github.com/giantswarm/prometheus-meta-operator
 version: [[ .Version ]]
 appVersion: [[ .AppVersion ]]
+annotations:
+  application.giantswarm.io/team: "atlas"
