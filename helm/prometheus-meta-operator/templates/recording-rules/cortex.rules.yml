@@ -25,7 +25,7 @@ spec:
     # Spot Instances being used
     - expr: count(sum(aws_operator_ec2_instance_status{lifecycle != ""}) by (ec2_instance, lifecycle)) by  (lifecycle)
       record: aggregation:aws:instance_lifecycle
-    # REST API usage: authentications successfull via the "giantswarm" token method
+    # REST API usage: authentications successful via the "giantswarm" token method
     - expr: sum(rate(api_service_authentication_giantswarm_successful_attempts_total[5m]))
       record: aggregation:giantswarm:api_auth_giantswarm_successful_attempts_total
     # REST API usage: authentication fails via the "giantswarm" token method
