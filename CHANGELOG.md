@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add support to copy CAPI cluster's certificates
+- Add aggregation `aggregation:giantswarm:api_auth_giantswarm_successful_attempts_total`.
 
 ## [1.24.6] - 2021-03-02
 
