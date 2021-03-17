@@ -19,7 +19,13 @@ spec:
       labels:
         area: kaas
         severity: notify
-        team:  {{ provider.team }}
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
+        team: rocket
+        {{- end }}
         topic: etcd
     - alert: WorkloadClusterEtcdDBSizeTooLarge
       annotations:
@@ -30,7 +36,13 @@ spec:
       labels:
         area: kaas
         severity: page
-        team:  {{ provider.team }}
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
+        team: rocket
+        {{- end }}
         topic: etcd
     - alert: WorkloadClusterEtcdNumberOfLeaderChangesTooHigh
       annotations:
@@ -39,7 +51,13 @@ spec:
       labels:
         area: kaas
         severity: notify
-        team:  {{ provider.team }}
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
+        team: rocket
+        {{- end }}
         topic: etcd
     - alert: WorkloadClusterEtcdHasNoLeader
       annotations:
@@ -50,5 +68,11 @@ spec:
       labels:
         area: kaas
         severity: page
-        team:  {{ provider.team }}
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
+        team: rocket
+        {{- end }}
         topic: etcd

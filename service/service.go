@@ -120,6 +120,7 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var provider = config.Viper.GetString(config.Flag.Service.Provider.Kind)
 	var clusterapiController *clusterapi.Controller
 	{
 		c := clusterapi.ControllerConfig{
@@ -130,7 +131,7 @@ func New(config Config) (*Service, error) {
 			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Provider:            config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			Provider:            provider,
 			Installation:        config.Viper.GetString(config.Flag.Service.Installation.Name),
 			Customer:            config.Viper.GetString(config.Flag.Service.Installation.Customer),
 			Pipeline:            config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
@@ -153,35 +154,35 @@ func New(config Config) (*Service, error) {
 	}
 
 	var legacyController *legacy.Controller
-	if config.Provider != "vmware" {
-			c := legacy.ControllerConfig{
-				K8sClient:           k8sClient,
-				Logger:              config.Logger,
-				PrometheusClient:    prometheusClient,
-				VpaClient:           vpaClient,
-				Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-				BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-				Provider:            config.Viper.GetString(config.Flag.Service.Provider.Kind),
-				Installation:        config.Viper.GetString(config.Flag.Service.Installation.Name),
-				Customer:            config.Viper.GetString(config.Flag.Service.Installation.Customer),
-				Pipeline:            config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-				Region:              config.Viper.GetString(config.Flag.Service.Installation.Region),
-				Registry:            config.Viper.GetString(config.Flag.Service.Installation.Registry),
-				CreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-				StorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-				RetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				RetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-				PrometheusVersion:   config.Viper.GetString(config.Flag.Service.Prometheus.Version),
-				OpsgenieKey:         config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-				RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
-				RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
-				RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
-			}
-			legacyController, err = legacy.NewController(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
+	if provider != "vmware" {
+		c := legacy.ControllerConfig{
+			K8sClient:           k8sClient,
+			Logger:              config.Logger,
+			PrometheusClient:    prometheusClient,
+			VpaClient:           vpaClient,
+			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Provider:            provider,
+			Installation:        config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Customer:            config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Pipeline:            config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Region:              config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:            config.Viper.GetString(config.Flag.Service.Installation.Registry),
+			CreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			StorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			RetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			RetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			PrometheusVersion:   config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+			OpsgenieKey:         config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+			RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+			RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+		}
+		legacyController, err = legacy.NewController(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	} else {
 		legacyController = nil
 	}
@@ -196,7 +197,7 @@ func New(config Config) (*Service, error) {
 			Address:                 config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			BaseDomain:              config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Provider:                config.Viper.GetString(config.Flag.Service.Provider.Kind),
+			Provider:                provider,
 			Mayu:                    config.Viper.GetString(config.Flag.Service.Prometheus.Mayu),
 			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
 			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),

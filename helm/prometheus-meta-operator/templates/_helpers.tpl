@@ -33,14 +33,3 @@ Selector labels
 app.kubernetes.io/name: {{ include "name" . | quote }}
 app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}
-
-
-{- define "provider.team" -}}
-{{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
-firecracker
-{{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
-celestial
-{{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
-rocket
-{{- end }}
-{{- end -}}

@@ -22,7 +22,13 @@ spec:
         cancel_if_cluster_with_notready_nodepools: "true"
         cancel_if_cluster_with_scaling_nodepools: "true"
         severity: page
-        team:  {{ provider.team }}
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
+        team: rocket
+        {{- end }}
         topic: network
     - alert: DNSCheckErrorRateTooHigh
       annotations:
@@ -37,7 +43,13 @@ spec:
         cancel_if_cluster_with_notready_nodepools: "true"
         cancel_if_cluster_with_scaling_nodepools: "true"
         severity: page
-        team:  {{ provider.team }}
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
+        team: rocket
+        {{- end }}
         topic: network
     - alert: NetworkErrorRateTooHigh
       annotations:
@@ -55,5 +67,11 @@ spec:
         cancel_if_cluster_with_scaling_nodepools: "true"
         cancel_if_nodes_down: "true"
         severity: page
-        team:  {{ provider.team }}
+        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+        team: firecracker
+        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
+        team: celestial
+        {{- else if or (eq .Values.Installation.V1.Provider.Kind "kvm") (eq .Values.Installation.V1.Provider.Kind "vmware") }}
+        team: rocket
+        {{- end }}
         topic: network
