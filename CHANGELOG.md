@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support to copy CAPI cluster's certificates
 - Add aggregation `aggregation:giantswarm:api_auth_giantswarm_successful_attempts_total`.
 - Add support to get the API Server URL from CAPI CR
+- Add support for vmware clusters
 
 ### Changed
 

@@ -9,43 +9,15 @@ spec:
   groups:
   - name: timesync
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
-    - alert: ClockOutOfSyncAWS
+    - alert: ClockOutOfSync
       annotations:
         description: '{{`Clock is out of sync on {{ $labels.instance }}.`}}'
         opsrecipe: clock-out-of-sync/
-      expr: timestamp(node_time_seconds{provider="aws"}) - node_time_seconds{provider="aws"} > 60
+      expr: timestamp(node_time_seconds) - node_time_seconds > 60
       for: 30m
       labels:
         area: kaas
         severity: page
-        team: firecracker
+        team:  {{ provider.team }}
         topic: infrastructure
-    {{- end }}
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
-    - alert: ClockOutOfSyncAzure
-      annotations:
-        description: '{{`Clock is out of sync on {{ $labels.instance }}.`}}'
-        opsrecipe: clock-out-of-sync/
-      expr: timestamp(node_time_seconds{provider="azure"}) - node_time_seconds{provider="azure"} > 60
-      for: 30m
-      labels:
-        area: kaas
-        severity: page
-        team: celestial
-        topic: infrastructure
-    {{- end }}
-    {{- if eq .Values.Installation.V1.Provider.Kind "kvm" }}
-    - alert: ClockOutOfSyncKVM
-      annotations:
-        description: '{{`Clock is out of sync on {{ $labels.instance }}.`}}'
-        opsrecipe: clock-out-of-sync/
-      expr: timestamp(node_time_seconds{provider="kvm"}) - node_time_seconds{provider="kvm"} > 60
-      for: 30m
-      labels:
-        area: kaas
-        severity: page
-        team: rocket
-        topic: infrastructure
-    {{- end }}
 

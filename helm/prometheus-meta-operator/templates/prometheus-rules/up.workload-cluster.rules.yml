@@ -11,12 +11,11 @@ spec:
   groups:
   - name: up
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
-    - alert: EtcdWorkloadClusterDownAWS
+    - alert: EtcdWorkloadClusterDown
       annotations:
         description: '{{`Etcd ({{ $labels.instance }}) on workload cluster {{ $labels.cluster_id }} is down.`}}'
         opsrecipe: etcd-down/
-      expr: up{cluster_type="workload_cluster", app=~"etcd.*", provider="aws"} == 0
+      expr: up{cluster_type="workload_cluster", app=~"etcd.*"} == 0
       for: 20m
       labels:
         area: kaas
@@ -25,40 +24,5 @@ spec:
         cancel_if_cluster_status_updating: "true"
         cancel_if_master_node_down: "true"
         severity: page
-        team: firecracker
+        team:  {{ provider.team }}
         topic: etcd
-    {{- end }}
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
-    - alert: EtcdWorkloadClusterDownAzure
-      annotations:
-        description: '{{`Etcd ({{ $labels.instance }}) on workload cluster {{ $labels.cluster_id }} is down.`}}'
-        opsrecipe: etcd-down/
-      expr: up{cluster_type="workload_cluster", app=~"etcd.*", provider="azure"} == 0
-      for: 20m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        cancel_if_master_node_down: "true"
-        severity: page
-        team: celestial
-        topic: etcd
-    {{- end }}
-    {{- if eq .Values.Installation.V1.Provider.Kind "kvm" }}
-    - alert: EtcdWorkloadClusterDownKVM
-      annotations:
-        description: '{{`Etcd ({{ $labels.instance }}) on workload cluster {{ $labels.cluster_id }} is down.`}}'
-        opsrecipe: etcd-down/
-      expr: up{cluster_type="workload_cluster", app=~"etcd.*", provider="kvm"} == 0
-      for: 20m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        cancel_if_master_node_down: "true"
-        severity: page
-        team: rocket
-        topic: etcd
-    {{- end }}

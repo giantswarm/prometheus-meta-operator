@@ -9,12 +9,11 @@ spec:
   groups:
   - name: network
     rules:
-    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
-    - alert: DNSErrorRateTooHighAWS
+    - alert: DNSErrorRateTooHigh
       annotations:
         description: '{{`DNS error rate is too high for {{ or $labels.pod_name $labels.instance }} to {{ $labels.host }}, using {{ $labels.proto }}.`}}'
         opsrecipe: network-error/
-      expr: rate(dns_resolve_error_total{provider="aws"}[15m]) > 0.015
+      expr: rate(dns_resolve_error_total[15m]) > 0.015
       for: 15m
       labels:
         area: kaas
@@ -23,13 +22,13 @@ spec:
         cancel_if_cluster_with_notready_nodepools: "true"
         cancel_if_cluster_with_scaling_nodepools: "true"
         severity: page
-        team: firecracker
+        team:  {{ provider.team }}
         topic: network
-    - alert: DNSCheckErrorRateTooHighAWS
+    - alert: DNSCheckErrorRateTooHigh
       annotations:
         description: '{{`DNS check error rate is too high for {{ or $labels.pod_name $labels.instance }}.`}}'
         opsrecipe: network-error/
-      expr: rate(dns_error_total{provider="aws"}[15m]) > 0.015
+      expr: rate(dns_error_total[15m]) > 0.015
       for: 15m
       labels:
         area: kaas
@@ -38,13 +37,13 @@ spec:
         cancel_if_cluster_with_notready_nodepools: "true"
         cancel_if_cluster_with_scaling_nodepools: "true"
         severity: page
-        team: firecracker
+        team:  {{ provider.team }}
         topic: network
-    - alert: AWSNetworkErrorRateTooHigh
+    - alert: NetworkErrorRateTooHigh
       annotations:
         description: '{{`Network error rate is too high for {{ or $labels.pod_name $labels.instance }} to {{ $labels.host }}.`}}'
         opsrecipe: network-error/
-      expr: rate(network_dial_error_total{provider="aws"}[15m]) > 0.002
+      expr: rate(network_dial_error_total[15m]) > 0.002
       for: 15m
       labels:
         area: kaas
@@ -56,106 +55,5 @@ spec:
         cancel_if_cluster_with_scaling_nodepools: "true"
         cancel_if_nodes_down: "true"
         severity: page
-        team: firecracker
+        team:  {{ provider.team }}
         topic: network
-    {{- end }}
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
-    - alert: DNSErrorRateTooHighAzure
-      annotations:
-        description: '{{`DNS error rate is too high for {{ or $labels.pod_name $labels.instance }} to {{ $labels.host }}, using {{ $labels.proto }}.`}}'
-        opsrecipe: network-error/
-      expr: rate(dns_resolve_error_total{provider="azure"}[15m]) > 0.015
-      for: 15m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_with_no_nodepools: "true"
-        cancel_if_cluster_with_notready_nodepools: "true"
-        cancel_if_cluster_with_scaling_nodepools: "true"
-        severity: page
-        team: celestial
-        topic: network
-    - alert: DNSCheckErrorRateTooHighAzure
-      annotations:
-        description: '{{`DNS check error rate is too high for {{ or $labels.pod_name $labels.instance }}.`}}'
-        opsrecipe: network-error/
-      expr: rate(dns_error_total{provider="azure"}[15m]) > 0.015
-      for: 15m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_with_no_nodepools: "true"
-        cancel_if_cluster_with_notready_nodepools: "true"
-        cancel_if_cluster_with_scaling_nodepools: "true"
-        severity: page
-        team: celestial
-        topic: network
-    - alert: AzureNetworkErrorRateTooHigh
-      annotations:
-        description: '{{`Network error rate is too high for {{ or $labels.pod_name $labels.instance }} to {{ $labels.host }}.`}}'
-        opsrecipe: network-error/
-      expr: rate(network_dial_error_total{provider="azure"}[15m]) > 0.002
-      for: 15m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        cancel_if_cluster_with_no_nodepools: "true"
-        cancel_if_cluster_with_notready_nodepools: "true"
-        cancel_if_cluster_with_scaling_nodepools: "true"
-        cancel_if_nodes_down: "true"
-        severity: page
-        team: celestial
-        topic: network
-    {{- end }}
-    {{- if eq .Values.Installation.V1.Provider.Kind "kvm" }}
-    - alert: DNSErrorRateTooHighKVM
-      annotations:
-        description: '{{`DNS error rate is too high for {{ or $labels.pod_name $labels.instance }} to {{ $labels.host }}, using {{ $labels.proto }}.`}}'
-        opsrecipe: network-error/
-      expr: rate(dns_resolve_error_total{provider="kvm"}[15m]) > 0.015
-      for: 15m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_with_no_nodepools: "true"
-        cancel_if_cluster_with_notready_nodepools: "true"
-        cancel_if_cluster_with_scaling_nodepools: "true"
-        severity: page
-        team: rocket
-        topic: network
-    - alert: DNSCheckErrorRateTooHighKVM
-      annotations:
-        description: '{{`DNS check error rate is too high for {{ or $labels.pod_name $labels.instance }}.`}}'
-        opsrecipe: network-error/
-      expr: rate(dns_error_total{provider="kvm"}[15m]) > 0.015
-      for: 15m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_with_no_nodepools: "true"
-        cancel_if_cluster_with_notready_nodepools: "true"
-        cancel_if_cluster_with_scaling_nodepools: "true"
-        severity: page
-        team: rocket
-        topic: network
-    - alert: KVMNetworkErrorRateTooHigh
-      annotations:
-        description: '{{`Network error rate is too high for {{ or $labels.pod_name $labels.instance }} to {{ $labels.host }}.`}}'
-        opsrecipe: network-error/
-      expr: rate(network_dial_error_total{provider="kvm"}[15m]) > 0.002
-      for: 15m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        cancel_if_cluster_with_no_nodepools: "true"
-        cancel_if_cluster_with_notready_nodepools: "true"
-        cancel_if_cluster_with_scaling_nodepools: "true"
-        cancel_if_nodes_down: "true"
-        severity: page
-        team: rocket
-        topic: network
-    {{- end }}
