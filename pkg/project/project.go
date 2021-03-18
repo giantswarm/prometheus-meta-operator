@@ -5,7 +5,7 @@ var (
 	gitSHA      = "n/a"
 	name        = "prometheus-meta-operator"
 	source      = "https://github.com/giantswarm/prometheus-meta-operator"
-	version     = "1.24.7"
+	version     = "1.24.8-dev"
 )
 
 func Description() string {
