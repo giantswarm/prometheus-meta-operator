@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.6] - 2021-03-18
+
 ## [1.24.7] - 2021-03-18
 
 ### Added
@@ -840,7 +842,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.7...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...HEAD
+[1.24.6]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.7...v1.24.6
 [1.24.7]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...v1.24.7
 [1.24.6]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.5...v1.24.6
 [1.24.5]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.4...v1.24.5
