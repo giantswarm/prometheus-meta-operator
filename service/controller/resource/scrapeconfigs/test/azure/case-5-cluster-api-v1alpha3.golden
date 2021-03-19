@@ -4,7 +4,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -20,7 +20,7 @@
     regex: apiserver
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     regex: https
     action: keep
@@ -57,7 +57,7 @@
       names:
       - kube-system
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -79,7 +79,7 @@
     target_label: instance
     replacement: ${1}:8085
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics
@@ -115,7 +115,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -128,7 +128,7 @@
     insecure_skip_verify: false
   relabel_configs:
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
@@ -168,7 +168,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -183,7 +183,7 @@
   - source_labels: [__address__]
     target_label: instance
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
@@ -225,7 +225,7 @@
   kubernetes_sd_configs:
   - role: pod
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -241,7 +241,7 @@
     replacement: ${1}:9091
     target_label: instance
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (calico-node.*)
     target_label: __metrics_path__
@@ -291,7 +291,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -308,7 +308,7 @@
     regex: (etcd)
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:2381/proxy/metrics
@@ -347,7 +347,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -364,7 +364,7 @@
   - source_labels: [__address__]
     target_label: instance
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
@@ -398,7 +398,7 @@
       names:
       - kube-system
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -417,7 +417,7 @@
     regex: (k8s-controller-manager|kube-controller-manager)
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10257/proxy/metrics
@@ -465,7 +465,7 @@
       names:
       - kube-system
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -484,7 +484,7 @@
     regex: (k8s-scheduler|kube-scheduler)
     action: keep  
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10259/proxy/metrics
@@ -532,7 +532,7 @@
       names:
       - kube-system
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -551,7 +551,7 @@
     regex: (kube-proxy.*)
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-proxy.*)
     target_label: __metrics_path__
@@ -600,7 +600,7 @@
       names:
       - kube-system
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -618,7 +618,7 @@
     regex: coredns
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (coredns.*)
     target_label: __metrics_path__
@@ -670,7 +670,7 @@
       names:
       - giantswarm
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -690,7 +690,7 @@
     action: keep
 
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (chart-operator.*)
     target_label: __metrics_path__
@@ -744,7 +744,7 @@
       - kube-system
 
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -762,7 +762,7 @@
     regex: net-exporter
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (net-exporter.*)
     target_label: __metrics_path__
@@ -818,7 +818,7 @@
       - kube-system
 
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -836,7 +836,7 @@
     regex: cert-exporter
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (cert-exporter.*)
     target_label: __metrics_path__
@@ -892,7 +892,7 @@
       - kube-system
 
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -971,7 +971,7 @@
       - kube-system
 
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -989,7 +989,7 @@
     regex: kube-state-metrics
     action: keep
   - target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-state-metrics.*)
     target_label: __metrics_path__
@@ -1039,7 +1039,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://:0
+    api_server: https://master.baz:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -1076,7 +1076,7 @@
     action: replace
   - regex: (.*)
     target_label: __address__
-    replacement: :0
+    replacement: master.baz:443
     action: replace
   - source_labels: [__meta_kubernetes_service_name]
     regex: (.*)

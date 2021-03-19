@@ -13,7 +13,7 @@
     regex: apiserver
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     regex: https
     action: keep
@@ -53,7 +53,7 @@
     insecure_skip_verify: true
   relabel_configs:
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
@@ -101,7 +101,7 @@
   - source_labels: [__address__]
     target_label: instance
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
@@ -152,7 +152,7 @@
     replacement: ${1}:9091
     target_label: instance
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (calico-node.*)
     target_label: __metrics_path__
@@ -207,7 +207,7 @@
     insecure_skip_verify: true
   relabel_configs:
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (aws-node.*)
     target_label: __metrics_path__
@@ -317,7 +317,7 @@
   - source_labels: [__address__]
     target_label: instance
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
@@ -363,7 +363,7 @@
     regex: (k8s-controller-manager|kube-controller-manager)
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
@@ -423,7 +423,7 @@
     regex: (k8s-scheduler|kube-scheduler)
     action: keep  
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
@@ -483,7 +483,7 @@
     regex: (kube-proxy.*)
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-proxy.*)
     target_label: __metrics_path__
@@ -543,7 +543,7 @@
     regex: coredns
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (coredns.*)
     target_label: __metrics_path__
@@ -608,7 +608,7 @@
     action: keep
 
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (chart-operator.*)
     target_label: __metrics_path__
@@ -673,7 +673,7 @@
     regex: net-exporter
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (net-exporter.*)
     target_label: __metrics_path__
@@ -740,7 +740,7 @@
     regex: cert-exporter
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (cert-exporter.*)
     target_label: __metrics_path__
@@ -879,7 +879,7 @@
     regex: kube-state-metrics
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-state-metrics.*)
     target_label: __metrics_path__
@@ -959,7 +959,7 @@
     action: replace
   - regex: (.*)
     target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
     action: replace
   - source_labels: [__meta_kubernetes_service_name]
     regex: (.*)
@@ -2642,7 +2642,7 @@
     regex: (gatekeeper.*)
     action: keep
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/gatekeeper-system/pods/${1}:8888/proxy/metrics
@@ -2708,7 +2708,7 @@
     target_label: instance
     replacement: ${1}:10254
   - target_label: __address__
-    replacement: :443
+    replacement: 127.0.0.1:443
   - target_label: app
     replacement: nginx-ingress-controller
   - source_labels: [__meta_kubernetes_pod_name]
