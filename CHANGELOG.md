@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fix
+
+- Avoid alerting for `MatchingNumberOfPrometheusAndCluster` when a cluster is
+  being deleted.
+
 ## [1.24.7] - 2021-03-18
 
 ### Added
