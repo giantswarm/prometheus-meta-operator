@@ -103,7 +103,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		// Try to get the etcd url from the Giant Swarm way
 		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(context.Background(), "master", metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			// fallthrough, we need to get it from capi but ignore it for now
+			// TODO we ignore ETCD for capi clusters for now. Find a way to do it later
 		} else if err != nil {
 			return nil, microerror.Mask(err)
 		} else {

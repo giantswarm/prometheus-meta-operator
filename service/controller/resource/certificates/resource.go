@@ -139,6 +139,7 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret
 
 		secret, err = r.k8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
+			// fallthrough
 			secret = nil
 		} else if err != nil {
 			return nil, microerror.Mask(err)
