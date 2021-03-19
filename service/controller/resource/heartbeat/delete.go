@@ -12,28 +12,28 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if heartbeat exists")
+	r.logger.Debugf(ctx, "checking if heartbeat exists")
 	_, err = r.heartbeatClient.Get(ctx, desired.Name)
 	if IsApiNotFoundError(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat does not exist")
+		r.logger.Debugf(ctx, "heartbeat does not exist")
 	} else if err != nil {
 		return microerror.Mask(err)
 	} else {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "triggering final heartbeat ping")
+		r.logger.Debugf(ctx, "triggering final heartbeat ping")
 		// The final ping to the heartbeat cleans up any opened heartbeat alerts for the cluster being deleted.
 		_, err = r.heartbeatClient.Ping(ctx, desired.Name)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "triggered final heartbeat ping")
+		r.logger.Debugf(ctx, "triggered final heartbeat ping")
 
-		r.logger.LogCtx(ctx, "level", "debug", "message", "deleting heartbeat")
+		r.logger.Debugf(ctx, "deleting heartbeat")
 		_, err = r.heartbeatClient.Delete(ctx, desired.Name)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		r.logger.LogCtx(ctx, "level", "debug", "message", "deleted heartbeat")
+		r.logger.Debugf(ctx, "deleted heartbeat")
 	}
 
 	return nil

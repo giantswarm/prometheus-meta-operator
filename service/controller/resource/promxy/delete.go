@@ -11,7 +11,7 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if promxy configmap needs to be updated")
+	r.logger.Debugf(ctx, "checking if promxy configmap needs to be updated")
 
 	cluster, err := key.ToCluster(obj)
 	if err != nil {
@@ -41,8 +41,8 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	}
 
 	if config.Promxy.contains(serverGroup) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "promxy configmap needs to be updated")
-		r.logger.LogCtx(ctx, "level", "debug", "message", "removing server group")
+		r.logger.Debugf(ctx, "promxy configmap needs to be updated")
+		r.logger.Debugf(ctx, "removing server group")
 		config.Promxy.remove(serverGroup)
 
 		err = r.updateConfig(ctx, configMap, config)
@@ -50,9 +50,9 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		r.logger.LogCtx(ctx, "level", "debug", "message", "removed server group")
+		r.logger.Debugf(ctx, "removed server group")
 	} else {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "promxy configmap does not need to be updated")
+		r.logger.Debugf(ctx, "promxy configmap does not need to be updated")
 	}
 	return nil
 }

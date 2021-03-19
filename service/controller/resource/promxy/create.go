@@ -16,7 +16,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if promxy configmap needs to be updated")
+	r.logger.Debugf(ctx, "checking if promxy configmap needs to be updated")
 	configMap, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(key.PromxyConfigMapNamespace()).Get(ctx, key.PromxyConfigMapName(), metav1.GetOptions{})
 	if err != nil {
 		return microerror.Mask(err)
@@ -40,7 +40,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	containsServerGroup := config.Promxy.contains(serverGroup)
 	if !containsServerGroup || config.Promxy.needsUpdate(serverGroup) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "promxy configmap needs to be updated")
+		r.logger.Debugf(ctx, "promxy configmap needs to be updated")
 		// We remove the server group if it needs to be updated
 		if containsServerGroup {
 			config.Promxy.remove(serverGroup)
@@ -52,9 +52,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		r.logger.LogCtx(ctx, "level", "debug", "message", "added server group")
+		r.logger.Debugf(ctx, "added server group")
 	} else {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "promxy configmap does not need to be updated")
+		r.logger.Debugf(ctx, "promxy configmap does not need to be updated")
 	}
 	return nil
 }
