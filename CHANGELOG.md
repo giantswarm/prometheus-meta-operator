@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade ingress version to networking.k8s.io/v1beta1
 
+### Fix
+
+- Fix typo in `MatchingNumberOfPrometheusAndCluster` alert
+
 ## [1.24.8] - 2021-03-18
 
 ### Fix
