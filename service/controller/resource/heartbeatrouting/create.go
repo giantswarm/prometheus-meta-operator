@@ -11,7 +11,7 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if alertmanager configmap needs to be updated")
+	r.logger.Debugf(ctx, "checking if alertmanager configmap needs to be updated")
 
 	cluster, err := key.ToCluster(obj)
 	if err != nil {
@@ -36,15 +36,15 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	alertManagerConfigMapNeedsUpdate := receiverNeedsUpdate || routeNeedsUpdate
 
 	if alertManagerConfigMapNeedsUpdate {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "alertmanager configmap needs to be updated")
+		r.logger.Debugf(ctx, "alertmanager configmap needs to be updated")
 		err = r.updateConfig(ctx, configMap, cfg)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		r.logger.LogCtx(ctx, "level", "debug", "message", "alertmanager configmap updated")
+		r.logger.Debugf(ctx, "alertmanager configmap updated")
 	} else {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "alertmanager configmap does not need to be updated")
+		r.logger.Debugf(ctx, "alertmanager configmap does not need to be updated")
 	}
 
 	return nil

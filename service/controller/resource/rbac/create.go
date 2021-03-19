@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	r.logger.LogCtx(ctx, "level", "debug", "message", "creating")
+	r.logger.Debugf(ctx, "creating")
 	{
 		desired, err := toClusterRole(obj)
 		if err != nil {
@@ -56,7 +56,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			}
 		}
 	}
-	r.logger.LogCtx(ctx, "level", "debug", "message", "created")
+	r.logger.Debugf(ctx, "created")
 
 	return nil
 }

@@ -13,18 +13,18 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if heartbeat exists")
+	r.logger.Debugf(ctx, "checking if heartbeat exists")
 	var current heartbeat.Heartbeat
 	getResult, err := r.heartbeatClient.Get(ctx, desired.Name)
 
 	if IsApiNotFoundError(err) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat does not exist")
-		r.logger.LogCtx(ctx, "level", "debug", "message", "creating heartbeat")
+		r.logger.Debugf(ctx, "heartbeat does not exist")
+		r.logger.Debugf(ctx, "creating heartbeat")
 		err := r.createHeartbeat(ctx, desired)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "created heartbeat")
+		r.logger.Debugf(ctx, "created heartbeat")
 
 		// The initial ping to the heartbeat is there to move the heartbeat from inactive to active.
 		_, err = r.heartbeatClient.Ping(ctx, desired.Name)
@@ -37,7 +37,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat exists")
+	r.logger.Debugf(ctx, "heartbeat exists")
 	current = getResult.Heartbeat
 
 	// We get the ID back from opsgenie so we update it in the heartbeat
@@ -45,11 +45,11 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		desired.OwnerTeam = current.OwnerTeam
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "checking if heartbeat needs update")
+	r.logger.Debugf(ctx, "checking if heartbeat needs update")
 
 	if hasChanged(current, *desired) {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat needs update")
-		r.logger.LogCtx(ctx, "level", "debug", "message", "updating heartbeat")
+		r.logger.Debugf(ctx, "heartbeat needs update")
+		r.logger.Debugf(ctx, "updating heartbeat")
 		req := &heartbeat.UpdateRequest{
 			Name:          desired.Name,
 			Description:   desired.Description,
@@ -65,9 +65,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		r.logger.LogCtx(ctx, "level", "debug", "message", "updated heartbeat")
+		r.logger.Debugf(ctx, "updated heartbeat")
 	} else {
-		r.logger.LogCtx(ctx, "level", "debug", "message", "heartbeat is up to date")
+		r.logger.Debugf(ctx, "heartbeat is up to date")
 	}
 
 	return nil
