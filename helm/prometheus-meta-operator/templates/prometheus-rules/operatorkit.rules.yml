@@ -138,7 +138,7 @@ spec:
       annotations:
         description: '{{`{{ $labels.namespace }}/{{ $labels.app }}@{{ $labels.app_version }} has not deleted object {{ $labels.namespace }}/{{ $labels.name }} of type {{ $labels.kind }} for too long.`}}'
         opsrecipe: check-not-deleted-object/
-      expr: (time() - operatorkit_controller_deletion_timestamp{app=~"kvm-operator|cluster-operator", provider="kvm"}) > 18000
+      expr: (time() - operatorkit_controller_deletion_timestamp{app=~"kvm-operator|cluster-operator", provider=~"kvm|vmware"}) > 18000
       for: 5m
       labels:
         area: kaas
