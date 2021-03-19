@@ -8,6 +8,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
@@ -59,6 +60,10 @@ func SecretAPICertificates(cluster metav1.Object) string {
 
 func CAPICertificateName(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-kubeconfig", ClusterID(cluster))
+}
+
+func CAPICertificateNamespace(cluster metav1.Object) string {
+	return cluster.GetNamespace()
 }
 
 func SecretTLSCertificates(cluster metav1.Object) string {
@@ -153,9 +158,11 @@ func AlertManagerKey() string {
 func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
 	case *v1.Service:
-		return v.Spec.ClusterIP
+		return fmt.Sprintf("%s:443", v.Spec.ClusterIP)
+	case *capiv1alpha3.Cluster: // Support CAPI Clusters
+		return fmt.Sprintf("%s:%d", v.Spec.ControlPlaneEndpoint.Host, v.Spec.ControlPlaneEndpoint.Port)
 	case metav1.Object:
-		return fmt.Sprintf("master.%s", v.GetName())
+		return fmt.Sprintf("master.%s:443", v.GetName())
 	}
 
 	return ""
@@ -220,4 +227,16 @@ func RemoteWriteUsernameKey() string {
 
 func RemoteWritePasswordKey() string {
 	return "password"
+}
+
+func IsCAPICluster(obj metav1.Object) bool {
+	switch v := obj.(type) {
+	case *capiv1alpha3.Cluster:
+		if _, ok := v.Labels["azure-operator.giantswarm.io/version"]; ok {
+			return false
+		}
+		return true
+	default:
+		return false
+	}
 }

@@ -84,7 +84,7 @@ func New(config Config) ([]resource.Interface, error) {
 				},
 				{
 					NameFunc:      key.CAPICertificateName,
-					NamespaceFunc: key.ClusterID,
+					NamespaceFunc: key.CAPICertificateNamespace,
 				},
 			},
 			Target: key.SecretAPICertificates,
