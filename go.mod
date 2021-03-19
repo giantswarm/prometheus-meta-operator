@@ -16,7 +16,7 @@ require (
 	github.com/giantswarm/operatorkit/v4 v4.2.0
 	github.com/giantswarm/versionbundle v0.2.0
 	github.com/go-logr/logr v0.3.0 // indirect
-	github.com/google/go-cmp v0.5.4
+	github.com/google/go-cmp v0.5.5
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/googleapis/gnostic v0.5.3 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
