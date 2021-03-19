@@ -25,18 +25,21 @@ spec:
     # Spot Instances being used
     - expr: count(sum(aws_operator_ec2_instance_status{lifecycle != ""}) by (ec2_instance, lifecycle)) by  (lifecycle)
       record: aggregation:aws:instance_lifecycle
-    # API usage: authentication fails via the "giantswarm" auth method (customers)
+    # REST API usage: authentications successful via the "giantswarm" token method
+    - expr: sum(rate(api_service_authentication_giantswarm_successful_attempts_total[5m]))
+      record: aggregation:giantswarm:api_auth_giantswarm_successful_attempts_total
+    # REST API usage: authentication fails via the "giantswarm" token method
     - expr: sum(rate(api_service_authentication_giantswarm_failed_attempts_total[5m]))
       record: aggregation:giantswarm:api_auth_giantswarm_failed_attempts_total
-    # API usage: authentication fails via the "Bearer" auth method (staff)
+    # API usage: authentication fails via the "Bearer" auth method (SSO)
     - expr: sum(rate(api_service_authentication_jwt_failed_attempts_total[5m]))
       record: aggregation:giantswarm:api_auth_jwt_failed_attempts_total
     # GS Rest API requests
     - expr: sum(rate(nginx_ingress_controller_requests{namespace="giantswarm", ingress="api"}[5m])) by (status)
       record: aggregation:giantswarm:api_requests
-    - expr: count(app_operator_app_info{status="deployed",namespace="giantswarm"}) by (name,version,catalog)
+    - expr: count(app_operator_app_info{status="deployed",namespace="giantswarm"}) by (app,name,version,catalog)
       record: aggregation:giantswarm:app_deployed_management_cluster_total
-    - expr: count(app_operator_app_info{status=~"deployed|DEPLOYED",namespace!="giantswarm"}) by (name,version,catalog)
+    - expr: count(app_operator_app_info{status=~"deployed|DEPLOYED",namespace!="giantswarm"}) by (app,name,version,catalog)
       record: aggregation:giantswarm:app_deployed_workload_cluster_total
     - expr: min(cert_exporter_not_after) by (cluster_id, cluster_type)
       record: aggregation:giantswarm:cluster_certificate_not_after_seconds

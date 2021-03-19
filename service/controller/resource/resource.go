@@ -74,12 +74,20 @@ func New(config Config) ([]resource.Interface, error) {
 	var apiCertificatesResource resource.Interface
 	{
 		c := certificates.Config{
-			Name:                "api-certificates",
-			K8sClient:           config.K8sClient,
-			Logger:              config.Logger,
-			SourceNameFunc:      key.Namespace,
-			SourceNamespaceFunc: key.NamespaceDefault,
-			TargetNameFunc:      key.SecretAPICertificates,
+			Name:      "api-certificates",
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+			Sources: []certificates.CertificateSource{
+				{
+					NameFunc:      key.Namespace,
+					NamespaceFunc: key.NamespaceDefault,
+				},
+				{
+					NameFunc:      key.CAPICertificateName,
+					NamespaceFunc: key.ClusterID,
+				},
+			},
+			Target: key.SecretAPICertificates,
 		}
 
 		apiCertificatesResource, err = certificates.New(c)

@@ -113,3 +113,5 @@ spec:
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
   walCompression: true
+  web:
+    pageTitle: test-installation/bar Prometheus
