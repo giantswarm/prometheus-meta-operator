@@ -2,6 +2,7 @@ remote_read: true
 remote_read_path: api/v1/read
 http_client:
   dial_timeout: 200ms
+  follow_redirects: false
 scheme: http
 labels:
   cluster_id: kubernetes
