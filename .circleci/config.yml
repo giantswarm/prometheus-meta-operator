@@ -21,7 +21,6 @@ workflows:
           password_envar: "QUAY_PASSWORD"
           requires:
             - build
-            - test
           filters:
             tags:
               only: /^v.*/
@@ -34,7 +33,6 @@ workflows:
           password_envar: "ALIYUN_PASSWORD"
           requires:
             - build
-            - test
           filters:
             branches:
               ignore: /.*/
