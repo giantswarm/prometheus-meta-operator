@@ -14,7 +14,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting")
+	r.logger.Debugf(ctx, "deleting")
 	c := r.clientFunc(object.GetNamespace())
 	err = c.Delete(ctx, object.GetName(), &metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
@@ -22,7 +22,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
-	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted")
+	r.logger.Debugf(ctx, "deleted")
 
 	return nil
 }

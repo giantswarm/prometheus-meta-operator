@@ -14,7 +14,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.LogCtx(ctx, "level", "debug", "message", "creating")
+	r.logger.Debugf(ctx, "creating")
 	c := r.clientFunc(desired.GetNamespace())
 	current, err := c.Get(ctx, desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
@@ -32,7 +32,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 	}
-	r.logger.LogCtx(ctx, "level", "debug", "message", "created")
+	r.logger.Debugf(ctx, "created")
 
 	return nil
 }

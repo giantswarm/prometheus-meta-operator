@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	r.logger.LogCtx(ctx, "level", "debug", "message", "deleting")
+	r.logger.Debugf(ctx, "deleting")
 	{
 		desired, err := toClusterRole(obj)
 		if err != nil {
@@ -37,7 +37,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 	}
-	r.logger.LogCtx(ctx, "level", "debug", "message", "deleted")
+	r.logger.Debugf(ctx, "deleted")
 
 	return nil
 }

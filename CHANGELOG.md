@@ -8,6 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support for monitoring vmware clusters
+
+### Changed 
+
+- Upgrade ingress version to networking.k8s.io/v1beta1
+
+## [1.24.8] - 2021-03-18
+
+### Fix
+
+- Avoid alerting for `MatchingNumberOfPrometheusAndCluster` when a cluster is
+  being deleted.
+
+## [1.24.7] - 2021-03-18
+
+### Added
+
+- Add support to copy CAPI cluster's certificates
+- Add aggregation `aggregation:giantswarm:api_auth_giantswarm_successful_attempts_total`.
+
 ## [1.24.6] - 2021-03-02
 
 ### Fixed
@@ -833,7 +855,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.8...HEAD
+[1.24.8]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...v1.24.8
+[1.24.6]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.7...v1.24.6
+[1.24.7]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...v1.24.7
 [1.24.6]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.5...v1.24.6
 [1.24.5]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.4...v1.24.5
 [1.24.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.3...v1.24.4

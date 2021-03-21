@@ -16,7 +16,7 @@ require (
 	github.com/giantswarm/operatorkit/v4 v4.2.0
 	github.com/giantswarm/versionbundle v0.2.0
 	github.com/go-logr/logr v0.3.0 // indirect
-	github.com/google/go-cmp v0.5.4
+	github.com/google/go-cmp v0.5.5
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/googleapis/gnostic v0.5.3 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
@@ -29,7 +29,7 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
 	github.com/prometheus/common v0.17.0
 	github.com/prometheus/prometheus v2.23.0+incompatible
-	github.com/sirupsen/logrus v1.8.0
+	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c // indirect

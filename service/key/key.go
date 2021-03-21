@@ -57,6 +57,10 @@ func SecretAPICertificates(cluster metav1.Object) string {
 	return "cluster-certificates"
 }
 
+func CAPICertificateName(cluster metav1.Object) string {
+	return fmt.Sprintf("%s-kubeconfig", ClusterID(cluster))
+}
+
 func SecretTLSCertificates(cluster metav1.Object) string {
 	return "prometheus-tls"
 }

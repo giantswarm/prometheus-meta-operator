@@ -7,7 +7,7 @@ import (
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	extensionsv1beta1 "k8s.io/api/extensions/v1beta1"
+	networkingv1beta1 "k8s.io/api/networking/v1beta1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
@@ -29,7 +29,7 @@ type Config struct {
 
 func New(config Config) (*generic.Resource, error) {
 	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().ExtensionsV1beta1().Ingresses(namespace)
+		c := config.K8sClient.K8sClient().NetworkingV1beta1().Ingresses(namespace)
 		return wrappedClient{client: c}
 	}
 
@@ -107,22 +107,22 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 	// resource that also defines the source of the certificates (i.e. the
 	// Let's Encrypt annotation or the static source for the installation)
 	// so we know as soon as it's updated IC will be using it.
-	ingress := &extensionsv1beta1.Ingress{
+	ingress := &networkingv1beta1.Ingress{
 		TypeMeta: metav1.TypeMeta{
-			APIVersion: extensionsv1beta1.SchemeGroupVersion.Version,
+			APIVersion: networkingv1beta1.SchemeGroupVersion.Version,
 			Kind:       "Ingress",
 		},
 		ObjectMeta: objectMeta,
-		Spec: extensionsv1beta1.IngressSpec{
-			Rules: []extensionsv1beta1.IngressRule{
+		Spec: networkingv1beta1.IngressSpec{
+			Rules: []networkingv1beta1.IngressRule{
 				{
 					Host: config.BaseDomain,
-					IngressRuleValue: extensionsv1beta1.IngressRuleValue{
-						HTTP: &extensionsv1beta1.HTTPIngressRuleValue{
-							Paths: []extensionsv1beta1.HTTPIngressPath{
+					IngressRuleValue: networkingv1beta1.IngressRuleValue{
+						HTTP: &networkingv1beta1.HTTPIngressRuleValue{
+							Paths: []networkingv1beta1.HTTPIngressPath{
 								{
 									Path: fmt.Sprintf("/%s", key.ClusterID(cluster)),
-									Backend: extensionsv1beta1.IngressBackend{
+									Backend: networkingv1beta1.IngressBackend{
 										ServiceName: "prometheus-operated",
 										ServicePort: intstr.FromInt(int(key.PrometheusPort())),
 									},
@@ -139,8 +139,8 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*extensionsv1beta1.Ingress)
-	d := desired.(*extensionsv1beta1.Ingress)
+	c := current.(*networkingv1beta1.Ingress)
+	d := desired.(*networkingv1beta1.Ingress)
 
 	return !reflect.DeepEqual(c.Spec, d.Spec)
 }
