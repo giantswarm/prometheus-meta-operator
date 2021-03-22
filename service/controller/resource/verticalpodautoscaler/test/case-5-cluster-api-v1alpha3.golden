@@ -14,6 +14,7 @@ spec:
       maxAllowed:
         memory: "9"
       minAllowed:
+        cpu: 100m
         memory: 1Gi
       mode: Auto
     - containerName: prometheus-config-reloader
