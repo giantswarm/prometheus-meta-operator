@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.25.0] - 2021-03-22
+
 ### Added
 
 - Add support for monitoring vmware clusters
@@ -863,7 +865,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.8...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.25.0...HEAD
+[1.25.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.8...v1.25.0
 [1.24.8]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...v1.24.8
 [1.24.6]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.7...v1.24.6
 [1.24.7]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...v1.24.7
