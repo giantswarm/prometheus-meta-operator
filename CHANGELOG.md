@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add support for monitoring vmware clusters
+- Add support to get the API Server URL for both legacy and CAPI clusters
 
 ### Changed 
 
@@ -19,6 +20,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fix
 
 - Fix typo in `MatchingNumberOfPrometheusAndCluster` alert
+- Fix scrapeconfig to use secured ports for kubernetes control plane components for CAPI clusters
+- Fix scrapeconfig to proxy all calls through the API Server for CAPI clusters
 
 ## [1.24.8] - 2021-03-18
 
@@ -26,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Avoid alerting for `MatchingNumberOfPrometheusAndCluster` when a cluster is
   being deleted.
+
 
 ## [1.24.7] - 2021-03-18
 

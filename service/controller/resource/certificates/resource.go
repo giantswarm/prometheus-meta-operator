@@ -12,6 +12,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -84,6 +85,11 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 }
 
 func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	objectMeta, err := r.getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -94,9 +100,25 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	secretData := sourceSecret.Data
+
+	if key.IsCAPICluster(cluster) {
+		// CAPI Secret is a kubeconfig so we need to extract the certs from it
+		if kubeconfig, ok := secretData["value"]; ok {
+			capiKubeconfig, err := clientcmd.Load(kubeconfig)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+			kubeconfigAdminUser := fmt.Sprintf("%s-admin", cluster.GetName())
+			secretData["ca"] = capiKubeconfig.Clusters[cluster.GetName()].CertificateAuthorityData
+			secretData["crt"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientCertificateData
+			secretData["key"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientKeyData
+		}
+	}
+
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
-		Data:       sourceSecret.Data,
+		Data:       secretData,
 		Type:       sourceSecret.Type,
 	}
 
@@ -117,9 +139,15 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret
 
 		secret, err = r.k8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			// fall through
+			// fallthrough
+			secret = nil
 		} else if err != nil {
 			return nil, microerror.Mask(err)
+		}
+
+		if secret != nil {
+			// We return the first secret we find
+			return secret, nil
 		}
 	}
 

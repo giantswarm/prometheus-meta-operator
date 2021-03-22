@@ -9,6 +9,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/template"
@@ -47,6 +48,7 @@ type TemplateData struct {
 	Mayu                      string
 	Vault                     string
 	WorkloadClusterETCDDomain string
+	CAPICluster               bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -98,12 +100,16 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	var workloadClusterETCDDomain string = ""
 	if "workload_cluster" == key.ClusterType(v) {
 		clusterID := key.ClusterID(cluster)
+		// Try to get the etcd url from the Giant Swarm way
 		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(context.Background(), "master", metav1.GetOptions{})
-		if err != nil {
+		if apierrors.IsNotFound(err) {
+			// TODO we ignore ETCD for capi clusters for now. Find a way to do it later
+		} else if err != nil {
 			return nil, microerror.Mask(err)
-		}
-		if value, ok := service.Annotations["giantswarm.io/etcd-domain"]; ok {
-			workloadClusterETCDDomain = value
+		} else {
+			if value, ok := service.Annotations["giantswarm.io/etcd-domain"]; ok {
+				workloadClusterETCDDomain = value
+			}
 		}
 	}
 	config.WorkloadClusterETCDDomain = workloadClusterETCDDomain
@@ -163,6 +169,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		Vault:                     config.Vault,
 		Mayu:                      config.Mayu,
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
+		CAPICluster:               key.IsCAPICluster(cluster),
 	}
 
 	return d, nil

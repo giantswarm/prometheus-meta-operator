@@ -4,7 +4,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -19,12 +19,11 @@
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
     action: keep
+  - target_label: __address__
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     regex: https
     action: keep
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
   - target_label: app
     replacement: kubernetes
   # Add cluster_id label.
@@ -58,7 +57,7 @@
       names:
       - kube-system
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -116,7 +115,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -169,7 +168,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -226,7 +225,7 @@
   kubernetes_sd_configs:
   - role: pod
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -291,7 +290,7 @@
   kubernetes_sd_configs:
   - role: pod
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -354,7 +353,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -409,7 +408,7 @@
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -425,6 +424,11 @@
     replacement: kubelet
   - source_labels: [__address__]
     target_label: instance
+  - target_label: __address__
+    replacement: master.bob:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: bob
@@ -455,7 +459,7 @@
       names:
       - kube-system
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -470,15 +474,12 @@
   - source_labels: [__address__]
     replacement: $1:10252
     target_label: instance
-
-  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
-    regex: controller-manager
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (k8s-controller-manager|kube-controller-manager)
     action: keep
-
   - target_label: __address__
     replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
-    regex: (k8s-controller-manager.*)
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
   - target_label: app
@@ -525,7 +526,7 @@
       names:
       - kube-system
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -540,22 +541,16 @@
   - source_labels: [__address__]
     replacement: $1:10251
     target_label: instance
-
-  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
-    regex: scheduler
-    action: keep
-
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (k8s-scheduler|kube-scheduler)
+    action: keep  
   - target_label: __address__
     replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
-    regex: (k8s-scheduler.*)
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -598,7 +593,7 @@
       names:
       - kube-system
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -666,7 +661,7 @@
       names:
       - kube-system
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -680,7 +675,7 @@
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
-  - source_labels: [__meta_kubernetes_pod_label_k8s_app]
+  - source_labels: [__meta_kubernetes_pod_container_name]
     regex: coredns
     action: keep
   - target_label: __address__
@@ -736,7 +731,7 @@
       names:
       - giantswarm
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -810,7 +805,7 @@
       - kube-system
 
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -884,7 +879,7 @@
       - kube-system
 
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -958,7 +953,7 @@
       - kube-system
 
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -1037,7 +1032,7 @@
       - kube-system
 
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -1105,7 +1100,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://master.bob
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt

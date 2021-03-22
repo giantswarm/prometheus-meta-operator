@@ -24,7 +24,7 @@ spec:
             - master
   apiserverConfig:
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
-    host: https://
+    host: https://127.0.0.1:443
     tlsConfig:
       ca: {}
       caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt

@@ -23,7 +23,7 @@ spec:
             values:
             - master
   apiserverConfig:
-    host: https://master.foo
+    host: https://master.foo:443
     tlsConfig:
       ca: {}
       caFile: /etc/prometheus/secrets/cluster-certificates/ca

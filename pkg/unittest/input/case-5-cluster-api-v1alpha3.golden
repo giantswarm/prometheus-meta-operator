@@ -2,3 +2,7 @@ apiVersion: cluster.x-k8s.io/v1alpha3
 kind: Cluster
 metadata:
   name: baz
+spec:
+  controlPlaneEndpoint:
+    host: master.baz
+    port: 443
