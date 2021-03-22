@@ -968,19 +968,6 @@ func TestTLSRoundTripperRaces(t *testing.T) {
 	}
 }
 
-func TestHideHTTPClientConfigSecrets(t *testing.T) {
-	c, _, err := LoadHTTPConfigFile("testdata/http.conf.good.yml")
-	if err != nil {
-		t.Errorf("Error parsing %s: %s", "testdata/http.conf.good.yml", err)
-	}
-
-	// String method must not reveal authentication credentials.
-	s := c.String()
-	if strings.Contains(s, "mysecret") {
-		t.Fatal("http client config's String method reveals authentication credentials.")
-	}
-}
-
 func TestDefaultFollowRedirect(t *testing.T) {
 	cfg, _, err := LoadHTTPConfigFile("testdata/http.conf.good.yml")
 	if err != nil {
