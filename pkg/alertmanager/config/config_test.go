@@ -23,11 +23,10 @@ import (
 	"testing"
 	"time"
 
+	commoncfg "github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/require"
-	"gopkg.in/yaml.v2"
-
-	promcommoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
+	yaml "gopkg.in/yaml.v2"
 )
 
 func TestLoadEmptyString(t *testing.T) {
@@ -152,6 +151,103 @@ receivers:
 
 }
 
+func TestMuteTimeExists(t *testing.T) {
+	in := `
+route:
+    receiver: team-Y
+    routes:
+    -  match:
+        severity: critical
+       mute_time_intervals:
+       - business_hours
+
+receivers:
+- name: 'team-Y'
+`
+	_, err := Load(in)
+
+	expected := "undefined time interval \"business_hours\" used in route"
+
+	if err == nil {
+		t.Fatalf("no error returned, expected:\n%q", expected)
+	}
+	if err.Error() != expected {
+		t.Errorf("\nexpected:\n%q\ngot:\n%q", expected, err.Error())
+	}
+
+}
+
+func TestMuteTimeHasName(t *testing.T) {
+	in := `
+mute_time_intervals:
+- name: 
+  time_intervals:
+  - times:
+     - start_time: '09:00'
+       end_time: '17:00'
+
+receivers:
+- name: 'team-X-mails'
+
+route:
+  receiver: 'team-X-mails'
+  routes:
+  -  match:
+      severity: critical
+     mute_time_intervals:
+     - business_hours
+`
+	_, err := Load(in)
+
+	expected := "missing name in mute time interval"
+
+	if err == nil {
+		t.Fatalf("no error returned, expected:\n%q", expected)
+	}
+	if err.Error() != expected {
+		t.Errorf("\nexpected:\n%q\ngot:\n%q", expected, err.Error())
+	}
+
+}
+
+func TestMuteTimeNoDuplicates(t *testing.T) {
+	in := `
+mute_time_intervals:
+- name: duplicate
+  time_intervals:
+  - times:
+     - start_time: '09:00'
+       end_time: '17:00'
+- name: duplicate
+  time_intervals:
+  - times:
+     - start_time: '10:00'
+       end_time: '14:00'
+
+receivers:
+- name: 'team-X-mails'
+
+route:
+  receiver: 'team-X-mails'
+  routes:
+  -  match:
+      severity: critical
+     mute_time_intervals:
+     - business_hours
+`
+	_, err := Load(in)
+
+	expected := "mute time interval \"duplicate\" is not unique"
+
+	if err == nil {
+		t.Fatalf("no error returned, expected:\n%q", expected)
+	}
+	if err.Error() != expected {
+		t.Errorf("\nexpected:\n%q\ngot:\n%q", expected, err.Error())
+	}
+
+}
+
 func TestGroupByHasNoDuplicatedLabels(t *testing.T) {
 	in := `
 route:
@@ -222,6 +318,36 @@ receivers:
 	_, err := Load(in)
 
 	expected := "no routes provided"
+
+	if err == nil {
+		t.Fatalf("no error returned, expected:\n%q", expected)
+	}
+	if err.Error() != expected {
+		t.Errorf("\nexpected:\n%q\ngot:\n%q", expected, err.Error())
+	}
+
+}
+
+func TestRootRouteNoMuteTimes(t *testing.T) {
+	in := `
+mute_time_intervals:
+- name: my_mute_time
+  time_intervals:
+  - times:
+     - start_time: '09:00'
+       end_time: '17:00'
+
+receivers:
+- name: 'team-X-mails'
+
+route:
+  receiver: 'team-X-mails'
+  mute_time_intervals:
+  - my_mute_time
+`
+	_, err := Load(in)
+
+	expected := "root route must not have any mute time intervals"
 
 	if err == nil {
 		t.Fatalf("no error returned, expected:\n%q", expected)
@@ -319,6 +445,19 @@ receivers:
 	}
 }
 
+func TestHideConfigSecrets(t *testing.T) {
+	c, err := LoadFile("testdata/conf.good.yml")
+	if err != nil {
+		t.Fatalf("Error parsing %s: %s", "testdata/conf.good.yml", err)
+	}
+
+	// String method must not reveal authentication credentials.
+	s := c.String()
+	if strings.Count(s, "<secret>") != 13 || strings.Contains(s, "mysecret") {
+		t.Fatal("config's String method reveals authentication credentials.")
+	}
+}
+
 func TestJSONMarshal(t *testing.T) {
 	c, err := LoadFile("testdata/conf.good.yml")
 	if err != nil {
@@ -329,6 +468,75 @@ func TestJSONMarshal(t *testing.T) {
 	if err != nil {
 		t.Fatal("JSON Marshaling failed:", err)
 	}
+}
+
+func TestJSONMarshalSecret(t *testing.T) {
+	test := struct {
+		S Secret
+	}{
+		S: Secret("test"),
+	}
+
+	c, err := json.Marshal(test)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// u003c -> "<"
+	// u003e -> ">"
+	require.Equal(t, "{\"S\":\"\\u003csecret\\u003e\"}", string(c), "Secret not properly elided.")
+}
+
+func TestMarshalSecretURL(t *testing.T) {
+	urlp, err := url.Parse("http://example.com/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	u := &SecretURL{urlp}
+
+	c, err := json.Marshal(u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	// u003c -> "<"
+	// u003e -> ">"
+	require.Equal(t, "\"\\u003csecret\\u003e\"", string(c), "SecretURL not properly elided in JSON.")
+	// Check that the marshaled data can be unmarshaled again.
+	out := &SecretURL{}
+	err = json.Unmarshal(c, out)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	c, err = yaml.Marshal(u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	require.Equal(t, "<secret>\n", string(c), "SecretURL not properly elided in YAML.")
+	// Check that the marshaled data can be unmarshaled again.
+	out = &SecretURL{}
+	err = yaml.Unmarshal(c, &out)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestUnmarshalSecretURL(t *testing.T) {
+	b := []byte(`"http://example.com/se cret"`)
+	var u SecretURL
+
+	err := json.Unmarshal(b, &u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	require.Equal(t, "http://example.com/se%20cret", u.String(), "SecretURL not properly unmarshaled in JSON.")
+
+	err = yaml.Unmarshal(b, &u)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	require.Equal(t, "http://example.com/se%20cret", u.String(), "SecretURL not properly unmarshaled in YAML.")
 }
 
 func TestMarshalURL(t *testing.T) {
@@ -467,7 +675,9 @@ func TestEmptyFieldsAndRegex(t *testing.T) {
 	var expectedConf = Config{
 
 		Global: &GlobalConfig{
-			HTTPConfig:      &promcommoncfg.HTTPClientConfig{},
+			HTTPConfig: &commoncfg.HTTPClientConfig{
+				FollowRedirects: true,
+			},
 			ResolveTimeout:  model.Duration(5 * time.Minute),
 			SMTPSmarthost:   HostPort{Host: "localhost", Port: "25"},
 			SMTPFrom:        "alertmanager@example.org",
@@ -544,6 +754,21 @@ func TestEmptyFieldsAndRegex(t *testing.T) {
 
 	if !reflect.DeepEqual(configGot, configExp) {
 		t.Fatalf("%s: unexpected config result: \n\n%s\n expected\n\n%s", "testdata/conf.empty-fields.yml", configGot, configExp)
+	}
+}
+
+func TestGlobalAndLocalHTTPConfig(t *testing.T) {
+	config, err := LoadFile("testdata/conf.http-config.good.yml")
+	if err != nil {
+		t.Fatalf("Error parsing %s: %s", "testdata/conf-http-config.good.yml", err)
+	}
+
+	if config.Global.HTTPConfig.FollowRedirects {
+		t.Fatalf("global HTTP config should not follow redirects")
+	}
+
+	if !config.Receivers[0].SlackConfigs[0].HTTPConfig.FollowRedirects {
+		t.Fatalf("global HTTP config should follow redirects")
 	}
 }
 

@@ -14,6 +14,7 @@
 package config
 
 import (
+	"strings"
 	"testing"
 
 	"gopkg.in/yaml.v2"
@@ -191,6 +192,30 @@ url: 'http://example.com'
 
 	if err != nil {
 		t.Fatalf("no error expected, returned:\n%v", err.Error())
+	}
+}
+
+func TestWebhookPasswordIsObfuscated(t *testing.T) {
+	in := `
+url: 'http://example.com'
+http_config:
+  basic_auth:
+    username: foo
+    password: supersecret
+`
+	var cfg WebhookConfig
+	err := yaml.UnmarshalStrict([]byte(in), &cfg)
+
+	if err != nil {
+		t.Fatalf("no error expected, returned:\n%v", err.Error())
+	}
+
+	ycfg, err := yaml.Marshal(cfg)
+	if err != nil {
+		t.Fatalf("no error expected, returned:\n%v", err.Error())
+	}
+	if strings.Contains(string(ycfg), "supersecret") {
+		t.Errorf("Found password in the YAML cfg: %s\n", ycfg)
 	}
 }
 
