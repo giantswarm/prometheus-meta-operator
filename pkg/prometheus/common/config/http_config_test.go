@@ -32,7 +32,7 @@ import (
 	"testing"
 	"time"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
 
 const (
@@ -49,13 +49,17 @@ const (
 	MissingCert           = "missing/cert.crt"
 	MissingKey            = "missing/secret.key"
 
-	ExpectedMessage        = "I'm here to serve you!!!"
-	BearerToken            = "theanswertothegreatquestionoflifetheuniverseandeverythingisfortytwo"
-	BearerTokenFile        = "testdata/bearer.token"
-	MissingBearerTokenFile = "missing/bearer.token"
-	ExpectedBearer         = "Bearer " + BearerToken
-	ExpectedUsername       = "arthurdent"
-	ExpectedPassword       = "42"
+	ExpectedMessage                   = "I'm here to serve you!!!"
+	AuthorizationCredentials          = "theanswertothegreatquestionoflifetheuniverseandeverythingisfortytwo"
+	AuthorizationCredentialsFile      = "testdata/bearer.token"
+	AuthorizationType                 = "APIKEY"
+	BearerToken                       = AuthorizationCredentials
+	BearerTokenFile                   = AuthorizationCredentialsFile
+	MissingBearerTokenFile            = "missing/bearer.token"
+	ExpectedBearer                    = "Bearer " + BearerToken
+	ExpectedAuthenticationCredentials = AuthorizationType + " " + BearerToken
+	ExpectedUsername                  = "arthurdent"
+	ExpectedPassword                  = "42"
 )
 
 var invalidHTTPClientConfigs = []struct {
@@ -73,6 +77,22 @@ var invalidHTTPClientConfigs = []struct {
 	{
 		httpClientConfigFile: "testdata/http.conf.basic-auth.too-much.bad.yaml",
 		errMsg:               "at most one of basic_auth password & password_file must be configured",
+	},
+	{
+		httpClientConfigFile: "testdata/http.conf.mix-bearer-and-creds.bad.yaml",
+		errMsg:               "authorization is not compatible with bearer_token & bearer_token_file",
+	},
+	{
+		httpClientConfigFile: "testdata/http.conf.auth-creds-and-file-set.too-much.bad.yaml",
+		errMsg:               "at most one of authorization credentials & credentials_file must be configured",
+	},
+	{
+		httpClientConfigFile: "testdata/http.conf.basic-auth-and-auth-creds.too-much.bad.yaml",
+		errMsg:               "at most one of basic_auth & authorization must be configured",
+	},
+	{
+		httpClientConfigFile: "testdata/http.conf.auth-creds-no-basic.bad.yaml",
+		errMsg:               `authorization type cannot be set to "basic", use "basic_auth" instead`,
 	},
 }
 
@@ -108,7 +128,6 @@ func TestNewClientFromConfig(t *testing.T) {
 		clientConfig HTTPClientConfig
 		handler      func(w http.ResponseWriter, r *http.Request)
 	}{
-		/* #nosec */
 		{
 			clientConfig: HTTPClientConfig{
 				TLSConfig: TLSConfig{
@@ -116,8 +135,7 @@ func TestNewClientFromConfig(t *testing.T) {
 					CertFile:           ClientCertificatePath,
 					KeyFile:            ClientKeyNoPassPath,
 					ServerName:         "",
-					InsecureSkipVerify: true,
-				},
+					InsecureSkipVerify: true},
 			},
 			handler: func(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprint(w, ExpectedMessage)
@@ -129,8 +147,7 @@ func TestNewClientFromConfig(t *testing.T) {
 					CertFile:           ClientCertificatePath,
 					KeyFile:            ClientKeyNoPassPath,
 					ServerName:         "",
-					InsecureSkipVerify: false,
-				},
+					InsecureSkipVerify: false},
 			},
 			handler: func(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprint(w, ExpectedMessage)
@@ -175,6 +192,87 @@ func TestNewClientFromConfig(t *testing.T) {
 			},
 		}, {
 			clientConfig: HTTPClientConfig{
+				Authorization: &Authorization{Credentials: BearerToken},
+				TLSConfig: TLSConfig{
+					CAFile:             TLSCAChainPath,
+					CertFile:           ClientCertificatePath,
+					KeyFile:            ClientKeyNoPassPath,
+					ServerName:         "",
+					InsecureSkipVerify: false},
+			},
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				bearer := r.Header.Get("Authorization")
+				if bearer != ExpectedBearer {
+					fmt.Fprintf(w, "The expected Bearer Authorization (%s) differs from the obtained Bearer Authorization (%s)",
+						ExpectedBearer, bearer)
+				} else {
+					fmt.Fprint(w, ExpectedMessage)
+				}
+			},
+		}, {
+			clientConfig: HTTPClientConfig{
+				Authorization: &Authorization{CredentialsFile: AuthorizationCredentialsFile, Type: AuthorizationType},
+				TLSConfig: TLSConfig{
+					CAFile:             TLSCAChainPath,
+					CertFile:           ClientCertificatePath,
+					KeyFile:            ClientKeyNoPassPath,
+					ServerName:         "",
+					InsecureSkipVerify: false},
+			},
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				bearer := r.Header.Get("Authorization")
+				if bearer != ExpectedAuthenticationCredentials {
+					fmt.Fprintf(w, "The expected Bearer Authorization (%s) differs from the obtained Bearer Authorization (%s)",
+						ExpectedAuthenticationCredentials, bearer)
+				} else {
+					fmt.Fprint(w, ExpectedMessage)
+				}
+			},
+		}, {
+			clientConfig: HTTPClientConfig{
+				Authorization: &Authorization{
+					Credentials: AuthorizationCredentials,
+					Type:        AuthorizationType,
+				},
+				TLSConfig: TLSConfig{
+					CAFile:             TLSCAChainPath,
+					CertFile:           ClientCertificatePath,
+					KeyFile:            ClientKeyNoPassPath,
+					ServerName:         "",
+					InsecureSkipVerify: false},
+			},
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				bearer := r.Header.Get("Authorization")
+				if bearer != ExpectedAuthenticationCredentials {
+					fmt.Fprintf(w, "The expected Bearer Authorization (%s) differs from the obtained Bearer Authorization (%s)",
+						ExpectedAuthenticationCredentials, bearer)
+				} else {
+					fmt.Fprint(w, ExpectedMessage)
+				}
+			},
+		}, {
+			clientConfig: HTTPClientConfig{
+				Authorization: &Authorization{
+					CredentialsFile: BearerTokenFile,
+				},
+				TLSConfig: TLSConfig{
+					CAFile:             TLSCAChainPath,
+					CertFile:           ClientCertificatePath,
+					KeyFile:            ClientKeyNoPassPath,
+					ServerName:         "",
+					InsecureSkipVerify: false},
+			},
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				bearer := r.Header.Get("Authorization")
+				if bearer != ExpectedBearer {
+					fmt.Fprintf(w, "The expected Bearer Authorization (%s) differs from the obtained Bearer Authorization (%s)",
+						ExpectedBearer, bearer)
+				} else {
+					fmt.Fprint(w, ExpectedMessage)
+				}
+			},
+		}, {
+			clientConfig: HTTPClientConfig{
 				BasicAuth: &BasicAuth{
 					Username: ExpectedUsername,
 					Password: ExpectedPassword,
@@ -198,6 +296,46 @@ func TestNewClientFromConfig(t *testing.T) {
 					fmt.Fprint(w, ExpectedMessage)
 				}
 			},
+		}, {
+			clientConfig: HTTPClientConfig{
+				FollowRedirects: true,
+				TLSConfig: TLSConfig{
+					CAFile:             TLSCAChainPath,
+					CertFile:           ClientCertificatePath,
+					KeyFile:            ClientKeyNoPassPath,
+					ServerName:         "",
+					InsecureSkipVerify: false},
+			},
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				switch r.URL.Path {
+				case "/redirected":
+					fmt.Fprintf(w, ExpectedMessage)
+				default:
+					w.Header().Set("Location", "/redirected")
+					w.WriteHeader(http.StatusFound)
+					fmt.Fprintf(w, "It should follow the redirect.")
+				}
+			},
+		}, {
+			clientConfig: HTTPClientConfig{
+				FollowRedirects: false,
+				TLSConfig: TLSConfig{
+					CAFile:             TLSCAChainPath,
+					CertFile:           ClientCertificatePath,
+					KeyFile:            ClientKeyNoPassPath,
+					ServerName:         "",
+					InsecureSkipVerify: false},
+			},
+			handler: func(w http.ResponseWriter, r *http.Request) {
+				switch r.URL.Path {
+				case "/redirected":
+					fmt.Fprint(w, "The redirection was followed.")
+				default:
+					w.Header().Set("Location", "/redirected")
+					w.WriteHeader(http.StatusFound)
+					fmt.Fprintf(w, ExpectedMessage)
+				}
+			},
 		},
 	}
 
@@ -208,6 +346,10 @@ func TestNewClientFromConfig(t *testing.T) {
 		}
 		defer testServer.Close()
 
+		err = validConfig.clientConfig.Validate()
+		if err != nil {
+			t.Fatal(err.Error())
+		}
 		client, err := NewClientFromConfig(validConfig.clientConfig, "test", false, true)
 		if err != nil {
 			t.Errorf("Can't create a client from this config: %+v", validConfig.clientConfig)
@@ -215,7 +357,7 @@ func TestNewClientFromConfig(t *testing.T) {
 		}
 		response, err := client.Get(testServer.URL)
 		if err != nil {
-			t.Errorf("Can't connect to the test server using this config: %+v", validConfig.clientConfig)
+			t.Errorf("Can't connect to the test server using this config: %+v: %v", validConfig.clientConfig, err)
 			continue
 		}
 
@@ -239,13 +381,11 @@ func TestNewClientFromInvalidConfig(t *testing.T) {
 		clientConfig HTTPClientConfig
 		errorMsg     string
 	}{
-		/* #nosec */
 		{
 			clientConfig: HTTPClientConfig{
 				TLSConfig: TLSConfig{
 					CAFile:             MissingCA,
-					InsecureSkipVerify: true,
-				},
+					InsecureSkipVerify: true},
 			},
 			errorMsg: fmt.Sprintf("unable to load specified CA cert %s:", MissingCA),
 		},
@@ -253,8 +393,7 @@ func TestNewClientFromInvalidConfig(t *testing.T) {
 			clientConfig: HTTPClientConfig{
 				TLSConfig: TLSConfig{
 					CAFile:             InvalidCA,
-					InsecureSkipVerify: true,
-				},
+					InsecureSkipVerify: true},
 			},
 			errorMsg: fmt.Sprintf("unable to use specified CA cert %s", InvalidCA),
 		},
@@ -310,7 +449,7 @@ func TestMissingBearerAuthFile(t *testing.T) {
 		t.Fatal("No error is returned here")
 	}
 
-	if !strings.Contains(err.Error(), "unable to read bearer token file missing/bearer.token: open missing/bearer.token: no such file or directory") {
+	if !strings.Contains(err.Error(), "unable to read authorization credentials file missing/bearer.token: open missing/bearer.token: no such file or directory") {
 		t.Fatal("wrong error message being returned")
 	}
 }
@@ -329,7 +468,7 @@ func TestBearerAuthRoundTripper(t *testing.T) {
 	}, nil, nil)
 
 	// Normal flow.
-	bearerAuthRoundTripper := NewBearerAuthRoundTripper(BearerToken, fakeRoundTripper)
+	bearerAuthRoundTripper := NewAuthorizationCredentialsRoundTripper("Bearer", BearerToken, fakeRoundTripper)
 	request, _ := http.NewRequest("GET", "/hitchhiker", nil)
 	request.Header.Set("User-Agent", "Douglas Adams mind")
 	_, err := bearerAuthRoundTripper.RoundTrip(request)
@@ -338,7 +477,7 @@ func TestBearerAuthRoundTripper(t *testing.T) {
 	}
 
 	// Should honor already Authorization header set.
-	bearerAuthRoundTripperShouldNotModifyExistingAuthorization := NewBearerAuthRoundTripper(newBearerToken, fakeRoundTripper)
+	bearerAuthRoundTripperShouldNotModifyExistingAuthorization := NewAuthorizationCredentialsRoundTripper("Bearer", newBearerToken, fakeRoundTripper)
 	request, _ = http.NewRequest("GET", "/hitchhiker", nil)
 	request.Header.Set("Authorization", ExpectedBearer)
 	_, err = bearerAuthRoundTripperShouldNotModifyExistingAuthorization.RoundTrip(request)
@@ -357,7 +496,7 @@ func TestBearerAuthFileRoundTripper(t *testing.T) {
 	}, nil, nil)
 
 	// Normal flow.
-	bearerAuthRoundTripper := NewBearerAuthFileRoundTripper(BearerTokenFile, fakeRoundTripper)
+	bearerAuthRoundTripper := NewAuthorizationCredentialsFileRoundTripper("Bearer", BearerTokenFile, fakeRoundTripper)
 	request, _ := http.NewRequest("GET", "/hitchhiker", nil)
 	request.Header.Set("User-Agent", "Douglas Adams mind")
 	_, err := bearerAuthRoundTripper.RoundTrip(request)
@@ -366,7 +505,7 @@ func TestBearerAuthFileRoundTripper(t *testing.T) {
 	}
 
 	// Should honor already Authorization header set.
-	bearerAuthRoundTripperShouldNotModifyExistingAuthorization := NewBearerAuthFileRoundTripper(MissingBearerTokenFile, fakeRoundTripper)
+	bearerAuthRoundTripperShouldNotModifyExistingAuthorization := NewAuthorizationCredentialsFileRoundTripper("Bearer", MissingBearerTokenFile, fakeRoundTripper)
 	request, _ = http.NewRequest("GET", "/hitchhiker", nil)
 	request.Header.Set("Authorization", ExpectedBearer)
 	_, err = bearerAuthRoundTripperShouldNotModifyExistingAuthorization.RoundTrip(request)
@@ -391,12 +530,10 @@ func TestTLSConfig(t *testing.T) {
 	rootCAs := x509.NewCertPool()
 	rootCAs.AppendCertsFromPEM(tlsCAChain)
 
-	/* #nosec */
 	expectedTLSConfig := &tls.Config{
 		RootCAs:            rootCAs,
 		ServerName:         configTLSConfig.ServerName,
-		InsecureSkipVerify: configTLSConfig.InsecureSkipVerify,
-	}
+		InsecureSkipVerify: configTLSConfig.InsecureSkipVerify}
 
 	tlsConfig, err := NewTLSConfig(&configTLSConfig)
 	if err != nil {
@@ -416,20 +553,27 @@ func TestTLSConfig(t *testing.T) {
 		t.Fatalf("Unexpected client certificate result: \n\n%+v\n expected\n\n%+v", cert, clientCertificate)
 	}
 
-	// non-nil functions are never equal.
+	// tlsConfig.rootCAs.LazyCerts contains functions getCert() in go 1.16, which are
+	// never equal. Compare the Subjects instead.
+	if !reflect.DeepEqual(tlsConfig.RootCAs.Subjects(), expectedTLSConfig.RootCAs.Subjects()) {
+		t.Fatalf("Unexpected RootCAs result: \n\n%+v\n expected\n\n%+v", tlsConfig.RootCAs.Subjects(), expectedTLSConfig.RootCAs.Subjects())
+	}
+	tlsConfig.RootCAs = nil
+	expectedTLSConfig.RootCAs = nil
+
+	// Non-nil functions are never equal.
 	tlsConfig.GetClientCertificate = nil
+
 	if !reflect.DeepEqual(tlsConfig, expectedTLSConfig) {
 		t.Fatalf("Unexpected TLS Config result: \n\n%+v\n expected\n\n%+v", tlsConfig, expectedTLSConfig)
 	}
 }
 
 func TestTLSConfigEmpty(t *testing.T) {
-	/* #nosec */
 	configTLSConfig := TLSConfig{
 		InsecureSkipVerify: true,
 	}
 
-	/* #nosec */
 	expectedTLSConfig := &tls.Config{
 		InsecureSkipVerify: configTLSConfig.InsecureSkipVerify,
 	}
@@ -821,6 +965,16 @@ func TestTLSRoundTripperRaces(t *testing.T) {
 	wg.Wait()
 	if ok == total {
 		t.Fatalf("Expecting some requests to fail but got %d/%d successful requests", ok, total)
+	}
+}
+
+func TestDefaultFollowRedirect(t *testing.T) {
+	cfg, _, err := LoadHTTPConfigFile("testdata/http.conf.good.yml")
+	if err != nil {
+		t.Errorf("Error loading HTTP client config: %v", err)
+	}
+	if !cfg.FollowRedirects {
+		t.Errorf("follow_redirects should be true")
 	}
 }
 

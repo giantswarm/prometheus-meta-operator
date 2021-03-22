@@ -37,20 +37,16 @@ func LoadTLSConfig(filename string) (*tls.Config, error) {
 	return NewTLSConfig(&cfg)
 }
 
-/* #nosec */
 var expectedTLSConfigs = []struct {
 	filename string
 	config   *tls.Config
 }{
-
 	{
 		filename: "tls_config.empty.good.yml",
 		config:   &tls.Config{},
 	}, {
 		filename: "tls_config.insecure.good.yml",
-		config: &tls.Config{
-			InsecureSkipVerify: true,
-		},
+		config:   &tls.Config{InsecureSkipVerify: true},
 	},
 }
 

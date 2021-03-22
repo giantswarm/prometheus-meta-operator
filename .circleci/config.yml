@@ -1,20 +1,13 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@1.0.0
+  architect: giantswarm/architect@2.3.0
 workflows:
   build:
     jobs:
       - architect/go-build:
           name: build
           binary: prometheus-meta-operator
-          resource_class: large
-          filters:
-            tags:
-              only: /^v.*/
-
-      - architect/go-test:
-          name: test
           resource_class: large
           filters:
             tags:
@@ -28,7 +21,6 @@ workflows:
           password_envar: "QUAY_PASSWORD"
           requires:
             - build
-            - test
           filters:
             tags:
               only: /^v.*/
@@ -41,7 +33,6 @@ workflows:
           password_envar: "ALIYUN_PASSWORD"
           requires:
             - build
-            - test
           filters:
             branches:
               ignore: /.*/
@@ -54,6 +45,8 @@ workflows:
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
           chart: "prometheus-meta-operator"
+          requires:
+            - build
           filters:
             tags:
               only: /^v.*/
