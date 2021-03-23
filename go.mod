@@ -30,7 +30,7 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
 	github.com/prometheus/alertmanager v0.21.1-0.20210321154706-72deec44a869
 	github.com/prometheus/client_golang v1.9.0
-	github.com/prometheus/common v0.18.0
+	github.com/prometheus/common v0.20.0
 	github.com/prometheus/prometheus v2.23.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.7.1
