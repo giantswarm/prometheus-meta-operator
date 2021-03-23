@@ -3,7 +3,7 @@ version: 2.1
 orbs:
   architect: giantswarm/architect@2.3.0
   localorb:
-    commands:
+    jobs:
       push-to-app-collection:
         parameters:
           app_name:
