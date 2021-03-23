@@ -99,6 +99,10 @@ func PrometheusDefaultMemory() *resource.Quantity {
 	return resource.NewQuantity(1024*1024*1024, resource.BinarySI)
 }
 
+func PrometheusMemoryLimit() *resource.Quantity {
+	return resource.NewQuantity(1024*1024*1228, resource.BinarySI)
+}
+
 func PrometheusPort() int32 {
 	return 9090
 }
