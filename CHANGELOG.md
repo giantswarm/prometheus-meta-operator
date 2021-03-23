@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed 
+
+- Rename `EtcdWorkloadClusterDown` to `WorkloadClusterEtcdDown`
+
+### Fixed
+
+- Support vmware for `WorkloadClusterEtcdDown`
+- Add vmware to the list of valid providers
+
 ## [1.25.2] - 2021-03-23
 
 ### Fixed
