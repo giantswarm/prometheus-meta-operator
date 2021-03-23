@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@2.3.0
+  architect: giantswarm/architect@2.4.0
 workflows:
   build:
     jobs:
@@ -48,6 +48,22 @@ workflows:
           requires:
             - build
           filters:
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          name: shared-app-collection
+          context: "architect"
+          app_name: "prometheus-meta-operator"
+          app_namespace: "monitoring"
+          app_collection_repo: "shared-app-collection"
+          requires:
+            - push-to-quay
+            - push-to-aliyun
+            - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/
 

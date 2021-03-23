@@ -130,7 +130,7 @@ func (r *Runner) Run() error {
 
 			outputFile := filepath.Join(r.OutputDir, file.Name())
 			if r.Update {
-				err := ioutil.WriteFile(outputFile, testResult, 0644)
+				err := ioutil.WriteFile(outputFile, testResult, 0644) // #nosec
 				if err != nil {
 					t.Fatal(err)
 				}
