@@ -244,6 +244,8 @@ workflows:
           name: vmware-app-collection
           app_name: "prometheus-meta-operator"
           app_namespace: "monitoring"
+          app_catalog: "control-plane-test-catalog"
+          disable_force_upgrade: true
           app_collection_repo: "vmware-app-collection"
           requires:
             - push-to-quay
