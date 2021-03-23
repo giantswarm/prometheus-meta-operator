@@ -23,10 +23,11 @@ import (
 	"testing"
 	"time"
 
-	commoncfg "github.com/prometheus/common/config"
 	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
+
+	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 )
 
 func TestLoadEmptyString(t *testing.T) {
@@ -180,7 +181,7 @@ receivers:
 func TestMuteTimeHasName(t *testing.T) {
 	in := `
 mute_time_intervals:
-- name: 
+- name:
   time_intervals:
   - times:
      - start_time: '09:00'
@@ -445,19 +446,6 @@ receivers:
 	}
 }
 
-func TestHideConfigSecrets(t *testing.T) {
-	c, err := LoadFile("testdata/conf.good.yml")
-	if err != nil {
-		t.Fatalf("Error parsing %s: %s", "testdata/conf.good.yml", err)
-	}
-
-	// String method must not reveal authentication credentials.
-	s := c.String()
-	if strings.Count(s, "<secret>") != 13 || strings.Contains(s, "mysecret") {
-		t.Fatal("config's String method reveals authentication credentials.")
-	}
-}
-
 func TestJSONMarshal(t *testing.T) {
 	c, err := LoadFile("testdata/conf.good.yml")
 	if err != nil {
@@ -468,23 +456,6 @@ func TestJSONMarshal(t *testing.T) {
 	if err != nil {
 		t.Fatal("JSON Marshaling failed:", err)
 	}
-}
-
-func TestJSONMarshalSecret(t *testing.T) {
-	test := struct {
-		S Secret
-	}{
-		S: Secret("test"),
-	}
-
-	c, err := json.Marshal(test)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// u003c -> "<"
-	// u003e -> ">"
-	require.Equal(t, "{\"S\":\"\\u003csecret\\u003e\"}", string(c), "Secret not properly elided.")
 }
 
 func TestMarshalSecretURL(t *testing.T) {
