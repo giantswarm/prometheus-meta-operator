@@ -1,55 +1,7 @@
 version: 2.1
 
 orbs:
-  architect: giantswarm/architect@2.3.0
-  localorb:
-  
-    executors:
-      architect:
-        docker:
-          - entrypoint: /bin/bash
-            image: quay.io/giantswarm/architect:latest
-  
-    jobs:
-      push-to-app-collection:
-        executor: architect
-        parameters:
-          app_name:
-            type: "string"
-          app_namespace:
-            type: "string"
-          app_catalog:
-            type: "string"
-          app_collection_repo:
-            type: "string"
-          disable_force_upgrade:
-            type: "boolean"
-          user_configmap_name:
-            description: "Name of the app user config configmap."
-            type: "string"
-            default: ""
-          user_configmap_path:
-            description: "Path of the app user config configmap."
-            type: "string"
-            default: ""
-          user_secret_name:
-            description: "Name of the app user config secret."
-            type: "string"
-            default: ""
-          user_secret_path:
-            description: "Path of the app user config secret."
-            type: "string"
-            default: ""
-        steps:
-          - run:
-              name: "localorb/push-to-app-collection: Clone app collection repo"
-              command: |
-                git ls-remote --exit-code --heads git@github.com:giantswarm/<<parameters.app_collection_repo>>.git main
-                if [ $? = 0 ]; then
-                  git clone -q --depth=1 --single-branch -b main git@github.com:giantswarm/<<parameters.app_collection_repo>>.git .app-collection ;
-                else
-                  git clone -q --depth=1 --single-branch -b master git@github.com:giantswarm/<<parameters.app_collection_repo>>.git .app-collection ;
-                fi
+  architect: giantswarm/architect@dev:QuentinBisson-patch-1
 workflows:
   build:
     jobs:
@@ -147,7 +99,7 @@ workflows:
             tags:
               only: /^v.*/
 
-      - localorb/push-to-app-collection:
+      - architect/push-to-app-collection:
           name: vmware-app-collection
           app_name: "prometheus-meta-operator"
           app_namespace: "monitoring"
