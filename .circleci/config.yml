@@ -71,6 +71,7 @@ orbs:
                 else
                   git clone -q --depth=1 --single-branch -b master git@github.com:giantswarm/<<parameters.app_collection_repo>>.git .app-collection ;
                 fi
+                ls -la .app-collection
 workflows:
   build:
     jobs:
