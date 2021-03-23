@@ -20,10 +20,12 @@ orbs:
             type: "string"
           app_catalog:
             type: "string"
+            default: ""
           app_collection_repo:
             type: "string"
           disable_force_upgrade:
             type: "boolean"
+            default: false
           user_configmap_name:
             description: "Name of the app user config configmap."
             type: "string"
