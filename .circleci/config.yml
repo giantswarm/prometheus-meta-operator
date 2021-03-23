@@ -3,8 +3,16 @@ version: 2.1
 orbs:
   architect: giantswarm/architect@2.3.0
   localorb:
+  
+    executors:
+      architect:
+        docker:
+          - entrypoint: /bin/bash
+            image: quay.io/giantswarm/architect:latest
+  
     jobs:
       push-to-app-collection:
+        executor: architect
         parameters:
           app_name:
             type: "string"
