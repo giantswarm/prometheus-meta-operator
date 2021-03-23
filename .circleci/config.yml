@@ -44,6 +44,25 @@ orbs:
             default: ""
         steps:
           - run:
+              name: "architect/prepare-catalogbot-git-ssh: Check environment variables"
+              command: |
+                [ ! -z "${CATALOGBOT_SSH_KEY_PRIVATE_BASE64}" ] && exit 0
+                echo "CATALOGBOT_SSH_KEY_PRIVATE_BASE64 env variable must not be empty"
+                exit 1
+          - run:
+              name: "architect/prepare-catalogbot-git-ssh: Setup SSH key"
+              command: |
+                mkdir -p ~/.ssh
+                echo "${CATALOGBOT_SSH_KEY_PRIVATE_BASE64}" | base64 -d > ~/.ssh/id_rsa
+                chmod 0600 ~/.ssh/id_rsa
+          - run:
+              name: "architect/prepare-catalogbot-git-ssh: Configure git"
+              command: |
+                git config --global url."ssh://git@github.com".insteadOf "https://github.com"
+                git config --global gc.auto 0
+                git config --global user.email "catalogbot@giantswarm.io"
+                git config --global user.name "CatalogBot"
+          - run:
               name: "localorb/push-to-app-collection: Clone app collection repo"
               command: |
                 git ls-remote --exit-code --heads git@github.com:giantswarm/<<parameters.app_collection_repo>>.git main
