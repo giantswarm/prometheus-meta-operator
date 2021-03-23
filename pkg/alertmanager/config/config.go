@@ -25,10 +25,11 @@ import (
 	"strings"
 	"time"
 
-	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 	"github.com/pkg/errors"
 	"github.com/prometheus/common/model"
 	"gopkg.in/yaml.v2"
+
+	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 
 	"github.com/prometheus/alertmanager/pkg/labels"
 	"github.com/prometheus/alertmanager/timeinterval"
