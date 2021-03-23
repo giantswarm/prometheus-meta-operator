@@ -1,3 +1,16 @@
+// Copyright 2015 Prometheus Team
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package config
 
 import (
@@ -8,6 +21,7 @@ import (
 	"net/url"
 	"path/filepath"
 	"regexp"
+	"sort"
 	"strings"
 	"time"
 
@@ -15,8 +29,23 @@ import (
 	"github.com/prometheus/common/model"
 	"gopkg.in/yaml.v2"
 
-	promcommoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
+	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
+
+	"github.com/prometheus/alertmanager/pkg/labels"
+	"github.com/prometheus/alertmanager/timeinterval"
 )
+
+const secretToken = "<secret>"
+
+var secretTokenJSON string
+
+func init() {
+	b, err := json.Marshal(secretToken)
+	if err != nil {
+		panic(err)
+	}
+	secretTokenJSON = string(b)
+}
 
 // Secret is a string that must not be revealed on marshaling.
 type Secret string
@@ -101,7 +130,7 @@ type SecretURL URL
 // MarshalYAML implements the yaml.Marshaler interface for SecretURL.
 func (s SecretURL) MarshalYAML() (interface{}, error) {
 	if s.URL != nil {
-		return s.URL.String(), nil
+		return secretToken, nil
 	}
 	return nil, nil
 }
@@ -112,11 +141,30 @@ func (s *SecretURL) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := unmarshal(&str); err != nil {
 		return err
 	}
+	// In order to deserialize a previously serialized configuration (eg from
+	// the Alertmanager API with amtool), `<secret>` needs to be treated
+	// specially, as it isn't a valid URL.
+	if str == secretToken {
+		s.URL = &url.URL{}
+		return nil
+	}
 	return unmarshal((*URL)(s))
+}
+
+// MarshalJSON implements the json.Marshaler interface for SecretURL.
+func (s SecretURL) MarshalJSON() ([]byte, error) {
+	return json.Marshal(secretToken)
 }
 
 // UnmarshalJSON implements the json.Marshaler interface for SecretURL.
 func (s *SecretURL) UnmarshalJSON(data []byte) error {
+	// In order to deserialize a previously serialized configuration (eg from
+	// the Alertmanager API with amtool), `<secret>` needs to be treated
+	// specially, as it isn't a valid URL.
+	if string(data) == secretToken || string(data) == secretTokenJSON {
+		s.URL = &url.URL{}
+		return nil
+	}
 	return json.Unmarshal(data, (*URL)(s))
 }
 
@@ -171,15 +219,59 @@ func resolveFilepaths(baseDir string, cfg *Config) {
 	for i, tf := range cfg.Templates {
 		cfg.Templates[i] = join(tf)
 	}
+
+	cfg.Global.HTTPConfig.SetDirectory(baseDir)
+	for _, receiver := range cfg.Receivers {
+		for _, cfg := range receiver.OpsGenieConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+		for _, cfg := range receiver.PagerdutyConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+		for _, cfg := range receiver.PushoverConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+		for _, cfg := range receiver.SlackConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+		for _, cfg := range receiver.VictorOpsConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+		for _, cfg := range receiver.WebhookConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+		for _, cfg := range receiver.WechatConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+	}
+}
+
+// MuteTimeInterval represents a named set of time intervals for which a route should be muted.
+type MuteTimeInterval struct {
+	Name          string                      `yaml:"name"`
+	TimeIntervals []timeinterval.TimeInterval `yaml:"time_intervals"`
+}
+
+// UnmarshalYAML implements the yaml.Unmarshaler interface for MuteTimeInterval.
+func (mt *MuteTimeInterval) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	type plain MuteTimeInterval
+	if err := unmarshal((*plain)(mt)); err != nil {
+		return err
+	}
+	if mt.Name == "" {
+		return fmt.Errorf("missing name in mute time interval")
+	}
+	return nil
 }
 
 // Config is the top-level configuration for Alertmanager's config files.
 type Config struct {
-	Global       *GlobalConfig  `yaml:"global,omitempty" json:"global,omitempty"`
-	Route        *Route         `yaml:"route,omitempty" json:"route,omitempty"`
-	InhibitRules []*InhibitRule `yaml:"inhibit_rules,omitempty" json:"inhibit_rules,omitempty"`
-	Receivers    []*Receiver    `yaml:"receivers,omitempty" json:"receivers,omitempty"`
-	Templates    []string       `yaml:"templates" json:"templates"`
+	Global            *GlobalConfig      `yaml:"global,omitempty" json:"global,omitempty"`
+	Route             *Route             `yaml:"route,omitempty" json:"route,omitempty"`
+	InhibitRules      []*InhibitRule     `yaml:"inhibit_rules,omitempty" json:"inhibit_rules,omitempty"`
+	Receivers         []*Receiver        `yaml:"receivers,omitempty" json:"receivers,omitempty"`
+	Templates         []string           `yaml:"templates" json:"templates"`
+	MuteTimeIntervals []MuteTimeInterval `yaml:"mute_time_intervals,omitempty" json:"mute_time_intervals,omitempty"`
 
 	// original is the input from which the config was parsed.
 	original string
@@ -365,9 +457,23 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if len(c.Route.Match) > 0 || len(c.Route.MatchRE) > 0 {
 		return fmt.Errorf("root route must not have any matchers")
 	}
+	if len(c.Route.MuteTimeIntervals) > 0 {
+		return fmt.Errorf("root route must not have any mute time intervals")
+	}
 
 	// Validate that all receivers used in the routing tree are defined.
-	return checkReceiver(c.Route, names)
+	if err := checkReceiver(c.Route, names); err != nil {
+		return err
+	}
+
+	tiNames := make(map[string]struct{})
+	for _, mt := range c.MuteTimeIntervals {
+		if _, ok := tiNames[mt.Name]; ok {
+			return fmt.Errorf("mute time interval %q is not unique", mt.Name)
+		}
+		tiNames[mt.Name] = struct{}{}
+	}
+	return checkTimeInterval(c.Route, tiNames)
 }
 
 // checkReceiver returns an error if a node in the routing tree
@@ -387,11 +493,29 @@ func checkReceiver(r *Route, receivers map[string]struct{}) error {
 	return nil
 }
 
+func checkTimeInterval(r *Route, timeIntervals map[string]struct{}) error {
+	for _, sr := range r.Routes {
+		if err := checkTimeInterval(sr, timeIntervals); err != nil {
+			return err
+		}
+	}
+	if len(r.MuteTimeIntervals) == 0 {
+		return nil
+	}
+	for _, mt := range r.MuteTimeIntervals {
+		if _, ok := timeIntervals[mt]; !ok {
+			return fmt.Errorf("undefined time interval %q used in route", mt)
+		}
+	}
+	return nil
+}
+
 // DefaultGlobalConfig returns GlobalConfig with default values.
 func DefaultGlobalConfig() GlobalConfig {
+	var defaultHTTPConfig = commoncfg.DefaultHTTPClientConfig
 	return GlobalConfig{
 		ResolveTimeout: model.Duration(5 * time.Minute),
-		HTTPConfig:     &promcommoncfg.HTTPClientConfig{},
+		HTTPConfig:     &defaultHTTPConfig,
 
 		SMTPHello:       "localhost",
 		SMTPRequireTLS:  true,
@@ -498,7 +622,7 @@ type GlobalConfig struct {
 	// if it has not been updated.
 	ResolveTimeout model.Duration `yaml:"resolve_timeout" json:"resolve_timeout"`
 
-	HTTPConfig *promcommoncfg.HTTPClientConfig `yaml:"http_config,omitempty" json:"http_config,omitempty"`
+	HTTPConfig *commoncfg.HTTPClientConfig `yaml:"http_config,omitempty" json:"http_config,omitempty"`
 
 	SMTPFrom         string     `yaml:"smtp_from,omitempty" json:"smtp_from,omitempty"`
 	SMTPHello        string     `yaml:"smtp_hello,omitempty" json:"smtp_hello,omitempty"`
@@ -533,11 +657,14 @@ type Route struct {
 	GroupByStr []string          `yaml:"group_by,omitempty" json:"group_by,omitempty"`
 	GroupBy    []model.LabelName `yaml:"-" json:"-"`
 	GroupByAll bool              `yaml:"-" json:"-"`
-
-	Match    map[string]string `yaml:"match,omitempty" json:"match,omitempty"`
-	MatchRE  MatchRegexps      `yaml:"match_re,omitempty" json:"match_re,omitempty"`
-	Continue bool              `yaml:"continue" json:"continue,omitempty"`
-	Routes   []*Route          `yaml:"routes,omitempty" json:"routes,omitempty"`
+	// Deprecated. Remove before v1.0 release.
+	Match map[string]string `yaml:"match,omitempty" json:"match,omitempty"`
+	// Deprecated. Remove before v1.0 release.
+	MatchRE           MatchRegexps `yaml:"match_re,omitempty" json:"match_re,omitempty"`
+	Matchers          Matchers     `yaml:"matchers,omitempty" json:"matchers,omitempty"`
+	MuteTimeIntervals []string     `yaml:"mute_time_intervals,omitempty" json:"mute_time_intervals,omitempty"`
+	Continue          bool         `yaml:"continue" json:"continue,omitempty"`
+	Routes            []*Route     `yaml:"routes,omitempty" json:"routes,omitempty"`
 
 	GroupWait      *model.Duration `yaml:"group_wait,omitempty" json:"group_wait,omitempty"`
 	GroupInterval  *model.Duration `yaml:"group_interval,omitempty" json:"group_interval,omitempty"`
@@ -597,17 +724,21 @@ func (r *Route) UnmarshalYAML(unmarshal func(interface{}) error) error {
 // Both alerts have to have a set of labels being equal.
 type InhibitRule struct {
 	// SourceMatch defines a set of labels that have to equal the given
-	// value for source alerts.
+	// value for source alerts. Deprecated. Remove before v1.0 release.
 	SourceMatch map[string]string `yaml:"source_match,omitempty" json:"source_match,omitempty"`
 	// SourceMatchRE defines pairs like SourceMatch but does regular expression
-	// matching.
+	// matching. Deprecated. Remove before v1.0 release.
 	SourceMatchRE MatchRegexps `yaml:"source_match_re,omitempty" json:"source_match_re,omitempty"`
+	// SourceMatchers defines a set of label matchers that have to be fulfilled for source alerts.
+	SourceMatchers Matchers `yaml:"source_matchers,omitempty" json:"source_matchers,omitempty"`
 	// TargetMatch defines a set of labels that have to equal the given
-	// value for target alerts.
+	// value for target alerts. Deprecated. Remove before v1.0 release.
 	TargetMatch map[string]string `yaml:"target_match,omitempty" json:"target_match,omitempty"`
 	// TargetMatchRE defines pairs like TargetMatch but does regular expression
-	// matching.
+	// matching. Deprecated. Remove before v1.0 release.
 	TargetMatchRE MatchRegexps `yaml:"target_match_re,omitempty" json:"target_match_re,omitempty"`
+	// TargetMatchers defines a set of label matchers that have to be fulfilled for target alerts.
+	TargetMatchers Matchers `yaml:"target_matchers,omitempty" json:"target_matchers,omitempty"`
 	// A set of labels that must be equal between the source and target alert
 	// for them to be a match.
 	Equal model.LabelNames `yaml:"equal,omitempty" json:"equal,omitempty"`
@@ -711,7 +842,7 @@ func (re Regexp) MarshalYAML() (interface{}, error) {
 	return nil, nil
 }
 
-// UnmarshalJSON implements the json.Marshaler interface for Regexp
+// UnmarshalJSON implements the json.Unmarshaler interface for Regexp
 func (re *Regexp) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
@@ -732,4 +863,63 @@ func (re Regexp) MarshalJSON() ([]byte, error) {
 		return json.Marshal(re.original)
 	}
 	return nil, nil
+}
+
+// Matchers is label.Matchers with an added UnmarshalYAML method to implement the yaml.Unmarshaler interface
+// and MarshalYAML to implement the yaml.Marshaler interface.
+type Matchers labels.Matchers
+
+// UnmarshalYAML implements the yaml.Unmarshaler interface for Matchers.
+func (m *Matchers) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var lines []string
+	if err := unmarshal(&lines); err != nil {
+		return err
+	}
+	for _, line := range lines {
+		pm, err := labels.ParseMatchers(line)
+		if err != nil {
+			return err
+		}
+		*m = append(*m, pm...)
+	}
+	sort.Sort(labels.Matchers(*m))
+	return nil
+}
+
+// MarshalYAML implements the yaml.Marshaler interface for Matchers.
+func (m Matchers) MarshalYAML() (interface{}, error) {
+	result := make([]string, len(m))
+	for i, matcher := range m {
+		result[i] = matcher.String()
+	}
+	return result, nil
+}
+
+// UnmarshalJSON implements the json.Unmarshaler interface for Matchers.
+func (m *Matchers) UnmarshalJSON(data []byte) error {
+	var lines []string
+	if err := json.Unmarshal(data, &lines); err != nil {
+		return err
+	}
+	for _, line := range lines {
+		pm, err := labels.ParseMatchers(line)
+		if err != nil {
+			return err
+		}
+		*m = append(*m, pm...)
+	}
+	sort.Sort(labels.Matchers(*m))
+	return nil
+}
+
+// MarshalJSON implements the json.Marshaler interface for Matchers.
+func (m Matchers) MarshalJSON() ([]byte, error) {
+	if len(m) == 0 {
+		return nil, nil
+	}
+	result := make([]string, len(m))
+	for i, matcher := range m {
+		result[i] = matcher.String()
+	}
+	return json.Marshal(result)
 }

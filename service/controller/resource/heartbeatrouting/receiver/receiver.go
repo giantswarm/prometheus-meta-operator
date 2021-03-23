@@ -31,6 +31,7 @@ func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) 
 					BasicAuth: &promcommonconfig.BasicAuth{
 						Password: promcommonconfig.Secret(opsgenieKey),
 					},
+					FollowRedirects: false,
 				},
 				NotifierConfig: alertmanagerconfig.NotifierConfig{
 					VSendResolved: false,

@@ -15,6 +15,7 @@ require (
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/giantswarm/operatorkit/v4 v4.3.0
 	github.com/giantswarm/versionbundle v0.2.0
+	github.com/go-kit/kit v0.10.0
 	github.com/go-logr/logr v0.3.0 // indirect
 	github.com/google/go-cmp v0.5.5
 	github.com/google/gofuzz v1.2.0 // indirect
@@ -27,13 +28,14 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator v0.43.0
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
-	github.com/prometheus/common v0.17.0
+	github.com/prometheus/alertmanager v0.21.1-0.20210321154706-72deec44a869
+	github.com/prometheus/client_golang v1.9.0
+	github.com/prometheus/common v0.18.0
 	github.com/prometheus/prometheus v2.23.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c // indirect
-	golang.org/x/net v0.0.0-20201224014010-6772e930b67b
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 	gomodules.xyz/jsonpatch/v2 v2.1.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/yaml.v2 v2.4.0

@@ -4,7 +4,7 @@ global:
   smtp_auth_username: ''
   smtp_auth_password: ''
   smtp_hello: ''
-  slack_api_url: 'http://slack.example.com/'
+  slack_api_url: 'https://slack.com/webhook'
 
 
 
