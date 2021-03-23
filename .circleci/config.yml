@@ -155,12 +155,12 @@ workflows:
           app_name: "prometheus-meta-operator"
           app_namespace: "monitoring"
           app_collection_repo: "vmware-app-collection"
-          requires:
-            - push-to-quay
-            - push-to-aliyun
-            - app-catalog
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+          # requires:
+          #   - push-to-quay
+          #   - push-to-aliyun
+          #   - app-catalog
+          # filters:
+          #   branches:
+          #     ignore: /.*/
+          #   tags:
+          #     only: /^v.*/
