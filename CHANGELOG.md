@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.25.2] - 2021-03-23
+
 ### Fixed
 
 - Disable follow redirect for alertmanager
@@ -875,7 +877,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.25.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.25.2...HEAD
+[1.25.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.25.1...v1.25.2
 [1.25.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.25.0...v1.25.1
 [1.25.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.8...v1.25.0
 [1.24.8]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.24.6...v1.24.8
