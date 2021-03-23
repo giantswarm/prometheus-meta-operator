@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed 
 
+- Push to `shared-app-collection`
 - Rename `EtcdWorkloadClusterDown` to `WorkloadClusterEtcdDown`
 
 ### Fixed

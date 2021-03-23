@@ -738,7 +738,7 @@ func writeCertificate(bs map[string][]byte, src string, dst string) {
 	if !ok {
 		panic(fmt.Sprintf("Couldn't find %q in bs", src))
 	}
-	if err := ioutil.WriteFile(dst, b, 0664); err != nil {
+	if err := ioutil.WriteFile(dst, b, 0664); err != nil { // #nosec
 		panic(err)
 	}
 }
