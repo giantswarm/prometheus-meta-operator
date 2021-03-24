@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update architect to 2.4.2
+
 ### Removed
 
 - Removed memory-intensive notify only systemd alerts.
