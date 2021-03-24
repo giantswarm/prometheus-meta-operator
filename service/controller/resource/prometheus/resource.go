@@ -145,13 +145,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 	labels["giantswarm.io/monitoring"] = "true"
 
-	prometheusResourceList := corev1.ResourceList{
-		// cpu: 100m
-		corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
-		// memory: 1Gi
-		corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
-	}
-
 	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.PrometheusVersion)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
 	prometheus := &promv1.Prometheus{
@@ -178,8 +171,18 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			},
 			Replicas: &replicas,
 			Resources: corev1.ResourceRequirements{
-				Requests: prometheusResourceList,
-				Limits:   prometheusResourceList,
+				Requests: corev1.ResourceList{
+					// cpu: 100m
+					corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
+					// memory: 1Gi
+					corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
+				},
+				Limits: corev1.ResourceList{
+					// cpu: 100m
+					corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
+					// memory: 1.2Gi
+					corev1.ResourceMemory: *key.PrometheusMemoryLimit(),
+				},
 			},
 			Retention:      config.RetentionDuration,
 			RetentionSize:  config.RetentionSize,

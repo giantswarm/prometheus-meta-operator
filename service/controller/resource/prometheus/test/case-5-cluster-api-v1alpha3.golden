@@ -67,10 +67,10 @@ spec:
   resources:
     limits:
       cpu: 100m
-      memory: 1Gi
+      memory: "1287651328"
     requests:
       cpu: 100m
-      memory: 1Gi
+      memory: "1073741824"
   retention: 2w
   retentionSize: 45Gi
   routePrefix: /baz
