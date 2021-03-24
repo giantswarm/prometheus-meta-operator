@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Push to `shared-app-collection`
 - Rename `EtcdWorkloadClusterDown` to `WorkloadClusterEtcdDown`
+- Increased memory limits by 1.2 factor
 
 ### Fixed
 
