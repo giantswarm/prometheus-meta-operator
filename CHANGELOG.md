@@ -8,9 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed memory-intensive notify only systemd alerts.
+
 ## [1.26.0] - 2021-03-24
 
-### Changed 
+### Changed
 
 - Push to `shared-app-collection`
 - Rename `EtcdWorkloadClusterDown` to `WorkloadClusterEtcdDown`
@@ -40,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for monitoring vmware clusters
 - Add support to get the API Server URL for both legacy and CAPI clusters
 
-### Changed 
+### Changed
 
 - Upgrade ingress version to networking.k8s.io/v1beta1
 

@@ -10,16 +10,6 @@ spec:
   groups:
   - name: systemd
     rules:
-    - alert: ManagementClusterSystemdUnitFailed
-      annotations:
-        description: '{{`Systemd unit {{ $labels.name }} is failed on {{ $labels.instance }}.`}}'
-      expr: node_systemd_unit_state{cluster_type="management_cluster",name!~"coreos-metadata-sshkeys@core.service|debug-tools.service|k8s-addons.service|locksmithd.service|sshd.+service|systemd-coredump.+service|systemd-networkd.service|update-engine.service|update-engine-stub.service", state="failed"} == 1
-      for: 5m
-      labels:
-        area: kaas
-        severity: notify
-        team: biscuit
-        topic: infrastructure
     - alert: ManagementClusterCriticalSystemdUnitFailed
       annotations:
         description: '{{`Critical systemd unit {{ $labels.name }} is failed on {{ $labels.instance }}.`}}'
@@ -40,15 +30,5 @@ spec:
       labels:
         area: kaas
         severity: page
-        team: biscuit
-        topic: infrastructure
-    - alert: ManagementClusterHighNumberSystemdUnits
-      annotations:
-        description: '{{`Node {{ $labels.ip }} has too many systemd units active.`}}'
-      expr: sum(node_systemd_unit_state{cluster_type="management_cluster", state="active"}) by (ip) > 1500
-      for: 10m
-      labels:
-        area: kaas
-        severity: notify
         team: biscuit
         topic: infrastructure

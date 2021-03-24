@@ -10,16 +10,6 @@ spec:
   groups:
   - name: systemd
     rules:
-    - alert: WorkloadClusterSystemdUnitFailed
-      annotations:
-        description: '{{`Systemd unit {{ $labels.name }} is failed on {{ $labels.instance }}.`}}'
-      expr: node_systemd_unit_state{cluster_type="workload_cluster",name!~"coreos-metadata-sshkeys@core.service|debug-tools.service|k8s-addons.service|locksmithd.service|sshd.+service|systemd-coredump.+service|systemd-networkd.service|update-engine.service|update-engine-stub.service", state="failed"} == 1
-      for: 5m
-      labels:
-        area: kaas
-        severity: notify
-        team: ludacris
-        topic: infrastructure
     - alert: WorkloadClusterCriticalSystemdUnitFailed
       annotations:
         description: '{{`Critical systemd unit {{ $labels.name }} is failed on {{ $labels.instance }}.`}}'
@@ -40,15 +30,5 @@ spec:
       labels:
         area: kaas
         severity: page
-        team: ludacris
-        topic: infrastructure
-    - alert: WorkloadClusterHighNumberSystemdUnits
-      annotations:
-        description: '{{`Node {{ $labels.ip }} has too many systemd units active.`}}'
-      expr: sum(node_systemd_unit_state{cluster_type="workload_cluster", state="active"}) by (ip) > 1500
-      for: 10m
-      labels:
-        area: kaas
-        severity: notify
         team: ludacris
         topic: infrastructure
