@@ -31,25 +31,13 @@ import (
 	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 )
 
-const secretToken = "<secret>"
-
-var secretTokenJSON string
-
-func init() {
-	b, err := json.Marshal(secretToken)
-	if err != nil {
-		panic(err)
-	}
-	secretTokenJSON = string(b)
-}
-
 // Secret is a string that must not be revealed on marshaling.
 type Secret string
 
 // MarshalYAML implements the yaml.Marshaler interface for Secret.
 func (s Secret) MarshalYAML() (interface{}, error) {
 	if s != "" {
-		return secretToken, nil
+		return string(s), nil
 	}
 	return nil, nil
 }
@@ -62,7 +50,7 @@ func (s *Secret) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // MarshalJSON implements the json.Marshaler interface for Secret.
 func (s Secret) MarshalJSON() ([]byte, error) {
-	return json.Marshal(secretToken)
+	return json.Marshal(string(s))
 }
 
 // URL is a custom type that represents an HTTP or HTTPS URL and allows validation at configuration load time.
@@ -126,7 +114,7 @@ type SecretURL URL
 // MarshalYAML implements the yaml.Marshaler interface for SecretURL.
 func (s SecretURL) MarshalYAML() (interface{}, error) {
 	if s.URL != nil {
-		return secretToken, nil
+		return s.URL.String(), nil
 	}
 	return nil, nil
 }
@@ -137,30 +125,16 @@ func (s *SecretURL) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	if err := unmarshal(&str); err != nil {
 		return err
 	}
-	// In order to deserialize a previously serialized configuration (eg from
-	// the Alertmanager API with amtool), `<secret>` needs to be treated
-	// specially, as it isn't a valid URL.
-	if str == secretToken {
-		s.URL = &url.URL{}
-		return nil
-	}
 	return unmarshal((*URL)(s))
 }
 
 // MarshalJSON implements the json.Marshaler interface for SecretURL.
 func (s SecretURL) MarshalJSON() ([]byte, error) {
-	return json.Marshal(secretToken)
+	return json.Marshal(s.String())
 }
 
 // UnmarshalJSON implements the json.Marshaler interface for SecretURL.
 func (s *SecretURL) UnmarshalJSON(data []byte) error {
-	// In order to deserialize a previously serialized configuration (eg from
-	// the Alertmanager API with amtool), `<secret>` needs to be treated
-	// specially, as it isn't a valid URL.
-	if string(data) == secretToken || string(data) == secretTokenJSON {
-		s.URL = &url.URL{}
-		return nil
-	}
 	return json.Unmarshal(data, (*URL)(s))
 }
 

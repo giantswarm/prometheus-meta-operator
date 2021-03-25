@@ -17,17 +17,11 @@ import (
 	"encoding/json"
 	"net/url"
 	"os"
-	"reflect"
-	"regexp"
 	"strings"
 	"testing"
-	"time"
 
-	"github.com/prometheus/common/model"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
-
-	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 )
 
 func TestLoadEmptyString(t *testing.T) {
@@ -319,19 +313,6 @@ receivers:
 	}
 }
 
-func TestHideConfigSecrets(t *testing.T) {
-	c, err := LoadFile("testdata/conf.good.yml")
-	if err != nil {
-		t.Fatalf("Error parsing %s: %s", "testdata/conf.good.yml", err)
-	}
-
-	// String method must not reveal authentication credentials.
-	s := c.String()
-	if strings.Count(s, "<secret>") != 13 || strings.Contains(s, "mysecret") {
-		t.Fatal("config's String method reveals authentication credentials.")
-	}
-}
-
 func TestJSONMarshal(t *testing.T) {
 	c, err := LoadFile("testdata/conf.good.yml")
 	if err != nil {
@@ -341,57 +322,6 @@ func TestJSONMarshal(t *testing.T) {
 	_, err = json.Marshal(c)
 	if err != nil {
 		t.Fatal("JSON Marshaling failed:", err)
-	}
-}
-
-func TestJSONMarshalSecret(t *testing.T) {
-	test := struct {
-		S Secret
-	}{
-		S: Secret("test"),
-	}
-
-	c, err := json.Marshal(test)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// u003c -> "<"
-	// u003e -> ">"
-	require.Equal(t, "{\"S\":\"\\u003csecret\\u003e\"}", string(c), "Secret not properly elided.")
-}
-
-func TestMarshalSecretURL(t *testing.T) {
-	urlp, err := url.Parse("http://example.com/")
-	if err != nil {
-		t.Fatal(err)
-	}
-	u := &SecretURL{urlp}
-
-	c, err := json.Marshal(u)
-	if err != nil {
-		t.Fatal(err)
-	}
-	// u003c -> "<"
-	// u003e -> ">"
-	require.Equal(t, "\"\\u003csecret\\u003e\"", string(c), "SecretURL not properly elided in JSON.")
-	// Check that the marshaled data can be unmarshaled again.
-	out := &SecretURL{}
-	err = json.Unmarshal(c, out)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	c, err = yaml.Marshal(u)
-	if err != nil {
-		t.Fatal(err)
-	}
-	require.Equal(t, "<secret>\n", string(c), "SecretURL not properly elided in YAML.")
-	// Check that the marshaled data can be unmarshaled again.
-	out = &SecretURL{}
-	err = yaml.Unmarshal(c, &out)
-	if err != nil {
-		t.Fatal(err)
 	}
 }
 
@@ -536,96 +466,6 @@ receivers:
 
 	if strings.Contains(string(dat), "groupbyall") {
 		t.Fatal("groupbyall found in config file")
-	}
-}
-
-func TestEmptyFieldsAndRegex(t *testing.T) {
-	boolFoo := true
-	var regexpFoo = Regexp{
-		Regexp:   regexp.MustCompile("^(?:^(foo1|foo2|baz)$)$"),
-		original: "^(foo1|foo2|baz)$",
-	}
-
-	var expectedConf = Config{
-
-		Global: &GlobalConfig{
-			HTTPConfig:      &commoncfg.HTTPClientConfig{},
-			ResolveTimeout:  model.Duration(5 * time.Minute),
-			SMTPSmarthost:   HostPort{Host: "localhost", Port: "25"},
-			SMTPFrom:        "alertmanager@example.org",
-			SlackAPIURL:     (*SecretURL)(mustParseURL("http://slack.example.com/")),
-			SMTPRequireTLS:  true,
-			PagerdutyURL:    mustParseURL("https://events.pagerduty.com/v2/enqueue"),
-			OpsGenieAPIURL:  mustParseURL("https://api.opsgenie.com/"),
-			WeChatAPIURL:    mustParseURL("https://qyapi.weixin.qq.com/cgi-bin/"),
-			VictorOpsAPIURL: mustParseURL("https://alert.victorops.com/integrations/generic/20131114/alert/"),
-		},
-
-		Templates: []string{
-			"/etc/alertmanager/template/*.tmpl",
-		},
-		Route: &Route{
-			Receiver: "team-X-mails",
-			GroupBy: []model.LabelName{
-				"alertname",
-				"cluster",
-				"service",
-			},
-			GroupByStr: []string{
-				"alertname",
-				"cluster",
-				"service",
-			},
-			GroupByAll: false,
-			Routes: []*Route{
-				{
-					Receiver: "team-X-mails",
-					MatchRE: map[string]Regexp{
-						"service": regexpFoo,
-					},
-				},
-			},
-		},
-		Receivers: []*Receiver{
-			{
-				Name: "team-X-mails",
-				EmailConfigs: []*EmailConfig{
-					{
-						To:         "team-X+alerts@example.org",
-						From:       "alertmanager@example.org",
-						Smarthost:  HostPort{Host: "localhost", Port: "25"},
-						HTML:       "{{ template \"email.default.html\" . }}",
-						RequireTLS: &boolFoo,
-					},
-				},
-			},
-		},
-	}
-
-	// Load a non-empty configuration to ensure that all fields are overwritten.
-	// See https://github.com/prometheus/alertmanager/issues/1649.
-	_, err := LoadFile("testdata/conf.good.yml")
-	if err != nil {
-		t.Errorf("Error parsing %s: %s", "testdata/conf.good.yml", err)
-	}
-
-	config, err := LoadFile("testdata/conf.empty-fields.yml")
-	if err != nil {
-		t.Errorf("Error parsing %s: %s", "testdata/conf.empty-fields.yml", err)
-	}
-
-	configGot, err := yaml.Marshal(config)
-	if err != nil {
-		t.Fatal("YAML Marshaling failed:", err)
-	}
-
-	configExp, err := yaml.Marshal(expectedConf)
-	if err != nil {
-		t.Fatalf("%s", err)
-	}
-
-	if !reflect.DeepEqual(configGot, configExp) {
-		t.Fatalf("%s: unexpected config result: \n\n%s\n expected\n\n%s", "testdata/conf.empty-fields.yml", configGot, configExp)
 	}
 }
 
