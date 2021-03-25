@@ -17,6 +17,7 @@ import (
 	"crypto/md5"
 	"encoding/binary"
 	"sync"
+	"time"
 
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
@@ -96,10 +97,15 @@ func (c *Coordinator) notifySubscribers() error {
 func (c *Coordinator) loadFromFile() error {
 	conf, err := LoadFile(c.configFilePath)
 	if err != nil {
+		c.configSuccessMetric.Set(0)
 		return err
 	}
 
 	c.config = conf
+	c.configSuccessMetric.Set(1)
+	c.configSuccessTimeMetric.Set(float64(time.Now().Unix()))
+	hash := md5HashAsMetricValue([]byte(c.config.original))
+	c.configHashMetric.Set(hash)
 
 	return nil
 }
@@ -120,7 +126,6 @@ func (c *Coordinator) Reload() error {
 			"file", c.configFilePath,
 			"err", err,
 		)
-		c.configSuccessMetric.Set(0)
 		return err
 	}
 	level.Info(c.logger).Log(
@@ -134,14 +139,8 @@ func (c *Coordinator) Reload() error {
 			"file", c.configFilePath,
 			"err", err,
 		)
-		c.configSuccessMetric.Set(0)
 		return err
 	}
-
-	c.configSuccessMetric.Set(1)
-	c.configSuccessTimeMetric.SetToCurrentTime()
-	hash := md5HashAsMetricValue([]byte(c.config.original))
-	c.configHashMetric.Set(hash)
 
 	return nil
 }
