@@ -474,52 +474,6 @@ func TestBearerAuthFileRoundTripper(t *testing.T) {
 	}
 }
 
-func TestTLSConfig(t *testing.T) {
-	configTLSConfig := TLSConfig{
-		CAFile:             TLSCAChainPath,
-		CertFile:           ClientCertificatePath,
-		KeyFile:            ClientKeyNoPassPath,
-		ServerName:         "localhost",
-		InsecureSkipVerify: false}
-
-	tlsCAChain, err := ioutil.ReadFile(TLSCAChainPath)
-	if err != nil {
-		t.Fatalf("Can't read the CA certificate chain (%s)",
-			TLSCAChainPath)
-	}
-	rootCAs := x509.NewCertPool()
-	rootCAs.AppendCertsFromPEM(tlsCAChain)
-
-	expectedTLSConfig := &tls.Config{
-		RootCAs:            rootCAs,
-		ServerName:         configTLSConfig.ServerName,
-		InsecureSkipVerify: configTLSConfig.InsecureSkipVerify}
-
-	tlsConfig, err := NewTLSConfig(&configTLSConfig)
-	if err != nil {
-		t.Fatalf("Can't create a new TLS Config from a configuration (%s).", err)
-	}
-
-	clientCertificate, err := tls.LoadX509KeyPair(ClientCertificatePath, ClientKeyNoPassPath)
-	if err != nil {
-		t.Fatalf("Can't load the client key pair ('%s' and '%s'). Reason: %s",
-			ClientCertificatePath, ClientKeyNoPassPath, err)
-	}
-	cert, err := tlsConfig.GetClientCertificate(nil)
-	if err != nil {
-		t.Fatalf("unexpected error returned by tlsConfig.GetClientCertificate(): %s", err)
-	}
-	if !reflect.DeepEqual(cert, &clientCertificate) {
-		t.Fatalf("Unexpected client certificate result: \n\n%+v\n expected\n\n%+v", cert, clientCertificate)
-	}
-
-	// non-nil functions are never equal.
-	tlsConfig.GetClientCertificate = nil
-	if !reflect.DeepEqual(tlsConfig, expectedTLSConfig) {
-		t.Fatalf("Unexpected TLS Config result: \n\n%+v\n expected\n\n%+v", tlsConfig, expectedTLSConfig)
-	}
-}
-
 func TestTLSConfigEmpty(t *testing.T) {
 	configTLSConfig := TLSConfig{
 		InsecureSkipVerify: true,
