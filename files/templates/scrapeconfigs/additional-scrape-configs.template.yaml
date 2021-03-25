@@ -52,6 +52,7 @@
 [[ include "_node_role" . | indent 2 ]]
 [[ end ]]
 [[ end ]]
+[[- if not .CAPICluster ]]
 # Add scrape configuration for docker
 - job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
   honor_labels: true
@@ -77,6 +78,7 @@
   - source_labels: [__name__]
     regex: (process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
+[[ end ]]
 # Add scrape configuration for cadvisor
 - job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
   honor_labels: true

@@ -102,6 +102,7 @@
   - source_labels: [__name__]
     regex: (process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
+
 # Add scrape configuration for cadvisor
 - job_name: foo-prometheus/cadvisor-foo/0
   honor_labels: true

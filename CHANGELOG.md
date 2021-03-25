@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Removed
+
+- Do not monitor docker for CAPI clusters
+
 ## [1.27.3] - 2021-03-25
 
 - Fix prometheus/common secret token in imported code.
