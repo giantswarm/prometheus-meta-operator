@@ -296,46 +296,6 @@ func TestNewClientFromConfig(t *testing.T) {
 					fmt.Fprint(w, ExpectedMessage)
 				}
 			},
-		}, {
-			clientConfig: HTTPClientConfig{
-				FollowRedirects: true,
-				TLSConfig: TLSConfig{
-					CAFile:             TLSCAChainPath,
-					CertFile:           ClientCertificatePath,
-					KeyFile:            ClientKeyNoPassPath,
-					ServerName:         "",
-					InsecureSkipVerify: false},
-			},
-			handler: func(w http.ResponseWriter, r *http.Request) {
-				switch r.URL.Path {
-				case "/redirected":
-					fmt.Fprintf(w, ExpectedMessage)
-				default:
-					w.Header().Set("Location", "/redirected")
-					w.WriteHeader(http.StatusFound)
-					fmt.Fprintf(w, "It should follow the redirect.")
-				}
-			},
-		}, {
-			clientConfig: HTTPClientConfig{
-				FollowRedirects: false,
-				TLSConfig: TLSConfig{
-					CAFile:             TLSCAChainPath,
-					CertFile:           ClientCertificatePath,
-					KeyFile:            ClientKeyNoPassPath,
-					ServerName:         "",
-					InsecureSkipVerify: false},
-			},
-			handler: func(w http.ResponseWriter, r *http.Request) {
-				switch r.URL.Path {
-				case "/redirected":
-					fmt.Fprint(w, "The redirection was followed.")
-				default:
-					w.Header().Set("Location", "/redirected")
-					w.WriteHeader(http.StatusFound)
-					fmt.Fprintf(w, ExpectedMessage)
-				}
-			},
 		},
 	}
 
@@ -357,7 +317,7 @@ func TestNewClientFromConfig(t *testing.T) {
 		}
 		response, err := client.Get(testServer.URL)
 		if err != nil {
-			t.Errorf("Can't connect to the test server using this config: %+v: %v", validConfig.clientConfig, err)
+			t.Errorf("Can't connect to the test server using this config: %+v", validConfig.clientConfig)
 			continue
 		}
 
@@ -553,17 +513,8 @@ func TestTLSConfig(t *testing.T) {
 		t.Fatalf("Unexpected client certificate result: \n\n%+v\n expected\n\n%+v", cert, clientCertificate)
 	}
 
-	// tlsConfig.rootCAs.LazyCerts contains functions getCert() in go 1.16, which are
-	// never equal. Compare the Subjects instead.
-	if !reflect.DeepEqual(tlsConfig.RootCAs.Subjects(), expectedTLSConfig.RootCAs.Subjects()) {
-		t.Fatalf("Unexpected RootCAs result: \n\n%+v\n expected\n\n%+v", tlsConfig.RootCAs.Subjects(), expectedTLSConfig.RootCAs.Subjects())
-	}
-	tlsConfig.RootCAs = nil
-	expectedTLSConfig.RootCAs = nil
-
-	// Non-nil functions are never equal.
+	// non-nil functions are never equal.
 	tlsConfig.GetClientCertificate = nil
-
 	if !reflect.DeepEqual(tlsConfig, expectedTLSConfig) {
 		t.Fatalf("Unexpected TLS Config result: \n\n%+v\n expected\n\n%+v", tlsConfig, expectedTLSConfig)
 	}
@@ -738,7 +689,7 @@ func writeCertificate(bs map[string][]byte, src string, dst string) {
 	if !ok {
 		panic(fmt.Sprintf("Couldn't find %q in bs", src))
 	}
-	if err := ioutil.WriteFile(dst, b, 0664); err != nil { // #nosec
+	if err := ioutil.WriteFile(dst, b, 0664); err != nil {
 		panic(err)
 	}
 }
@@ -968,13 +919,16 @@ func TestTLSRoundTripperRaces(t *testing.T) {
 	}
 }
 
-func TestDefaultFollowRedirect(t *testing.T) {
-	cfg, _, err := LoadHTTPConfigFile("testdata/http.conf.good.yml")
+func TestHideHTTPClientConfigSecrets(t *testing.T) {
+	c, _, err := LoadHTTPConfigFile("testdata/http.conf.good.yml")
 	if err != nil {
-		t.Errorf("Error loading HTTP client config: %v", err)
+		t.Errorf("Error parsing %s: %s", "testdata/http.conf.good.yml", err)
 	}
-	if !cfg.FollowRedirects {
-		t.Errorf("follow_redirects should be true")
+
+	// String method must not reveal authentication credentials.
+	s := c.String()
+	if strings.Contains(s, "mysecret") {
+		t.Fatal("http client config's String method reveals authentication credentials.")
 	}
 }
 
