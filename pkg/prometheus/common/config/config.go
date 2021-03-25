@@ -24,7 +24,7 @@ type Secret string
 // MarshalYAML implements the yaml.Marshaler interface for Secrets.
 func (s Secret) MarshalYAML() (interface{}, error) {
 	if s != "" {
-		return string(s), nil
+		return "<secret>", nil
 	}
 	return nil, nil
 }

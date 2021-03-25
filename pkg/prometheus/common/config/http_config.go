@@ -17,7 +17,7 @@ package config
 
 import (
 	"bytes"
-	"crypto/sha256"
+	"crypto/md5"
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
@@ -32,11 +32,6 @@ import (
 	"golang.org/x/net/http2"
 	"gopkg.in/yaml.v2"
 )
-
-// DefaultHTTPClientConfig is the default HTTP client configuration.
-var DefaultHTTPClientConfig = HTTPClientConfig{
-	FollowRedirects: true,
-}
 
 type closeIdler interface {
 	CloseIdleConnections()
@@ -116,10 +111,6 @@ type HTTPClientConfig struct {
 	ProxyURL URL `yaml:"proxy_url,omitempty"`
 	// TLSConfig to use to connect to the targets.
 	TLSConfig TLSConfig `yaml:"tls_config,omitempty"`
-	// FollowRedirects specifies whether the client should follow HTTP 3xx redirects.
-	// The omitempty flag is not set, because it would be hidden from the
-	// marshalled configuration when set to false.
-	FollowRedirects bool `yaml:"follow_redirects"`
 }
 
 // SetDirectory joins any relative file paths with dir.
@@ -181,7 +172,6 @@ func (c *HTTPClientConfig) Validate() error {
 // UnmarshalYAML implements the yaml.Unmarshaler interface
 func (c *HTTPClientConfig) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	type plain HTTPClientConfig
-	*c = DefaultHTTPClientConfig
 	if err := unmarshal((*plain)(c)); err != nil {
 		return err
 	}
@@ -206,13 +196,7 @@ func NewClientFromConfig(cfg HTTPClientConfig, name string, disableKeepAlives, e
 	if err != nil {
 		return nil, err
 	}
-	client := newClient(rt)
-	if !cfg.FollowRedirects {
-		client.CheckRedirect = func(*http.Request, []*http.Request) error {
-			return http.ErrUseLastResponse
-		}
-	}
-	return client, nil
+	return newClient(rt), nil
 }
 
 // NewRoundTripperFromConfig returns a new HTTP RoundTripper configured for the
@@ -533,7 +517,7 @@ func (t *tlsRoundTripper) getCAWithHash() ([]byte, []byte, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	h := sha256.Sum256(b)
+	h := md5.Sum(b)
 	return b, h[:], nil
 
 }
