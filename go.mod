@@ -38,7 +38,6 @@ require (
 	github.com/prometheus/prometheus v2.23.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.7.1
-	github.com/stretchr/testify v1.7.0
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 // indirect
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
 	golang.org/x/sys v0.0.0-20210309074719-68d13333faf2 // indirect
