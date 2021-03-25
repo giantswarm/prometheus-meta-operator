@@ -130,7 +130,7 @@ func (s *SecretURL) UnmarshalYAML(unmarshal func(interface{}) error) error {
 
 // MarshalJSON implements the json.Marshaler interface for SecretURL.
 func (s SecretURL) MarshalJSON() ([]byte, error) {
-	return json.Marshal(string(s))
+	return json.Marshal(s.String())
 }
 
 // UnmarshalJSON implements the json.Marshaler interface for SecretURL.
