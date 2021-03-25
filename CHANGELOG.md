@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.27.2] - 2021-03-25
+
 ### Fixed
 
 - Fix alertmanager secretToken in imported alertmanager code.
@@ -912,7 +914,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.2...HEAD
+[1.27.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.0...v1.27.1
 [1.27.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.26.0...v1.27.0
 [1.26.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.25.2...v1.26.0
