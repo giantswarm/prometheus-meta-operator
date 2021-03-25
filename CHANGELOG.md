@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove follow_redirects from alertmanager config
   - Update prometheus/alertmanger@v0.21.0
-  - Update prometheus/commond@v0.17.0
+  - Update prometheus/common@v0.17.0
 
 ## [1.27.0] - 2021-03-24
 
