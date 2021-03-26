@@ -5,12 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [Unreleased]
 
 ### Added
 
 - Add support to calculate maximum CPU.
+
+## [1.27.4] - 2021-03-26
+
+- Add recording rules for dex activity, creating the metrics
+  - `aggregation:dex_requests_status_ok`
+  - `aggregation:dex_requests_status_4xx`
+  - `aggregation:dex_requests_status_5xx`
 
 ## [1.27.3] - 2021-03-25
 
@@ -922,7 +928,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.4...HEAD
+[1.27.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.3...v1.27.4
 [1.27.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.2...v1.27.3
 [1.27.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.0...v1.27.1

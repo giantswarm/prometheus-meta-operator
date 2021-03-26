@@ -192,3 +192,10 @@ spec:
       record: aggregation:managed_apps:service_level:basic:error_budget_depleted
     - expr: sum(monitoring:managed_apps:service_level:primary:error_budget_used) by (cluster_type, cluster_id,workload_name,workload_type) >= 0.75
       record: aggregation:managed_apps:service_level:basic:error_budget_low
+    # Dex activity and status based on ingress controller data
+    - expr: sum(nginx_ingress_controller_requests{namespace="giantswarm",ingress="dex",status=~"5.."})
+      record: aggregation:dex_requests_status_5xx
+    - expr: sum(nginx_ingress_controller_requests{namespace="giantswarm",ingress="dex",status=~"4.."})
+      record: aggregation:dex_requests_status_4xx
+    - expr: sum(nginx_ingress_controller_requests{namespace="giantswarm",ingress="dex",status=~"[23].."})
+      record: aggregation:dex_requests_status_ok
