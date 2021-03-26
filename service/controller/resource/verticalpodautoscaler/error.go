@@ -22,6 +22,15 @@ func IsQuantityConversion(err error) bool {
 	return microerror.Cause(err) == quantityConversionError
 }
 
+var nodeCpuNotFoundError = &microerror.Error{
+	Kind: "nodeCpuNotFoundError",
+}
+
+// IsNodeCpuNotFound asserts nodeCpuNotFoundError.
+func IsNodeCpuNotFound(err error) bool {
+	return microerror.Cause(err) == nodeCpuNotFoundError
+}
+
 var nodeMemoryNotFoundError = &microerror.Error{
 	Kind: "nodeMemoryNotFoundError",
 }

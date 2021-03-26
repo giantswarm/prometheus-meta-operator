@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support to calculate maximum CPU.
+
 ## [1.27.4] - 2021-03-26
 
 - Add recording rules for dex activity, creating the metrics
