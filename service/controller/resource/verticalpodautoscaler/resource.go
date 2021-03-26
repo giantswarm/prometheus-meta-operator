@@ -85,6 +85,10 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	minCpu := key.PrometheusDefaultCPU()
 	minMemory := key.PrometheusDefaultMemory()
 
+	maxCpu, err := r.getMaxCPU(ctx)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	maxMemory, err := r.getMaxMemory(ctx)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -116,6 +120,7 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 							v1.ResourceMemory: *minMemory,
 						},
 						MaxAllowed: v1.ResourceList{
+							v1.ResourceCPU:    *maxCpu,
 							v1.ResourceMemory: *maxMemory,
 						},
 					},
@@ -133,6 +138,39 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	}
 
 	return vpa, nil
+}
+
+func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
+	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	var nodeCpu *resource.Quantity
+	if len(nodes.Items) > 0 {
+		n := nodes.Items[0]
+		s, ok := n.Status.Allocatable[v1.ResourceCPU]
+		if ok {
+			nodeCpu = &s
+		}
+
+		for _, n := range nodes.Items[1:] {
+			s, ok := n.Status.Allocatable[v1.ResourceCPU]
+			if ok && nodeCpu.Cmp(s) == -1 {
+				nodeCpu = &s
+			}
+		}
+	}
+	if nodeCpu == nil || nodeCpu.IsZero() {
+		return nil, microerror.Mask(nodeCpuNotFoundError)
+	}
+
+	q, err := quantityMultiply(nodeCpu, 0.9)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return q, nil
 }
 
 func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error) {
@@ -156,7 +194,7 @@ func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error)
 			}
 		}
 	}
-	if nodeMemory.IsZero() {
+	if nodeMemory == nil || nodeMemory.IsZero() {
 		return nil, microerror.Mask(nodeMemoryNotFoundError)
 	}
 

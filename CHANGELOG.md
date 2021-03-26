@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add support to calculate maximum CPU.
+
 ## [1.27.3] - 2021-03-25
 
 - Fix prometheus/common secret token in imported code.
