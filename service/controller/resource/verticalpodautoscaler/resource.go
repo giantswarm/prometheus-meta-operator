@@ -99,6 +99,10 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	containerScalingModeOff := vpa_types.ContainerScalingModeOff
 	containerControlledValuesRequestsAndLimits := vpa_types.ContainerControlledValuesRequestsAndLimits
 	vpa := &vpa_types.VerticalPodAutoscaler{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: vpa_types.SchemeGroupVersion.String(),
+			Kind:       "VerticalPodAutoscaler",
+		},
 		ObjectMeta: objectMeta,
 		Spec: vpa_types.VerticalPodAutoscalerSpec{
 			TargetRef: &autoscaling.CrossVersionObjectReference{

@@ -1,8 +1,7 @@
-apiVersion: v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
     nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
   creationTimestamp: null
@@ -13,13 +12,16 @@ metadata:
   name: prometheus-baz
   namespace: baz-prometheus
 spec:
+  ingressClassName: nginx
   rules:
   - host: https://prometheus
     http:
       paths:
       - backend:
-          serviceName: prometheus-operated
-          servicePort: 9090
+          service:
+            name: prometheus-operated
+            port:
+              number: 9090
         path: /baz
 status:
   loadBalancer: {}

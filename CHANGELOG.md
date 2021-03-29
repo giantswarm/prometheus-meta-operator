@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade ingress version to networking.k8s.io/v1
+
 ### Added
 
 - Add support to calculate maximum CPU.
