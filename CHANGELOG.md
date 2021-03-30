@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support to calculate maximum CPU.
 
+### Changed
+
+- Split `ManagementClusterCertificateWillExpireInLessThanTwoWeeks` alert per provider.
+
 ## [1.27.4] - 2021-03-26
 
 - Add recording rules for dex activity, creating the metrics
