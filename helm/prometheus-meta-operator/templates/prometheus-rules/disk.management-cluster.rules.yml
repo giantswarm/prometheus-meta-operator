@@ -61,7 +61,7 @@ spec:
       annotations:
         description: '{{`Persistent volume {{ $labels.mountpoint}} on {{ $labels.instance }} does not have enough free space.`}}'
         opsrecipe: low-disk-space/#persistent-volume
-      expr: 100 * node_filesystem_free_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*"} / node_filesystem_size_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*"} < 10
+      expr: 100 * node_filesystem_free_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*",mountpoint!=".*prometheus.*"} / node_filesystem_size_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*",mountpoint!=".*prometheus.*"} < 10
       for: 10m
       labels:
         area: kaas
@@ -81,3 +81,15 @@ spec:
         severity: page
         team: biscuit
         topic: storage
+    - alert: PrometheusPersistentVolumeSpaceSpaceTooLow
+      annotations:
+        description: '{{`Persistent volume {{ $labels.mountpoint}} on {{ $labels.instance }} does not have enough free space.`}}'
+        opsrecipe: low-disk-space/#persistent-volume
+      expr: 100 * node_filesystem_free_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*prometheus.*"} / node_filesystem_size_bytes{mountpoint=~"(/rootfs)?/var/lib/kubelet.*prometheus.*"} < 10
+      for: 10m
+      labels:
+        area: empowerment
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: atlas
+        topic: observability
