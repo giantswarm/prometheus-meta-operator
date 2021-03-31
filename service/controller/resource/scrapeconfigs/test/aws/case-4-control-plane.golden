@@ -341,6 +341,11 @@
     regex: null
     target_label: role
     replacement: worker
+  metric_relabel_configs:
+  # drop unused metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: (reflector.*|kubelet_container_log_filesystem_used_bytes)
+    action: drop
 # kube-controller-manager
 - job_name: kubernetes-prometheus/kubernetes-controller-manager-kubernetes/0
   honor_labels: true
@@ -856,6 +861,16 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  metric_relabel_configs:
+  - source_labels: [fstype]
+    regex: (cgroup|devpts|mqueue|nsfs|overlay|tmpfs)
+    action: drop
+  - source_labels: [__name__, state]
+    regex: node_systemd_unit_state;(activating|deactivating|inactive)
+    action: drop
+  - source_labels: [__name__, name]
+    regex: node_systemd_unit_state;(dev-disk-by|run-docker-netns|sys-devices|sys-subsystem-net|var-lib-docker-overlay2|var-lib-docker-containers|var-lib-kubelet-pods).*
+    action: drop
 # kube-state-metrics
 - job_name: kubernetes-prometheus/kube-state-metrics-kubernetes/0
   honor_labels: true
@@ -923,6 +938,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+    
 - job_name: kubernetes-prometheus/workload-kubernetes/0
   honor_labels: true
   scheme: https
