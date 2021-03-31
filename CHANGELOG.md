@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+# Changed
+
+- Heartbeat notification delays: initial=0 interval=30s
+
 ### Added
 
 - Add support to calculate maximum CPU.
