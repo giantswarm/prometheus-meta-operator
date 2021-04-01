@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add support to calculate maximum CPU.
+- Add `PrometheusPersistentVolumeSpaceTooLow` alert for prometheus storage going over 90 percent.
+
+### Fixed
+
+- Changed prometheus volume space alert ownership to atlas:
+  - `PersistentVolumeSpaceTooLow` -> `PrometheusPersistentVolumeSpaceTooLow`
 
 ### Changed
 
