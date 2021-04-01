@@ -132,7 +132,7 @@
     replacement: worker
   metric_relabel_configs:
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring)
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
     action: keep
   - source_labels: [__name__]
     regex: container_network_.*
