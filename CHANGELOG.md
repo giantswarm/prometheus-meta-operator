@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add support to calculate maximum CPU.
 - Include cadvisor metrics from the pod in `draughtsman` namespace.
+- Add `PrometheusPersistentVolumeSpaceTooLow` alert for prometheus storage going over 90 percent.
+
+### Fixed
+
+- Changed prometheus volume space alert ownership to atlas:
+  - `PersistentVolumeSpaceTooLow` -> `PrometheusPersistentVolumeSpaceTooLow`
 
 ### Changed
 
