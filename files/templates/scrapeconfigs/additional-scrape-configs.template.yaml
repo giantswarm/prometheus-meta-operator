@@ -52,6 +52,7 @@
 [[ include "_node_role" . | indent 2 ]]
 [[ end ]]
 [[ end ]]
+[[- if not .CAPICluster ]]
 # Add scrape configuration for docker
 - job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
   honor_labels: true
@@ -77,6 +78,7 @@
   - source_labels: [__name__]
     regex: (process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
+[[ end ]]
 # Add scrape configuration for cadvisor
 - job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
   honor_labels: true
@@ -250,7 +252,11 @@
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__address__]
+[[- if .CAPICluster ]]
+    replacement: $1:10257
+[[- else ]]
     replacement: $1:10252
+[[- end ]]
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-controller-manager|kube-controller-manager)
@@ -260,7 +266,7 @@
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
 [[- if .CAPICluster ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10257/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10257/proxy/metrics
 [[- else ]]
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
 [[- end ]]
@@ -281,7 +287,11 @@
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__address__]
+[[- if .CAPICluster ]]
+    replacement: $1:10259
+[[- else ]]
     replacement: $1:10251
+[[- end ]]
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-scheduler|kube-scheduler)
@@ -291,7 +301,7 @@
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
 [[- if .CAPICluster ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10259/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10259/proxy/metrics
 [[- else ]]
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
 [[- end ]]

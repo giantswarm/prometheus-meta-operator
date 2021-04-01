@@ -13,14 +13,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Include cadvisor metrics from the pod in `draughtsman` namespace.
 - Add `PrometheusPersistentVolumeSpaceTooLow` alert for prometheus storage going over 90 percent.
 
+### Changed
+
+- Split `ManagementClusterCertificateWillExpireInLessThanTwoWeeks` alert per provider.
+
 ### Fixed
 
 - Changed prometheus volume space alert ownership to atlas:
   - `PersistentVolumeSpaceTooLow` -> `PrometheusPersistentVolumeSpaceTooLow`
 
-### Changed
+### Removed
 
-- Split `ManagementClusterCertificateWillExpireInLessThanTwoWeeks` alert per provider.
+- Do not monitor docker for CAPI clusters
 
 ## [1.27.4] - 2021-03-26
 
