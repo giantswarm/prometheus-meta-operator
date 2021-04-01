@@ -81,7 +81,7 @@ spec:
         severity: page
         team: biscuit
         topic: storage
-    - alert: PrometheusPersistentVolumeSpaceSpaceTooLow
+    - alert: PrometheusPersistentVolumeSpaceTooLow
       annotations:
         description: '{{`Persistent volume {{ $labels.mountpoint}} on {{ $labels.instance }} does not have enough free space.`}}'
         opsrecipe: low-disk-space/#persistent-volume
