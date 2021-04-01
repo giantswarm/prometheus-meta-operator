@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Changed prometheus volume space alert ownership to atlas:
-  - `PersistentVolumeSpaceSpaceTooLow` -> `PrometheusPersistentVolumeSpaceSpaceTooLow`
+  - `PersistentVolumeSpaceTooLow` -> `PrometheusPersistentVolumeSpaceTooLow`
 
 ## [1.27.4] - 2021-03-26
 
