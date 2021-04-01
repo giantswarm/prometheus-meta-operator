@@ -35,7 +35,6 @@ require (
 	github.com/prometheus/client_golang v1.9.0
 	github.com/prometheus/common v0.17.0
 	github.com/prometheus/procfs v0.6.0 // indirect
-	github.com/prometheus/prometheus v2.23.0+incompatible
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.7.1
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 // indirect

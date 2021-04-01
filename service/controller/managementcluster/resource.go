@@ -17,7 +17,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/promxy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
@@ -227,21 +226,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var promxyResource resource.Interface
-	{
-		c := promxy.Config{
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			Installation: config.Installation,
-			Provider:     config.Provider,
-		}
-
-		promxyResource, err = promxy.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var heartbeatResource resource.Interface
 	{
 		c := heartbeat.Config{
@@ -284,7 +268,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		verticalPodAutoScalerResource,
 		volumeResizeHack,
 		ingressResource,
-		promxyResource,
 		heartbeatResource,
 		heartbeatRoutingResource,
 	}

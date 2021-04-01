@@ -197,18 +197,6 @@ func CAFilePath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 }
 
-func PromxyConfigMapName() string {
-	return "promxy-app-unique"
-}
-
-func PromxyConfigMapNamespace() string {
-	return monitoring
-}
-
-func PromxyConfigFileName() string {
-	return "config.yaml"
-}
-
 func AlertmanagerConfigMapName() string {
 	return "alertmanager"
 }
