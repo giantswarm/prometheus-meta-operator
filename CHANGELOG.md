@@ -5,16 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-
 ## [Unreleased]
 
-### Fixed 
+### Added
 
-- Fix scheduler and controller manager scraping for CAPI clusters
+- Add support to calculate maximum CPU.
+- Include cadvisor metrics from the pod in `draughtsman` namespace.
+- Add `PrometheusPersistentVolumeSpaceTooLow` alert for prometheus storage going over 90 percent.
+
+### Changed
+
+- Split `ManagementClusterCertificateWillExpireInLessThanTwoWeeks` alert per provider.
+
+### Fixed
+
+- Changed prometheus volume space alert ownership to atlas:
+  - `PersistentVolumeSpaceTooLow` -> `PrometheusPersistentVolumeSpaceTooLow`
 
 ### Removed
 
 - Do not monitor docker for CAPI clusters
+
+## [1.27.4] - 2021-03-26
+
+- Add recording rules for dex activity, creating the metrics
+  - `aggregation:dex_requests_status_ok`
+  - `aggregation:dex_requests_status_4xx`
+  - `aggregation:dex_requests_status_5xx`
 
 ## [1.27.3] - 2021-03-25
 
@@ -926,7 +943,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.4...HEAD
+[1.27.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.3...v1.27.4
 [1.27.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.2...v1.27.3
 [1.27.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.1...v1.27.2
 [1.27.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.0...v1.27.1

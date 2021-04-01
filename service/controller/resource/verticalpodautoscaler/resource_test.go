@@ -41,6 +41,7 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 		node = &v1.Node{
 			Status: v1.NodeStatus{
 				Allocatable: v1.ResourceList{
+					v1.ResourceCPU:    resource.MustParse("8"),
 					v1.ResourceMemory: resource.MustParse("10"),
 				},
 			},
