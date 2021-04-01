@@ -29,7 +29,7 @@ spec:
       for: 10m
       labels:
         area: "empowerment"
-        cancel_if_kube_state_metrics_down: "true"
+        cancel_if_any_kube_state_metrics_down: "true"
         installation: {{ .Values.Installation.V1.Name }}
         severity: "page"
         team: "atlas"
