@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.28.0] - 2021-04-01
+
 ### Added
 
 - Add support to calculate maximum CPU.
@@ -943,7 +945,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.4...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.28.0...HEAD
+[1.28.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.4...v1.28.0
 [1.27.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.3...v1.27.4
 [1.27.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.2...v1.27.3
 [1.27.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.1...v1.27.2
