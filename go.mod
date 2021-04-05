@@ -28,7 +28,7 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
-	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.6
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.7
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator v0.43.0
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
