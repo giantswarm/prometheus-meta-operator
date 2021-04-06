@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Split `ManagementClusterCertificateWillExpireInLessThanTwoWeeks` alert per provider.
+- Increased duration time for flapping `WorkloadClusterWebhookDurationExceedsTimeout` alert
 
 ### Fixed
 
