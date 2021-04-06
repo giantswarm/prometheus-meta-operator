@@ -22,3 +22,16 @@ spec:
         severity: page
         team: atlas
         topic: observability
+    ## Pages Atlas when prometheus fails to send samples to cortex
+    - alert: PrometheusFailsToCommunicateWithRemoteStorageAPI
+      annotations:
+        description: '{{`Prometheus can''t communicate with Remote Storage API.`}}'
+      expr: rate(prometheus_remote_storage_samples_failed_total{app="prometheus"}[15m]) > 0.25
+      for: 15m
+      labels:
+        area: empowerment
+        severity: page
+        team: atlas
+        topic: observability
+
+        
