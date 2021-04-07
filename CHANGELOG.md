@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add workload type and name labels for `ManagedAppBasicError*` alerts
+
 ## [1.28.0] - 2021-04-01
 
 ### Added
