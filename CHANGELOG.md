@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `PrometheusCantCommunicateWithRemoteStorageAPI` when Prometheus fails to send samples to Cortex.
+- Add `PrometheusCantCommunicateWithRemoteStorageAPI` to alert when Prometheus fails to send samples to Cortex.
 
 ## [1.28.0] - 2021-04-01
 
