@@ -558,6 +558,33 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+[[ if eq .ClusterType "workload_cluster" ]]
+  metric_relabel_configs:
+  - source_labels: [deployment]
+    regex: (.+)
+    target_label: workload_type
+    replacement: deployment
+  - source_labels: [daemonset]
+    regex: (.+)
+    target_label: workload_type
+    replacement: daemonset
+  - source_labels: [statefulset]
+    regex: (.+)
+    target_label: workload_type
+    replacement: statefulset
+  - source_labels: [deployment]
+    regex: (.+)
+    target_label: workload_name
+    replacement: ${1}
+  - source_labels: [daemonset]
+    regex: (.+)
+    target_label: workload_name
+    replacement: ${1}
+  - source_labels: [statefulset]
+    regex: (.+)
+    target_label: workload_name
+    replacement: ${1}
+[[ end ]]
 - job_name: [[ .ClusterID ]]-prometheus/workload-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https

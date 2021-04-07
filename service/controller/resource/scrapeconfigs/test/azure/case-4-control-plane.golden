@@ -869,6 +869,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+
 - job_name: kubernetes-prometheus/workload-kubernetes/0
   honor_labels: true
   scheme: https
