@@ -26,7 +26,7 @@ spec:
     - alert: PrometheusFailsToCommunicateWithRemoteStorageAPI
       annotations:
         description: '{{`Prometheus can''t communicate with Remote Storage API at {{ $labels.url }}.`}}'
-      expr: rate(prometheus_remote_storage_samples_failed_total{app="prometheus"}[1h]) > 0.10
+      expr: rate(prometheus_remote_storage_samples_failed_total{app="prometheus"}[1h]) > 0.10 or rate(prometheus_remote_storage_samples_total[1h]) == 0
       for: 1h
       labels:
         area: empowerment
