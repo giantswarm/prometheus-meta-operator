@@ -76,7 +76,7 @@
 [[ include "_node_role" . | indent 2 ]]
   metric_relabel_configs:
   - source_labels: [__name__]
-    regex: (process_virtual_memory_bytes|process_resident_memory_bytes)
+    regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
 [[ end ]]
 # Add scrape configuration for cadvisor
@@ -99,7 +99,7 @@
     replacement: cadvisor
   # Add node name.
   - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
-    target_label: node  
+    target_label: node
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
   metric_relabel_configs:
@@ -216,7 +216,7 @@
     target_label: instance
   # Add ip label.
   - target_label: ip
-    source_labels: [__meta_kubernetes_node_address_InternalIP]    
+    source_labels: [__meta_kubernetes_node_address_InternalIP]
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
 # Add kubelet configuration
@@ -295,7 +295,7 @@
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-scheduler|kube-scheduler)
-    action: keep  
+    action: keep
   - target_label: __address__
     replacement: [[ .APIServerURL ]]
   - source_labels: [__meta_kubernetes_pod_name]
@@ -1737,7 +1737,7 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   static_configs:
-  - targets: 
+  - targets:
     - [[ .Mayu ]]:4080
     labels:
       app: mayu
@@ -1868,9 +1868,9 @@
     labels:
       app: cert-exporter
 [[- if or (eq .Installation "dragon") (eq .Installation "dinosaur") ]]q
-# DVAG uses HAProxy to allow traffic inside the management clusters. 
+# DVAG uses HAProxy to allow traffic inside the management clusters.
 # We added an haproxy exporter on the vault node to ensure we can access vault from the management cluster
-  - targets: 
+  - targets:
     - [[ .Vault ]]:9101
     labels:
       app: haproxy-exporter
