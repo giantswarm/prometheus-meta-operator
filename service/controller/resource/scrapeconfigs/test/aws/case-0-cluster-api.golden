@@ -1021,6 +1021,12 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  metric_relabel_configs:
+  - source_labels: [mountpoint]
+    target_label: pod_id
+    regex: /var/lib/kubelet/pods/([a-zA-Z0-9-]+)/.*
+    action: replace
+    replacement: $1
 # kube-state-metrics
 - job_name: bob-prometheus/kube-state-metrics-bob/0
   honor_labels: true

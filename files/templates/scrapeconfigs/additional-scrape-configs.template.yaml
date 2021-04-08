@@ -520,6 +520,12 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+  metric_relabel_configs:
+  - source_labels: [mountpoint]
+    target_label: pod_id
+    regex: /var/lib/kubelet/pods/([a-zA-Z0-9-]+)/.*
+    action: replace
+    replacement: $1
 # kube-state-metrics
 - job_name: [[ .ClusterID ]]-prometheus/kube-state-metrics-[[ .ClusterID ]]/0
   honor_labels: true
