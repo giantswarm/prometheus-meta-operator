@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add workload type and name labels for `ManagedAppBasicError*` alerts
 - Add alert for master node in HA setup down for too long.
+- Add aggregation for docker actions.
 
 ### Removed
 
