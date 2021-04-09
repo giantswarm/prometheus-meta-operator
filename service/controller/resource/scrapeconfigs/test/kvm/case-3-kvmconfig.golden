@@ -100,7 +100,7 @@
     replacement: worker
   metric_relabel_configs:
   - source_labels: [__name__]
-    regex: (process_virtual_memory_bytes|process_resident_memory_bytes)
+    regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
 
 # Add scrape configuration for cadvisor
