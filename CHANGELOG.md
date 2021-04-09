@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add alert for master node in HA setup down for too long.
 - Add aggregation for docker actions.
 
+### Fixed
+
+- Fix prometheus storage alert
+
 ### Removed
 
 - Removed unnecessary whitespace in additional scrape configs.
