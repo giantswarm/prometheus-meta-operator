@@ -39,6 +39,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Do not monitor docker for CAPI clusters
 
+### Removed 
+
+- Remove promxy resource.
+
 ## [1.27.4] - 2021-03-26
 
 - Add recording rules for dex activity, creating the metrics
