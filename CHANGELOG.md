@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix prometheus storage alert
 
+### Removed
+
+- Removed unnecessary whitespace in additional scrape configs.
+
 ## [1.28.0] - 2021-04-01
 
 ### Added

@@ -110,7 +110,7 @@
     replacement: cadvisor
   # Add node name.
   - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
-    target_label: node  
+    target_label: node
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -225,7 +225,7 @@
     target_label: instance
   # Add ip label.
   - target_label: ip
-    source_labels: [__meta_kubernetes_node_address_InternalIP]    
+    source_labels: [__meta_kubernetes_node_address_InternalIP]
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -367,7 +367,7 @@
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-scheduler|kube-scheduler)
-    action: keep  
+    action: keep
   - target_label: __address__
     replacement: 127.0.0.1:443
   - source_labels: [__meta_kubernetes_pod_name]
@@ -2722,7 +2722,7 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   static_configs:
-  - targets: 
+  - targets:
     - :4080
     labels:
       app: mayu
