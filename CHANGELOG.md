@@ -24,6 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed unnecessary whitespace in additional scrape configs.
 
+### Fixed
+
+- Fix inhibition for `MatchingNumberOfPrometheusAndCluster` alert by matching it with
+  source from Management Cluster instead of the cluster the alert is firing for.
+
 ## [1.28.0] - 2021-04-01
 
 ### Added
