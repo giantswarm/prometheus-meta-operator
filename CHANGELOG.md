@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.29.1] - 2021-04-09
+
 ### Fixed
 
 - Fix inhibition for `MatchingNumberOfPrometheusAndCluster` alert by matching it with
@@ -972,7 +974,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.1...HEAD
+[1.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.0...v1.29.1
 [1.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.28.0...v1.29.0
 [1.28.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.4...v1.28.0
 [1.27.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.3...v1.27.4
