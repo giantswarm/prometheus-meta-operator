@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Page Firecracker in working hours for restarting containers.
+
 ### Removed
 
 - Remove Gatekeeper alerts and targets.
