@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove Gatekeeper alerts and targets.
+
 ## [1.29.1] - 2021-04-09
 
 ### Fixed
@@ -53,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Do not monitor docker for CAPI clusters
 
-### Removed 
+### Removed
 
 - Remove promxy resource.
 
