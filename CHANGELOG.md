@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Keep the container_network.* metrics for the kubernetes mixins
+
 ## [1.30.0] - 2021-04-12
 
 ### Removed
