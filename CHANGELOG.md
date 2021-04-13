@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed check for `absent` metric in `KubeStateMetricsDown` alert.
+
 ## [1.30.0] - 2021-04-12
 
 ### Removed
