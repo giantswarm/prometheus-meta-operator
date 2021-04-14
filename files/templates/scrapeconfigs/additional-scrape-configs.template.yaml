@@ -112,9 +112,6 @@
     regex: (kube-system|giantswarm.*)
     action: keep
 [[- end ]]
-  - source_labels: [__name__]
-    regex: container_network_.*
-    action: drop
 - job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
