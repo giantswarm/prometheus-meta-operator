@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+### Added
+
 - Page Firecracker in working hours for restarting containers.
+
+## [1.30.0] - 2021-04-12
+
 
 ### Removed
 
@@ -980,7 +986,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.30.0...HEAD
+[1.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.1...v1.30.0
 [1.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.0...v1.29.1
 [1.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.28.0...v1.29.0
 [1.28.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.27.4...v1.28.0
