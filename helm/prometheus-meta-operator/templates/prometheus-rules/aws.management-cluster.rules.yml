@@ -134,7 +134,11 @@ spec:
       for: 5m
       labels:
         area: kaas
-        severity: notify
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_outside_working_hours: "true"
+        severity: page
         team: firecracker
         topic: kubernetes
 {{- end }}

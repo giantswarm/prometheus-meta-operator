@@ -7,11 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Page Firecracker in working hours for restarting containers.
+
 ### Changed
 
 - Keep the `container_network.*` metrics as they are needed for the [kubernetes mixins dashboards](https://github.com/giantswarm/g8s-grafana/tree/master/helm/g8s-grafana/dashboards/mixin)
 
 ## [1.30.0] - 2021-04-12
+
 
 ### Removed
 
