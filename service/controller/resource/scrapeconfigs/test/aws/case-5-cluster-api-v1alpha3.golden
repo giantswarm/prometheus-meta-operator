@@ -163,9 +163,6 @@
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
     action: keep
-  - source_labels: [__name__]
-    regex: container_network_.*
-    action: drop
 - job_name: baz-prometheus/calico-node-baz/0
   honor_labels: true
   scheme: https
