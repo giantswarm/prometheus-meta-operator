@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Page firecracker for failed cluster transitions.
 - Page Firecracker in working hours for restarting containers.
+- `MatchingNumberOfPrometheusAndCluster` now has a runbook, link added to alert.
 
 ### Changed
 
