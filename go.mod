@@ -31,7 +31,7 @@ require (
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.8
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator v0.43.0
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.43.0
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.47.0
 	github.com/prometheus/client_golang v1.9.0
 	github.com/prometheus/common v0.17.0
 	github.com/prometheus/procfs v0.6.0 // indirect
