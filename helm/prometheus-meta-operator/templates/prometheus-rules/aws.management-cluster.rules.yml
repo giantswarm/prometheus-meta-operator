@@ -16,11 +16,12 @@ spec:
         description: '{{`Cluster {{ $labels.cluster_id }} creation is taking longer than expected.`}}'
         opsrecipe: cluster-creation-failed/
       expr: (statusresource_cluster_status{app=~"aws-operator.*", status="Creating"} == 1 or cluster_operator_cluster_status{app=~"cluster-operator.*", status="Creating", provider="aws"} == 1)
-      for: 20m
+      for: 30m
       labels:
         area: kaas
         cancel_if_outside_working_hours: "true"
-        severity: notify
+        cancel_if_stack_failed: "true"
+        severity: page
         team: firecracker
         topic: aws
     - alert: AWSClusterUpdateFailed
@@ -28,11 +29,12 @@ spec:
         description: '{{`Cluster {{ $labels.cluster_id }} update is taking longer than expected.`}}'
         opsrecipe: cluster-update-failed/
       expr: (statusresource_cluster_status{app=~"aws-operator.*", status="Updating"} == 1 or cluster_operator_cluster_status{app=~"cluster-operator.*", status="Updating", provider="aws"} == 1)
-      for: 4h
+      for: 2h
       labels:
         area: kaas
         cancel_if_outside_working_hours: "true"
-        severity: notify
+        cancel_if_stack_failed: "true"
+        severity: page
         team: firecracker
         topic: aws
     - alert: CloudFormationStackFailed
@@ -44,6 +46,7 @@ spec:
       labels:
         area: kaas
         cancel_if_outside_working_hours: "true"
+        stack_failed: "true"
         severity: page
         team: firecracker
         topic: aws
@@ -56,6 +59,7 @@ spec:
       labels:
         area: kaas
         cancel_if_outside_working_hours: "true"
+        stack_failed: "true"
         severity: page
         team: firecracker
         topic: aws
@@ -134,7 +138,11 @@ spec:
       for: 5m
       labels:
         area: kaas
-        severity: notify
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        cancel_if_outside_working_hours: "true"
+        severity: page
         team: firecracker
         topic: kubernetes
 {{- end }}

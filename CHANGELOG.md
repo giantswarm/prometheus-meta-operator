@@ -7,11 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Removed
+### Added
 
-- Removed check for `absent` metric in `KubeStateMetricsDown` alert.
+- Add alert for `kube-state-metrics` missing.
+
+### Changed
+
+- Only fire `KubeStateMetricsDown` if `kube-state-metrics` is down.
+
+## [1.31.0] - 2021-04-16
+
+### Added
+
+- Page firecracker for failed cluster transitions.
+- Page Firecracker in working hours for restarting containers.
+- Add recording rules for kube-mixins
+- `MatchingNumberOfPrometheusAndCluster` now has a runbook, link added to alert.
+
+### Changed
+
+- Keep the `container_network.*` metrics as they are needed for the [kubernetes mixins dashboards](https://github.com/giantswarm/g8s-grafana/tree/master/helm/g8s-grafana/dashboards/mixin)
 
 ## [1.30.0] - 2021-04-12
+
 
 ### Removed
 
@@ -984,7 +1002,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.30.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.31.0...HEAD
+[1.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.30.0...v1.31.0
 [1.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.1...v1.30.0
 [1.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.0...v1.29.1
 [1.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.28.0...v1.29.0
