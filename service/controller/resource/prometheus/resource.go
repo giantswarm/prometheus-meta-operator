@@ -268,6 +268,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 						Key: key.RemoteWritePasswordKey(),
 					},
 				},
+				// Our current Ingestion Rate Limit is set to 100K samples per second
 				QueueConfig: &promv1.QueueConfig{
 					// Capacity controls how many samples are queued in memory per shard before blocking reading from the WAL.
 					// We set it to 10000 (default: 2500) to support bigger installations
