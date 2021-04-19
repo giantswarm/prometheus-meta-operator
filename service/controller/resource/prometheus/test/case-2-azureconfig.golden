@@ -57,6 +57,10 @@ spec:
         key: username
         name: remote-write
     name: foo
+    queueConfig:
+      capacity: 10000
+      maxSamplesPerSend: 1000
+      minShards: 10
     url: http://grafana/api/prom/push
     writeRelabelConfigs:
     - action: keep

@@ -10,7 +10,6 @@ import (
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -116,7 +115,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		storage = promv1.StorageSpec{
 			VolumeClaimTemplate: promv1.EmbeddedPersistentVolumeClaim{
 				Spec: corev1.PersistentVolumeClaimSpec{
-					AccessModes: []corev1.PersistentVolumeAccessMode{v1.ReadWriteOnce},
+					AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
 					Resources: corev1.ResourceRequirements{
 						Requests: corev1.ResourceList{
 							corev1.ResourceStorage: storageSize,
@@ -127,7 +126,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 		}
 	} else {
 		storage = promv1.StorageSpec{
-			EmptyDir: &v1.EmptyDirVolumeSource{
+			EmptyDir: &corev1.EmptyDirVolumeSource{
 				SizeLimit: &storageSize,
 			},
 		}
@@ -204,22 +203,22 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				},
 				Key: key.AlertManagerKey(),
 			},
-			SecurityContext: &v1.PodSecurityContext{
+			SecurityContext: &corev1.PodSecurityContext{
 				RunAsUser:    &uid,
 				RunAsGroup:   &gid,
 				RunAsNonRoot: &runAsNonRoot,
 				FSGroup:      &fsGroup,
 			},
 			Storage: &storage,
-			Affinity: &v1.Affinity{
-				NodeAffinity: &v1.NodeAffinity{
-					RequiredDuringSchedulingIgnoredDuringExecution: &v1.NodeSelector{
-						NodeSelectorTerms: []v1.NodeSelectorTerm{
-							v1.NodeSelectorTerm{
-								MatchExpressions: []v1.NodeSelectorRequirement{
-									v1.NodeSelectorRequirement{
+			Affinity: &corev1.Affinity{
+				NodeAffinity: &corev1.NodeAffinity{
+					RequiredDuringSchedulingIgnoredDuringExecution: &corev1.NodeSelector{
+						NodeSelectorTerms: []corev1.NodeSelectorTerm{
+							corev1.NodeSelectorTerm{
+								MatchExpressions: []corev1.NodeSelectorRequirement{
+									corev1.NodeSelectorRequirement{
 										Key:      "role",
-										Operator: v1.NodeSelectorOpNotIn,
+										Operator: corev1.NodeSelectorOpNotIn,
 										Values: []string{
 											"master",
 										},
@@ -230,11 +229,11 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					},
 				},
 			},
-			TopologySpreadConstraints: []v1.TopologySpreadConstraint{
-				v1.TopologySpreadConstraint{
+			TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
+				corev1.TopologySpreadConstraint{
 					MaxSkew:           1,
 					TopologyKey:       "kubernetes.io/hostname",
-					WhenUnsatisfiable: v1.ScheduleAnyway,
+					WhenUnsatisfiable: corev1.ScheduleAnyway,
 					LabelSelector: &metav1.LabelSelector{
 						MatchLabels: map[string]string{
 							"app": "prometheus",
@@ -256,18 +255,28 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			promv1.RemoteWriteSpec{
 				URL: config.RemoteWriteURL,
 				BasicAuth: &promv1.BasicAuth{
-					Username: v1.SecretKeySelector{
-						LocalObjectReference: v1.LocalObjectReference{
+					Username: corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
 							Name: key.RemoteWriteSecretName(),
 						},
 						Key: key.RemoteWriteUsernameKey(),
 					},
-					Password: v1.SecretKeySelector{
-						LocalObjectReference: v1.LocalObjectReference{
+					Password: corev1.SecretKeySelector{
+						LocalObjectReference: corev1.LocalObjectReference{
 							Name: key.RemoteWriteSecretName(),
 						},
 						Key: key.RemoteWritePasswordKey(),
 					},
+				},
+				// Our current Ingestion Rate Limit is set to 100K samples per second
+				QueueConfig: &promv1.QueueConfig{
+					// Capacity controls how many samples are queued in memory per shard before blocking reading from the WAL.
+					// We set it to 10000 (default: 2500) to support bigger installations
+					Capacity: 10000,
+					// (default: 500)
+					MaxSamplesPerSend: 1000,
+					// We set it to 10 (default: 1) to prevent the initial shard scale up
+					MinShards: 10,
 				},
 				Name: key.ClusterID(cluster),
 				WriteRelabelConfigs: []promv1.RelabelConfig{
