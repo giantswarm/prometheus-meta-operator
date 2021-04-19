@@ -44,7 +44,7 @@ spec:
       annotations:
         description: '{{`KubeStateMetrics ({{ $labels.instance }}) is down.`}}'
         opsrecipe: kube-state-metrics-down/
-      expr: up{app="kube-state-metrics"} == 0 or absent(up{app="kube-state-metrics"}) == 1
+      expr: up{app="kube-state-metrics"} == 0
       for: 15m
       labels:
         area: kaas
