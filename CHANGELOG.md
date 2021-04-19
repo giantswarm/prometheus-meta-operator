@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.32.0] - 2021-04-19
+
 ### Added
 
 - Add alert for `kube-state-metrics` missing.
+- Tune remote write configuration to avoid loss of data.
 
 ### Changed
 
@@ -29,7 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Keep the `container_network.*` metrics as they are needed for the [kubernetes mixins dashboards](https://github.com/giantswarm/g8s-grafana/tree/master/helm/g8s-grafana/dashboards/mixin)
 
 ## [1.30.0] - 2021-04-12
-
 
 ### Removed
 
@@ -1002,7 +1004,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.31.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.32.0...HEAD
+[1.32.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.31.0...v1.32.0
 [1.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.30.0...v1.31.0
 [1.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.1...v1.30.0
 [1.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.0...v1.29.1
