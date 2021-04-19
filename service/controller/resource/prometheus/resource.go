@@ -272,6 +272,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					// Capacity controls how many samples are queued in memory per shard before blocking reading from the WAL.
 					// We set it to 10000 (default: 2500) to support bigger installations
 					Capacity:          10000,
+					// (default: 500)
 					MaxSamplesPerSend: 1000,
 					// We set it to 10 to prevent the initial shard scale up
 					MinShards: 10,
