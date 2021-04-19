@@ -60,7 +60,7 @@ spec:
       annotations:
         description: '{{`KubeStateMetrics ({{ $labels.instance }}) is missing.`}}'
         opsrecipe: kube-state-metrics-down/
-      expr: absent(up{app="app_name"} == 1)
+      expr: absent(up{app="kube-state-metrics"} == 1)
       for: 15m
       labels:
         area: kaas
