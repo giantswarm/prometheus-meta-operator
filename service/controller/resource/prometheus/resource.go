@@ -274,7 +274,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					Capacity:          10000,
 					// (default: 500)
 					MaxSamplesPerSend: 1000,
-					// We set it to 10 to prevent the initial shard scale up
+					// We set it to 10 (default: 1) to prevent the initial shard scale up
 					MinShards: 10,
 				},
 				Name: key.ClusterID(cluster),
