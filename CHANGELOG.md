@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.32.1] - 2021-04-21
+
 ### Changed
 
 Make `WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker` less sensitive.
@@ -1008,7 +1010,8 @@ Make `WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker` less sensiti
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.32.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.32.1...HEAD
+[1.32.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.32.0...v1.32.1
 [1.32.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.31.0...v1.32.0
 [1.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.30.0...v1.31.0
 [1.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.29.1...v1.30.0
