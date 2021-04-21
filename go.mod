@@ -63,4 +63,5 @@ replace (
 	github.com/prometheus/prometheus => github.com/prometheus/prometheus v0.0.0-20201126101154-26d89b4b0776
 	k8s.io/client-go => k8s.io/client-go v0.19.4
 	sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.13-gs
+	golang/github.com/dgrijalva/jwt-go v3.2.0+incompatible => golang/github.com/dgrijalva/jwt-go v4.0.0-preview1+incompatible
 )
