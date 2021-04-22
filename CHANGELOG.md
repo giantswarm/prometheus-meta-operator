@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Adjust container restarting too often firecracker.
+
 ## [1.32.0] - 2021-04-19
 
 ### Added
