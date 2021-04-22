@@ -2621,6 +2621,9 @@
     action: keep
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  - source_labels: [__address__]
+    regex: (.*):8000
+    action: drop
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
