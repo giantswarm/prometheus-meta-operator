@@ -77,20 +77,6 @@ spec:
         severity: page
         team: firecracker
         topic: aws
-    - alert: ManagementClusterEBSVolumeMountErrors
-      annotations:
-        description: '{{`EBS Volume mount error on the node {{ $labels.instance }}.`}}'
-        opsrecipe: aws-volume-mount-issues/
-      expr: rate(storage_operation_errors_total{volume_plugin="kubernetes.io/aws-ebs"}[15m]) > 0
-      for: 30m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: firecracker
-        topic: aws
     - alert: ManagementClusterPodPendingFirecracker
       annotations:
         description: '{{`Pod {{ $labels.namespace }}/{{ $labels.pod }} is stuck in Pending.`}}'
