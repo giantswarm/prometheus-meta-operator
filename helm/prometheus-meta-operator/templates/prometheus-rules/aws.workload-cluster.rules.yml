@@ -11,20 +11,6 @@ spec:
   groups:
   - name: aws
     rules:
-    - alert: WorkloadClusterEBSVolumeMountErrors
-      annotations:
-        description: '{{`EBS Volume mount error on the node {{ $labels.instance }}.`}}'
-        opsrecipe: aws-volume-mount-issues/
-      expr: rate(storage_operation_errors_total{volume_plugin="kubernetes.io/aws-ebs"}[15m]) > 0
-      for: 30m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: firecracker
-        topic: aws
     - alert: WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker
       annotations:
         description: '{{`Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} is restarting too often.`}}'
@@ -54,19 +40,6 @@ spec:
           #severity: page
           #team: firecracker
           #topic: kubernetes
-    - alert: WorkloadClusterPodLimitAlmostReachedAWS
-      annotations:
-        description: '{{`Cluster {{ $labels.cluster_id }} is almost exceeding its pod limit.`}}'
-      expr: (sum(kube_pod_info) by (cluster_id) / sum(kube_node_status_capacity_pods) by (cluster_id)) > 0.8
-      for: 5m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        severity: notify
-        team: firecracker
-        topic: kubernetes
     # WorkloadClusterMasterNodeMissingFirecracker in this file is AWS specific and thus
     # assigned to Team Firecracker. The alert is also defined for all the other
     # providers with other team assignments.

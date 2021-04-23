@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove `PodLimitAlmostReachedAWS` and `EBSVolumeMountErrors` alerts as they were not used.
+
 ## [1.32.1] - 2021-04-22
 
 ### Fixed
