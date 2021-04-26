@@ -177,8 +177,8 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
 				},
 				Limits: corev1.ResourceList{
-					// cpu: 100m
-					corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
+					// cpu: 150m
+					corev1.ResourceCPU: *key.PrometheusCPULimit(),
 					// memory: 1.2Gi
 					corev1.ResourceMemory: *key.PrometheusMemoryLimit(),
 				},
