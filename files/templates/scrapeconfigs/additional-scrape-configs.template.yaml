@@ -52,6 +52,7 @@
 [[ include "_node_role" . | indent 2 ]]
 [[ end ]]
 [[ end ]]
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 [[- if and (not .CAPICluster) (not (and (eq .Installation "puma") (eq .ClusterType "management_cluster"))) ]]
 # Add scrape configuration for docker
 - job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
@@ -112,6 +113,7 @@
     regex: (kube-system|giantswarm.*)
     action: keep
 [[- end ]]
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 [[- if not (and (eq .Installation "puma") (eq .ClusterType "management_cluster")) ]]
 - job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
   honor_labels: true
@@ -308,6 +310,7 @@
     replacement: kube-scheduler
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 [[- if not (and (eq .Installation "puma") (eq .ClusterType "management_cluster")) ]]
 # kube-proxy
 - job_name: [[ .ClusterID ]]-prometheus/kube-proxy-[[ .ClusterID ]]/0

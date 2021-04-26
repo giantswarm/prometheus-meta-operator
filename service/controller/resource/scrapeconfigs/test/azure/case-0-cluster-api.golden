@@ -108,6 +108,7 @@
     replacement: worker
 
 
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 # Add scrape configuration for docker
 - job_name: bob-prometheus/docker-bob/0
   honor_labels: true
@@ -217,6 +218,7 @@
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
     action: keep
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 - job_name: bob-prometheus/calico-node-bob/0
   honor_labels: true
   scheme: https
@@ -519,6 +521,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 # kube-proxy
 - job_name: bob-prometheus/kube-proxy-bob/0
   honor_labels: true

@@ -108,6 +108,7 @@
     replacement: worker
 
 
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 # Add scrape configuration for cadvisor
 - job_name: baz-prometheus/cadvisor-baz/0
   honor_labels: true
@@ -163,6 +164,7 @@
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
     action: keep
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 - job_name: baz-prometheus/calico-node-baz/0
   honor_labels: true
   scheme: https
@@ -466,6 +468,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+## TODO remove once Puma's installation exports docker metrics (https://github.com/giantswarm/giantswarm/issues/16921)
 # kube-proxy
 - job_name: baz-prometheus/kube-proxy-baz/0
   honor_labels: true
