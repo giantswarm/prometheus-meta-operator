@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Increased duration for `PrometheusPersistentVolumeSpaceTooLow` alert
 
+### Removed
+
+- Remove prometheus image override
+
 ## [1.35.0] - 2021-05-12
 
 ### Added

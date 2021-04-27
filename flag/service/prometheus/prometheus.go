@@ -8,7 +8,6 @@ type Prometheus struct {
 	Storage     PrometheusStorage
 	Retention   PrometheusRetention
 	RemoteWrite PrometheusRemoteWrite
-	Version     string
 }
 
 type PrometheusStorage struct {

@@ -40,7 +40,6 @@ spec:
     provider: provider
     region: onprem
   externalUrl: http://prometheus/bob
-  image: quay.io/giantswarm/prometheus:v2.24.0
   podMetadata:
     labels:
       app.kubernetes.io/instance: bob
