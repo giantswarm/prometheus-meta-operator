@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Raise prometheus cpu limit to 150%.
+
 ### Removed
 
 - Remove `PodLimitAlmostReachedAWS` and `EBSVolumeMountErrors` alerts as they were not used.

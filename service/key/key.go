@@ -95,11 +95,15 @@ func PrometheusDefaultCPU() *resource.Quantity {
 	return resource.NewMilliQuantity(100, resource.DecimalSI)
 }
 
+func PrometheusDefaultCPULimit() *resource.Quantity {
+	return resource.NewMilliQuantity(100*1.5, resource.DecimalSI)
+}
+
 func PrometheusDefaultMemory() *resource.Quantity {
 	return resource.NewQuantity(1024*1024*1024, resource.DecimalSI)
 }
 
-func PrometheusMemoryLimit() *resource.Quantity {
+func PrometheusDefaultMemoryLimit() *resource.Quantity {
 	return resource.NewQuantity(1024*1024*1228, resource.DecimalSI)
 }
 
