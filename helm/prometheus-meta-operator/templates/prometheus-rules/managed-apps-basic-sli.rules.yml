@@ -12,7 +12,7 @@ spec:
     rules:
     - alert: ManagedAppBasicErrorBudgetBurnRateInLast10mTooHigh
       annotations:
-        description: '{{`Basic Error Budget for {{ $labels.workload_type}}/{{ $labels.workload_name }} on cluster {{ $labels.cluster_id}} is being burned down faster then 5% in the last 10m.`}}'
+        description: '{{`Basic Error Budget for {{ $labels.workload_type}}/{{ $labels.workload_name }} on cluster {{ $labels.cluster_id}} is being burned down faster than 5% in the last 10m.`}}'
         opsrecipe: managed-apps-basic-sli/
       expr: delta(monitoring:managed_apps:service_level:primary:error_budget_used[10m]) > 0.05
       for: 5m
