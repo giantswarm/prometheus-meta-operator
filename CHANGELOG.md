@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix ManagedApp alert
+
 ## [1.33.0] - 2021-04-27
 
 ### Changed
