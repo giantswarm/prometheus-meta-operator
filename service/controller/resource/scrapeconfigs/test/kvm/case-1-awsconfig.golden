@@ -1091,6 +1091,32 @@
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
 
+  - source_labels: [deployment]
+    regex: (.+)
+    target_label: workload_type
+    replacement: deployment
+  - source_labels: [daemonset]
+    regex: (.+)
+    target_label: workload_type
+    replacement: daemonset
+  - source_labels: [statefulset]
+    regex: (.+)
+    target_label: workload_type
+    replacement: statefulset
+  - source_labels: [deployment]
+    regex: (.+)
+    target_label: workload_name
+    replacement: ${1}
+  - source_labels: [daemonset]
+    regex: (.+)
+    target_label: workload_name
+    replacement: ${1}
+  - source_labels: [statefulset]
+    regex: (.+)
+    target_label: workload_name
+    replacement: ${1}
+
+
 # prometheus
 - job_name: alice-prometheus/prometheus-alice/0
   honor_labels: true
