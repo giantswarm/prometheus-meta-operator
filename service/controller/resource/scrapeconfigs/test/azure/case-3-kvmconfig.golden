@@ -1149,6 +1149,42 @@
   - source_labels: [__name__]
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
+  - source_labels: [app,deployment]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    target_label: workload_type
+    replacement: deployment
+    action: replace
+  - source_labels: [app,daemonset]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    target_label: workload_type
+    replacement: daemonset
+    action: replace
+  - source_labels: [app,statefulset]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    target_label: workload_type
+    replacement: statefulset
+    action: replace
+  - source_labels: [app,deployment]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    target_label: workload_name
+    replacement: ${1}
+    action: replace
+  - source_labels: [app,daemonset]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    target_label: workload_name
+    replacement: ${1}
+    action: replace
+  - source_labels: [app,statefulset]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    target_label: workload_name
+    replacement: ${1}
+    action: replace
 
 # prometheus
 - job_name: bar-prometheus/prometheus-bar/0
