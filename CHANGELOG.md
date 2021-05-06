@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix ManagedApp alert
+- Fix `InhibitionKubeStateMetricsDown` not firing long enough
 
 ## [1.33.0] - 2021-04-27
 
