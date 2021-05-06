@@ -22,7 +22,7 @@ spec:
     - alert: InhibitionKubeStateMetricsDown
       annotations:
         description: '{{`KubeStateMetrics ({{ $labels.instance }}) is down.`}}'
-      expr: up{app="kube-state-metrics"} == 0 or absent(up{app="kube-state-metrics"}) == 1
+      expr: up{app="kube-state-metrics"} == 0 or absent(up{app="kube-state-metrics"} == 1)
       labels:
         area: kaas
         kube_state_metrics_down: "true"
