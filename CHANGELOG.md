@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Lower the severity to notify for managed app's error budget alerts
+
 ### Fixed
 
 - Fix ManagedApp alert
