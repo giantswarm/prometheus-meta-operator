@@ -21,7 +21,7 @@ spec:
         cancel_if_cluster_status_creating: "true"
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
-        severity: page
+        severity: notify
         team: batman
         topic: managed-apps-basic-sli
     - alert: ManagedAppBasicErrorBudgetBurnRateAboveSafeLevel
