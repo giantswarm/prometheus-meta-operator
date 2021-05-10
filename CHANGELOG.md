@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- inhibit KubeStateMetricsDown and KubeStateMetricsMissing
+
 ## [1.34.0] - 2021-05-06
 
 ### Changed
