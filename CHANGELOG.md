@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added alert `HighNumberOfAllocatedSockets` for High number of allocated sockets 
+- Added alert `HighNumberOfOrphanedSockets` for High number of orphaned sockets 
+- Added alert `HighNumberOfTimeWaitSockets` for High number of time wait sockets 
+
 ## [1.34.1] - 2021-05-10
 
 ### Fixed

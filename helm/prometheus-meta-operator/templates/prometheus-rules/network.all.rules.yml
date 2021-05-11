@@ -75,3 +75,37 @@ spec:
         team: rocket
         {{- end }}
         topic: network
+    - alert: HighNumberOfAllocatedSockets
+      annotations:
+        description: '{{`Over 90 percent of sockets are allocated on {{ or $labels.pod_name $labels.instance }}.`}}'
+      # This threshold value is based off net.ipv4.ip_local_port_range = 32768 60999
+      expr: node_sockstat_TCP_alloc > ( 0.9 * ( 60999 - 32768 ) )
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: ludacris
+        topic: network
+    - alert: HighNumberOfOrphanedSockets
+      annotations:
+        description: '{{`Over 80 percent of ports are orphaned {{ or $labels.pod_name $labels.instance }}.`}}'
+      # This threshold value is based off net.ipv4.ip_local_port_range = 32768 60999
+      expr: node_sockstat_TCP_orphan > ( 0.8 * ( 60999 - 32768 ) )
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: ludacris
+        topic: network
+    - alert: HighNumberOfTimeWaitSockets
+      annotations:
+        description: '{{`Over 80 percent of available ports are in time wait state on {{ or $labels.pod_name $labels.instance }}.`}}'
+      # This threshold value is based off net.ipv4.ip_local_port_range = 32768 60999
+      expr: node_sockstat_TCP_orphan > ( 0.8 * ( 60999 - 32768 ) )
+      for: 5m
+      labels:
+        area: kaas
+        severity: page
+        team: ludacris
+        topic: network
+
