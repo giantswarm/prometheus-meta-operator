@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Include `cluster-api-core-unique-webhook` into `DeploymentNotSatisfiedFirecracker` and `DeploymentNotSatisfiedChineFirecracker`.
+
 ## [1.35.0] - 2021-05-12
 
 ### Added
