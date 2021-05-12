@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.35.0] - 2021-05-12
+
 ### Added
 
 - Add alert `alertmanager-dashboard` not satisfied.
@@ -1041,7 +1043,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.34.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.35.0...HEAD
+[1.35.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.34.1...v1.35.0
 [1.34.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.34.0...v1.34.1
 [1.34.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.33.0...v1.34.0
 [1.33.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.32.1...v1.33.0
