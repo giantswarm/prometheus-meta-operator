@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added alert `HighNumberOfOrphanedSockets` for High number of orphaned sockets 
 - Added alert `HighNumberOfTimeWaitSockets` for High number of time wait sockets 
 
+### Changed
+
+- Increased duration for `PrometheusPersistentVolumeSpaceTooLow` alert
+
 ## [1.35.0] - 2021-05-12
 
 ### Added
