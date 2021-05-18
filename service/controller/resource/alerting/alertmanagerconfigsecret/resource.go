@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"path"
 	"reflect"
+	"strings"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -17,10 +18,10 @@ import (
 )
 
 const (
-	Name                     = "alertmanagerconfigsecret"
-	templateDirectory        = "/opt/prometheus-meta-operator"
-	templatePath             = "files/templates/alertmanager/alertmanager.yaml"
-	notificationTemplatePath = "files/templates/alertmanager/notification-template.tmpl"
+	Name                      = "alertmanagerconfigsecret"
+	templateDirectory         = "/opt/prometheus-meta-operator"
+	templatePath              = "files/templates/alertmanager/alertmanager.yaml"
+	notificationTemplatesPath = "files/templates/alertmanager/notification-templates.tmpl"
 )
 
 type Config struct {
@@ -32,6 +33,7 @@ type Config struct {
 	HTTPProxy        string
 	HTTPSProxy       string
 	NoProxy          string
+	HeartbeatName    string
 	OpsgenieKey      string
 	GrafanaAddress   string
 	SlackApiURL      string
@@ -45,6 +47,7 @@ type TemplateData struct {
 	Provider         string
 	Installation     string
 	ProxyURL         *string
+	HeartbeatName    string
 	OpsgenieKey      string
 	GrafanaAddress   string
 	SlackApiURL      string
@@ -96,12 +99,12 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	notificationTemplate, err := ioutil.ReadFile(path.Join(templateDirectory, notificationTemplatePath))
+	notificationTemplates, err := ioutil.ReadFile(path.Join(templateDirectory, notificationTemplatesPath))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	alertmanagerConfig, err := toData(v, config)
+	alertmanagerConfigSecret, err := toData(v, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -109,8 +112,8 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			key.AlertmanagerKey():         alertmanagerConfig,
-			"notification-templates.tmpl": notificationTemplate,
+			key.AlertmanagerKey():         alertmanagerConfigSecret,
+			"notification-templates.tmpl": notificationTemplates,
 			"opsgenie.key":                []byte(config.OpsgenieKey),
 		},
 		Type: "Opaque",
@@ -139,17 +142,20 @@ func toData(v interface{}, config Config) ([]byte, error) {
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-	var proxyURL *string = nil
-	if len(config.HTTPSProxy) > 0 {
-		proxyURL = &config.HTTPSProxy
-	} else if len(config.HTTPProxy) > 0 {
-		proxyURL = &config.HTTPProxy
-	}
 
+	var proxyURL *string = nil
+	if !strings.Contains(config.NoProxy, "api.opsgenie.com") {
+		if len(config.HTTPSProxy) > 0 {
+			proxyURL = &config.HTTPSProxy
+		} else if len(config.HTTPProxy) > 0 {
+			proxyURL = &config.HTTPProxy
+		}
+	}
 	d := &TemplateData{
 		Provider:         config.Provider,
 		Installation:     config.Installation,
 		ProxyURL:         proxyURL,
+		HeartbeatName:    config.HeartbeatName,
 		OpsgenieKey:      config.OpsgenieKey,
 		GrafanaAddress:   config.GrafanaAddress,
 		SlackApiURL:      config.SlackApiURL,

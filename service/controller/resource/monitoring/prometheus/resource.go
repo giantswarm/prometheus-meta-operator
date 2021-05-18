@@ -32,6 +32,7 @@ type Config struct {
 	Customer          string
 	Installation      string
 	Pipeline          string
+	Version           string
 	Provider          string
 	Region            string
 	Registry          string
@@ -155,6 +156,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
+			LogLevel: config.LogLevel,
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey():    key.ClusterID(cluster),
 				"cluster_type":        key.ClusterType(cluster),

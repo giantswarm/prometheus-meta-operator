@@ -19,6 +19,7 @@ func TestAlertmanagerconfigsecret(t *testing.T) {
 		config := Config{
 			TemplatePath:     path,
 			Provider:         "aws",
+			HeartbeatName:    "test-heartbeat",
 			Installation:     "test-installation",
 			OpsgenieKey:      "opsgenie-key",
 			GrafanaAddress:   "https://grafana",

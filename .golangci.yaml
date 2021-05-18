@@ -1,4 +1,0 @@
-run:
-  skip-dirs:
-    - pkg/prometheus/common/config
-    - pkg/alertmanager/config

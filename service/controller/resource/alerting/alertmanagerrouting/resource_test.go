@@ -1,4 +1,4 @@
-package alertmanagerconfig
+package alertmanagerrouting
 
 import (
 	"flag"
@@ -10,20 +10,23 @@ import (
 
 var update = flag.Bool("update", false, "update the ouput file")
 
-func TestAlertmanagerconfig(t *testing.T) {
+func TestAlertmanager(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	config := Config{
+		Installation: "test-installation",
 	}
 
 	c := unittest.Config{
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toData(v, Config{Installation: "test-installation"}), nil
+			return toAlertmanagerConfig(v, config)
 		},
-		TestFuncReturnsBytes: true,
-		Update:               *update,
+		Update: *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {

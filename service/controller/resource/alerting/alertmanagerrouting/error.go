@@ -1,4 +1,4 @@
-package heartbeatrouting
+package alertmanagerrouting
 
 import (
 	"github.com/giantswarm/microerror"

@@ -42,6 +42,7 @@ type ControllerConfig struct {
 	AlertmanagerStorageSize string
 	AlertmanagerVersion     string
 	GrafanaAddress          string
+	HeartbeatName           string
 	OpsgenieKey             string
 	SlackApiURL             string
 	SlackProjectName        string

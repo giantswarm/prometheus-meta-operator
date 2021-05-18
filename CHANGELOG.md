@@ -293,6 +293,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the way VPA `maxAllowed` parameter for memory is calculated so that we
   avoid going over node memory capacity with the memory limit (`maxAllowed` is
   used for request and limit is that multiplied by 1.2).
+### Added
+
+- Added Prometheus operator managed alertmanager
+- Added overridability of Prometheus Log Level
 
 ## [1.38.0] - 2021-05-28
 

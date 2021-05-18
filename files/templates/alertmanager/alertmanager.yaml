@@ -17,6 +17,14 @@ route:
   receiver: root
   routes:
 
+  - receiver: heartbeat
+    match:
+      severity: heartbeat
+    continue: false
+    group_interval: 1s
+    group_wait: 1s
+    repeat_interval: 15s
+
   # Falco noise Slack
   - receiver: falco_noise_slack
     matchers:
@@ -83,9 +91,21 @@ route:
 receivers:
 - name: root
 
+- name: heartbeat
+  webhook_configs:
+  - url: https://api.opsgenie.com/v2/heartbeats/[[ .HeartbeatName ]]/ping
+    http_config:
+      basic_auth:
+        password: [[ .OpsgenieKey ]]
+    send_resolved: false
+
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
+
+- name: sig_customers_slack
+  slack_configs:
+  - channel: '#alert-customers'
     send_resolved: true
     actions:
     - type: button
@@ -100,7 +120,7 @@ receivers:
       url: '{{`{{ (index .Alerts 0).GeneratorURL }}`}}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '{{ .Values.grafana.address }}/{{`{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+      url: '[[ .GrafanaAddress ]]/{{`{{ (index .Alerts 0).Annotations.dashboard }}`}}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{`{{ template "__alert_silence_link" . }}`}}'
@@ -186,7 +206,7 @@ receivers:
 - name: opsgenie_router
   opsgenie_configs:
   - api_key: [[ .OpsgenieKey ]]
-    tags: "{{`{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }}`}},[[ .Provider ]],[[ .Installation ]],[[ .Pipeline ]]"
+    tags: "{{`{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }}`}},{{ (index .Alerts 0).Labels.area }}`}},[[ .Provider ]],[[ .Installation ]],[[ .Pipeline ]]"
 
 - name: team_ops_slack
   slack_configs:

@@ -8,7 +8,6 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
@@ -24,20 +23,6 @@ func ToCluster(obj interface{}) (metav1.Object, error) {
 	clusterMetaObject, ok := obj.(metav1.Object)
 	if !ok {
 		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements 'metav1.Object'", obj)
-	}
-
-	return clusterMetaObject, nil
-}
-
-type MetaRuner interface {
-	metav1.Object
-	runtime.Object
-}
-
-func ToClusterMR(obj interface{}) (MetaRuner, error) {
-	clusterMetaObject, ok := obj.(MetaRuner)
-	if !ok {
-		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements 'MetaRuner'", obj)
 	}
 
 	return clusterMetaObject, nil
@@ -134,14 +119,6 @@ func PrometheusDefaultMemoryLimit() *resource.Quantity {
 	)
 }
 
-func AlertmanagerKey() string {
-	return "alertmanager.yaml"
-}
-
-func AlertmanagerPort() int32 {
-	return 9093
-}
-
 func PrometheusPort() int32 {
 	return 9090
 }
@@ -194,6 +171,14 @@ func AlertManagerSecretName() string {
 	return "alertmanager-config"
 }
 
+func AlertmanagerKey() string {
+	return "alertmanager.yaml"
+}
+
+func AlertmanagerPort() int32 {
+	return 9093
+}
+
 func AlertManagerKey() string {
 	return "alertmanager-additional.yaml"
 }
@@ -234,18 +219,6 @@ func BearerTokenPath() string {
 
 func CAFilePath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
-}
-
-func AlertmanagerConfigMapName() string {
-	return "alertmanager"
-}
-
-func AlertmanagerConfigMapNamespace() string {
-	return monitoring
-}
-
-func AlertmanagerConfigMapKey() string {
-	return "config.yml"
 }
 
 func RemoteWriteSecretName() string {

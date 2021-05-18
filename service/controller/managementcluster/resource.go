@@ -13,8 +13,8 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1beta1"
@@ -54,6 +54,7 @@ type resourcesConfig struct {
 	AlertmanagerStorageSize string
 	AlertmanagerVersion     string
 	GrafanaAddress          string
+	HeartbeatName           string
 	OpsgenieKey             string
 	SlackApiURL             string
 	SlackProjectName        string
@@ -137,6 +138,24 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var alertmanagerRoutingResource resource.Interface
+	{
+		c := alertmanagerrouting.Config{
+			Client: config.PrometheusClient,
+			Logger: config.Logger,
+
+			Installation: config.Installation,
+			HTTPProxy:    config.HTTPProxy,
+			HTTPSProxy:   config.HTTPSProxy,
+			NoProxy:      config.NoProxy,
+		}
+
+		alertmanagerRoutingResource, err = alertmanagerrouting.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var alertmanagerConfigSecretResource resource.Interface
 	{
 		c := alertmanagerconfigsecret.Config{
@@ -149,6 +168,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			HTTPProxy:        config.HTTPProxy,
 			HTTPSProxy:       config.HTTPSProxy,
 			NoProxy:          config.NoProxy,
+			HeartbeatName:    config.HeartbeatName,
 			OpsgenieKey:      config.OpsgenieKey,
 			GrafanaAddress:   config.GrafanaAddress,
 			SlackApiURL:      config.SlackApiURL,
@@ -235,6 +255,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			StorageSize:       config.PrometheusStorageSize,
 			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
+			LogLevel:          config.PrometheusLogLevel,
 			RetentionSize:     config.PrometheusRetentionSize,
 			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
 			HTTPProxy:         config.HTTPProxy,
@@ -326,27 +347,14 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var heartbeatRoutingResource resource.Interface
-	{
-		c := heartbeatrouting.Config{
-			Installation: config.Installation,
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			OpsgenieKey:  config.OpsgenieKey,
-		}
-
-		heartbeatRoutingResource, err = heartbeatrouting.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	resources := []resource.Interface{
 		namespaceResource,
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerResource,
+		alertmanagerRoutingResource,
 		alertmanagerConfigSecretResource,
+		alertmanagerIngressResource,
 		alertmanagerConfigResource,
 		//alertmanagerIngressResource,
 		scrapeConfigResource,
@@ -355,7 +363,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		verticalPodAutoScalerResource,
 		monitoringIngressResource,
 		heartbeatResource,
-		heartbeatRoutingResource,
 	}
 
 	{

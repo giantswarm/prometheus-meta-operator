@@ -119,6 +119,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")
+	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.HeartbeatName, "", "Opsgenie Heartbeat name.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Address, "", "Address to access Alertmanager UI.")
 	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.BaseDomain, "", "Base domain to create Alertmanager Ingress resources under.")
