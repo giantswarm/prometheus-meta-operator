@@ -89,6 +89,40 @@ func TestEnsureReceiver(t *testing.T) {
 			index:          0,
 		},
 		{
+			// The HTTPConfig from global config should be merged when creating HTTPConfig for the receiver
+			name: "update merges global proxy settings",
+			cfg: alertmanagerconfig.Config{
+				Global: &alertmanagerconfig.GlobalConfig{
+					HTTPConfig: &promcommonconfig.HTTPClientConfig{
+						ProxyURL: promcommonconfig.URL{URL: &url.URL{Host: "proxyhost:8080"}},
+					},
+				},
+				Receivers: []*alertmanagerconfig.Receiver{
+					&alertmanagerconfig.Receiver{
+						Name: "heartbeat_installation_cluster",
+						WebhookConfigs: []*alertmanagerconfig.WebhookConfig{
+							&alertmanagerconfig.WebhookConfig{
+								URL: &alertmanagerconfig.URL{
+									URL: u,
+								},
+								HTTPConfig: &promcommonconfig.HTTPClientConfig{
+									BasicAuth: &promcommonconfig.BasicAuth{
+										Password: "secret-key",
+									},
+								},
+								NotifierConfig: alertmanagerconfig.NotifierConfig{
+									VSendResolved: false,
+								},
+							},
+						},
+					},
+				},
+			},
+			expectedUpdate: true,
+			len:            1,
+			index:          0,
+		},
+		{
 			name: "add",
 			cfg: alertmanagerconfig.Config{
 				Receivers: []*alertmanagerconfig.Receiver{
