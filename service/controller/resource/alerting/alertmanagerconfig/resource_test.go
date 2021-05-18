@@ -20,7 +20,7 @@ func TestAlertmanagerconfig(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toData(v)
+			return toData(v, Config{Installation: "test-installation"}), nil
 		},
 		TestFuncReturnsBytes: true,
 		Update:               *update,

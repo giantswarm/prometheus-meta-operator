@@ -39,6 +39,7 @@ type ControllerConfig struct {
 	PrometheusBaseDomain          string
 	PrometheusCreatePVC           bool
 	PrometheusStorageSize         string
+	PrometheusLogLevel            string
 	PrometheusRemoteWriteURL      string
 	PrometheusRemoteWriteUsername string
 	PrometheusRemoteWritePassword string

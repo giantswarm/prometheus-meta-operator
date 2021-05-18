@@ -11,8 +11,8 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
@@ -48,6 +48,7 @@ type Config struct {
 	PrometheusBaseDomain          string
 	PrometheusCreatePVC           bool
 	PrometheusStorageSize         string
+	PrometheusLogLevel            string
 	PrometheusRemoteWriteURL      string
 	PrometheusRemoteWriteUsername string
 	PrometheusRemoteWritePassword string
@@ -100,19 +101,6 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfig resource.Interface
-	{
-		c := alertmanagerconfig.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		alertmanagerConfig, err = alertmanagerconfig.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var remoteWriteConfigResource resource.Interface
 	{
 		c := remotewriteconfig.Config{
@@ -138,12 +126,13 @@ func New(config Config) ([]resource.Interface, error) {
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
-			PrometheusVersion: config.PrometheusVersion,
+			Version:           config.PrometheusVersion,
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
 			StorageSize:       config.PrometheusStorageSize,
 			RetentionDuration: config.PrometheusRetentionDuration,
+			LogLevel:          config.PrometheusLogLevel,
 			RetentionSize:     config.PrometheusRetentionSize,
 			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
 			HTTPProxy:         config.HTTPProxy,
@@ -152,6 +141,38 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		prometheusResource, err = prometheus.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerRoutingResource resource.Interface
+	{
+		c := alertmanagerrouting.Config{
+			Client: config.PrometheusClient,
+			Logger: config.Logger,
+
+			Installation: config.Installation,
+			HTTPProxy:    config.HTTPProxy,
+			HTTPSProxy:   config.HTTPSProxy,
+			NoProxy:      config.NoProxy,
+		}
+
+		alertmanagerRoutingResource, err = alertmanagerrouting.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerConfigResource resource.Interface
+	{
+		c := alertmanagerconfig.Config{
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Installation: config.Installation,
+		}
+
+		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -218,32 +239,17 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var heartbeatRoutingResource resource.Interface
-	{
-		c := heartbeatrouting.Config{
-			Installation: config.Installation,
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			OpsgenieKey:  config.OpsgenieKey,
-		}
-
-		heartbeatRoutingResource, err = heartbeatrouting.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
-		alertmanagerConfig,
 		scrapeConfigResource,
+		alertmanagerRoutingResource,
+		alertmanagerConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
 		ingressResource,
 		heartbeatResource,
-		heartbeatRoutingResource,
 	}
 
 	{

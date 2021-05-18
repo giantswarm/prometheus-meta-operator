@@ -28,6 +28,7 @@ data:
         {{- range .Values.Installation.V1.Monitoring.Prometheus.Bastions }}
         - {{ . }}
         {{- end }}
+        logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.Installation.V1.Monitoring.Prometheus.Mayu }}
         remoteWrite:
           url: https://prometheus-us-central1.grafana.net/api/prom/push
@@ -36,7 +37,14 @@ data:
           size: 90GB
         storage:
           createPVC: {{ and .Values.Installation.V1.Monitoring.Prometheus.Storage.Enabled .Values.Installation.V1.Monitoring.Prometheus.Storage.CreatePVC }}
-          size: 100Gi
+          size: {{ .Values.Installation.V1.Monitoring.Prometheus.Storage.PVCSize }}
+      alertmanager:
+        address: {{ .Values.Installation.V1.Monitoring.Alertmanager.Address }}
+        baseDomain: {{ .Values.Installation.V1.Monitoring.Alertmanager.Host }}
+        logLevel: {{ .Values.alertmanager.logLevel }}
+        storage:
+          createPVC: {{ and .Values.Installation.V1.Monitoring.Alertmanager.Storage.Enabled .Values.Installation.V1.Monitoring.Alertmanager.Storage.CreatePVC }}
+          size: {{ .Values.Installation.V1.Monitoring.Alertmanager.Storage.PVCSize }}
       security:
         restrictedAccess: 
           enabled: {{ .Values.Installation.V1.Security.RestrictAccess.Enabled }}
@@ -59,5 +67,20 @@ data:
         region: onprem
         {{- end }}
         registry: {{ .Values.Installation.V1.Registry.Domain }}
+      slack:
+        apiURL: {{ .Values.Installation.V1.Secret.Alertmanager.Slack.ApiUrl }}
+        {{- if .Values.Installation.V1.Slack }}
+        {{- if .Values.Installation.V1.Slack.ProjectName }}
+        projectName: {{.Values.Installation.V1.Slack.ProjectName}}
+        {{- else }}
+        projectName: {{printf "project-%s" .Values.Installation.V1.Customer }}
+        {{- end }}
+        {{- else }}
+        projectName: {{printf "project-%s" .Values.Installation.V1.Customer }}
+        {{- end }}
+      grafana:
+        address: {{ .Values.Installation.V1.Monitoring.Grafana.Address }}
+      opsgenie:
+        heartbeatName: {{ .Values.Installation.V1.Monitoring.Prometheus.Heartbeat.Name }}
       vault:
         host: {{ .Values.Installation.V1.Auth.Vault.Host }}

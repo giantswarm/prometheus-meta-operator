@@ -33,12 +33,22 @@ type ControllerConfig struct {
 	Region       string
 	Registry     string
 
-	OpsgenieKey string
+	AlertmanagerAddress     string
+	AlertmanagerBaseDomain  string
+	AlertmanagerCreatePVC   bool
+	AlertmanagerLogLevel    string
+	AlertmanagerStorageSize string
+	GrafanaAddress          string
+	HeartbeatName           string
+	OpsgenieKey             string
+	SlackApiURL             string
+	SlackProjectName        string
 
 	PrometheusAddress             string
 	PrometheusBaseDomain          string
 	PrometheusCreatePVC           bool
 	PrometheusStorageSize         string
+	PrometheusLogLevel            string
 	PrometheusRemoteWriteURL      string
 	PrometheusRemoteWriteUsername string
 	PrometheusRemoteWritePassword string
