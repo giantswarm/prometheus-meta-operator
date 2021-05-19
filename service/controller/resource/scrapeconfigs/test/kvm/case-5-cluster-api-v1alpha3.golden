@@ -989,7 +989,7 @@
     replacement: $1
   - action: drop
     source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_port ]
-    regex: (${__real_port__})
+    regex: __real_port__
   - source_labels: [__meta_kubernetes_pod_ip, __address__]
     regex: (.*);([^:]+):(\d+)
     replacement: $1:$3
