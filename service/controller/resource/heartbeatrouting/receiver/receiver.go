@@ -28,16 +28,9 @@ func toReceiver(cfg alertmanagerconfig.Config, cluster metav1.Object, installati
 			return alertmanagerconfig.Receiver{}, err
 		}
 		httpConfig = httpConfigCp
-		// httpConfig = cfg.Global.HTTPConfig
 	}
 	httpConfig.BasicAuth = &promcommonconfig.BasicAuth{
 		Password: promcommonconfig.Secret(opsgenieKey),
-	}
-
-	if cfg.Global != nil && cfg.Global.HTTPConfig != nil {
-		if reflect.DeepEqual(cfg.Global.HTTPConfig, httpConfig) {
-			return alertmanagerconfig.Receiver{}, fmt.Errorf("HTTPConfig not cloned correctly")
-		}
 	}
 
 	r := alertmanagerconfig.Receiver{
