@@ -45,6 +45,7 @@ spec:
         area: kaas
         severity: page
         team: celestial
+        cancel_if_outside_working_hours: "true"
         topic: qa
     # Celestial
     # It might happen that CRs get orphaned or deletion gets kind of stuck during
@@ -60,6 +61,7 @@ spec:
         area: kaas
         severity: notify
         team: celestial
+        cancel_if_outside_working_hours: "true"
         topic: qa
     # In case something stops an operator from reconciling CRs we want to
     # be paged to be able to fix the issue immediately.
