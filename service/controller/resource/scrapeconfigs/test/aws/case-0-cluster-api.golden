@@ -1127,7 +1127,7 @@
 
 - job_name: bob-prometheus/workload-bob/0
   honor_labels: true
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
 
@@ -1146,6 +1146,11 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: keep
+  - source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_scheme ]
+      regex: (https?)
+      target_label: __scheme__
+      replacement: $1
+      action: replace
     # if __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path is present, we use it as the metrics path
   - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
     action: replace
