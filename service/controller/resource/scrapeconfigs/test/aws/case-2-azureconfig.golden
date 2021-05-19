@@ -1158,11 +1158,12 @@
     regex: (.+)
   - source_labels: [ __address__ ]
     action: replace
-    target_label: real_port
+    target_label: __real_port__
     regex: [^:]+:(\d+)
     replacement: $1
-  - action: drop_if_equal
-    source_labels: [ real_port, __meta_kubernetes_service_annotation_prometheus_io_port ]
+  - action: drop
+    source_labels: [ __meta_kubernetes_service_annotation_prometheus_io_port ]
+    regex: (${__real_port__})
   - source_labels: [__meta_kubernetes_pod_ip, __address__]
     regex: (.*);([^:]+):(\d+)
     replacement: $1:$3
