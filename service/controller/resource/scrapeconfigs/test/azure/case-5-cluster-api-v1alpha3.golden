@@ -1041,18 +1041,13 @@
     action: replace
     target_label: __metrics_path__
     regex: (.+)
-    # if __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port, we use it as the metrics port
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_port]
+  - source_labels: [ __address__ ]
     action: replace
-    target_label: __address__
-    regex: ([^:]+):(\d+);(\d+)
-    replacement: $1:$3
-    # if __meta_kubernetes_service_annotation_prometheus_io_port, we use it as the metrics port
-  - source_labels: [ __address__, __meta_kubernetes_service_annotation_prometheus_io_port ]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
+    target_label: real_port
+    regex: [^:]+:(\d+)
+    replacement: $1
+  - action: drop_if_equal
+    source_labels: [ real_port, __meta_kubernetes_service_annotation_prometheus_io_port ]
   - source_labels: [__meta_kubernetes_pod_ip, __address__]
     regex: (.*);([^:]+):(\d+)
     replacement: $1:$3
