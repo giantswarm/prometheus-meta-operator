@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Increased duration for `PrometheusPersistentVolumeSpaceTooLow` alert
+- Don't use API server as a proxy to scrape in-cluster metrics.
 
 ## [1.35.0] - 2021-05-12
 
