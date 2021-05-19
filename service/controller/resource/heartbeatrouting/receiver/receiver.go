@@ -25,7 +25,7 @@ func toReceiver(cfg alertmanagerconfig.Config, cluster metav1.Object, installati
 	if cfg.Global != nil && cfg.Global.HTTPConfig != nil {
 		httpConfigCp, err := cloneHttpConfig(cfg.Global.HTTPConfig)
 		if err != nil {
-			return alertmanagerconfig.Receiver{}, err
+			return alertmanagerconfig.Receiver{}, microerror.Mask(err)
 		}
 		httpConfig = httpConfigCp
 	}
@@ -105,12 +105,12 @@ func getReceiver(cfg alertmanagerconfig.Config, receiver alertmanagerconfig.Rece
 func cloneHttpConfig(hc *promcommonconfig.HTTPClientConfig) (*promcommonconfig.HTTPClientConfig, error) {
 	s, err := yaml.Marshal(hc)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 	r := &promcommonconfig.HTTPClientConfig{}
 	err = yaml.Unmarshal(s, r)
 	if err != nil {
-		return nil, err
+		return nil, microerror.Mask(err)
 	}
 	return r, nil
 }
