@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added alert `HighNumberOfAllocatedSockets` for High number of allocated sockets 
 - Added alert `HighNumberOfOrphanedSockets` for High number of orphaned sockets 
 - Added alert `HighNumberOfTimeWaitSockets` for High number of time wait sockets 
+- Preserve and merge global HTTP client config when generating heartbeat
+  receivers in AlertManager config; this allows it to be used in environments
+  where internet access is only allowed through a proxy.
 
 ### Changed
 
