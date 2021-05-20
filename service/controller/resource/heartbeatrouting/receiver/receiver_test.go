@@ -146,9 +146,8 @@ func TestEnsureReceiver(t *testing.T) {
 	}
 }
 
+// TestEnsureReceiverWithProxy ensures the global HTTPConfig is merged into receiver HTTPConfig.
 func TestEnsureReceiverWithProxy(t *testing.T) {
-	// The HTTPConfig from global config should be merged when creating
-	// HTTPConfig for the receiver
 
 	cfg := alertmanagerconfig.Config{
 		Global: &alertmanagerconfig.GlobalConfig{
