@@ -41,6 +41,9 @@ type ControllerConfig struct {
 	RemoteWriteURL          string
 	RemoteWriteUsername     string
 	RemoteWritePassword     string
+	HTTPProxy               string
+	HTTPSProxy              string
+	NoProxy                 string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
