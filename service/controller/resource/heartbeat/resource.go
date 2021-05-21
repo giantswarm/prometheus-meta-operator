@@ -79,7 +79,7 @@ func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbea
 		return nil, microerror.Mask(err)
 	}
 
-	// They need to be sorted alphabetically to avoid unecessary heartbeat update
+	// They need to be sorted alphabetically to avoid unnecessary heartbeat update
 	tags := []string{
 		"atlas",
 		installation,
