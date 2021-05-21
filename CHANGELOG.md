@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Silence `OperatorkitErrorRateTooHighCelestial` and `OperatorkitCRNotDeletedCelestial` outside working hours.
 - Add atlas, and installation tag onto Heartbeats.
 
+### Fixed
+
+- Fix `PrometheusFailsToCommunicateWithRemoteStorageAPI` alert not firing on china clusters.
+
 ## [1.35.0] - 2021-05-12
 
 ### Added
