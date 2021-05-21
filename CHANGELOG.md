@@ -23,6 +23,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update Prometheus to 2.27.1
 - Add atlas, and installation tag onto Heartbeats.
 
+### Fixed
+
+- Fix `PrometheusFailsToCommunicateWithRemoteStorageAPI` alert not firing on china clusters.
+
 ## [1.35.0] - 2021-05-12
 
 ### Added
