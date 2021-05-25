@@ -5,6 +5,7 @@ import (
 	"net/url"
 	"reflect"
 
+	"gopkg.in/yaml.v2"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/microerror"
@@ -14,10 +15,22 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) (alertmanagerconfig.Receiver, error) {
+func toReceiver(cfg alertmanagerconfig.Config, cluster metav1.Object, installation string, opsgenieKey string) (alertmanagerconfig.Receiver, error) {
 	u, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", key.HeartbeatName(cluster, installation)))
 	if err != nil {
 		return alertmanagerconfig.Receiver{}, microerror.Mask(err)
+	}
+
+	httpConfig := &promcommonconfig.HTTPClientConfig{}
+	if cfg.Global != nil && cfg.Global.HTTPConfig != nil {
+		httpConfigCp, err := cloneHttpConfig(cfg.Global.HTTPConfig)
+		if err != nil {
+			return alertmanagerconfig.Receiver{}, microerror.Mask(err)
+		}
+		httpConfig = httpConfigCp
+	}
+	httpConfig.BasicAuth = &promcommonconfig.BasicAuth{
+		Password: promcommonconfig.Secret(opsgenieKey),
 	}
 
 	r := alertmanagerconfig.Receiver{
@@ -27,11 +40,7 @@ func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) 
 				URL: &alertmanagerconfig.URL{
 					URL: u,
 				},
-				HTTPConfig: &promcommonconfig.HTTPClientConfig{
-					BasicAuth: &promcommonconfig.BasicAuth{
-						Password: promcommonconfig.Secret(opsgenieKey),
-					},
-				},
+				HTTPConfig: httpConfig,
 				NotifierConfig: alertmanagerconfig.NotifierConfig{
 					VSendResolved: false,
 				},
@@ -45,7 +54,7 @@ func toReceiver(cluster metav1.Object, installation string, opsgenieKey string) 
 // EnsureCreated ensure receiver exist in cfg.Receivers and is up to date. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
 func EnsureCreated(cfg alertmanagerconfig.Config, cluster metav1.Object, installation, opsgenieKey string) (alertmanagerconfig.Config, bool, error) {
-	desired, err := toReceiver(cluster, installation, opsgenieKey)
+	desired, err := toReceiver(cfg, cluster, installation, opsgenieKey)
 	if err != nil {
 		return cfg, false, microerror.Mask(err)
 	}
@@ -68,7 +77,7 @@ func EnsureCreated(cfg alertmanagerconfig.Config, cluster metav1.Object, install
 // EnsureDeleted ensure receiver is removed from cfg.Receivers. Returns true when changes have been made to cfg.
 // Return untouched cfg and false when no changes are made.
 func EnsureDeleted(cfg alertmanagerconfig.Config, cluster metav1.Object, installation, opsgenieKey string) (alertmanagerconfig.Config, bool, error) {
-	desired, err := toReceiver(cluster, installation, opsgenieKey)
+	desired, err := toReceiver(cfg, cluster, installation, opsgenieKey)
 	if err != nil {
 		return cfg, false, microerror.Mask(err)
 	}
@@ -91,4 +100,17 @@ func getReceiver(cfg alertmanagerconfig.Config, receiver alertmanagerconfig.Rece
 	}
 
 	return nil, -1
+}
+
+func cloneHttpConfig(hc *promcommonconfig.HTTPClientConfig) (*promcommonconfig.HTTPClientConfig, error) {
+	s, err := yaml.Marshal(hc)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	r := &promcommonconfig.HTTPClientConfig{}
+	err = yaml.Unmarshal(s, r)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	return r, nil
 }

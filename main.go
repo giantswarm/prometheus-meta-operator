@@ -115,7 +115,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().StringSlice(f.Service.Prometheus.Bastions, make([]string, 0), "Address of the bastions.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Prometheus.Storage.CreatePVC, false, "Should the operator create a PVC for storage.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "100Gi", "Storage size for prometheus.")
-	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.24.0", "Prometheus container image version.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.27.1", "Prometheus container image version.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Mayu, "", "Mayu host.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Duration, "2w", "Retention duration for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Size, "90Gi", "Retention size for prometheus.")
