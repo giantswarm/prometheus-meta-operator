@@ -1,4 +1,4 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   {{- if .Values.Installation.V1.Monitoring.Prometheus.Letsencrypt }}
@@ -15,8 +15,10 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: oauth2-proxy
-          servicePort: 4180
+          service:
+            name: oauth2-proxy
+            port: 
+              number: 4180
         path: /oauth2
   tls:
   - hosts:
