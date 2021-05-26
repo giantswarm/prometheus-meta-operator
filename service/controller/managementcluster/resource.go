@@ -27,35 +27,41 @@ import (
 )
 
 type resourcesConfig struct {
-	Address                 string
-	BaseDomain              string
-	Bastions                []string
-	Mayu                    string
-	Provider                string
-	Installation            string
-	Pipeline                string
-	Region                  string
-	Registry                string
-	PrometheusVersion       string
-	Customer                string
-	CreatePVC               bool
-	StorageSize             string
-	Vault                   string
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
+	VpaClient        vpa_clientset.Interface
+
+	HTTPProxy  string
+	HTTPSProxy string
+	NoProxy    string
+
+	Bastions     []string
+	Customer     string
+	Installation string
+	Pipeline     string
+	Provider     string
+	Region       string
+	Registry     string
+
+	OpsgenieKey string
+
+	PrometheusAddress             string
+	PrometheusBaseDomain          string
+	PrometheusCreatePVC           bool
+	PrometheusStorageSize         string
+	PrometheusRemoteWriteURL      string
+	PrometheusRemoteWriteUsername string
+	PrometheusRemoteWritePassword string
+	PrometheusRetentionDuration   string
+	PrometheusRetentionSize       string
+	PrometheusVersion             string
+
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
-	RetentionDuration       string
-	RetentionSize           string
-	OpsgenieKey             string
-	RemoteWriteURL          string
-	RemoteWriteUsername     string
-	RemoteWritePassword     string
-	HTTPProxy               string
-	HTTPSProxy              string
-	NoProxy                 string
-	K8sClient               k8sclient.Interface
-	Logger                  micrologger.Logger
-	PrometheusClient        promclient.Interface
-	VpaClient               vpa_clientset.Interface
+
+	Mayu  string
+	Vault string
 }
 
 func newResources(config resourcesConfig) ([]resource.Interface, error) {
@@ -131,8 +137,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := remotewriteconfig.Config{
 			K8sClient:           config.K8sClient,
 			Logger:              config.Logger,
-			RemoteWriteUsername: config.RemoteWriteUsername,
-			RemoteWritePassword: config.RemoteWritePassword,
+			RemoteWriteUsername: config.PrometheusRemoteWriteUsername,
+			RemoteWritePassword: config.PrometheusRemoteWritePassword,
 		}
 
 		remoteWriteConfigResource, err = remotewriteconfig.New(c)
@@ -144,10 +150,10 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
-			Address:           config.Address,
+			Address:           config.PrometheusAddress,
 			PrometheusClient:  config.PrometheusClient,
 			Logger:            config.Logger,
-			CreatePVC:         config.CreatePVC,
+			CreatePVC:         config.PrometheusCreatePVC,
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
@@ -155,10 +161,10 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
-			StorageSize:       config.StorageSize,
-			RetentionDuration: config.RetentionDuration,
-			RetentionSize:     config.RetentionSize,
-			RemoteWriteURL:    config.RemoteWriteURL,
+			StorageSize:       config.PrometheusStorageSize,
+			RetentionDuration: config.PrometheusRetentionDuration,
+			RetentionSize:     config.PrometheusRetentionSize,
+			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
 			HTTPProxy:         config.HTTPProxy,
 			HTTPSProxy:        config.HTTPSProxy,
 			NoProxy:           config.NoProxy,
@@ -221,7 +227,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := ingress.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,
-			BaseDomain:              config.BaseDomain,
+			BaseDomain:              config.PrometheusBaseDomain,
 			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 		}
