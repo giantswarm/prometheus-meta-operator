@@ -33,6 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Include `cluster-api-core-unique-webhook` into `DeploymentNotSatisfiedFirecracker` and `DeploymentNotSatisfiedChinaFirecracker`.
 - Increased duration for `PrometheusPersistentVolumeSpaceTooLow` alert
+- Increased duration for `WorkloadClusterEtcdDBSizeTooLarge` alert.
+- Increased duration for `WorkloadClusterEtcdHasNoLeader` alert.
 - Silence `OperatorkitErrorRateTooHighCelestial` and `OperatorkitCRNotDeletedCelestial` outside working hours.
 - Update Prometheus to 2.27.1
 - Add atlas, and installation tag onto Heartbeats.
