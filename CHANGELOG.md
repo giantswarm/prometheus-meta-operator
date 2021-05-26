@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add HTTP proxy support to Prometheus Remote Write.
+
 ## [1.36.0] - 2021-05-25
 
 ### Added
