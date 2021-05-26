@@ -2,6 +2,7 @@ package receiver
 
 import (
 	"net/url"
+	"reflect"
 	"testing"
 
 	v1 "k8s.io/api/core/v1"
@@ -142,6 +143,59 @@ func TestEnsureReceiver(t *testing.T) {
 				t.Fatalf("len(c.Receivers) %d, expected %d\n", len(c.Receivers), tc.len)
 			}
 		})
+	}
+}
+
+// TestEnsureReceiverWithProxy ensures the global HTTPConfig is merged into receiver HTTPConfig.
+func TestEnsureReceiverWithProxy(t *testing.T) {
+
+	cfg := alertmanagerconfig.Config{
+		Global: &alertmanagerconfig.GlobalConfig{
+			HTTPConfig: &promcommonconfig.HTTPClientConfig{
+				ProxyURL: promcommonconfig.URL{URL: &url.URL{Host: "proxyhost:8080"}},
+			},
+		},
+
+		Receivers: []*alertmanagerconfig.Receiver{},
+	}
+
+	expectedCfg := alertmanagerconfig.Config{
+		Global: &alertmanagerconfig.GlobalConfig{
+			HTTPConfig: &promcommonconfig.HTTPClientConfig{
+				ProxyURL: promcommonconfig.URL{URL: &url.URL{Host: "proxyhost:8080"}},
+			},
+		},
+
+		Receivers: []*alertmanagerconfig.Receiver{
+			{
+				Name: "heartbeat_installation_cluster",
+				WebhookConfigs: []*alertmanagerconfig.WebhookConfig{
+					{
+						URL: &alertmanagerconfig.URL{
+							URL: u,
+						},
+						HTTPConfig: &promcommonconfig.HTTPClientConfig{
+							BasicAuth: &promcommonconfig.BasicAuth{
+								Password: "secret-key",
+							},
+							ProxyURL: promcommonconfig.URL{URL: &url.URL{Host: "proxyhost:8080"}},
+						},
+						NotifierConfig: alertmanagerconfig.NotifierConfig{
+							VSendResolved: false,
+						},
+					},
+				},
+			},
+		},
+	}
+
+	newCfg, _, err := EnsureCreated(cfg, cluster, installation, opsgenieKey)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if !reflect.DeepEqual(newCfg, expectedCfg) {
+		t.Fatalf("\n# expected:\n%+v\n\n# got:\n%+v\n", expectedCfg, newCfg)
 	}
 }
 

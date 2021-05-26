@@ -30,6 +30,20 @@ spec:
         team: rocket
         {{- end }}
         topic: kubernetes
+    - alert: AWSWorkloadClusterNodeTooManyAutoTermination
+      annotations:
+        description: '{{`Cluster {{ $labels.cluster_id }} has too many nodes terminated by node auto termination feature in a short time.`}}'
+        opsrecipe: node-too-many-auto-termination-aws/
+      expr: increase(aws_operator_unhealthy_node_termination_count[60m]) > 10
+      for: 15m
+      labels:
+        area: kaas
+        cancel_if_cluster_status_creating: "true"
+        cancel_if_cluster_status_deleting: "true"
+        cancel_if_cluster_status_updating: "true"
+        severity: page
+        team: firecracker
+        topic: kubernetes
     - alert: NodeStateFlappingUnderLoad
       # Check if the kubelet status is flapping, unless the node is under load.
       # It helps to read this rule from the bottom upwards.

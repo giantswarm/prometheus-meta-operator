@@ -23,7 +23,7 @@ var (
     - alertmanager.monitoring:9093
   scheme: http
   timeout: 10s
-  api_version: v1
+  api_version: v2
 `)
 )
 

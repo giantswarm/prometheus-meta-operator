@@ -7,17 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.36.0] - 2021-05-25
+
 ### Added
 
 - Added alert `HighNumberOfAllocatedSockets` for High number of allocated sockets 
 - Added alert `HighNumberOfOrphanedSockets` for High number of orphaned sockets 
 - Added alert `HighNumberOfTimeWaitSockets` for High number of time wait sockets 
+- Added alert `AWSWorkloadClusterNodeTooManyAutoTermination` for terminate unhealthy feature.
+- Preserve and merge global HTTP client config when generating heartbeat
+  receivers in AlertManager config; this allows it to be used in environments
+  where internet access is only allowed through a proxy.
 
 ### Changed
 
+- Include `cluster-api-core-unique-webhook` into `DeploymentNotSatisfiedFirecracker` and `DeploymentNotSatisfiedChinaFirecracker`.
 - Increased duration for `PrometheusPersistentVolumeSpaceTooLow` alert
 - Increased duration for `WorkloadClusterEtcdDBSizeTooLarge` alert.
 - Increased duration for `WorkloadClusterEtcdHasNoLeader` alert.
+- Silence `OperatorkitErrorRateTooHighCelestial` and `OperatorkitCRNotDeletedCelestial` outside working hours.
+- Update Prometheus to 2.27.1
+- Add atlas, and installation tag onto Heartbeats.
+
+### Fixed
+
+- Fix `PrometheusFailsToCommunicateWithRemoteStorageAPI` alert not firing on china clusters.
 
 ## [1.35.0] - 2021-05-12
 
@@ -1055,7 +1069,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.35.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.36.0...HEAD
+[1.36.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.35.0...v1.36.0
 [1.35.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.34.1...v1.35.0
 [1.34.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.34.0...v1.34.1
 [1.34.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.33.0...v1.34.0

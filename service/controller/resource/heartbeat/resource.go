@@ -3,6 +3,7 @@ package heartbeat
 import (
 	"fmt"
 	"reflect"
+	"sort"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -78,6 +79,15 @@ func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbea
 		return nil, microerror.Mask(err)
 	}
 
+	// They need to be sorted alphabetically to avoid unnecessary heartbeat update
+	tags := []string{
+		"atlas",
+		installation,
+		fmt.Sprintf("managed-by: %s", project.Name()),
+		fmt.Sprintf("pipeline: %s", pipeline),
+	}
+	sort.Strings(tags)
+
 	h := &heartbeat.Heartbeat{
 		Name:         key.HeartbeatName(cluster, installation),
 		Description:  "*Recipe:* https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/heartbeat-expired/",
@@ -88,11 +98,7 @@ func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbea
 		OwnerTeam: og.OwnerTeam{
 			Name: "alerts_router_team",
 		},
-		// They need to be sorted alphabetically to avoid unecessary heartbeat update
-		AlertTags: []string{
-			fmt.Sprintf("managed-by: %s", project.Name()),
-			fmt.Sprintf("pipeline: %s", pipeline),
-		},
+		AlertTags:     tags,
 		AlertPriority: "P3",
 		AlertMessage:  fmt.Sprintf("Heartbeat [%s] is expired.", key.HeartbeatName(cluster, installation)),
 	}

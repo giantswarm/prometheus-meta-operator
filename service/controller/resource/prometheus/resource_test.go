@@ -23,7 +23,7 @@ func TestPrometheus(t *testing.T) {
 		Installation:      "test-installation",
 		Pipeline:          "testing",
 		Provider:          "provider",
-		PrometheusVersion: "v2.24.0",
+		PrometheusVersion: "v2.27.1",
 		Region:            "onprem",
 		Registry:          "quay.io",
 		StorageSize:       "50Gi",
