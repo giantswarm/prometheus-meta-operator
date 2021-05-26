@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 	"reflect"
+	"strings"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -39,6 +40,9 @@ type Config struct {
 	RetentionDuration string
 	RetentionSize     string
 	RemoteWriteURL    string
+	HTTPProxy         string
+	HTTPSProxy        string
+	NoProxy           string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -251,43 +255,51 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	if config.RemoteWriteURL != "" {
-		prometheus.Spec.RemoteWrite = []promv1.RemoteWriteSpec{
-			promv1.RemoteWriteSpec{
-				URL: config.RemoteWriteURL,
-				BasicAuth: &promv1.BasicAuth{
-					Username: corev1.SecretKeySelector{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: key.RemoteWriteSecretName(),
-						},
-						Key: key.RemoteWriteUsernameKey(),
+		remoteWriteSpec := promv1.RemoteWriteSpec{
+			URL: config.RemoteWriteURL,
+			BasicAuth: &promv1.BasicAuth{
+				Username: corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: key.RemoteWriteSecretName(),
 					},
-					Password: corev1.SecretKeySelector{
-						LocalObjectReference: corev1.LocalObjectReference{
-							Name: key.RemoteWriteSecretName(),
-						},
-						Key: key.RemoteWritePasswordKey(),
-					},
+					Key: key.RemoteWriteUsernameKey(),
 				},
-				// Our current Ingestion Rate Limit is set to 100K samples per second
-				QueueConfig: &promv1.QueueConfig{
-					// Capacity controls how many samples are queued in memory per shard before blocking reading from the WAL.
-					// We set it to 10000 (default: 2500) to support bigger installations
-					Capacity: 10000,
-					// (default: 500)
-					MaxSamplesPerSend: 1000,
-					// We set it to 10 (default: 1) to prevent the initial shard scale up
-					MinShards: 10,
-				},
-				Name: key.ClusterID(cluster),
-				WriteRelabelConfigs: []promv1.RelabelConfig{
-					promv1.RelabelConfig{
-						SourceLabels: []string{"__name__"},
-						Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|prometheus_tsdb_head_samples_appended_total|^slo_.+)",
-						Action:       "keep",
+				Password: corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: key.RemoteWriteSecretName(),
 					},
+					Key: key.RemoteWritePasswordKey(),
+				},
+			},
+			// Our current Ingestion Rate Limit is set to 100K samples per second
+			QueueConfig: &promv1.QueueConfig{
+				// Capacity controls how many samples are queued in memory per shard before blocking reading from the WAL.
+				// We set it to 10000 (default: 2500) to support bigger installations
+				Capacity: 10000,
+				// (default: 500)
+				MaxSamplesPerSend: 1000,
+				// We set it to 10 (default: 1) to prevent the initial shard scale up
+				MinShards: 10,
+			},
+			Name: key.ClusterID(cluster),
+			WriteRelabelConfigs: []promv1.RelabelConfig{
+				promv1.RelabelConfig{
+					SourceLabels: []string{"__name__"},
+					Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|prometheus_tsdb_head_samples_appended_total|^slo_.+)",
+					Action:       "keep",
 				},
 			},
 		}
+
+		if !strings.Contains(config.NoProxy, config.RemoteWriteURL) {
+			if len(config.HTTPSProxy) > 0 {
+				remoteWriteSpec.ProxyURL = config.HTTPSProxy
+			} else if len(config.HTTPProxy) > 0 {
+				remoteWriteSpec.ProxyURL = config.HTTPProxy
+			}
+		}
+
+		prometheus.Spec.RemoteWrite = []promv1.RemoteWriteSpec{remoteWriteSpec}
 	}
 
 	if !key.IsInCluster(cluster) {

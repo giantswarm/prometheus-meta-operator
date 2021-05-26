@@ -4,6 +4,7 @@ package service
 
 import (
 	"context"
+	"os"
 	"sync"
 
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
@@ -146,7 +147,11 @@ func New(config Config) (*Service, error) {
 			RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
 			RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
 			RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			HTTPProxy:           os.Getenv("HTTP_PROXY"),
+			HTTPSProxy:          os.Getenv("HTTPS_PROXY"),
+			NoProxy:             os.Getenv("NO_PROXY"),
 		}
+
 		clusterapiController, err = clusterapi.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -178,6 +183,9 @@ func New(config Config) (*Service, error) {
 			RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
 			RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
 			RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			HTTPProxy:           os.Getenv("HTTP_PROXY"),
+			HTTPSProxy:          os.Getenv("HTTPS_PROXY"),
+			NoProxy:             os.Getenv("NO_PROXY"),
 		}
 		legacyController, err = legacy.NewController(c)
 		if err != nil {
@@ -216,6 +224,9 @@ func New(config Config) (*Service, error) {
 			RemoteWriteURL:          config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
 			RemoteWriteUsername:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
 			RemoteWritePassword:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			HTTPProxy:               os.Getenv("HTTP_PROXY"),
+			HTTPSProxy:              os.Getenv("HTTPS_PROXY"),
+			NoProxy:                 os.Getenv("NO_PROXY"),
 		}
 		managementclusterController, err = managementcluster.NewController(c)
 		if err != nil {

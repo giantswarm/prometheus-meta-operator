@@ -49,6 +49,9 @@ type resourcesConfig struct {
 	RemoteWriteURL          string
 	RemoteWriteUsername     string
 	RemoteWritePassword     string
+	HTTPProxy               string
+	HTTPSProxy              string
+	NoProxy                 string
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
 	PrometheusClient        promclient.Interface
@@ -156,6 +159,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			RetentionDuration: config.RetentionDuration,
 			RetentionSize:     config.RetentionSize,
 			RemoteWriteURL:    config.RemoteWriteURL,
+			HTTPProxy:         config.HTTPProxy,
+			HTTPSProxy:        config.HTTPSProxy,
+			NoProxy:           config.NoProxy,
 		}
 
 		prometheusResource, err = prometheus.New(c)
