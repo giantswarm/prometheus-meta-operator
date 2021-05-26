@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Increased alert duration of `PrometheusCantCommunicateWithKubernetesAPI`
+
 ## [1.37.0] - 2021-05-26
 
 ### Added
