@@ -10,19 +10,17 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeat"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeatrouting"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/remotewriteconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/tlscleanup"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/verticalpodautoscaler"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
 )
 
@@ -75,19 +73,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		namespaceResource, err = namespace.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var tlsCleanupResource resource.Interface
-	{
-		c := tlscleanup.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		tlsCleanupResource, err = tlscleanup.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -190,20 +175,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var volumeResizeHack resource.Interface
-	{
-		c := volumeresizehack.Config{
-			Logger:           config.Logger,
-			K8sClient:        config.K8sClient,
-			PrometheusClient: config.PrometheusClient,
-		}
-
-		volumeResizeHack, err = volumeresizehack.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
@@ -270,7 +241,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
-		tlsCleanupResource,
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfig,
@@ -278,7 +248,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
-		volumeResizeHack,
 		ingressResource,
 		heartbeatResource,
 		heartbeatRoutingResource,
