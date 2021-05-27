@@ -16,35 +16,41 @@ import (
 )
 
 type ControllerConfig struct {
-	Address                 string
-	BaseDomain              string
-	Bastions                []string
-	Mayu                    string
-	Provider                string
-	Installation            string
-	Pipeline                string
-	Region                  string
-	Registry                string
-	PrometheusVersion       string
-	Customer                string
-	CreatePVC               bool
-	StorageSize             string
-	Vault                   string
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
+	VpaClient        vpa_clientset.Interface
+
+	HTTPProxy  string
+	HTTPSProxy string
+	NoProxy    string
+
+	Bastions     []string
+	Customer     string
+	Installation string
+	Pipeline     string
+	Provider     string
+	Region       string
+	Registry     string
+
+	OpsgenieKey string
+
+	PrometheusAddress             string
+	PrometheusBaseDomain          string
+	PrometheusCreatePVC           bool
+	PrometheusStorageSize         string
+	PrometheusRemoteWriteURL      string
+	PrometheusRemoteWriteUsername string
+	PrometheusRemoteWritePassword string
+	PrometheusRetentionDuration   string
+	PrometheusRetentionSize       string
+	PrometheusVersion             string
+
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
-	RetentionDuration       string
-	RetentionSize           string
-	OpsgenieKey             string
-	RemoteWriteURL          string
-	RemoteWriteUsername     string
-	RemoteWritePassword     string
-	HTTPProxy               string
-	HTTPSProxy              string
-	NoProxy                 string
-	K8sClient               k8sclient.Interface
-	Logger                  micrologger.Logger
-	PrometheusClient        promclient.Interface
-	VpaClient               vpa_clientset.Interface
+
+	Mayu  string
+	Vault string
 }
 
 type Controller struct {
