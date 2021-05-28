@@ -9,7 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Increased alert duration of `PrometheusCantCommunicateWithKubernetesAPI`
+- Increased alert duration of `PrometheusCantCommunicateWithKubernetesAPI`.
+- Refactor resources to namespace monitoring and alerting code.
+
+### Removed
+
+- Remove `tlscleanup` and `volumeresizehack` resources as they are not needed anymore.
 
 ## [1.37.0] - 2021-05-26
 

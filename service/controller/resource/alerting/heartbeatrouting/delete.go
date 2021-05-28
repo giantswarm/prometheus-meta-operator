@@ -5,8 +5,8 @@ import (
 
 	"github.com/giantswarm/microerror"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeatrouting/receiver"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeatrouting/route"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting/receiver"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting/route"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
