@@ -203,6 +203,11 @@ func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error)
 		return nil, microerror.Mask(err)
 	}
 
+	q, err = quantityMultiply(q, 1/key.PrometheusMemoryLimitCoefficient)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	return q, nil
 }
 

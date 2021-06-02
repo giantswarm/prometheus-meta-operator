@@ -2,6 +2,7 @@ package key
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
@@ -13,7 +14,11 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
 
-const monitoring = "monitoring"
+const (
+	monitoring = "monitoring"
+
+	PrometheusMemoryLimitCoefficient float64 = 1.2
+)
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
 	clusterMetaObject, ok := obj.(metav1.Object)
@@ -100,7 +105,12 @@ func PrometheusDefaultMemory() *resource.Quantity {
 }
 
 func PrometheusDefaultMemoryLimit() *resource.Quantity {
-	return resource.NewQuantity(1024*1024*1228, resource.DecimalSI)
+	return resource.NewQuantity(
+		int64(math.Floor(
+			1024*1024*1024*PrometheusMemoryLimitCoefficient,
+		)),
+		resource.DecimalSI,
+	)
 }
 
 func PrometheusPort() int32 {

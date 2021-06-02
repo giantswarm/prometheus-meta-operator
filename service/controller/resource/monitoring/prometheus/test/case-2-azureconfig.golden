@@ -71,7 +71,7 @@ spec:
   resources:
     limits:
       cpu: 150m
-      memory: "1287651328"
+      memory: "1288490188"
     requests:
       cpu: 100m
       memory: "1073741824"
