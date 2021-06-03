@@ -12,7 +12,6 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	alertingingress "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/ingress"
@@ -182,31 +181,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfigSecretResource resource.Interface
-	{
-		c := alertmanagerconfigsecret.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-
-			Installation:     config.Installation,
-			Pipeline:         config.Pipeline,
-			Provider:         config.Provider,
-			HTTPProxy:        config.HTTPProxy,
-			HTTPSProxy:       config.HTTPSProxy,
-			NoProxy:          config.NoProxy,
-			HeartbeatName:    config.HeartbeatName,
-			OpsgenieKey:      config.OpsgenieKey,
-			GrafanaAddress:   config.GrafanaAddress,
-			SlackApiURL:      config.SlackApiURL,
-			SlackProjectName: config.SlackProjectName,
-		}
-
-		alertmanagerConfigSecretResource, err = alertmanagerconfigsecret.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var remoteWriteConfigResource resource.Interface
 	{
 		c := remotewriteconfig.Config{
@@ -321,7 +295,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		rbacResource,
 		alertmanagerResource,
 		alertmanagerRoutingResource,
-		alertmanagerConfigSecretResource,
 		alertmanagerIngressResource,
 		alertmanagerConfigResource,
 		scrapeConfigResource,
