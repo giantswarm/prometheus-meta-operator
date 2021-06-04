@@ -84,7 +84,7 @@ func EtcdSecret(obj interface{}) string {
 	return Secret()
 }
 
-func Labels(cluster metav1.Object) map[string]string {
+func PrometheusLabels(cluster metav1.Object) map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "prometheus",
 		"app.kubernetes.io/managed-by": project.Name(),
