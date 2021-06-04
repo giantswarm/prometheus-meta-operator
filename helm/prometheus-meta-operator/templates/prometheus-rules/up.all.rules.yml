@@ -72,19 +72,3 @@ spec:
         severity: page
         team: ludacris
         topic: observability
-    - alert: NodeExporterDown
-      annotations:
-        description: '{{`NodeExporter ({{ $labels.ip }}) is down.`}}'
-        opsrecipe: node-exporter-is-down/
-      expr: up{app="node-exporter",role!="bastion"} == 0
-      for: 30m
-      labels:
-        area: kaas
-        cancel_if_cluster_status_creating: "true"
-        cancel_if_cluster_status_deleting: "true"
-        cancel_if_cluster_status_updating: "true"
-        cancel_if_cluster_with_scaling_nodepools: "true"
-        cancel_if_kubelet_down: "true"
-        severity: page
-        team: ludacris
-        topic: observability

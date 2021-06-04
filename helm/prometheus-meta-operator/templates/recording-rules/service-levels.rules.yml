@@ -36,6 +36,16 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
+    - expr: count(up{app="node-exporter", role!="bastion"}) by (cluster_type, cluster_id)
+      labels:
+        class: MEDIUM
+        service: node-exporter
+      record: raw_slo_requests
+    - expr: sum((up{app='node-exporter', role!="bastion"} * -1) + 1) by (cluster_type, cluster_id)
+      labels:
+        class: MEDIUM
+        service: node-exporter
+      record: raw_slo_errors
     - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
     - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
@@ -60,13 +70,13 @@ spec:
     - record: monitoring:managed_apps:number_of_pods_unavailable
       expr: |
         kube_deployment_status_replicas_unavailable
-        and on(deployment,cluster_id,cluster_type,namespace) 
+        and on(deployment,cluster_id,cluster_type,namespace)
         kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
     # record when pods of a statefulset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - record: monitoring:managed_apps:number_of_pods_unavailable
       expr: |
         kube_statefulset_status_replicas - kube_statefulset_status_replicas_current
-        and on(statefulset,cluster_id,cluster_type,namespace) 
+        and on(statefulset,cluster_id,cluster_type,namespace)
         kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
     # count how many down times there were for each pod that were longer than 5 mins (dont cut shorter ones)
     # we do that by counting how many times there was more than 5 pod-minute downtime in the last 5 mins,

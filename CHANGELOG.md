@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   avoid going over node memory capacity with the memory limit (`maxAllowed` is
   used for request and limit is that multiplied by 1.2).
 
+### Changed
+
+- Removed `NodeExporterDown` alert and use SLO framework to monitor node-exporters.
+
 ## [1.38.0] - 2021-05-28
 
 ### Changed
