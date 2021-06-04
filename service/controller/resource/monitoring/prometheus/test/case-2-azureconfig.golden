@@ -41,6 +41,7 @@ spec:
     region: onprem
   externalUrl: http://prometheus/foo
   image: quay.io/giantswarm/prometheus:v2.27.1
+  logLevel: debug
   podMetadata:
     labels:
       app.kubernetes.io/instance: foo
