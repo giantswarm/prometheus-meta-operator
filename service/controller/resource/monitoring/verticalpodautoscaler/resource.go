@@ -67,7 +67,7 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      "prometheus",
 		Namespace: key.Namespace(cluster),
-		Labels:    key.Labels(cluster),
+		Labels:    key.PrometheusLabels(cluster),
 	}, nil
 }
 

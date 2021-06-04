@@ -18,6 +18,7 @@ Installation:
         Storage:
           Enabled: true
           CreatePVC: true
+          Size: 100Gi
         EtcdClientCertificates:
           Ca: ""
           Crt: ""

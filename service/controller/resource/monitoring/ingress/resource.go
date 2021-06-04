@@ -72,7 +72,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:        fmt.Sprintf("prometheus-%s", key.ClusterID(cluster)),
 		Namespace:   key.Namespace(cluster),
-		Labels:      key.Labels(cluster),
+		Labels:      key.PrometheusLabels(cluster),
 		Annotations: annotations,
 	}, nil
 }

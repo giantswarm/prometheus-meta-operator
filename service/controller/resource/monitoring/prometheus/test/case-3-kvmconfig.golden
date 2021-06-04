@@ -112,7 +112,7 @@ spec:
   topologySpreadConstraints:
   - labelSelector:
       matchLabels:
-        app: prometheus
+        app.kubernetes.io/name: prometheus
     maxSkew: 1
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway

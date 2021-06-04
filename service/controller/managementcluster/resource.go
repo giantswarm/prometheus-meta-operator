@@ -142,7 +142,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
-			PrometheusVersion: config.PrometheusVersion,
+			Version:           config.PrometheusVersion,
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
