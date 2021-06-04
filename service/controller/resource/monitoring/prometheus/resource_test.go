@@ -17,16 +17,17 @@ func TestPrometheus(t *testing.T) {
 	}
 
 	config := Config{
-		Address:           "http://prometheus/cluster",
-		CreatePVC:         true,
 		Customer:          "Giant Swarm",
 		Installation:      "test-installation",
 		Pipeline:          "testing",
 		Provider:          "provider",
-		PrometheusVersion: "v2.27.1",
 		Region:            "onprem",
 		Registry:          "quay.io",
+		Address:           "http://prometheus/cluster",
+		CreatePVC:         true,
+		LogLevel:          "info",
 		StorageSize:       "50Gi",
+		Version:           "v2.27.1",
 		RetentionDuration: "2w",
 		RetentionSize:     "45Gi",
 		RemoteWriteURL:    "http://grafana/api/prom/push",

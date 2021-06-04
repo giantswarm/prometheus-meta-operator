@@ -1,0 +1,33 @@
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: bob
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: alertmanager
+  name: bob
+  namespace: test-installation-prometheus
+spec:
+  receivers:
+  - name: heartbeat_test-installation_bob
+    webhookConfigs:
+    - httpConfig:
+        basicAuth:
+          password:
+            key: opsgenie.key
+            name: alertmanager-test-installation
+          username:
+            key: ""
+      sendResolved: false
+      url: https://api.opsgenie.com/v2/heartbeats/test-installation-bob/ping
+  route:
+    groupInterval: 30s
+    groupWait: 5m
+    matchers:
+    - name: cluster_id
+      value: bob
+    - name: installation
+      value: test-installation
+    - name: type
+      value: heartbeat
+    receiver: heartbeat_test-installation_bob
+    repeatInterval: 1m

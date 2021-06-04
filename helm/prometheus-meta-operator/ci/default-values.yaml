@@ -9,6 +9,14 @@ Installation:
     Infra:
       TestingEnvironment: false
     Monitoring:
+      Alertmanager:
+        Address: "https://alertmanager:9093"
+        Storage:
+          Enabled: true
+          CreatePVC: true
+          Size: 1Gi
+      Grafana:
+        Address: ""
       Prometheus:
         Address: "https://prometheus:9090"
         Bastions: []
@@ -18,10 +26,13 @@ Installation:
         Storage:
           Enabled: true
           CreatePVC: true
+          Size: 100Gi
         EtcdClientCertificates:
           Ca: ""
           Crt: ""
           Key: ""
+        Heartbeat:
+          Name: testing
     Provider:
       Kind: ""
     Registry:
@@ -31,7 +42,12 @@ Installation:
         Enabled: false
       Subnet:
         VPN: ""
+    Slack:
+      ProjectName: ""
     Secret:
+      Alertmanager:
+        Slack:
+          ApiUrl: ""
       Certificate:
         Monitoring:
           CrtPem: ""

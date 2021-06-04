@@ -10,11 +10,13 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
+	alertingingress "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/ingress"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
+	monitoringingress "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
@@ -42,12 +44,22 @@ type resourcesConfig struct {
 	Region       string
 	Registry     string
 
-	OpsgenieKey string
+	AlertmanagerAddress     string
+	AlertmanagerBaseDomain  string
+	AlertmanagerCreatePVC   bool
+	AlertmanagerLogLevel    string
+	AlertmanagerStorageSize string
+	GrafanaAddress          string
+	HeartbeatName           string
+	OpsgenieKey             string
+	SlackApiURL             string
+	SlackProjectName        string
 
 	PrometheusAddress             string
 	PrometheusBaseDomain          string
 	PrometheusCreatePVC           bool
 	PrometheusStorageSize         string
+	PrometheusLogLevel            string
 	PrometheusRemoteWriteURL      string
 	PrometheusRemoteWriteUsername string
 	PrometheusRemoteWritePassword string
@@ -104,14 +116,66 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfig resource.Interface
+	var alertmanagerResource resource.Interface
 	{
-		c := alertmanagerconfig.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+		c := alertmanager.Config{
+			Address:     config.AlertmanagerAddress,
+			Client:      config.PrometheusClient,
+			Logger:      config.Logger,
+			CreatePVC:   config.AlertmanagerCreatePVC,
+			LogLevel:    config.AlertmanagerLogLevel,
+			StorageSize: config.AlertmanagerStorageSize,
 		}
 
-		alertmanagerConfig, err = alertmanagerconfig.New(c)
+		alertmanagerResource, err = alertmanager.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerRoutingResource resource.Interface
+	{
+		c := alertmanagerrouting.Config{
+			Client: config.PrometheusClient,
+			Logger: config.Logger,
+
+			Installation: config.Installation,
+			HTTPProxy:    config.HTTPProxy,
+			HTTPSProxy:   config.HTTPSProxy,
+			NoProxy:      config.NoProxy,
+		}
+
+		alertmanagerRoutingResource, err = alertmanagerrouting.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerConfigResource resource.Interface
+	{
+		c := alertmanagerconfig.Config{
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Installation: config.Installation,
+		}
+
+		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerIngressResource resource.Interface
+	{
+		c := alertingingress.Config{
+			K8sClient:               config.K8sClient,
+			Logger:                  config.Logger,
+			BaseDomain:              config.AlertmanagerBaseDomain,
+			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
+			WhitelistedSubnets:      config.WhitelistedSubnets,
+		}
+
+		alertmanagerIngressResource, err = alertingingress.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -142,12 +206,13 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
-			PrometheusVersion: config.PrometheusVersion,
+			Version:           config.PrometheusVersion,
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
 			StorageSize:       config.PrometheusStorageSize,
 			RetentionDuration: config.PrometheusRetentionDuration,
+			LogLevel:          config.PrometheusLogLevel,
 			RetentionSize:     config.PrometheusRetentionSize,
 			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
 			HTTPProxy:         config.HTTPProxy,
@@ -193,9 +258,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var ingressResource resource.Interface
+	var monitoringIngressResource resource.Interface
 	{
-		c := ingress.Config{
+		c := monitoringingress.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,
 			BaseDomain:              config.PrometheusBaseDomain,
@@ -203,7 +268,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 		}
 
-		ingressResource, err = ingress.New(c)
+		monitoringIngressResource, err = monitoringingress.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -224,33 +289,20 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var heartbeatRoutingResource resource.Interface
-	{
-		c := heartbeatrouting.Config{
-			Installation: config.Installation,
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			OpsgenieKey:  config.OpsgenieKey,
-		}
-
-		heartbeatRoutingResource, err = heartbeatrouting.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	resources := []resource.Interface{
 		namespaceResource,
 		etcdCertificatesResource,
 		rbacResource,
-		alertmanagerConfig,
+		alertmanagerResource,
+		alertmanagerRoutingResource,
+		alertmanagerIngressResource,
+		alertmanagerConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
-		ingressResource,
+		monitoringIngressResource,
 		heartbeatResource,
-		heartbeatRoutingResource,
 	}
 
 	{

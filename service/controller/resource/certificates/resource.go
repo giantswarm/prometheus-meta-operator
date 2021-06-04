@@ -9,7 +9,6 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
-	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
@@ -132,7 +131,7 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	var secret *v1.Secret
+	var secret *corev1.Secret
 	for _, source := range r.sources {
 		secretName := source.NameFunc(cluster)
 		secretNamespace := source.NamespaceFunc(cluster)

@@ -32,11 +32,12 @@ type Config struct {
 	Customer          string
 	Installation      string
 	Pipeline          string
-	PrometheusVersion string
+	Version           string
 	Provider          string
 	Region            string
 	Registry          string
 	StorageSize       string
+	LogLevel          string
 	RetentionDuration string
 	RetentionSize     string
 	RemoteWriteURL    string
@@ -148,11 +149,12 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 	labels["giantswarm.io/monitoring"] = "true"
 
-	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.PrometheusVersion)
+	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
+			LogLevel: config.LogLevel,
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey():    key.ClusterID(cluster),
 				"cluster_type":        key.ClusterType(cluster),
@@ -167,7 +169,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-
 			Image: &image,
 			Web: &promv1.WebSpec{
 				PageTitle: &pageTitle,
@@ -240,7 +241,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					WhenUnsatisfiable: corev1.ScheduleAnyway,
 					LabelSelector: &metav1.LabelSelector{
 						MatchLabels: map[string]string{
-							"app": "prometheus",
+							"app.kubernetes.io/name": "prometheus",
 						},
 					},
 				},
