@@ -16,3 +16,6 @@ pod:
 project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"
+
+prometheus:
+  logLevel: info

@@ -23,13 +23,14 @@ func TestPrometheus(t *testing.T) {
 		Installation:      "test-installation",
 		Pipeline:          "testing",
 		Provider:          "provider",
-		PrometheusVersion: "v2.27.1",
 		Region:            "onprem",
+		LogLevel:          "debug",
 		Registry:          "quay.io",
 		StorageSize:       "50Gi",
 		RetentionDuration: "2w",
 		RetentionSize:     "45Gi",
 		RemoteWriteURL:    "http://grafana/api/prom/push",
+		Version:           "v2.27.1",
 	}
 
 	c := unittest.Config{
