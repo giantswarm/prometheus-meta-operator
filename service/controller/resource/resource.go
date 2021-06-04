@@ -48,6 +48,7 @@ type Config struct {
 	PrometheusBaseDomain          string
 	PrometheusCreatePVC           bool
 	PrometheusStorageSize         string
+	PrometheusLogLevel            string
 	PrometheusRemoteWriteURL      string
 	PrometheusRemoteWriteUsername string
 	PrometheusRemoteWritePassword string
@@ -143,6 +144,7 @@ func New(config Config) ([]resource.Interface, error) {
 			Region:            config.Region,
 			Registry:          config.Registry,
 			StorageSize:       config.PrometheusStorageSize,
+			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
 			RetentionSize:     config.PrometheusRetentionSize,
 			RemoteWriteURL:    config.PrometheusRemoteWriteURL,

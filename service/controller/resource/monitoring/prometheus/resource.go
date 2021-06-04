@@ -37,6 +37,7 @@ type Config struct {
 	Region            string
 	Registry          string
 	StorageSize       string
+	LogLevel          string
 	RetentionDuration string
 	RetentionSize     string
 	RemoteWriteURL    string
@@ -167,8 +168,8 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-
-			Image: &image,
+			LogLevel: config.LogLevel,
+			Image:    &image,
 			Web: &promv1.WebSpec{
 				PageTitle: &pageTitle,
 			},

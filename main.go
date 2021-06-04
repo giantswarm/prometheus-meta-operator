@@ -122,6 +122,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Address, "", "Address to access Prometheus UI.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.BaseDomain, "", "Base domain to create Prometheus Ingress resources under.")
 	daemonCommand.PersistentFlags().StringSlice(f.Service.Prometheus.Bastions, make([]string, 0), "Address of the bastions.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.LogLevel, "info", "Prometheus log level.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Mayu, "", "Mayu host.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.RemoteWrite.URL, "", "URL to send prometheus data to.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.RemoteWrite.BasicAuth.Username, "", "Remote write username.")
