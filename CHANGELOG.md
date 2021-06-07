@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add the prometheus log level option
 
+## Changed
+
+- Set `HighNumberOfAllocatedSockets` to notify not page
+
 ### Fixed
 
 - Fixed the way VPA `maxAllowed` parameter for memory is calculated so that we
