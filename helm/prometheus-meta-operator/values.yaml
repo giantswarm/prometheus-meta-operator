@@ -17,5 +17,8 @@ project:
   branch: "[[ .Branch ]]"
   commit: "[[ .SHA ]]"
 
+alertmanager:
+  logLevel: info
+
 prometheus:
   logLevel: info
