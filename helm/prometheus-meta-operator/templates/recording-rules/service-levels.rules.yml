@@ -102,3 +102,15 @@ spec:
         class: MEDIUM
         service: managed-apps
       record: slo_target
+    - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
+      record: slo_requests
+    - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
+      record: slo_errors
+    - expr: sum(sum_over_time(raw_slo_errors[5m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[5m])) by (cluster_type, cluster_id, service, class)
+      record: slo_errors_per_request:ratio_rate5m
+    - expr: sum(sum_over_time(raw_slo_errors[30m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[30m])) by (cluster_type, cluster_id, service, class)
+      record: slo_errors_per_request:ratio_rate30m
+    - expr: sum(sum_over_time(raw_slo_errors[1h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[1h])) by (cluster_type, cluster_id, service, class)
+      record: slo_errors_per_request:ratio_rate1h
+    - expr: sum(sum_over_time(raw_slo_errors[6h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_type, cluster_id, service, class)
+      record: slo_errors_per_request:ratio_rate6h
