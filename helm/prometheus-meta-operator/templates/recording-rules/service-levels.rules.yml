@@ -37,7 +37,7 @@ spec:
         service: jose
         cluster_id: gremlin
         cluster_type: management_cluster
-      record: raw_slo_requests
+      record: raw_slo_errors
     - expr: "vector(0.01)"
       labels:
         service: jose
