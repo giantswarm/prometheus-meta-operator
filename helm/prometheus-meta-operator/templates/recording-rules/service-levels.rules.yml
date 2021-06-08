@@ -36,6 +36,57 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
+    # record when pods of a daemonset with label "label_giantswarm_io_monitoring_basic_sli" are down
+    - expr: |
+        kube_daemonset_status_number_unavailable
+        and on(daemonset,cluster_id,cluster_type,namespace)
+        kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
+      labels:
+        class: MEDIUM
+        service: managed-apps
+      record: raw_slo_errors
+    # record when pods of a deployment with label "label_giantswarm_io_monitoring_basic_sli" are down
+    - expr: |
+        kube_deployment_status_replicas_unavailable
+        and on(deployment,cluster_id,cluster_type,namespace) 
+        kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
+      labels:
+        class: MEDIUM
+        service: managed-apps
+      record: raw_slo_errors
+    # record when pods of a statefulset with label "label_giantswarm_io_monitoring_basic_sli" are down
+    - expr: |
+        kube_statefulset_status_replicas - kube_statefulset_status_replicas_current
+        and on(statefulset,cluster_id,cluster_type,namespace) 
+        kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
+      labels:
+        class: MEDIUM
+        service: managed-apps
+      record: raw_slo_errors
+    - expr: |
+        kube_daemonset_status_desired_number_scheduled
+        and on(daemonset,cluster_id,cluster_type,namespace)
+        kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
+      labels:
+        class: MEDIUM
+        service: managed-apps
+      record: raw_slo_requests
+    - expr: |
+        kube_deployment_status_replicas
+        and on(deployment,cluster_id,cluster_type,namespace) 
+        kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
+      labels:
+        class: MEDIUM
+        service: managed-apps
+      record: raw_slo_requests
+    - expr: |
+        kube_statefulset_status_replicas
+        and on(statefulset,cluster_id,cluster_type,namespace) 
+        kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
+      labels:
+        class: MEDIUM
+        service: managed-apps
+      record: raw_slo_requests
     - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
     - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
