@@ -19,11 +19,6 @@ spec:
         class: HIGH
         service: api-server
       record: raw_slo_errors
-    - expr: "scalar(vector(0.999))"
-      labels:
-        class: HIGH
-        service: api-server
-      record: slo_target
     - expr: "kube_node_status_condition{condition='Ready'}"
       labels:
         class: MEDIUM
@@ -41,11 +36,6 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
-    - expr: "scalar(vector(0.999))"
-      labels:
-        class: MEDIUM
-        service: kubelet
-      record: slo_target
     # record when pods of a daemonset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
         kube_daemonset_status_number_unavailable
@@ -97,11 +87,6 @@ spec:
         class: MEDIUM
         service: managed-apps
       record: raw_slo_requests
-    - expr: "scalar(vector(0.995))"
-      labels:
-        class: MEDIUM
-        service: managed-apps
-      record: slo_target
     - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
     - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
