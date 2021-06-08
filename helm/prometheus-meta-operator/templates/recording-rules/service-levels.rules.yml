@@ -19,6 +19,11 @@ spec:
         class: HIGH
         service: api-server
       record: raw_slo_errors
+    - expr: "scalar(vector(0.999))"
+      labels:
+        class: HIGH
+        service: api-server
+      record: slo_target
     - expr: "kube_node_status_condition{condition='Ready'}"
       labels:
         class: MEDIUM
@@ -36,6 +41,11 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
+    - expr: "scalar(vector(0.999))"
+      labels:
+        class: MEDIUM
+        service: kubelet
+      record: slo_target
     # record when pods of a daemonset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
         kube_daemonset_status_number_unavailable
@@ -87,57 +97,8 @@ spec:
         class: MEDIUM
         service: managed-apps
       record: raw_slo_requests
-    - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
-      record: slo_requests
-    - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
-      record: slo_errors
-    - expr: sum(sum_over_time(raw_slo_errors[5m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[5m])) by (cluster_type, cluster_id, service, class)
-      record: slo_errors_per_request:ratio_rate5m
-    - expr: sum(sum_over_time(raw_slo_errors[30m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[30m])) by (cluster_type, cluster_id, service, class)
-      record: slo_errors_per_request:ratio_rate30m
-    - expr: sum(sum_over_time(raw_slo_errors[1h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[1h])) by (cluster_type, cluster_id, service, class)
-      record: slo_errors_per_request:ratio_rate1h
-    - expr: sum(sum_over_time(raw_slo_errors[6h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_type, cluster_id, service, class)
-      record: slo_errors_per_request:ratio_rate6h
-  - name: service-level-apps
-    rules:
-    # record when pods of a daemonset with label "label_giantswarm_io_monitoring_basic_sli" are down
-    - record: monitoring:managed_apps:number_of_pods_unavailable
-      expr: |
-        kube_daemonset_status_number_unavailable
-        and on(daemonset,cluster_id,cluster_type,namespace)
-        kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
-    # record when pods of a deployment with label "label_giantswarm_io_monitoring_basic_sli" are down
-    - record: monitoring:managed_apps:number_of_pods_unavailable
-      expr: |
-        kube_deployment_status_replicas_unavailable
-        and on(deployment,cluster_id,cluster_type,namespace) 
-        kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
-    # record when pods of a statefulset with label "label_giantswarm_io_monitoring_basic_sli" are down
-    - record: monitoring:managed_apps:number_of_pods_unavailable
-      expr: |
-        kube_statefulset_status_replicas - kube_statefulset_status_replicas_current
-        and on(statefulset,cluster_id,cluster_type,namespace) 
-        kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
-    # count how many down times there were for each pod that were longer than 5 mins (dont cut shorter ones)
-    # we do that by counting how many times there was more than 5 pod-minute downtime in the last 5 mins,
-    # then we need to add 4 minutes to each one of them (as each means 5 pod-minutes downtime, not 1, so 4 pod-minutes
-    # are missing per each increase).
-    # This metric is calculated every 1m for the last 30d.
-    - record: monitoring:managed_apps:service_level:primary:helper_time_unavailable_longer_than_5m_over_30d
-      expr: |
-        sum_over_time((sum_over_time(monitoring:managed_apps:number_of_pods_unavailable[5m]) >=bool 5)[30d:1m]) +
-        increase((sum_over_time(monitoring:managed_apps:number_of_pods_unavailable[5m]) >=bool 5)[30d:1m])*4
-    # Our basic SLI: check how much relevant downtime we had in the last 30d comparing to 30d.
-    - record: monitoring:managed_apps:service_level:primary:sli
-      expr: "1-monitoring:managed_apps:service_level:primary:helper_time_unavailable_longer_than_5m_over_30d/(30*24*60)"
-    # Our error budget definition: check how much time our pods were unavailable and compare that
-    # to our error budget, which is (30d * (1 - SLO)) (converted to seconds).
-    # Keep in mind that this can be >1 - it just means that our downtime in the last 30d was bigger than
-    # the error budget permits.
-    - record: monitoring:managed_apps:service_level:primary:error_budget_used
-      expr: |
-        monitoring:managed_apps:service_level:primary:helper_time_unavailable_longer_than_5m_over_30d/
-        (30*24*60*(1-scalar(monitoring:managed_apps:service_level:primary:slo)))
-    - record: monitoring:managed_apps:service_level:primary:slo
-      expr: "scalar(vector(0.995))"
+    - expr: "scalar(vector(0.995))"
+      labels:
+        class: MEDIUM
+        service: managed-apps
+      record: slo_target
