@@ -46,10 +46,14 @@ spec:
       labels:
         service: kubelet
       record: slo_target
-    - expr: "vector(0.05)"
+    - expr: "vector(0.001 * 36)"
       labels:
         service: api-server
-      record: slo_target
+      record: slo_target_high
+    - expr: "vector(0.001 * 12)"
+      labels:
+        service: api-server
+      record: slo_target_low
     - expr: |
         (
           kube_node_status_condition{condition="Ready", status!="true"}
