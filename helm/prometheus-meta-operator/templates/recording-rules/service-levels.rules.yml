@@ -24,6 +24,21 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_requests
+    - expr: "vector(100)"
+      labels:
+        class: MEDIUM
+        service: jose
+      record: raw_slo_requests
+    - expr: "vector(1)"
+      labels:
+        class: MEDIUM
+        service: jose
+      record: raw_slo_requests
+    - expr: "vector(0.01)"
+      labels:
+        class: MEDIUM
+        service: jose
+      record: slo_target
     - expr: |
         (
           kube_node_status_condition{condition="Ready", status!="true"}
