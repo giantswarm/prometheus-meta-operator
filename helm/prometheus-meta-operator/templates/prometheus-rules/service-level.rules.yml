@@ -16,7 +16,7 @@ spec:
       expr: |
         slo_errors_per_request:ratio_rate1h / on (cluster_type, cluster_id, service, class) slo_target > 36
         and
-        slo_errors_per_request:ratio_rate5m > 36 * 0.001
+        slo_errors_per_request:ratio_rate5m / on (cluster_type, cluster_id, service, class) slo_target > 36
         or
         slo_errors_per_request:ratio_rate6h > 12 * 0.001
         and
