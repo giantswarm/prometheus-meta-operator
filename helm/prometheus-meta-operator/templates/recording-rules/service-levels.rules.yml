@@ -9,6 +9,7 @@ spec:
   groups:
   - name: service-level
     rules:
+      # -- api-server
     - expr: "count(up{app='kubernetes'}) by (cluster_type,cluster_id)"
       labels:
         class: HIGH
@@ -19,11 +20,43 @@ spec:
         class: HIGH
         service: api-server
       record: raw_slo_errors
+    - expr: "vector(0.001 * 36)"
+      labels:
+        service: api-server
+      record: slo_target_high
+    - expr: "vector(0.001 * 12)"
+      labels:
+        service: api-server
+      record: slo_target_low
+
+      # -- kubelet
     - expr: "kube_node_status_condition{condition='Ready'}"
       labels:
         class: MEDIUM
         service: kubelet
       record: raw_slo_requests
+    - expr: |
+        (
+          kube_node_status_condition{condition="Ready", status!="true"}
+          and
+          on (node) kube_node_spec_unschedulable == 0
+        )
+        and
+        on (node) time() - kube_node_created > 10 * 60
+      labels:
+        class: MEDIUM
+        service: kubelet
+      record: raw_slo_errors
+    - expr: "vector(0.01 * 36)"
+      labels:
+        service: kubelet
+      record: slo_target_high
+    - expr: "vector(0.01 * 12)"
+      labels:
+        service: kubelet
+      record: slo_target_low
+
+      # -- jose (a fake erroring service)
     - expr: "vector(100)"
       labels:
         class: MEDIUM
@@ -38,34 +71,16 @@ spec:
         cluster_id: gremlin
         cluster_type: management_cluster
       record: raw_slo_errors
-    - expr: "vector(0.01)"
+    - expr: "vector(0.01 * 36)"
       labels:
         service: jose
-      record: slo_target
-    - expr: "vector(0.02)"
-      labels:
-        service: kubelet
-      record: slo_target
-    - expr: "vector(0.001 * 36)"
-      labels:
-        service: api-server
       record: slo_target_high
-    - expr: "vector(0.001 * 12)"
+    - expr: "vector(0.01 * 12)"
       labels:
-        service: api-server
+        service: jose
       record: slo_target_low
-    - expr: |
-        (
-          kube_node_status_condition{condition="Ready", status!="true"}
-          and
-          on (node) kube_node_spec_unschedulable == 0
-        )
-        and
-        on (node) time() - kube_node_created > 10 * 60
-      labels:
-        class: MEDIUM
-        service: kubelet
-      record: raw_slo_errors
+
+      # -- generic stuff
     - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
     - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
