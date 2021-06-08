@@ -42,6 +42,14 @@ spec:
       labels:
         service: jose
       record: slo_target
+    - expr: "vector(0.02)"
+      labels:
+        service: kubelet
+      record: slo_target
+    - expr: "vector(0.05)"
+      labels:
+        service: api-server
+      record: slo_target
     - expr: |
         (
           kube_node_status_condition{condition="Ready", status!="true"}
