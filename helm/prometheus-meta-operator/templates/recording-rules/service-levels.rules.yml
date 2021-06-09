@@ -9,6 +9,7 @@ spec:
   groups:
   - name: service-level
     rules:
+      # -- api-server
     - expr: "count(up{app='kubernetes'}) by (cluster_type,cluster_id)"
       labels:
         class: HIGH
@@ -19,6 +20,16 @@ spec:
         class: HIGH
         service: api-server
       record: raw_slo_errors
+    - expr: "vector(0.001 * 36)"
+      labels:
+        service: api-server
+      record: slo_target_high
+    - expr: "vector(0.001 * 12)"
+      labels:
+        service: api-server
+      record: slo_target_low
+
+      # -- kubelet
     - expr: "kube_node_status_condition{condition='Ready'}"
       labels:
         class: MEDIUM
@@ -36,10 +47,44 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
+    - expr: "vector(0.01 * 36)"
+      labels:
+        service: kubelet
+      record: slo_target_high
+    - expr: "vector(0.01 * 12)"
+      labels:
+        service: kubelet
+      record: slo_target_low
+
+      # -- jose (a fake erroring service)
+    - expr: "vector(100)"
+      labels:
+        class: MEDIUM
+        service: jose
+        cluster_id: gremlin
+        cluster_type: management_cluster
+      record: raw_slo_requests
+    - expr: "vector(1)"
+      labels:
+        class: MEDIUM
+        service: jose
+        cluster_id: gremlin
+        cluster_type: management_cluster
+      record: raw_slo_errors
+    - expr: "vector(0.01 * 36)"
+      labels:
+        service: jose
+      record: slo_target_high
+    - expr: "vector(0.01 * 12)"
+      labels:
+        service: jose
+      record: slo_target_low
+
+    # -- managed-apps
     # record when pods of a daemonset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
         kube_daemonset_status_number_unavailable
-        and on(daemonset,cluster_id,cluster_type,namespace)
+        and on(daemonset,cluster_id,cluster_type,namespace, workload_name)
         kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
@@ -48,7 +93,7 @@ spec:
     # record when pods of a deployment with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
         kube_deployment_status_replicas_unavailable
-        and on(deployment,cluster_id,cluster_type,namespace) 
+        and on(deployment,cluster_id,cluster_type,namespace, workload_name) 
         kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
@@ -57,7 +102,7 @@ spec:
     # record when pods of a statefulset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
         kube_statefulset_status_replicas - kube_statefulset_status_replicas_current
-        and on(statefulset,cluster_id,cluster_type,namespace) 
+        and on(statefulset,cluster_id,cluster_type,namespace, workload_name) 
         kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
@@ -65,7 +110,7 @@ spec:
       record: raw_slo_errors
     - expr: |
         kube_daemonset_status_desired_number_scheduled
-        and on(daemonset,cluster_id,cluster_type,namespace)
+        and on(daemonset,cluster_id,cluster_type,namespace, workload_name)
         kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
@@ -73,7 +118,7 @@ spec:
       record: raw_slo_requests
     - expr: |
         kube_deployment_status_replicas
-        and on(deployment,cluster_id,cluster_type,namespace) 
+        and on(deployment,cluster_id,cluster_type,namespace, workload_name) 
         kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
@@ -81,12 +126,22 @@ spec:
       record: raw_slo_requests
     - expr: |
         kube_statefulset_status_replicas
-        and on(statefulset,cluster_id,cluster_type,namespace) 
+        and on(statefulset,cluster_id,cluster_type,namespace, workload_name) 
         kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
         service: managed-apps
       record: raw_slo_requests
+    - expr: "vector(0.05 * 36)"
+      labels:
+        service: managed-apps
+      record: slo_target_high
+    - expr: "vector(0.05 * 12)"
+      labels:
+        service: managed-apps
+      record: slo_target_low
+
+      # -- generic stuff
     - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
     - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
