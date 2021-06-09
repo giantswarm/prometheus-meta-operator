@@ -88,7 +88,8 @@ spec:
         kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
-        service: managed-apps
+        area: managed-apps
+        service: {{ $labels.workload_name }}
       record: raw_slo_errors
     # record when pods of a deployment with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
@@ -97,7 +98,8 @@ spec:
         kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
-        service: managed-apps
+        area: managed-apps
+        service: {{ $labels.workload_name }}
       record: raw_slo_errors
     # record when pods of a statefulset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
@@ -106,7 +108,8 @@ spec:
         kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
-        service: managed-apps
+        area: managed-apps
+        service: {{ $labels.workload_name }}
       record: raw_slo_errors
     - expr: |
         kube_daemonset_status_desired_number_scheduled
@@ -114,7 +117,8 @@ spec:
         kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
-        service: managed-apps
+        area: managed-apps
+        service: {{ $labels.workload_name }}
       record: raw_slo_requests
     - expr: |
         kube_deployment_status_replicas
@@ -122,7 +126,8 @@ spec:
         kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
-        service: managed-apps
+        area: managed-apps
+        service: {{ $labels.workload_name }}
       record: raw_slo_requests
     - expr: |
         kube_statefulset_status_replicas
@@ -130,15 +135,12 @@ spec:
         kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'}
       labels:
         class: MEDIUM
-        service: managed-apps
+        area: managed-apps
+        service: {{ $labels.workload_name }}
       record: raw_slo_requests
-    - expr: "vector(0.05 * 36)"
-      labels:
-        service: managed-apps
+    - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 0.05 * 36
       record: slo_target_high
-    - expr: "vector(0.05 * 12)"
-      labels:
-        service: managed-apps
+    - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 0.05 * 12
       record: slo_target_low
 
       # -- generic stuff
