@@ -89,7 +89,6 @@ spec:
       labels:
         class: MEDIUM
         area: managed-apps
-        service: {{ $labels.workload_name }}
       record: raw_slo_errors
     # record when pods of a deployment with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
@@ -99,7 +98,6 @@ spec:
       labels:
         class: MEDIUM
         area: managed-apps
-        service: {{ $labels.workload_name }}
       record: raw_slo_errors
     # record when pods of a statefulset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
@@ -109,7 +107,6 @@ spec:
       labels:
         class: MEDIUM
         area: managed-apps
-        service: {{ $labels.workload_name }}
       record: raw_slo_errors
     - expr: |
         kube_daemonset_status_desired_number_scheduled
@@ -118,7 +115,6 @@ spec:
       labels:
         class: MEDIUM
         area: managed-apps
-        service: {{ $labels.workload_name }}
       record: raw_slo_requests
     - expr: |
         kube_deployment_status_replicas
@@ -127,7 +123,6 @@ spec:
       labels:
         class: MEDIUM
         area: managed-apps
-        service: {{ $labels.workload_name }}
       record: raw_slo_requests
     - expr: |
         kube_statefulset_status_replicas
@@ -136,7 +131,6 @@ spec:
       labels:
         class: MEDIUM
         area: managed-apps
-        service: {{ $labels.workload_name }}
       record: raw_slo_requests
     - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 0.05 * 36
       record: slo_target_high
