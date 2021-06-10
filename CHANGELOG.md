@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
+- Move managed apps SLO alerts to the service-level format.
 - Set `HighNumberOfAllocatedSockets` to notify not page
 
 ### Fixed
