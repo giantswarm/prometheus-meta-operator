@@ -21,7 +21,7 @@ spec:
         service: api-server
       record: raw_slo_errors
       # -- 99,9% availability
-    - expr: "vector(1 - 0,999)"
+    - expr: "vector((1 - 0.999))"
       labels:
         service: api-server
       record: slo_target
@@ -45,7 +45,7 @@ spec:
         service: kubelet
       record: raw_slo_errors
       # -- 99% availability
-    - expr: "vector(1 - 0,99)"
+    - expr: "vector((1 - 0.99))"
       labels:
         service: kubelet
       record: slo_target
