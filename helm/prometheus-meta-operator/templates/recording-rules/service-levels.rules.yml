@@ -13,16 +13,19 @@ spec:
     - expr: "count(up{app='kubernetes'}) by (cluster_type,cluster_id)"
       labels:
         class: HIGH
+        area: kaas
         service: api-server
       record: raw_slo_requests
     - expr: "sum((up{app='kubernetes'} * -1) + 1) by (cluster_type,cluster_id)"
       labels:
         class: HIGH
+        area: kaas
         service: api-server
       record: raw_slo_errors
       # -- 99,9% availability
     - expr: "vector(1 - 0,999)"
       labels:
+        area: kaas
         service: api-server
       record: slo_target
 
@@ -30,6 +33,7 @@ spec:
     - expr: "kube_node_status_condition{condition='Ready'}"
       labels:
         class: MEDIUM
+        area: kaas
         service: kubelet
       record: raw_slo_requests
     - expr: |
@@ -41,12 +45,14 @@ spec:
         and
         on (node) time() - kube_node_created > 10 * 60
       labels:
+        area: kaas
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
       # -- 99% availability
     - expr: "vector(1 - 0,99)"
       labels:
+        area: kaas
         service: kubelet
       record: slo_target
 
@@ -103,7 +109,7 @@ spec:
         area: managed-apps
       record: raw_slo_requests
       # -- 99.5% availability
-    - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 1-0.995
+    - expr: sum by (service, area) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 1-0.995
       record: slo_target
 
       # -- generic stuff
@@ -112,17 +118,17 @@ spec:
       record: slo_burnrate_high
     - expr: "vector(12)"
       record: slo_burnrate_low
-    - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
+    - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id, area)
       record: slo_requests
-    - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
+    - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id, area)
       record: slo_errors
-    - expr: sum(sum_over_time(raw_slo_errors[5m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[5m])) by (cluster_type, cluster_id, service, class)
+    - expr: sum(sum_over_time(raw_slo_errors[5m])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[5m])) by (cluster_type, cluster_id, service, class, area)
       record: slo_errors_per_request:ratio_rate5m
-    - expr: sum(sum_over_time(raw_slo_errors[30m])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[30m])) by (cluster_type, cluster_id, service, class)
+    - expr: sum(sum_over_time(raw_slo_errors[30m])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[30m])) by (cluster_type, cluster_id, service, class, area)
       record: slo_errors_per_request:ratio_rate30m
-    - expr: sum(sum_over_time(raw_slo_errors[1h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[1h])) by (cluster_type, cluster_id, service, class)
+    - expr: sum(sum_over_time(raw_slo_errors[1h])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[1h])) by (cluster_type, cluster_id, service, class, area)
       record: slo_errors_per_request:ratio_rate1h
-    - expr: sum(sum_over_time(raw_slo_errors[6h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_type, cluster_id, service, class)
+    - expr: sum(sum_over_time(raw_slo_errors[6h])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_type, cluster_id, service, class, area)
       record: slo_errors_per_request:ratio_rate6h
       # -- We use the `min` function here because we have `slo_burnrate_high` for each installation and cluster_id, even though the metric value is always the same.
     - expr: slo_target*scalar(min(slo_burnrate_high))
