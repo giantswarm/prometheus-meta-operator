@@ -9,7 +9,6 @@ spec:
   groups:
   - name: service-level
     rules:
-
       # -- api-server
     - expr: "count(up{app='kubernetes'}) by (cluster_type,cluster_id)"
       labels:
@@ -103,8 +102,8 @@ spec:
         class: MEDIUM
         area: managed-apps
       record: raw_slo_requests
-      # -- 95% availability
-    - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 1-0.95
+      # -- 99.5% availability
+    - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 1-0.995
       record: slo_target
 
       # -- generic stuff
