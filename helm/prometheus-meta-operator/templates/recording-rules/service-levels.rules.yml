@@ -23,7 +23,7 @@ spec:
         service: api-server
       record: raw_slo_errors
       # -- 99,9% availability
-    - expr: "vector(1 - 0,999)"
+    - expr: "vector((1 - 0.999))"
       labels:
         area: kaas
         service: api-server
@@ -49,8 +49,8 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
-      # -- 99% availability
-    - expr: "vector(1 - 0,99)"
+      # -- 99,9% availability
+    - expr: "vector((1 - 0.999))"
       labels:
         area: kaas
         service: kubelet
