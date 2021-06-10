@@ -10,12 +10,6 @@ spec:
   - name: service-level
     rules:
 
-    # -- standard burnrates
-    - expr: "vector(36)"
-      record: slo_burnrate_high
-    - expr: "vector(12)"
-      record: slo_burnrate_low
-
       # -- api-server
     - expr: "count(up{app='kubernetes'}) by (cluster_type,cluster_id)"
       labels:
@@ -27,7 +21,8 @@ spec:
         class: HIGH
         service: api-server
       record: raw_slo_errors
-    - expr: "vector(0.001)"
+      # -- 99,9% availability
+    - expr: "vector(1 - 0,999)"
       labels:
         service: api-server
       record: slo_target
@@ -50,29 +45,10 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
-    - expr: "vector(0.01)"
+      # -- 99% availability
+    - expr: "vector(1 - 0,99)"
       labels:
         service: kubelet
-      record: slo_target
-
-      # -- jose (a fake erroring service)
-    - expr: "vector(100)"
-      labels:
-        class: MEDIUM
-        service: jose
-        cluster_id: gremlin
-        cluster_type: management_cluster
-      record: raw_slo_requests
-    - expr: "vector(1)"
-      labels:
-        class: MEDIUM
-        service: jose
-        cluster_id: gremlin
-        cluster_type: management_cluster
-      record: raw_slo_errors
-    - expr: "vector(0.01)"
-      labels:
-        service: jose
       record: slo_target
 
     # -- managed-apps
@@ -127,10 +103,16 @@ spec:
         class: MEDIUM
         area: managed-apps
       record: raw_slo_requests
-    - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 0.05
+      # -- 95% availability
+    - expr: sum by (service) (raw_slo_errors{area="managed-apps"} - raw_slo_errors{area="managed-apps"}) + 1-0.95
       record: slo_target
 
       # -- generic stuff
+      # -- standard burnrates based on https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts
+    - expr: "vector(36)"
+      record: slo_burnrate_high
+    - expr: "vector(12)"
+      record: slo_burnrate_low
     - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
     - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
@@ -143,7 +125,8 @@ spec:
       record: slo_errors_per_request:ratio_rate1h
     - expr: sum(sum_over_time(raw_slo_errors[6h])) by (cluster_type, cluster_id, service, class) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_type, cluster_id, service, class)
       record: slo_errors_per_request:ratio_rate6h
+      # -- We use the `min` function here because we have `slo_burnrate_high` for each installation and cluster_id, even though the metric value is always the same.
     - expr: slo_target*scalar(min(slo_burnrate_high))
-      record: slo_target_high
+      record: slo_threshold_high
     - expr: slo_target*scalar(min(slo_burnrate_low))
-      record: slo_target_low
+      record: slo_threshold_low
