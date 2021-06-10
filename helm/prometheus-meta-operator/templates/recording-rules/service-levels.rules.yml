@@ -9,11 +9,6 @@ spec:
   groups:
   - name: service-level
     rules:
-      # -- standard burnrates
-    - expr: "vector(36)"
-      record: slo_burnrate_high
-    - expr: "vector(12)"
-      record: slo_burnrate_low
       # -- api-server
     - expr: "count(up{app='kubernetes'}) by (cluster_type,cluster_id)"
       labels:
@@ -54,6 +49,11 @@ spec:
       record: slo_target
 
       # -- generic stuff
+      # -- standard burnrates based on https://sre.google/workbook/alerting-on-slos/#6-multiwindow-multi-burn-rate-alerts
+    - expr: "vector(36)"
+      record: slo_burnrate_high
+    - expr: "vector(12)"
+      record: slo_burnrate_low
     - expr: sum(raw_slo_requests) by (service, cluster_type, cluster_id)
       record: slo_requests
     - expr: sum(raw_slo_errors) by (service, cluster_type, cluster_id)
