@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
-- Lower `kubelet` SLO 99%.
+- Lower `kubelet` SLO from 99.9% to 99%.
 - Set `HighNumberOfAllocatedSockets` to notify not page
 - Extract `kubelet` and `api-server` SLO targets to their own recording rules.
 - Extract `kubelet` and `api-server` alerting thresholds to their own recording rules.
