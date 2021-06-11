@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.39.0] - 2021-06-11
+
 ### Added
 
 - Add the prometheus log level option
@@ -1106,7 +1108,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...HEAD
+[1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.36.0...v1.37.0
 [1.36.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.35.0...v1.36.0
