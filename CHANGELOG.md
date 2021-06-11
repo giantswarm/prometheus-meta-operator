@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Changed
 
+- Move managed apps SLO alerts to the service-level format.
 - Set `HighNumberOfAllocatedSockets` to notify not page
 - Extract `kubelet` and `api-server` SLO targets to their own recording rules.
 - Extract `kubelet` and `api-server` alerting thresholds to their own recording rules.
