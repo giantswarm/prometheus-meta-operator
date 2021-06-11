@@ -44,8 +44,8 @@ spec:
         class: MEDIUM
         service: kubelet
       record: raw_slo_errors
-      # -- 99,9% availability
-    - expr: "vector((1 - 0.999))"
+      # -- 99% availability
+    - expr: "vector((1 - 0.99))"
       labels:
         service: kubelet
       record: slo_target
