@@ -139,7 +139,6 @@ func toData(v interface{}, config Config) ([]byte, error) {
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-
 	var proxyURL *string = nil
 	if len(config.HTTPSProxy) > 0 {
 		proxyURL = &config.HTTPSProxy

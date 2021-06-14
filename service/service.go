@@ -233,7 +233,6 @@ func New(config Config) (*Service, error) {
 			Registry:     config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
 			AlertmanagerAddress:     config.Viper.GetString(config.Flag.Service.Alertmanager.Address),
-			AlertmanagerBaseDomain:  config.Viper.GetString(config.Flag.Service.Alertmanager.BaseDomain),
 			AlertmanagerCreatePVC:   config.Viper.GetBool(config.Flag.Service.Alertmanager.Storage.CreatePVC),
 			AlertmanagerLogLevel:    config.Viper.GetString(config.Flag.Service.Alertmanager.LogLevel),
 			AlertmanagerStorageSize: config.Viper.GetString(config.Flag.Service.Alertmanager.Storage.Size),
