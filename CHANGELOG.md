@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Lower `kubelet` SLO from 99.9% to 99%.
+
 ## [1.39.0] - 2021-06-11
 
 ### Added
@@ -14,7 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add the prometheus log level option
 - Add high and low burn rates as recording rules.
 
-## Changed
+### Changed
 
 - Move managed apps SLO alerts to the service-level format.
 - Set `HighNumberOfAllocatedSockets` to notify not page
