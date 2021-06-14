@@ -52,7 +52,7 @@ spec:
         cancel_if_cluster_status_creating: "true"
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
-        kube_state_metrics_down: "true"
+        cancel_if_any_kube_state_metrics_down: "true"
         severity: page
         team: ludacris
         topic: observability
@@ -68,7 +68,7 @@ spec:
         cancel_if_cluster_status_creating: "true"
         cancel_if_cluster_status_deleting: "true"
         cancel_if_cluster_status_updating: "true"
-        kube_state_metrics_down: "true"
+        cancel_if_any_kube_state_metrics_down: "true"
         severity: page
         team: ludacris
         topic: observability

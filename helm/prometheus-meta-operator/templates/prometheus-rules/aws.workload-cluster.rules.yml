@@ -15,7 +15,7 @@ spec:
       annotations:
         description: '{{`Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} is restarting too often.`}}'
         opsrecipe: container-is-restarting-too-often/
-      expr: increase(kube_pod_container_status_restarts_total{container=~"aws-node.*|kiam-.+"}[1h]) > 10
+      expr: increase(kube_pod_container_status_restarts_total{container=~"aws-node.*|kiam-.+|cluster-autoscaler.*"}[1h]) > 10
       for: 10m
       labels:
         area: kaas

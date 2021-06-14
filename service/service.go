@@ -4,6 +4,7 @@ package service
 
 import (
 	"context"
+	"os"
 	"sync"
 
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
@@ -121,32 +122,44 @@ func New(config Config) (*Service, error) {
 	}
 
 	var provider = config.Viper.GetString(config.Flag.Service.Provider.Kind)
+
 	var clusterapiController *clusterapi.Controller
 	{
 		c := clusterapi.ControllerConfig{
-			K8sClient:           k8sClient,
-			Logger:              config.Logger,
-			PrometheusClient:    prometheusClient,
-			VpaClient:           vpaClient,
-			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Provider:            provider,
-			Installation:        config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Customer:            config.Viper.GetString(config.Flag.Service.Installation.Customer),
-			Pipeline:            config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			Region:              config.Viper.GetString(config.Flag.Service.Installation.Region),
-			Registry:            config.Viper.GetString(config.Flag.Service.Installation.Registry),
-			CreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			RetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-			RetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-			PrometheusVersion:   config.Viper.GetString(config.Flag.Service.Prometheus.Version),
-			OpsgenieKey:         config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
-			RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
-			RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+			VpaClient:        vpaClient,
+
+			HTTPProxy:  os.Getenv("HTTP_PROXY"),
+			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
+			NoProxy:    os.Getenv("NO_PROXY"),
+
+			Bastions:     config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Customer:     config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Installation: config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:     config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Provider:     provider,
+			Region:       config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:     config.Viper.GetString(config.Flag.Service.Installation.Registry),
+
+			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+
+			PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			PrometheusCreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			PrometheusStorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			PrometheusRemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+			PrometheusRemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+			PrometheusRemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			PrometheusRetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			PrometheusRetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			PrometheusVersion:             config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+
+			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
+			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
 		}
+
 		clusterapiController, err = clusterapi.NewController(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -156,28 +169,38 @@ func New(config Config) (*Service, error) {
 	var legacyController *legacy.Controller
 	if provider != "vmware" {
 		c := legacy.ControllerConfig{
-			K8sClient:           k8sClient,
-			Logger:              config.Logger,
-			PrometheusClient:    prometheusClient,
-			VpaClient:           vpaClient,
-			Address:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-			BaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Bastions:            config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Provider:            provider,
-			Installation:        config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Customer:            config.Viper.GetString(config.Flag.Service.Installation.Customer),
-			Pipeline:            config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			Region:              config.Viper.GetString(config.Flag.Service.Installation.Region),
-			Registry:            config.Viper.GetString(config.Flag.Service.Installation.Registry),
-			CreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			RetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-			RetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-			PrometheusVersion:   config.Viper.GetString(config.Flag.Service.Prometheus.Version),
-			OpsgenieKey:         config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			RemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
-			RemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
-			RemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+			VpaClient:        vpaClient,
+
+			HTTPProxy:  os.Getenv("HTTP_PROXY"),
+			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
+			NoProxy:    os.Getenv("NO_PROXY"),
+
+			Bastions:     config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Customer:     config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Installation: config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:     config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Provider:     provider,
+			Region:       config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:     config.Viper.GetString(config.Flag.Service.Installation.Registry),
+
+			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+
+			PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			PrometheusCreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			PrometheusStorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			PrometheusRemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+			PrometheusRemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+			PrometheusRemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			PrometheusRetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			PrometheusRetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			PrometheusVersion:             config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+
+			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
+			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
 		}
 		legacyController, err = legacy.NewController(c)
 		if err != nil {
@@ -190,32 +213,41 @@ func New(config Config) (*Service, error) {
 	var managementclusterController *managementcluster.Controller
 	{
 		c := managementcluster.ControllerConfig{
-			K8sClient:               k8sClient,
-			Logger:                  config.Logger,
-			PrometheusClient:        prometheusClient,
-			VpaClient:               vpaClient,
-			Address:                 config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-			BaseDomain:              config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Provider:                provider,
-			Mayu:                    config.Viper.GetString(config.Flag.Service.Prometheus.Mayu),
-			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
-			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
-			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
-			CreatePVC:               config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			StorageSize:             config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			Vault:                   config.Viper.GetString(config.Flag.Service.Vault.Host),
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+			VpaClient:        vpaClient,
+
+			HTTPProxy:  os.Getenv("HTTP_PROXY"),
+			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
+			NoProxy:    os.Getenv("NO_PROXY"),
+
+			Bastions:     config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Customer:     config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Installation: config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:     config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Provider:     provider,
+			Region:       config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:     config.Viper.GetString(config.Flag.Service.Installation.Registry),
+
+			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+
+			PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			PrometheusCreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+			PrometheusStorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+			PrometheusRemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+			PrometheusRemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+			PrometheusRemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+			PrometheusRetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			PrometheusRetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			PrometheusVersion:             config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+
 			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
-			RetentionDuration:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-			RetentionSize:           config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-			PrometheusVersion:       config.Viper.GetString(config.Flag.Service.Prometheus.Version),
-			OpsgenieKey:             config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			RemoteWriteURL:          config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
-			RemoteWriteUsername:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
-			RemoteWritePassword:     config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+
+			Mayu:  config.Viper.GetString(config.Flag.Service.Prometheus.Mayu),
+			Vault: config.Viper.GetString(config.Flag.Service.Vault.Host),
 		}
 		managementclusterController, err = managementcluster.NewController(c)
 		if err != nil {

@@ -2,6 +2,7 @@ package key
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
@@ -13,7 +14,11 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
 
-const monitoring = "monitoring"
+const (
+	monitoring = "monitoring"
+
+	PrometheusMemoryLimitCoefficient float64 = 1.2
+)
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
 	clusterMetaObject, ok := obj.(metav1.Object)
@@ -66,10 +71,6 @@ func CAPICertificateNamespace(cluster metav1.Object) string {
 	return cluster.GetNamespace()
 }
 
-func SecretTLSCertificates(cluster metav1.Object) string {
-	return "prometheus-tls"
-}
-
 func IsMonitoringDisabled(cluster metav1.Object) bool {
 	ignored, ok := cluster.GetLabels()["giantswarm.io/monitoring"]
 	return ok && ignored == "false"
@@ -83,7 +84,7 @@ func EtcdSecret(obj interface{}) string {
 	return Secret()
 }
 
-func Labels(cluster metav1.Object) map[string]string {
+func PrometheusLabels(cluster metav1.Object) map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "prometheus",
 		"app.kubernetes.io/managed-by": project.Name(),
@@ -104,7 +105,12 @@ func PrometheusDefaultMemory() *resource.Quantity {
 }
 
 func PrometheusDefaultMemoryLimit() *resource.Quantity {
-	return resource.NewQuantity(1024*1024*1228, resource.DecimalSI)
+	return resource.NewQuantity(
+		int64(math.Floor(
+			1024*1024*1024*PrometheusMemoryLimitCoefficient,
+		)),
+		resource.DecimalSI,
+	)
 }
 
 func PrometheusPort() int32 {

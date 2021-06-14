@@ -1,0 +1,122 @@
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: bar
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+  name: bar
+  namespace: bar-prometheus
+spec:
+  additionalAlertManagerConfigs:
+    key: alertmanager-additional.yaml
+    name: alertmanager-config
+  additionalScrapeConfigs:
+    key: prometheus-additional.yaml
+    name: additional-scrape-configs
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: role
+            operator: NotIn
+            values:
+            - master
+  apiserverConfig:
+    host: https://master.bar:443
+    tlsConfig:
+      ca: {}
+      caFile: /etc/prometheus/secrets/cluster-certificates/ca
+      cert: {}
+      certFile: /etc/prometheus/secrets/cluster-certificates/crt
+      keyFile: /etc/prometheus/secrets/cluster-certificates/key
+  arbitraryFSAccessThroughSMs: {}
+  externalLabels:
+    cluster_id: bar
+    cluster_type: workload_cluster
+    customer: Giant Swarm
+    installation: test-installation
+    pipeline: testing
+    provider: provider
+    region: onprem
+  externalUrl: http://prometheus/bar
+  image: quay.io/giantswarm/prometheus:v2.27.1
+  logLevel: debug
+  podMetadata:
+    labels:
+      app.kubernetes.io/instance: bar
+      app.kubernetes.io/managed-by: prometheus-meta-operator
+      app.kubernetes.io/name: prometheus
+      giantswarm.io/monitoring: "true"
+  priorityClassName: prometheus
+  remoteWrite:
+  - basicAuth:
+      password:
+        key: password
+        name: remote-write
+      username:
+        key: username
+        name: remote-write
+    name: bar
+    queueConfig:
+      capacity: 10000
+      maxSamplesPerSend: 1000
+      minShards: 10
+    url: http://grafana/api/prom/push
+    writeRelabelConfigs:
+    - action: keep
+      regex: (^aggregation:.+|prometheus_tsdb_head_series|prometheus_tsdb_head_samples_appended_total|^slo_.+)
+      sourceLabels:
+      - __name__
+  replicas: 1
+  resources:
+    limits:
+      cpu: 150m
+      memory: "1288490188"
+    requests:
+      cpu: 100m
+      memory: "1073741824"
+  retention: 2w
+  retentionSize: 45Gi
+  routePrefix: /bar
+  ruleNamespaceSelector:
+    matchLabels:
+      name: monitoring
+  ruleSelector:
+    matchExpressions:
+    - key: cluster_type
+      operator: NotIn
+      values:
+      - management_cluster
+  rules:
+    alert: {}
+  secrets:
+  - cluster-certificates
+  securityContext:
+    fsGroup: 2000
+    runAsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 1000
+  serviceMonitorSelector:
+    matchLabels:
+      cluster_id: bar
+  storage:
+    volumeClaimTemplate:
+      metadata: {}
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+      status: {}
+  topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: prometheus
+    maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+  walCompression: true
+  web:
+    pageTitle: test-installation/bar Prometheus

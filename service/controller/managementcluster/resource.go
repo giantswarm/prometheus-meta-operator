@@ -10,49 +10,57 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeat"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/heartbeatrouting"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/ingress"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/remotewriteconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/remotewriteconfig"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/scrapeconfigs"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/tlscleanup"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/verticalpodautoscaler"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/volumeresizehack"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
 )
 
 type resourcesConfig struct {
-	Address                 string
-	BaseDomain              string
-	Bastions                []string
-	Mayu                    string
-	Provider                string
-	Installation            string
-	Pipeline                string
-	Region                  string
-	Registry                string
-	PrometheusVersion       string
-	Customer                string
-	CreatePVC               bool
-	StorageSize             string
-	Vault                   string
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
+	VpaClient        vpa_clientset.Interface
+
+	HTTPProxy  string
+	HTTPSProxy string
+	NoProxy    string
+
+	Bastions     []string
+	Customer     string
+	Installation string
+	Pipeline     string
+	Provider     string
+	Region       string
+	Registry     string
+
+	OpsgenieKey string
+
+	PrometheusAddress             string
+	PrometheusBaseDomain          string
+	PrometheusCreatePVC           bool
+	PrometheusStorageSize         string
+	PrometheusLogLevel            string
+	PrometheusRemoteWriteURL      string
+	PrometheusRemoteWriteUsername string
+	PrometheusRemoteWritePassword string
+	PrometheusRetentionDuration   string
+	PrometheusRetentionSize       string
+	PrometheusVersion             string
+
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
-	RetentionDuration       string
-	RetentionSize           string
-	OpsgenieKey             string
-	RemoteWriteURL          string
-	RemoteWriteUsername     string
-	RemoteWritePassword     string
-	K8sClient               k8sclient.Interface
-	Logger                  micrologger.Logger
-	PrometheusClient        promclient.Interface
-	VpaClient               vpa_clientset.Interface
+
+	Mayu  string
+	Vault string
 }
 
 func newResources(config resourcesConfig) ([]resource.Interface, error) {
@@ -66,19 +74,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		namespaceResource, err = namespace.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var tlsCleanupResource resource.Interface
-	{
-		c := tlscleanup.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		tlsCleanupResource, err = tlscleanup.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -128,8 +123,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := remotewriteconfig.Config{
 			K8sClient:           config.K8sClient,
 			Logger:              config.Logger,
-			RemoteWriteUsername: config.RemoteWriteUsername,
-			RemoteWritePassword: config.RemoteWritePassword,
+			RemoteWriteUsername: config.PrometheusRemoteWriteUsername,
+			RemoteWritePassword: config.PrometheusRemoteWritePassword,
 		}
 
 		remoteWriteConfigResource, err = remotewriteconfig.New(c)
@@ -141,21 +136,25 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
-			Address:           config.Address,
+			Address:           config.PrometheusAddress,
 			PrometheusClient:  config.PrometheusClient,
 			Logger:            config.Logger,
-			CreatePVC:         config.CreatePVC,
+			CreatePVC:         config.PrometheusCreatePVC,
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
-			PrometheusVersion: config.PrometheusVersion,
+			Version:           config.PrometheusVersion,
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
-			StorageSize:       config.StorageSize,
-			RetentionDuration: config.RetentionDuration,
-			RetentionSize:     config.RetentionSize,
-			RemoteWriteURL:    config.RemoteWriteURL,
+			StorageSize:       config.PrometheusStorageSize,
+			LogLevel:          config.PrometheusLogLevel,
+			RetentionDuration: config.PrometheusRetentionDuration,
+			RetentionSize:     config.PrometheusRetentionSize,
+			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
+			HTTPProxy:         config.HTTPProxy,
+			HTTPSProxy:        config.HTTPSProxy,
+			NoProxy:           config.NoProxy,
 		}
 
 		prometheusResource, err = prometheus.New(c)
@@ -173,20 +172,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		verticalPodAutoScalerResource, err = verticalpodautoscaler.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var volumeResizeHack resource.Interface
-	{
-		c := volumeresizehack.Config{
-			Logger:           config.Logger,
-			K8sClient:        config.K8sClient,
-			PrometheusClient: config.PrometheusClient,
-		}
-
-		volumeResizeHack, err = volumeresizehack.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -215,7 +200,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := ingress.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,
-			BaseDomain:              config.BaseDomain,
+			BaseDomain:              config.PrometheusBaseDomain,
 			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 		}
@@ -258,7 +243,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 
 	resources := []resource.Interface{
 		namespaceResource,
-		tlsCleanupResource,
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfig,
@@ -266,7 +250,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
-		volumeResizeHack,
 		ingressResource,
 		heartbeatResource,
 		heartbeatRoutingResource,

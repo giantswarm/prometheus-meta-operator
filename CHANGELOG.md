@@ -11,6 +11,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change severity of `ChartOperatorDown` alert to notify.
 
+## [1.40.0] - 2021-06-14
+
+### Changed
+
+- Lower `kubelet` SLO from 99.9% to 99%.
+
+## [1.39.0] - 2021-06-11
+
+### Added
+
+- Add ServiceLevelBurnRateTicket alert.
+- Add the prometheus log level option
+- Add high and low burn rates as recording rules.
+
+### Changed
+
+- Move managed apps SLO alerts to the service-level format.
+- Set `HighNumberOfAllocatedSockets` to notify not page
+- Extract `kubelet` and `api-server` SLO targets to their own recording rules.
+- Extract `kubelet` and `api-server` alerting thresholds to their own recording rules.
+- Change `ServiceLevelBurnRateTooHigh` to use new created values.
+
+### Fixed
+
+- Fixed the way VPA `maxAllowed` parameter for memory is calculated so that we
+  avoid going over node memory capacity with the memory limit (`maxAllowed` is
+  used for request and limit is that multiplied by 1.2).
+
+## [1.38.0] - 2021-05-28
+
+### Changed
+
+- Increased alert duration of `PrometheusCantCommunicateWithKubernetesAPI`.
+- Refactor resources to namespace monitoring and alerting code.
+- Add cluster-autoscaler to `WorkloadClusterContainerIsRestartingTooFrequentlyFirecracker`
+
+### Removed
+
+- Remove `tlscleanup` and `volumeresizehack` resources as they are not needed anymore.
+
+## [1.37.0] - 2021-05-26
+
+### Added
+
+- Add HTTP proxy support to Prometheus Remote Write.
+
+## [1.36.0] - 2021-05-25
+
+### Added
+
+- Added alert `HighNumberOfAllocatedSockets` for High number of allocated sockets
+- Added alert `HighNumberOfOrphanedSockets` for High number of orphaned sockets
+- Added alert `HighNumberOfTimeWaitSockets` for High number of time wait sockets
+- Added alert `AWSWorkloadClusterNodeTooManyAutoTermination` for terminate unhealthy feature.
+- Preserve and merge global HTTP client config when generating heartbeat
+  receivers in AlertManager config; this allows it to be used in environments
+  where internet access is only allowed through a proxy.
+
+### Changed
+
+- Include `cluster-api-core-unique-webhook` into `DeploymentNotSatisfiedFirecracker` and `DeploymentNotSatisfiedChinaFirecracker`.
+- Increased duration for `PrometheusPersistentVolumeSpaceTooLow` alert
+- Increased duration for `WorkloadClusterEtcdDBSizeTooLarge` alert.
+- Increased duration for `WorkloadClusterEtcdHasNoLeader` alert.
+- Silence `OperatorkitErrorRateTooHighCelestial` and `OperatorkitCRNotDeletedCelestial` outside working hours.
+- Update Prometheus to 2.27.1
+- Add atlas, and installation tag onto Heartbeats.
+
+### Fixed
+
+- Fix `PrometheusFailsToCommunicateWithRemoteStorageAPI` alert not firing on china clusters.
+
+## [1.35.0] - 2021-05-12
+
+### Added
+
+- Add alert `alertmanager-dashboard` not satisfied.
+
+## [1.34.1] - 2021-05-10
+
+### Fixed
+
+- inhibit KubeStateMetricsDown and KubeStateMetricsMissing
+
+## [1.34.0] - 2021-05-06
+
+### Changed
+
+- Lower the severity to notify for managed app's error budget alerts
+
+### Fixed
+
+- Fix ManagedApp alert
+- Fix `InhibitionKubeStateMetricsDown` not firing long enough
+
 ## [1.33.0] - 2021-04-27
 
 ### Changed
@@ -1024,7 +1119,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.33.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...HEAD
+[1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
+[1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
+[1.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.37.0...v1.38.0
+[1.37.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.36.0...v1.37.0
+[1.36.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.35.0...v1.36.0
+[1.35.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.34.1...v1.35.0
+[1.34.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.34.0...v1.34.1
+[1.34.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.33.0...v1.34.0
 [1.33.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.32.1...v1.33.0
 [1.32.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.32.0...v1.32.1
 [1.32.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.31.0...v1.32.0
