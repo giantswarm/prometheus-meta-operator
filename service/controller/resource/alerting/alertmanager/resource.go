@@ -65,7 +65,7 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 
 	return metav1.ObjectMeta{
 		Name:      key.ClusterID(cluster),
-		Namespace: key.Namespace(cluster),
+		Namespace: key.NamespaceMonitoring(),
 		Labels:    key.AlertmanagerLabels(cluster),
 	}, nil
 }

@@ -1,11 +1,11 @@
 metadata:
   creationTimestamp: null
   labels:
-    app.kubernetes.io/instance: foo
+    app.kubernetes.io/instance: alertmanager
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: alertmanager
   name: foo
-  namespace: foo-prometheus
+  namespace: monitoring
 spec:
   affinity:
     nodeAffinity:
@@ -19,7 +19,7 @@ spec:
   externalUrl: http://alertmanager/cluster
   podMetadata:
     labels:
-      app.kubernetes.io/instance: foo
+      app.kubernetes.io/instance: alertmanager
       app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: alertmanager
   priorityClassName: prometheus

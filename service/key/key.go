@@ -51,7 +51,7 @@ func NamespaceDefault(cluster metav1.Object) string {
 	return v1.NamespaceDefault
 }
 
-func NamespaceMonitoring(cluster metav1.Object) string {
+func NamespaceMonitoring() string {
 	return monitoring
 }
 
@@ -88,7 +88,7 @@ func AlertmanagerLabels(cluster metav1.Object) map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "alertmanager",
 		"app.kubernetes.io/managed-by": project.Name(),
-		"app.kubernetes.io/instance":   ClusterID(cluster),
+		"app.kubernetes.io/instance":   "alertmanager",
 	}
 }
 

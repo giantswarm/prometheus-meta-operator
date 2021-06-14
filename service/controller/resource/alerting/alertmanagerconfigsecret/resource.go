@@ -1,11 +1,9 @@
 package alertmanagerconfigsecret
 
 import (
-	"fmt"
 	"io/ioutil"
 	"path"
 	"reflect"
-	"strings"
 
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -86,14 +84,9 @@ func New(config Config) (*generic.Resource, error) {
 }
 
 func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
-	cluster, err := key.ToCluster(v)
-	if err != nil {
-		return metav1.ObjectMeta{}, microerror.Mask(err)
-	}
-
 	return metav1.ObjectMeta{
-		Name:      fmt.Sprintf("alertmanager-%s", config.Installation),
-		Namespace: key.Namespace(cluster),
+		Name:      "alertmanager-config",
+		Namespace: key.NamespaceMonitoring(),
 	}, nil
 }
 
@@ -108,7 +101,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	alertmanagerConfigSecret, err := toData(v, config)
+	alertmanagerConfig, err := toData(v, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -116,7 +109,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			key.AlertmanagerKey():         alertmanagerConfigSecret,
+			key.AlertmanagerKey():         alertmanagerConfig,
 			"notification-templates.tmpl": notificationTemplate,
 			"opsgenie.key":                []byte(config.OpsgenieKey),
 		},
@@ -148,13 +141,12 @@ func toData(v interface{}, config Config) ([]byte, error) {
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
 
 	var proxyURL *string = nil
-	if !strings.Contains(config.NoProxy, "api.opsgenie.com") {
-		if len(config.HTTPSProxy) > 0 {
-			proxyURL = &config.HTTPSProxy
-		} else if len(config.HTTPProxy) > 0 {
-			proxyURL = &config.HTTPProxy
-		}
+	if len(config.HTTPSProxy) > 0 {
+		proxyURL = &config.HTTPSProxy
+	} else if len(config.HTTPProxy) > 0 {
+		proxyURL = &config.HTTPProxy
 	}
+
 	d := &TemplateData{
 		Provider:         config.Provider,
 		Installation:     config.Installation,
