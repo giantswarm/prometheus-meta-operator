@@ -173,6 +173,9 @@ func toAlertmanager(v interface{}, config Config) (metav1.Object, error) {
 					},
 				},
 			},
+			AlertmanagerConfigNamespaceSelector: &metav1.LabelSelector{
+				MatchLabels: key.NamespaceLabels(),
+			},
 			TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
 				{
 					MaxSkew:           1,

@@ -49,7 +49,8 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name: key.Namespace(cluster),
+		Name:   key.Namespace(cluster),
+		Labels: key.NamespaceLabels(),
 	}, nil
 }
 
