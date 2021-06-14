@@ -145,6 +145,12 @@ spec:
       record: slo_errors_per_request:ratio_rate1h
     - expr: sum(sum_over_time(raw_slo_errors[6h])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[6h])) by (cluster_type, cluster_id, service, class, area)
       record: slo_errors_per_request:ratio_rate6h
+    - expr: sum(sum_over_time(raw_slo_errors[2h])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[2h])) by (cluster_type, cluster_id, service, class, area)
+      record: slo_errors_per_request:ratio_rate2h
+    - expr: sum(sum_over_time(raw_slo_errors[24h])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[24h])) by (cluster_type, cluster_id, service, class, area)
+      record: slo_errors_per_request:ratio_rate24h
+    - expr: sum(sum_over_time(raw_slo_errors[3d])) by (cluster_type, cluster_id, service, class, area) / sum(sum_over_time(raw_slo_requests[3d])) by (cluster_type, cluster_id, service, class, area)
+      record: slo_errors_per_request:ratio_rate3d
       # -- We use the `min` function here because we have `slo_burnrate_high` for each installation and cluster_id, even though the metric value is always the same.
     - expr: slo_target*scalar(min(slo_burnrate_high))
       record: slo_threshold_high
