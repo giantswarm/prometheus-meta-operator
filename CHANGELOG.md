@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Lower Prometheus disk space alert from 10% to 5%.
+
 ## [1.40.0] - 2021-06-14
 
 ### Changed
