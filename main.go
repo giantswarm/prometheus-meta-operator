@@ -119,6 +119,13 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")
 
+	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Address, "", "Address to access Alertmanager UI.")
+	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.BaseDomain, "", "Base domain to create Alertmanager Ingress resources under.")
+	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.LogLevel, "info", "Prometheus log level.")
+	daemonCommand.PersistentFlags().Bool(f.Service.Alertmanager.Storage.CreatePVC, false, "Should the operator create a PVC for storage.")
+	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Storage.Size, "1Gi", "Storage size for alertmanagers.")
+	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Version, "v0.22.1", "Alertmanager container image version.")
+
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Address, "", "Address to access Prometheus UI.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.BaseDomain, "", "Base domain to create Prometheus Ingress resources under.")
 	daemonCommand.PersistentFlags().StringSlice(f.Service.Prometheus.Bastions, make([]string, 0), "Address of the bastions.")
@@ -133,6 +140,9 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "100Gi", "Storage size for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.27.1", "Prometheus container image version.")
 
+	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")
+	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
+	daemonCommand.PersistentFlags().String(f.Service.Slack.ProjectName, "", "Slack project name.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Security.RestrictedAccess.Enabled, false, "Is the access to the prometheus restricted to certain subnets?")
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")
 
