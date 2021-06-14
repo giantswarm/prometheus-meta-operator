@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add term to not count api-server errors for clusters in transitioning state.
 
+## [1.40.0] - 2021-06-14
+
 ### Changed
 
 - Lower `kubelet` SLO from 99.9% to 99%.
@@ -1116,7 +1118,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...HEAD
+[1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.36.0...v1.37.0
