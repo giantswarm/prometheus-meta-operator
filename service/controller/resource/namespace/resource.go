@@ -1,6 +1,8 @@
 package namespace
 
 import (
+	"reflect"
+
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -72,5 +74,8 @@ func toNamespace(v interface{}) (metav1.Object, error) {
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	return false
+	c := current.(*corev1.Namespace)
+	d := desired.(*corev1.Namespace)
+
+	return !reflect.DeepEqual(c.Labels, d.Labels) || !reflect.DeepEqual(c.Annotations, d.Annotations)
 }

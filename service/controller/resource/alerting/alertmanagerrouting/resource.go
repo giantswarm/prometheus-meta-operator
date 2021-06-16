@@ -85,11 +85,6 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	labels := make(map[string]string)
-	for k, v := range key.AlertmanagerLabels(cluster) {
-		labels[k] = v
-	}
-
 	sendResolved := false
 	urlAddress, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", key.HeartbeatName(cluster, config.Installation)))
 	if err != nil {
