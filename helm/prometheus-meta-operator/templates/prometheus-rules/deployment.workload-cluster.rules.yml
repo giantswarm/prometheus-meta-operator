@@ -22,6 +22,17 @@ spec:
         severity: page
         team: batman
         topic: releng
+    - alert: WorkloadClusterDeploymentNotSatisfiedLudacris
+      annotations:
+        description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
+        opsrecipe: workload-cluster-deployment-not-satisfied/
+      expr: kube_deployment_status_replicas_unavailable{cluster_type="workload_cluster", deployment="metrics-server"} > 0
+      for: 30m
+      labels:
+        area: kaas
+        severity: page
+        team: ludacris
+        topic: observability
     - alert: WorkloadClusterManagedDeploymentNotSatisfied
       annotations:
         description: '{{`Deployment {{ $labels.namespace}}/{{ $labels.deployment }} is not satisfied.`}}'
