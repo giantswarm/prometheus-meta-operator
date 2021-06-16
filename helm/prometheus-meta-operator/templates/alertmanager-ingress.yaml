@@ -25,5 +25,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: alertmanager-operated"
+          serviceName: alertmanager-operated
           servicePort: 9093
