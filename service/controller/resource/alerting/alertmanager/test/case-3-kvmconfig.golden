@@ -4,7 +4,7 @@ metadata:
     app.kubernetes.io/instance: alertmanager
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: alertmanager
-  name: bar
+  name: alertmanager
   namespace: monitoring
 spec:
   affinity:
