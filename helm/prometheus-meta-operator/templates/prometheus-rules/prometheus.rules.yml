@@ -34,3 +34,33 @@ spec:
         severity: page
         team: atlas
         topic: observability
+    - alert: PrometheusHighMemoryUsage
+      annotations:
+        description: |-
+          {{`Prometheus in pod {{ $labels.namespace }}/{{ $labels.pod }} is using >95% of node's memory.
+          VALUE = {{ $value }}
+          LABALE = {{ $labels }}`}}
+        opsrecipe: TODO/
+      # `node` label is sometimes a name and sometimes IP, and it was different
+      # between those metrics on kvm installations, so extract IP to be able to match
+      expr: |
+        sum by (node_ip, pod) (
+          label_replace(
+            container_memory_working_set_bytes{pod=~"^prometheus-.+-\\d+$", container="prometheus"},
+            "node_ip", "$1", "instance", "(.*):.*"
+          )
+        )
+        / on (node_ip) group_left
+        label_replace(
+          node_memory_MemTotal_bytes,
+          "node_ip", "$1", "instance", "(.*):.*"
+        )
+        * 100
+        > 95
+      for: 5m
+      labels:
+        area: empowerment
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: atlas
+        topic: observability
