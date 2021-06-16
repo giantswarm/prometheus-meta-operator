@@ -16,7 +16,15 @@ project:
   commit: "[[ .SHA ]]"
 
 alertmanager:
+  address: "https://alertmanager:9093"
   logLevel: info
+  storage:
+    enabled: true
+    createPVC: true
+    size: 1Gi
 
 prometheus:
+  address: "https://prometheus:9090"
+  host: "prometheus:9090"
   logLevel: info
+  letsencrypt: false
