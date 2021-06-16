@@ -79,6 +79,29 @@
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
 [[ end ]]
+[[- if eq .ClusterType "management_cluster" ]]
+# falco-exporter
+- job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - giantswarm
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: falco-exporter
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+[[ include "_common" . | indent 2 ]]
+[[ include "_labelingschema" . | indent 2 ]]
+[[ end ]]
 # Add scrape configuration for cadvisor
 - job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
   honor_labels: true
@@ -1693,27 +1716,6 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# falco-exporter
-- job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: falco-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
 # flannel-operator
