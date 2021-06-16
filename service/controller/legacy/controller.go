@@ -33,8 +33,7 @@ type ControllerConfig struct {
 	Region       string
 	Registry     string
 
-	AlertmanagerBaseDomain string
-	OpsgenieKey            string
+	OpsgenieKey string
 
 	PrometheusAddress             string
 	PrometheusBaseDomain          string

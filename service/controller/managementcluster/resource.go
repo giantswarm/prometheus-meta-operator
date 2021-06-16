@@ -15,9 +15,8 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
-	alertingingress "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/ingress"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
-	monitoringingress "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
@@ -249,25 +248,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertingIngressResource resource.Interface
+	var ingressResource resource.Interface
 	{
-		c := alertingingress.Config{
-			K8sClient:               config.K8sClient,
-			Logger:                  config.Logger,
-			BaseDomain:              config.AlertmanagerBaseDomain,
-			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
-			WhitelistedSubnets:      config.WhitelistedSubnets,
-		}
-
-		alertingIngressResource, err = alertingingress.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var monitoringIngressResource resource.Interface
-	{
-		c := monitoringingress.Config{
+		c := ingress.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,
 			BaseDomain:              config.PrometheusBaseDomain,
@@ -275,7 +258,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 		}
 
-		monitoringIngressResource, err = monitoringingress.New(c)
+		ingressResource, err = ingress.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -322,8 +305,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
-		alertingIngressResource,
-		monitoringIngressResource,
+		ingressResource,
 		heartbeatResource,
 		heartbeatRoutingResource,
 	}
