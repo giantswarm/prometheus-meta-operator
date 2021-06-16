@@ -10,11 +10,14 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
+	alertingingress "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/ingress"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
+	monitoringingress "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
@@ -42,7 +45,16 @@ type resourcesConfig struct {
 	Region       string
 	Registry     string
 
-	OpsgenieKey string
+	AlertmanagerAddress     string
+	AlertmanagerBaseDomain  string
+	AlertmanagerCreatePVC   bool
+	AlertmanagerLogLevel    string
+	AlertmanagerStorageSize string
+	AlertmanagerVersion     string
+	GrafanaAddress          string
+	OpsgenieKey             string
+	SlackApiURL             string
+	SlackProjectName        string
 
 	PrometheusAddress             string
 	PrometheusBaseDomain          string
@@ -105,14 +117,56 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfig resource.Interface
+	var alertmanagerResource resource.Interface
+	{
+		c := alertmanager.Config{
+			Address:     config.AlertmanagerAddress,
+			Client:      config.PrometheusClient,
+			Logger:      config.Logger,
+			CreatePVC:   config.AlertmanagerCreatePVC,
+			LogLevel:    config.AlertmanagerLogLevel,
+			StorageSize: config.AlertmanagerStorageSize,
+			Version:     config.AlertmanagerVersion,
+		}
+
+		alertmanagerResource, err = alertmanager.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerConfigSecretResource resource.Interface
+	{
+		c := alertmanagerconfigsecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			Installation:     config.Installation,
+			Pipeline:         config.Pipeline,
+			Provider:         config.Provider,
+			HTTPProxy:        config.HTTPProxy,
+			HTTPSProxy:       config.HTTPSProxy,
+			NoProxy:          config.NoProxy,
+			OpsgenieKey:      config.OpsgenieKey,
+			GrafanaAddress:   config.GrafanaAddress,
+			SlackApiURL:      config.SlackApiURL,
+			SlackProjectName: config.SlackProjectName,
+		}
+
+		alertmanagerConfigSecretResource, err = alertmanagerconfigsecret.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerConfigResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 		}
 
-		alertmanagerConfig, err = alertmanagerconfig.New(c)
+		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -195,9 +249,25 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var ingressResource resource.Interface
+	var alertingIngressResource resource.Interface
 	{
-		c := ingress.Config{
+		c := alertingingress.Config{
+			K8sClient:               config.K8sClient,
+			Logger:                  config.Logger,
+			BaseDomain:              config.AlertmanagerBaseDomain,
+			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
+			WhitelistedSubnets:      config.WhitelistedSubnets,
+		}
+
+		alertingIngressResource, err = alertingingress.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var monitoringIngressResource resource.Interface
+	{
+		c := monitoringingress.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,
 			BaseDomain:              config.PrometheusBaseDomain,
@@ -205,7 +275,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 		}
 
-		ingressResource, err = ingress.New(c)
+		monitoringIngressResource, err = monitoringingress.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -245,12 +315,15 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		namespaceResource,
 		etcdCertificatesResource,
 		rbacResource,
-		alertmanagerConfig,
+		alertmanagerResource,
+		alertmanagerConfigSecretResource,
+		alertmanagerConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
-		ingressResource,
+		alertingIngressResource,
+		monitoringIngressResource,
 		heartbeatResource,
 		heartbeatRoutingResource,
 	}

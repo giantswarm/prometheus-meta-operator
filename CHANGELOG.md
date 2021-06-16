@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added Alertmanager managed by Prometheus Operator.
+
 ### Changed
 
 - Lower Prometheus disk space alert from 10% to 5%.
