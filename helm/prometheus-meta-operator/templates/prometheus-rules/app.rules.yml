@@ -124,7 +124,7 @@ spec:
         sig: none
         team: batman
         topic: releng
-    {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
+    {{- if eq .Values.managementCluster.provider.kind "aws" }}
     - alert: ClusterAutoscalerAppFailedAWS
       annotations:
         description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'
@@ -179,7 +179,7 @@ spec:
         team: batman
         topic: releng
     {{- end }}
-    {{- if eq .Values.Installation.V1.Provider.Kind "azure" }}
+    {{- if eq .Values.managementCluster.provider.kind "azure" }}
     - alert: ClusterAutoscalerAppFailedAzure
       annotations:
         description: '{{`App {{ $labels.name }}, version {{ $labels.version }} is in failed state.`}}'

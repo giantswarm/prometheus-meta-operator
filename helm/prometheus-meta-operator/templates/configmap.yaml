@@ -22,63 +22,59 @@ data:
           crtFile: ''
           keyFile: ''
       alertmanager:
-        address: {{ .Values.Installation.V1.Monitoring.Alertmanager.Address }}
-        baseDomain: {{ .Values.Installation.V1.Monitoring.Alertmanager.Host }}
+        address: {{ .Values.alertmanager.address }}
+        baseDomain: {{ .Values.alertmanager.host }}
         logLevel: {{ .Values.alertmanager.logLevel }}
         storage:
-          createPVC: {{ and .Values.Installation.V1.Monitoring.Alertmanager.Storage.Enabled .Values.Installation.V1.Monitoring.Alertmanager.Storage.CreatePVC }}
-          size: {{ .Values.Installation.V1.Monitoring.Alertmanager.Storage.PVCSize }}
+          createPVC: {{ and .Values.alertmanager.storage.enabled .Values.alertmanager.storage.createPVC }}
+          size: {{ .Values.alertmanager.storage.pvcSize }}
       prometheus:
-        address: {{ .Values.Installation.V1.Monitoring.Prometheus.Address }}
-        baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
-        bastions: 
-        {{- range .Values.Installation.V1.Monitoring.Prometheus.Bastions }}
+        address: {{ .Values.prometheus.address }}
+        baseDomain: {{ .Values.prometheus.host }}
+        bastions:
+        {{- range .Values.prometheus.bastions }}
         - {{ . }}
         {{- end }}
         logLevel: {{ .Values.prometheus.logLevel }}
-        mayu: {{ .Values.Installation.V1.Monitoring.Prometheus.Mayu }}
+        mayu: {{ .Values.prometheus.mayu }}
         remoteWrite:
           url: https://prometheus-us-central1.grafana.net/api/prom/push
         retention:
           duration: 2w
           size: 90GB
         storage:
-          createPVC: {{ and .Values.Installation.V1.Monitoring.Prometheus.Storage.Enabled .Values.Installation.V1.Monitoring.Prometheus.Storage.CreatePVC }}
+          createPVC: {{ and .Values.prometheus.storage.enabled .Values.prometheus.storage.createPVC }}
           size: 100Gi
       slack:
-        apiURL: {{ .Values.Installation.V1.Secret.Alertmanager.Slack.ApiUrl }}
-        {{- if .Values.Installation.V1.Slack }}
-        {{- if .Values.Installation.V1.Slack.ProjectName }}
-        projectName: {{.Values.Installation.V1.Slack.ProjectName}}
+        apiURL: {{ .Values.alertmanager.slack.apiUrl }}
+        {{- if .Values.slack }}
+        {{- if .Values.slack.projectName }}
+        projectName: {{.Values.slack.projectName}}
         {{- else }}
-        projectName: {{printf "project-%s" .Values.Installation.V1.Customer }}
+        projectName: {{printf "project-%s" .Values.managementCluster.customer }}
         {{- end }}
         {{- else }}
-        projectName: {{printf "project-%s" .Values.Installation.V1.Customer }}
+        projectName: {{printf "project-%s" .Values.managementCluster.customer }}
         {{- end }}
       grafana:
-        address: {{ .Values.Installation.V1.Monitoring.Grafana.Address }}
+        address: {{ .Values.grafana.address }}
       security:
-        restrictedAccess: 
-          enabled: {{ .Values.Installation.V1.Security.RestrictAccess.Enabled }}
-          subnets: {{ .Values.Installation.V1.Security.Subnet.VPN }}
+        restrictedAccess:
+          enabled: {{ .Values.security.restrictAccess.enabled }}
+          subnets: {{ .Values.security.subnet.vpn }}
       provider:
-        kind: {{ .Values.Installation.V1.Provider.Kind }}
+        kind: {{ .Values.managementCluster.provider.kind }}
       installation:
-        customer: {{ .Values.Installation.V1.Customer }}
-        name: {{ .Values.Installation.V1.Name }}
-        {{- if .Values.Installation.V1.Infra.TestingEnvironment }}
-        pipeline: testing
-        {{- else }}
-        pipeline: stable
-        {{- end }}
-        {{- if eq .Values.Installation.V1.Provider.Kind "aws" }}
-        region: {{ .Values.Installation.V1.Provider.AWS.Region }}
-        {{- else if eq .Values.Installation.V1.Provider.Kind "azure" }}
-        region: {{ .Values.Installation.V1.Provider.Azure.Location }}
+        customer: {{ .Values.managementCluster.customer }}
+        name: {{ .Values.managementCluster.name }}
+        pipeline: {{ .Values.managementCluster.pipeline }}
+        {{- if eq .Values.managementCluster.provider.kind "aws" }}
+        region: {{ .Values.managementCluster.provider.region }}
+        {{- else if eq .Values.managementCluster.provider.kind "azure" }}
+        region: {{ .Values.managementCluster.provider.region }}
         {{- else }}
         region: onprem
         {{- end }}
-        registry: {{ .Values.Installation.V1.Registry.Domain }}
+        registry: {{ .Values.registry.domain }}
       vault:
-        host: {{ .Values.Installation.V1.Auth.Vault.Host }}
+        host: {{ .Values.vaultHost }}
