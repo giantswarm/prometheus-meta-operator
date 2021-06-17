@@ -45,8 +45,9 @@ func TestEnsureReceiver(t *testing.T) {
 									URL: u,
 								},
 								HTTPConfig: &promcommonconfig.HTTPClientConfig{
-									BasicAuth: &promcommonconfig.BasicAuth{
-										Password: "secret-key",
+									Authorization: &promcommonconfig.Authorization{
+										Type:        "GenieKey",
+										Credentials: "secret-key",
 									},
 								},
 								NotifierConfig: alertmanagerconfig.NotifierConfig{
@@ -73,8 +74,9 @@ func TestEnsureReceiver(t *testing.T) {
 									URL: u,
 								},
 								HTTPConfig: &promcommonconfig.HTTPClientConfig{
-									BasicAuth: &promcommonconfig.BasicAuth{
-										Password: "wrong",
+									Authorization: &promcommonconfig.Authorization{
+										Type:        "Bearer",
+										Credentials: "secret-key",
 									},
 								},
 								NotifierConfig: alertmanagerconfig.NotifierConfig{
@@ -101,8 +103,9 @@ func TestEnsureReceiver(t *testing.T) {
 									URL: u,
 								},
 								HTTPConfig: &promcommonconfig.HTTPClientConfig{
-									BasicAuth: &promcommonconfig.BasicAuth{
-										Password: "something",
+									Authorization: &promcommonconfig.Authorization{
+										Type:        "GenieKey",
+										Credentials: "something",
 									},
 								},
 								NotifierConfig: alertmanagerconfig.NotifierConfig{
@@ -175,8 +178,9 @@ func TestEnsureReceiverWithProxy(t *testing.T) {
 							URL: u,
 						},
 						HTTPConfig: &promcommonconfig.HTTPClientConfig{
-							BasicAuth: &promcommonconfig.BasicAuth{
-								Password: "secret-key",
+							Authorization: &promcommonconfig.Authorization{
+								Type:        "GenieKey",
+								Credentials: "secret-key",
 							},
 							ProxyURL: promcommonconfig.URL{URL: &url.URL{Host: "proxyhost:8080"}},
 						},
