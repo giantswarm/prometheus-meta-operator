@@ -10,7 +10,9 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
@@ -42,12 +44,21 @@ type resourcesConfig struct {
 	Region       string
 	Registry     string
 
-	OpsgenieKey string
+	AlertmanagerAddress     string
+	AlertmanagerCreatePVC   bool
+	AlertmanagerLogLevel    string
+	AlertmanagerStorageSize string
+	AlertmanagerVersion     string
+	GrafanaAddress          string
+	OpsgenieKey             string
+	SlackApiURL             string
+	SlackProjectName        string
 
 	PrometheusAddress             string
 	PrometheusBaseDomain          string
 	PrometheusCreatePVC           bool
 	PrometheusStorageSize         string
+	PrometheusLogLevel            string
 	PrometheusRemoteWriteURL      string
 	PrometheusRemoteWriteUsername string
 	PrometheusRemoteWritePassword string
@@ -104,14 +115,56 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfig resource.Interface
+	var alertmanagerResource resource.Interface
+	{
+		c := alertmanager.Config{
+			Address:     config.AlertmanagerAddress,
+			Client:      config.PrometheusClient,
+			Logger:      config.Logger,
+			CreatePVC:   config.AlertmanagerCreatePVC,
+			LogLevel:    config.AlertmanagerLogLevel,
+			StorageSize: config.AlertmanagerStorageSize,
+			Version:     config.AlertmanagerVersion,
+		}
+
+		alertmanagerResource, err = alertmanager.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerConfigSecretResource resource.Interface
+	{
+		c := alertmanagerconfigsecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			Installation:     config.Installation,
+			Pipeline:         config.Pipeline,
+			Provider:         config.Provider,
+			HTTPProxy:        config.HTTPProxy,
+			HTTPSProxy:       config.HTTPSProxy,
+			NoProxy:          config.NoProxy,
+			OpsgenieKey:      config.OpsgenieKey,
+			GrafanaAddress:   config.GrafanaAddress,
+			SlackApiURL:      config.SlackApiURL,
+			SlackProjectName: config.SlackProjectName,
+		}
+
+		alertmanagerConfigSecretResource, err = alertmanagerconfigsecret.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerConfigResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 		}
 
-		alertmanagerConfig, err = alertmanagerconfig.New(c)
+		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -142,11 +195,12 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
-			PrometheusVersion: config.PrometheusVersion,
+			Version:           config.PrometheusVersion,
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
 			StorageSize:       config.PrometheusStorageSize,
+			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
 			RetentionSize:     config.PrometheusRetentionSize,
 			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
@@ -243,7 +297,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		namespaceResource,
 		etcdCertificatesResource,
 		rbacResource,
-		alertmanagerConfig,
+		alertmanagerResource,
+		alertmanagerConfigSecretResource,
+		alertmanagerConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,

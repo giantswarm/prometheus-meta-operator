@@ -32,17 +32,19 @@ type Config struct {
 	Customer          string
 	Installation      string
 	Pipeline          string
-	PrometheusVersion string
 	Provider          string
 	Region            string
 	Registry          string
 	StorageSize       string
+	LogLevel          string
 	RetentionDuration string
 	RetentionSize     string
 	RemoteWriteURL    string
-	HTTPProxy         string
-	HTTPSProxy        string
-	NoProxy           string
+	Version           string
+
+	HTTPProxy  string
+	HTTPSProxy string
+	NoProxy    string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -78,7 +80,7 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      key.ClusterID(cluster),
 		Namespace: key.Namespace(cluster),
-		Labels:    key.Labels(cluster),
+		Labels:    key.PrometheusLabels(cluster),
 	}, nil
 }
 
@@ -142,13 +144,13 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	labels := make(map[string]string)
-	for k, v := range key.Labels(cluster) {
+	for k, v := range key.PrometheusLabels(cluster) {
 		labels[k] = v
 	}
 
 	labels["giantswarm.io/monitoring"] = "true"
 
-	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.PrometheusVersion)
+	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
@@ -167,8 +169,8 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-
-			Image: &image,
+			LogLevel: config.LogLevel,
+			Image:    &image,
 			Web: &promv1.WebSpec{
 				PageTitle: &pageTitle,
 			},
@@ -218,9 +220,9 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				NodeAffinity: &corev1.NodeAffinity{
 					RequiredDuringSchedulingIgnoredDuringExecution: &corev1.NodeSelector{
 						NodeSelectorTerms: []corev1.NodeSelectorTerm{
-							corev1.NodeSelectorTerm{
+							{
 								MatchExpressions: []corev1.NodeSelectorRequirement{
-									corev1.NodeSelectorRequirement{
+									{
 										Key:      "role",
 										Operator: corev1.NodeSelectorOpNotIn,
 										Values: []string{
@@ -234,20 +236,20 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				},
 			},
 			TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
-				corev1.TopologySpreadConstraint{
+				{
 					MaxSkew:           1,
 					TopologyKey:       "kubernetes.io/hostname",
 					WhenUnsatisfiable: corev1.ScheduleAnyway,
 					LabelSelector: &metav1.LabelSelector{
 						MatchLabels: map[string]string{
-							"app": "prometheus",
+							"app.kubernetes.io/name": "prometheus",
 						},
 					},
 				},
 			},
 			RuleNamespaceSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
-					"name": key.NamespaceMonitoring(cluster),
+					"name": key.NamespaceMonitoring(),
 				},
 			},
 			PriorityClassName: "prometheus",

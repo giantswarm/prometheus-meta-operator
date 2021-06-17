@@ -1,0 +1,52 @@
+{{ define "__alertmanager" }}AlertManager{{ end }}
+{{ define "__alertmanagerURL" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}{{ end }}
+
+{{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
+{{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
+{{ define "slack.default.fallback" }}{{ template "slack.default.title" . }} | {{ template "slack.default.titlelink" . }}{{ end }}
+{{ define "slack.default.pretext" }}{{ end }}
+{{ define "slack.default.titlelink" }}{{ template "__alertmanagerURL" . }}{{ end }}
+{{ define "slack.default.iconemoji" }}{{ end }}
+{{ define "slack.default.iconurl" }}{{ end }}
+{{ define "slack.default.text" }}*Cluster:* {{ (index .Alerts 0).Labels.installation }}{{ if (index .Alerts 0).Labels.cluster_id }} / {{ (index .Alerts 0).Labels.cluster_id }}{{ end }}
+*Area:* {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
+{{- if (index .Alerts 0).Annotations.description }}
+*Instances*
+{{ if eq .Status "firing" }}
+{{ range .Alerts.Firing }}:fire: {{ .Labels.instance }}: {{ .Annotations.description }}
+{{ end }}
+{{ else }}
+{{ range .Alerts.Resolved }}:success: {{ .Labels.instance }}: {{ .Annotations.description }}
+{{ end }}
+{{ end }}
+{{- end }}
+{{ end }}
+
+{{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
+{{ define "opsgenie.default.description" }}*Team:* {{ (index .Alerts 0).Labels.team }}
+*Area:* {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
+{{- if (index .Alerts 0).Annotations.opsrecipe }}
+*Recipe:* https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}
+{{- end }}
+{{ range .Alerts.Firing }} :fire: {{ .Labels.instance }}: {{ .Annotations.description }}
+{{ end }}
+{{- end }}
+{{ define "opsgenie.default.source" }}{{ template "__alertmanagerURL" . }}{{ end }}
+
+# This builds the silence URL.  We exclude the alertname in the range
+# to avoid the issue of having trailing comma separator (%2C) at the end
+# of the generated URL
+{{ define "__alert_silence_link" -}}
+    {{ .ExternalURL }}/#/silences/new?filter=%7B
+    {{- range .CommonLabels.SortedPairs -}}
+        {{- if ne .Name "alertname" -}}
+            {{- .Name }}%3D"{{- .Value -}}"%2C%20
+        {{- end -}}
+    {{- end -}}
+    alertname%3D"{{ .CommonLabels.alertname }}"%7D
+{{- end }}
+
+# Link to related PMs
+{{ define "__alert_linked_postmortems" -}}
+https://github.com/giantswarm/giantswarm/issues?q=is%3Aissue+is%3Aopen+label%3Apostmortem+label%3Aalert%2F{{ .CommonLabels.alertname }}
+{{- end }}

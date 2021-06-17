@@ -21,6 +21,12 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
+      alertmanager:
+        address: {{ .Values.Installation.V1.Monitoring.Alertmanager.Address }}
+        logLevel: {{ .Values.alertmanager.logLevel }}
+        storage:
+          createPVC: {{ and .Values.Installation.V1.Monitoring.Alertmanager.Storage.Enabled .Values.Installation.V1.Monitoring.Alertmanager.Storage.CreatePVC }}
+          size: {{ .Values.Installation.V1.Monitoring.Alertmanager.Storage.PVCSize }}
       prometheus:
         address: {{ .Values.Installation.V1.Monitoring.Prometheus.Address }}
         baseDomain: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
@@ -28,6 +34,7 @@ data:
         {{- range .Values.Installation.V1.Monitoring.Prometheus.Bastions }}
         - {{ . }}
         {{- end }}
+        logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.Installation.V1.Monitoring.Prometheus.Mayu }}
         remoteWrite:
           url: https://prometheus-us-central1.grafana.net/api/prom/push
@@ -37,6 +44,19 @@ data:
         storage:
           createPVC: {{ and .Values.Installation.V1.Monitoring.Prometheus.Storage.Enabled .Values.Installation.V1.Monitoring.Prometheus.Storage.CreatePVC }}
           size: 100Gi
+      slack:
+        apiURL: {{ .Values.Installation.V1.Secret.Alertmanager.Slack.ApiUrl }}
+        {{- if .Values.Installation.V1.Slack }}
+        {{- if .Values.Installation.V1.Slack.ProjectName }}
+        projectName: {{.Values.Installation.V1.Slack.ProjectName}}
+        {{- else }}
+        projectName: {{printf "project-%s" .Values.Installation.V1.Customer }}
+        {{- end }}
+        {{- else }}
+        projectName: {{printf "project-%s" .Values.Installation.V1.Customer }}
+        {{- end }}
+      grafana:
+        address: {{ .Values.Installation.V1.Monitoring.Grafana.Address }}
       security:
         restrictedAccess: 
           enabled: {{ .Values.Installation.V1.Security.RestrictAccess.Enabled }}

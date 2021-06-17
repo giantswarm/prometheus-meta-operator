@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add Alertmanager managed by Prometheus Operator.
+- Add Alertmanager ingress.
+- Add `WorkloadClusterDeploymentNotSatisfiedLudacris` to monitor `metrics-server` in workload clusters.
+
+### Changed
+
+- Lower Prometheus disk space alert from 10% to 5%.
+- Change severity of `ChartOperatorDown` alert to notify.
+- Merge all provider certificate.management-cluster.rules into one prometheus rule.
+
+### Fixed
+
+- Fix service name in ingress.
+
+## [1.40.0] - 2021-06-14
+
+### Changed
+
+- Lower `kubelet` SLO from 99.9% to 99%.
+
+## [1.39.0] - 2021-06-11
+
+### Added
+
+- Add ServiceLevelBurnRateTicket alert.
+- Add the prometheus log level option
+- Add high and low burn rates as recording rules.
+
+### Changed
+
+- Move managed apps SLO alerts to the service-level format.
+- Set `HighNumberOfAllocatedSockets` to notify not page
+- Extract `kubelet` and `api-server` SLO targets to their own recording rules.
+- Extract `kubelet` and `api-server` alerting thresholds to their own recording rules.
+- Change `ServiceLevelBurnRateTooHigh` to use new created values.
+
 ### Fixed
 
 - Fixed the way VPA `maxAllowed` parameter for memory is calculated so that we
@@ -1097,7 +1135,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...HEAD
+[1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
+[1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.37.0...v1.38.0
 [1.37.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.36.0...v1.37.0
 [1.36.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.35.0...v1.36.0
