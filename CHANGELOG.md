@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lower Prometheus disk space alert from 10% to 5%.
 - Change severity of `ChartOperatorDown` alert to notify.
 - Merge all provider certificate.management-cluster.rules into one prometheus rule.
+- Change `ServiceLevelBurnRateTooHigh` to opt-in for services.
 
 ### Fixed
 
