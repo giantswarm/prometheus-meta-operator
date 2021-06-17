@@ -39,7 +39,7 @@ spec:
         description: |-
           {{`Prometheus in pod {{ $labels.namespace }}/{{ $labels.pod }} is using >95% of node's memory.
           VALUE = {{ $value }}
-          LABALE = {{ $labels }}`}}
+          LABELS = {{ $labels }}`}}
         opsrecipe: TODO/
       # `node` label is sometimes a name and sometimes IP, and it was different
       # between those metrics on kvm installations, so extract IP to be able to match
