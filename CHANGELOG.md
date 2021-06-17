@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added Alertmanager managed by Prometheus Operator.
-- Added Alertmanager ingress.
+- Add Alertmanager managed by Prometheus Operator.
+- Add Alertmanager ingress.
+- Add `WorkloadClusterDeploymentNotSatisfiedLudacris` to monitor `metrics-server` in workload clusters.
 
 ### Changed
 
@@ -18,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change severity of `ChartOperatorDown` alert to notify.
 - Merge all provider certificate.management-cluster.rules into one prometheus rule.
 
-### Fixed 
+### Fixed
 
 - Fix service name in ingress.
 
