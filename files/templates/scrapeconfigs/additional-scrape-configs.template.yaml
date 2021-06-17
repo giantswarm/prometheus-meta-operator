@@ -79,8 +79,8 @@
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
 [[ end ]]
-# falco-exporter
 [[- if eq .ClusterType "management_cluster" ]]
+# falco-exporter
 - job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
