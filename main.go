@@ -120,7 +120,6 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Address, "", "Address to access Alertmanager UI.")
-	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.BaseDomain, "", "Base domain to create Alertmanager Ingress resources under.")
 	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.LogLevel, "info", "Prometheus log level.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Alertmanager.Storage.CreatePVC, false, "Should the operator create a PVC for storage.")
 	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Storage.Size, "1Gi", "Storage size for alertmanagers.")

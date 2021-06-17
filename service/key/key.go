@@ -51,7 +51,7 @@ func NamespaceDefault(cluster metav1.Object) string {
 	return v1.NamespaceDefault
 }
 
-func NamespaceMonitoring(cluster metav1.Object) string {
+func NamespaceMonitoring() string {
 	return monitoring
 }
 
@@ -84,12 +84,28 @@ func EtcdSecret(obj interface{}) string {
 	return Secret()
 }
 
+func AlertmanagerLabels(cluster metav1.Object) map[string]string {
+	return map[string]string{
+		"app.kubernetes.io/name":       "alertmanager",
+		"app.kubernetes.io/managed-by": project.Name(),
+		"app.kubernetes.io/instance":   "alertmanager",
+	}
+}
+
 func PrometheusLabels(cluster metav1.Object) map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "prometheus",
 		"app.kubernetes.io/managed-by": project.Name(),
 		"app.kubernetes.io/instance":   ClusterID(cluster),
 	}
+}
+
+func AlertmanagerDefaultCPU() *resource.Quantity {
+	return resource.NewMilliQuantity(100, resource.DecimalSI)
+}
+
+func AlertmanagerDefaultMemory() *resource.Quantity {
+	return resource.NewQuantity(200*1024*1024, resource.DecimalSI)
 }
 
 func PrometheusDefaultCPU() *resource.Quantity {
@@ -111,6 +127,14 @@ func PrometheusDefaultMemoryLimit() *resource.Quantity {
 		)),
 		resource.DecimalSI,
 	)
+}
+
+func AlertmanagerKey() string {
+	return "alertmanager.yaml"
+}
+
+func AlertmanagerPort() int32 {
+	return 9093
 }
 
 func PrometheusPort() int32 {
