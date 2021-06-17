@@ -4,6 +4,8 @@ image:
 
 registry:
   domain: quay.io
+  pullSecret:
+    dockerConfigJSON: "Cg=="
 
 pod:
   user:
