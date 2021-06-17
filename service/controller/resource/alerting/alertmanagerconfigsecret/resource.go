@@ -20,7 +20,7 @@ const (
 	Name                     = "alertmanagerconfigsecret"
 	templateDirectory        = "/opt/prometheus-meta-operator"
 	templatePath             = "files/templates/alertmanager/alertmanager.yaml"
-	notificationTemplatePath = "files/templates/alertmanager/notification-templates.tmpl"
+	notificationTemplatePath = "files/templates/alertmanager/notification-template.tmpl"
 )
 
 type Config struct {
