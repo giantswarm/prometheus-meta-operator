@@ -29,14 +29,15 @@ func toReceiver(cfg alertmanagerconfig.Config, cluster metav1.Object, installati
 		}
 		httpConfig = httpConfigCp
 	}
-	httpConfig.BasicAuth = &promcommonconfig.BasicAuth{
-		Password: promcommonconfig.Secret(opsgenieKey),
+	httpConfig.Authorization = &promcommonconfig.Authorization{
+		Type:        "GenieKey",
+		Credentials: promcommonconfig.Secret(opsgenieKey),
 	}
 
 	r := alertmanagerconfig.Receiver{
 		Name: key.HeartbeatReceiverName(cluster, installation),
 		WebhookConfigs: []*alertmanagerconfig.WebhookConfig{
-			&alertmanagerconfig.WebhookConfig{
+			{
 				URL: &alertmanagerconfig.URL{
 					URL: u,
 				},

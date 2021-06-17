@@ -1,0 +1,11 @@
+data:
+  opsgenie.key: dGVzdC1rZXk=
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: alertmanager
+  name: alertmanager-routing-secret
+  namespace: kubernetes-prometheus
+type: Opaque

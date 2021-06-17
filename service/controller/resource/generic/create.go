@@ -46,8 +46,6 @@ func updateMeta(c, d metav1.Object) {
 	d.SetCreationTimestamp(c.GetCreationTimestamp())
 	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
 	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	d.SetLabels(c.GetLabels())
-	d.SetAnnotations(c.GetAnnotations())
 	d.SetFinalizers(c.GetFinalizers())
 	d.SetOwnerReferences(c.GetOwnerReferences())
 	d.SetClusterName(c.GetClusterName())

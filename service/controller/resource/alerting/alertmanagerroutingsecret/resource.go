@@ -1,4 +1,4 @@
-package namespace
+package alertmanagerroutingsecret
 
 import (
 	"reflect"
@@ -14,28 +14,33 @@ import (
 )
 
 const (
-	Name = "namespace"
+	Name = "alertmanagerroutingsecret"
 )
 
 type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
+
+	OpsgenieKey string
 }
 
 func New(config Config) (*generic.Resource, error) {
 	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().CoreV1().Namespaces()
+		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
 		return wrappedClient{client: c}
 	}
 
 	c := generic.Config{
-		ClientFunc:       clientFunc,
-		Logger:           config.Logger,
-		Name:             Name,
-		GetObjectMeta:    getObjectMeta,
-		GetDesiredObject: toNamespace,
-		HasChangedFunc:   hasChanged,
+		ClientFunc:    clientFunc,
+		Logger:        config.Logger,
+		Name:          Name,
+		GetObjectMeta: getObjectMeta,
+		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
+			return toSecret(v, config)
+		},
+		HasChangedFunc: hasChanged,
 	}
+
 	r, err := generic.New(c)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -51,31 +56,32 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:   key.Namespace(cluster),
-		Labels: key.NamespaceLabels(),
+		Name:      "alertmanager-routing-secret",
+		Namespace: key.Namespace(cluster),
+		Labels:    key.AlertmanagerLabels(cluster),
 	}, nil
 }
 
-func toNamespace(v interface{}) (metav1.Object, error) {
+func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	objectMeta, err := getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	namespace := &corev1.Namespace{
-		TypeMeta: metav1.TypeMeta{
-			APIVersion: corev1.SchemeGroupVersion.Version,
-			Kind:       "Namespace",
-		},
+	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
+		Data: map[string][]byte{
+			"opsgenie.key": []byte(config.OpsgenieKey),
+		},
+		Type: "Opaque",
 	}
 
-	return namespace, nil
+	return secret, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*corev1.Namespace)
-	d := desired.(*corev1.Namespace)
+	c := current.(*corev1.Secret)
+	d := desired.(*corev1.Secret)
 
-	return !reflect.DeepEqual(c.Labels, d.Labels) || !reflect.DeepEqual(c.Annotations, d.Annotations)
+	return !reflect.DeepEqual(c.Data, d.Data)
 }

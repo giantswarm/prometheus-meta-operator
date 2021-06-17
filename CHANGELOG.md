@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Alertmanager managed by Prometheus Operator.
 - Add Alertmanager ingress.
 - Add `WorkloadClusterDeploymentNotSatisfiedLudacris` to monitor `metrics-server` in workload clusters.
+- Added Heartbeat routing for all prometheuses.
 
 ### Changed
 

@@ -13,6 +13,8 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerroutingsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
@@ -170,6 +172,39 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var alertmanagerRoutingResource resource.Interface
+	{
+		c := alertmanagerrouting.Config{
+			Client: config.PrometheusClient,
+			Logger: config.Logger,
+
+			Installation: config.Installation,
+			HTTPProxy:    config.HTTPProxy,
+			HTTPSProxy:   config.HTTPSProxy,
+			NoProxy:      config.NoProxy,
+		}
+
+		alertmanagerRoutingResource, err = alertmanagerrouting.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerRoutingSecretResource resource.Interface
+	{
+		c := alertmanagerroutingsecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			OpsgenieKey: config.OpsgenieKey,
+		}
+
+		alertmanagerRoutingSecretResource, err = alertmanagerroutingsecret.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var remoteWriteConfigResource resource.Interface
 	{
 		c := remotewriteconfig.Config{
@@ -300,6 +335,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerResource,
 		alertmanagerConfigSecretResource,
 		alertmanagerConfigResource,
+		alertmanagerRoutingSecretResource,
+		alertmanagerRoutingResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,

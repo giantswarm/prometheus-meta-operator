@@ -87,6 +87,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      "alertmanager-config",
 		Namespace: key.NamespaceMonitoring(),
+		Labels:    key.NamespaceLabels(),
 	}, nil
 }
 
@@ -111,7 +112,6 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		Data: map[string][]byte{
 			key.AlertmanagerKey():         alertmanagerConfig,
 			"notification-templates.tmpl": notificationTemplate,
-			"opsgenie.key":                []byte(config.OpsgenieKey),
 		},
 		Type: "Opaque",
 	}

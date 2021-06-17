@@ -11,6 +11,8 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerroutingsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
@@ -109,6 +111,39 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerRoutingResource resource.Interface
+	{
+		c := alertmanagerrouting.Config{
+			Client: config.PrometheusClient,
+			Logger: config.Logger,
+
+			Installation: config.Installation,
+			HTTPProxy:    config.HTTPProxy,
+			HTTPSProxy:   config.HTTPSProxy,
+			NoProxy:      config.NoProxy,
+		}
+
+		alertmanagerRoutingResource, err = alertmanagerrouting.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerRoutingSecretResource resource.Interface
+	{
+		c := alertmanagerroutingsecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			OpsgenieKey: config.OpsgenieKey,
+		}
+
+		alertmanagerRoutingSecretResource, err = alertmanagerroutingsecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -239,6 +274,8 @@ func New(config Config) ([]resource.Interface, error) {
 		namespaceResource,
 		apiCertificatesResource,
 		alertmanagerConfigResource,
+		alertmanagerRoutingSecretResource,
+		alertmanagerRoutingResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,

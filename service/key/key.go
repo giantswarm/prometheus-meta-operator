@@ -100,6 +100,12 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 	}
 }
 
+func NamespaceLabels() map[string]string {
+	return map[string]string{
+		"app.kubernetes.io/managed-by": project.Name(),
+	}
+}
+
 func AlertmanagerDefaultCPU() *resource.Quantity {
 	return resource.NewMilliQuantity(100, resource.DecimalSI)
 }
