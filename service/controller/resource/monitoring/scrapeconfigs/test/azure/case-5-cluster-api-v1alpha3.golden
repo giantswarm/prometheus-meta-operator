@@ -133,7 +133,7 @@
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
     regex: falco-exporter
     action: keep
-  - source_labels: [__meta_kubernetes_service_label_app]
+  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
     target_label: app
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
