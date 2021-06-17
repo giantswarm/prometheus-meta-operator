@@ -23,20 +23,6 @@ spec:
         severity: page
         team: rocket
         topic: security
-
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  creationTimestamp: null
-  labels:
-    {{- include "labels.common" . | nindent 4 }}
-    cluster_type: "management_cluster"
-  name: certificate.management-cluster.rules
-  namespace: '{{ include "resource.default.namespace" . }}'
-spec:
-  groups:
-  - name: certificate
-    rules:
     - alert: ManagementClusterAWSCertificateWillExpireInLessThanTwoWeeks
       annotations:
         description: '{{`Certificate {{ $labels.path }} on {{ $labels.instance }} will expire in less than two weeks.`}}'
@@ -49,20 +35,6 @@ spec:
         severity: page
         team: biscuit
         topic: security
-
-apiVersion: monitoring.coreos.com/v1
-kind: PrometheusRule
-metadata:
-  creationTimestamp: null
-  labels:
-    {{- include "labels.common" . | nindent 4 }}
-    cluster_type: "management_cluster"
-  name: certificate.management-cluster.rules
-  namespace: '{{ include "resource.default.namespace" . }}'
-spec:
-  groups:
-  - name: certificate
-    rules:
     - alert: ManagementClusterAzureCertificateWillExpireInLessThanTwoWeeks
       annotations:
         description: '{{`Certificate {{ $labels.path }} on {{ $labels.instance }} will expire in less than two weeks.`}}'
