@@ -48,7 +48,10 @@ prometheus:
   bastions: []
   cortex:
     apiKey: ""
-  etcdClientCertificates: []
+  etcdClientCertificates:
+    ca: ""
+    crt: ""
+    key: ""
   heartbeat:
     opsgenieKey: ""
   host: "prometheus:9090"
