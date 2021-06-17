@@ -103,7 +103,6 @@
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
 
-# falco-exporter
 # Add scrape configuration for cadvisor
 - job_name: foo-prometheus/cadvisor-foo/0
   honor_labels: true

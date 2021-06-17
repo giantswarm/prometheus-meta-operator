@@ -108,7 +108,6 @@
     replacement: worker
 
 
-# falco-exporter
 # Add scrape configuration for cadvisor
 - job_name: baz-prometheus/cadvisor-baz/0
   honor_labels: true
