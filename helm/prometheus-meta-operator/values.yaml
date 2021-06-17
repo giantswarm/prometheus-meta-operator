@@ -17,14 +17,53 @@ project:
 
 alertmanager:
   address: "https://alertmanager:9093"
+  host: "alertmanager:9093"
   logLevel: info
+  slack:
+    apiURL: ""
   storage:
     enabled: true
     createPVC: true
     size: 1Gi
 
+certificate:
+  monitoring:
+    crtPem: ""
+    keyPem: ""
+
+grafana:
+  address: ""
+
+managementCluster:
+  name: ""
+  customer: ""
+  pipeline: ""
+  provider:
+    kind: ""
+
 prometheus:
   address: "https://prometheus:9090"
+  bastions: []
+  cortex:
+    apiKey: ""
+  etcdClientCertificates: []
+  heartbeat:
+    opsgenieKey: ""
   host: "prometheus:9090"
   logLevel: info
   letsencrypt: false
+  mayu: ""
+  storage:
+    createPVC: true
+    enabled: true
+
+security:
+  restrictAccess:
+    enabled: false
+  subnet:
+    vpn: ""
+
+slack:
+  projectName: ""
+
+vaultHost: ""
