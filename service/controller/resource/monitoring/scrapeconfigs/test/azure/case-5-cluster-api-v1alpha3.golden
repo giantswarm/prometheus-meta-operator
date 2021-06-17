@@ -108,6 +108,57 @@
     replacement: worker
 
 
+# falco-exporter
+- job_name: baz-prometheus/falco-exporter-baz/0
+  honor_labels: true
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - giantswarm
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: falco-exporter
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # If role is empty, we default to worker
+  - source_labels: [__meta_kubernetes_node_label_role]
+    regex: null
+    target_label: role
+    replacement: worker
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: baz
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: workload_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
 # Add scrape configuration for cadvisor
 - job_name: baz-prometheus/cadvisor-baz/0
   honor_labels: true

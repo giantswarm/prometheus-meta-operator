@@ -138,7 +138,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-
 # Add scrape configuration for cadvisor
 - job_name: kubernetes-prometheus/cadvisor-kubernetes/0
   honor_labels: true

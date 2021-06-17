@@ -79,7 +79,6 @@
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
 [[ end ]]
-[[- if eq .ClusterType "management_cluster" ]]
 # falco-exporter
 - job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
   honor_labels: true
@@ -101,7 +100,6 @@
     target_label: app
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
 # Add scrape configuration for cadvisor
 - job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
   honor_labels: true
