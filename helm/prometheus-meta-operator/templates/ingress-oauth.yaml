@@ -18,7 +18,7 @@ spec:
           serviceName: oauth2-proxy
           servicePort: 4180
         path: /oauth2
-  - host: {{ .Values.Installation.V1.Monitoring.Alertmanager.Host }}
+  - host: {{ .Values.alertmanager.host }}
     http:
       paths:
       - backend:
@@ -30,5 +30,5 @@ spec:
     - {{ .Values.prometheus.host }}
     secretName: prometheus-tls
   - hosts:
-    - {{ .Values.Installation.V1.Monitoring.Alertmanager.Host }}
+    - {{ .Values.alertmanager.host }}
     secretName: alertmanager-tls
