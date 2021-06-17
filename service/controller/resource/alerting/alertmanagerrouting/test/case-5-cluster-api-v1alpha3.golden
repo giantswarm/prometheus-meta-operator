@@ -14,7 +14,7 @@ spec:
         basicAuth:
           password:
             key: opsgenie.key
-            name: alertmanager-secret
+            name: alertmanager-routing-secret
           username:
             key: ""
       sendResolved: false

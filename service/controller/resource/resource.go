@@ -12,6 +12,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerroutingsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
@@ -128,6 +129,21 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		alertmanagerRoutingResource, err = alertmanagerrouting.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerRoutingSecretResource resource.Interface
+	{
+		c := alertmanagerroutingsecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			OpsgenieKey: config.OpsgenieKey,
+		}
+
+		alertmanagerRoutingSecretResource, err = alertmanagerroutingsecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -258,6 +274,7 @@ func New(config Config) ([]resource.Interface, error) {
 		namespaceResource,
 		apiCertificatesResource,
 		alertmanagerConfigResource,
+		alertmanagerRoutingSecretResource,
 		alertmanagerRoutingResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,

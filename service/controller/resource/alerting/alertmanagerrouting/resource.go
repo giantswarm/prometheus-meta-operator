@@ -109,7 +109,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 					BasicAuth: &monitoringv1.BasicAuth{
 						Password: corev1.SecretKeySelector{
 							LocalObjectReference: corev1.LocalObjectReference{
-								Name: "alertmanager-secret",
+								Name: "alertmanager-routing-secret",
 							},
 							Key: "opsgenie.key",
 						},
