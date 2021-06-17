@@ -117,15 +117,31 @@
     namespaces:
       names:
       - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    api_server: https://master.baz:443
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
   tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
+  - source_labels: [__address__]
+    target_label: instance
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: falco-exporter
     action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - target_label: __address__
+    replacement: master.baz:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (falco-exporter.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/giantswarm/pods/${1}:9376/metrics
+  - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
