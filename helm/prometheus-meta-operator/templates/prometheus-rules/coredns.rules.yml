@@ -67,3 +67,14 @@ spec:
         severity: page
         team: ludacris
         topic: dns
+    - alert: CoreDNSMaxHPAReplicasReached
+      expr: kube_hpa_status_current_replicas{hpa="coredns"} == kube_hpa_spec_max_replicas{hpa="coredns"}
+      for: 120m
+      labels:
+        area: kaas
+        cancel_if_outside_working_hours: "true"
+        severity: page
+        team: se
+        topic: dns
+      annotations:
+        description: '{{`CoreDNS Deployment {{ $labels.namespace}}/{{ $labels.deployment }} has been scaled to its maximum replica count for too long.`}}'
