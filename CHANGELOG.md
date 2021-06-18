@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.41.0] - 2021-06-17
+
 ### Added
 
 - Add scrapeconfig for `falco-exporter` on management clusters.
@@ -1133,7 +1135,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.0...HEAD
+[1.41.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.37.0...v1.38.0
