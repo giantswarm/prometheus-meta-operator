@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add term to not count api-server errors for clusters in transitioning state.
+
 ### Changed
 
 - Increase `ManagementClusterWebhookDurationExceedsTimeout` duration from 5m to 15m.

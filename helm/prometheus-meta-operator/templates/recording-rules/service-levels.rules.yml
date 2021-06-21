@@ -16,7 +16,16 @@ spec:
         area: kaas
         service: api-server
       record: raw_slo_requests
-    - expr: "sum((up{app='kubernetes'} * -1) + 1) by (cluster_type,cluster_id)"
+    # The first statement ensures that an api-server error is counted if the kubernetes api is not up for a specific cluster.
+    # The next statement returns 1 for a cluster with "updated", "created" or unknown (absent) status.
+    # It returns 0 for clusters in "updating", "creating" and "deleting" status. 
+    # By multiplying with this statement we ensure that errors for transitioning clusters are not counted.
+    - expr: sum((up{app='kubernetes'} * -1) + 1) by (cluster_id, cluster_type) * 
+            ignoring (cluster_type) group_left (cluster_id) 
+            (
+              max(cluster_operator_cluster_status{status=~"Updated|Created"}) by (cluster_id) 
+              or absent(cluster_operator_cluster_status)
+            )
       labels:
         class: HIGH
         area: kaas
