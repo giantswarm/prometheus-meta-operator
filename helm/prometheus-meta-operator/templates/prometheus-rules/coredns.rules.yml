@@ -68,7 +68,7 @@ spec:
         team: ludacris
         topic: dns
     - alert: CoreDNSMaxHPAReplicasReached
-      expr: kube_hpa_status_current_replicas{hpa="coredns"} == kube_hpa_spec_max_replicas{hpa="coredns"}
+      expr: kube_hpa_status_current_replicas{hpa="coredns"} == kube_hpa_spec_max_replicas{hpa="coredns"} AND kube_hpa_spec_min_replicas{hpa="coredns"} != kube_hpa_spec_max_replicas{hpa="coredns"} 
       for: 120m
       labels:
         area: kaas

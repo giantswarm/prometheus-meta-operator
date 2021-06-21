@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Increase `ManagementClusterWebhookDurationExceedsTimeout` duration from 5m to 15m.
 
+### Fixed
+
+- Fix CoreDNSMaxHPAReplicasReached alert to not fire in case max and min are equal. 
+
 ## [1.41.0] - 2021-06-17
 
 ### Added
