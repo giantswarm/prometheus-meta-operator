@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.42.0] - 2021-06-21
+
 ### Changed
 
 - Increase `ManagementClusterWebhookDurationExceedsTimeout` duration from 5m to 15m.
@@ -1144,7 +1146,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.42.0...HEAD
+[1.42.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.0...v1.42.0
 [1.41.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
