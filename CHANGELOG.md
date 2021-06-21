@@ -11,6 +11,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add term to not count api-server errors for clusters in transitioning state.
 
+### Changed
+
+- Increase `ManagementClusterWebhookDurationExceedsTimeout` duration from 5m to 15m.
+
+### Fixed
+
+- Fix CoreDNSMaxHPAReplicasReached alert to not fire in case max and min are equal. 
+
+## [1.41.0] - 2021-06-17
+
+### Added
+
+- Add `AppPendingUpdate` alert.
+- Add scrapeconfig for `falco-exporter` on management clusters.
+- Add Alertmanager managed by Prometheus Operator.
+- Add Alertmanager ingress.
+- Add `WorkloadClusterDeploymentNotSatisfiedLudacris` to monitor `metrics-server` in workload clusters.
+- Add `CoreDNSMaxHPAReplicasReached` business hours alert for when CoreDNS has been scaled to its maximum for too long.
+
+### Changed
+
+- Lower Prometheus disk space alert from 10% to 5%.
+- Change severity of `ChartOperatorDown` alert to notify.
+- Merge all provider certificate.management-cluster.rules into one prometheus rule.
+
+### Fixed
+
+- Fix service name in ingress.
+
 ## [1.40.0] - 2021-06-14
 
 ### Changed
@@ -21,6 +50,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add ServiceLevelBurnRateTicket alert.
 - Add the prometheus log level option
 - Add high and low burn rates as recording rules.
 
@@ -1118,7 +1148,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.0...HEAD
+[1.41.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.37.0...v1.38.0

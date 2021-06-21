@@ -23,7 +23,6 @@ data:
           keyFile: ''
       alertmanager:
         address: {{ .Values.Installation.V1.Monitoring.Alertmanager.Address }}
-        baseDomain: {{ .Values.Installation.V1.Monitoring.Alertmanager.Host }}
         logLevel: {{ .Values.alertmanager.logLevel }}
         storage:
           createPVC: {{ and .Values.Installation.V1.Monitoring.Alertmanager.Storage.Enabled .Values.Installation.V1.Monitoring.Alertmanager.Storage.CreatePVC }}

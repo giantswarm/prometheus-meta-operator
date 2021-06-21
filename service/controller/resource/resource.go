@@ -101,14 +101,14 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfig resource.Interface
+	var alertmanagerConfigResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 		}
 
-		alertmanagerConfig, err = alertmanagerconfig.New(c)
+		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -238,7 +238,7 @@ func New(config Config) ([]resource.Interface, error) {
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
-		alertmanagerConfig,
+		alertmanagerConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
