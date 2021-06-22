@@ -23,9 +23,9 @@ spec:
         severity: notify
         team: celestial
         topic: azure
-    - alert: AzureClusterUpdateFailed
+    - alert: AzureClusterUpgradeFailed
       annotations:
-        description: '{{`Cluster {{ $labels.cluster_id }} update is taking longer than expected.`}}'
+        description: '{{`Cluster {{ $labels.cluster_id }} upgrade is taking longer than expected.`}}'
         opsrecipe: cluster-update-failed/
       expr: azure_operator_cluster_status(status="Upgrading"} == 1
       for: 2h
