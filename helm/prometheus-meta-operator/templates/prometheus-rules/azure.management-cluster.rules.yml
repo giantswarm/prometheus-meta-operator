@@ -15,7 +15,7 @@ spec:
       annotations:
         description: '{{`Cluster {{ $labels.cluster_id }} creation is taking longer than expected.`}}'
         opsrecipe: cluster-creation-failed/
-      expr: azure_operator_cluster_status(status="Creating"} == 1
+      expr: azure_operator_cluster_status{status="Creating"} == 1
       for: 40m
       labels:
         area: kaas
@@ -27,7 +27,7 @@ spec:
       annotations:
         description: '{{`Cluster {{ $labels.cluster_id }} upgrade is taking longer than expected.`}}'
         opsrecipe: cluster-update-failed/
-      expr: azure_operator_cluster_status(status="Upgrading"} == 1
+      expr: azure_operator_cluster_status{status="Upgrading"} == 1
       for: 2h
       labels:
         area: kaas

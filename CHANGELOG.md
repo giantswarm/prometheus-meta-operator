@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix typo in `AzureClusterCreationFailed` and `AzureClusterUpgradeFailed`
+
 ## [1.41.1] - 2021-06-22
 
 ### Added
