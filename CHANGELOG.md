@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add term to not count api-server errors for clusters in transitioning state.
+- Business-hours alert for azure clusters not updating in time.
 
 ### Changed
 
@@ -17,7 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix CoreDNSMaxHPAReplicasReached alert to not fire in case max and min are equal. 
+- Fix CoreDNSMaxHPAReplicasReached alert to not fire in case max and min are equal.
+- Business-hours alert for azure clusters not creating in time.
 
 ## [1.41.0] - 2021-06-17
 
