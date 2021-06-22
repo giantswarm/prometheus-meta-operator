@@ -9,6 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.42.0] - 2021-06-22
 
+### Changed
+
+- Removed `NodeExporterDown` alert and use SLO framework to monitor node-exporters.
+- Change `ServiceLevelBurnRateTooHigh` and `ServiceLevelBurnRateTooHighTicket` to opt-out for services.
+
 ## [1.41.2] - 2021-06-22
 
 ### Fixed
@@ -51,7 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Lower Prometheus disk space alert from 10% to 5%.
 - Change severity of `ChartOperatorDown` alert to notify.
 - Merge all provider certificate.management-cluster.rules into one prometheus rule.
-- Change `ServiceLevelBurnRateTooHigh` and `ServiceLevelBurnRateTooHighTicket` to opt-out for services.
 
 ### Fixed
 
@@ -84,10 +88,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed the way VPA `maxAllowed` parameter for memory is calculated so that we
   avoid going over node memory capacity with the memory limit (`maxAllowed` is
   used for request and limit is that multiplied by 1.2).
-
-### Changed
-
-- Removed `NodeExporterDown` alert and use SLO framework to monitor node-exporters.
 
 ## [1.38.0] - 2021-05-28
 
