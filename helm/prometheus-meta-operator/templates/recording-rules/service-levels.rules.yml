@@ -65,14 +65,41 @@ spec:
         service: kubelet
       record: slo_target
 
+      # -- node-exporter
+      # record of number of node-exporters.
+    - expr: count(up{app="node-exporter", role!="bastion"}) by (cluster_type, cluster_id)
+      labels:
+        class: MEDIUM
+        area: kaas
+        service: node-exporter
+      record: raw_slo_requests
+      # record of number of node-exporters that are down.
+      # up == 1 when node-exporters are up, and up == 0 when node-exporters are down -
+      # to get a count of the number of node-exporters that are down,
+      # multiply by -1 to get -1 for node-exporters that are up, and 0 for node-exporters that are down,
+      # then add 1 to get 0 for node-exporters that are up, and 1 for node-exporters that are down,
+      # then sum.
+    - expr: sum((up{app='node-exporter', role!="bastion"} * -1) + 1) by (cluster_type, cluster_id)
+      labels:
+        area: kaas
+        class: MEDIUM
+        service: node-exporter
+      record: raw_slo_errors
+      # -- 99% availability
+    - expr: "vector((1 - 0.99))"
+      labels:
+        area: kaas
+        service: node-exporter
+      record: slo_target
+
     # -- managed-apps
     # -- error recording rules
     # record when pods of a daemonset with label "label_giantswarm_io_monitoring_basic_sli" are down
     - expr: |
         label_replace(
-          kube_daemonset_status_number_unavailable 
+          kube_daemonset_status_number_unavailable
           and on(daemonset,cluster_id,cluster_type,namespace,workload_name)
-          kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'}, 
+          kube_daemonset_labels{label_giantswarm_io_monitoring_basic_sli='true'},
         "service", "$1", "workload_name", "(.*)" )
       labels:
         class: MEDIUM
@@ -82,7 +109,7 @@ spec:
     - expr: |
         label_replace(
           kube_deployment_status_replicas_unavailable
-          and on(deployment,cluster_id,cluster_type,namespace, workload_name) 
+          and on(deployment,cluster_id,cluster_type,namespace, workload_name)
           kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'},
         "service", "$1", "workload_name", "(.*)" )
       labels:
@@ -93,7 +120,7 @@ spec:
     - expr: |
         label_replace(
           kube_statefulset_status_replicas - kube_statefulset_status_replicas_current
-          and on(statefulset,cluster_id,cluster_type,namespace, workload_name) 
+          and on(statefulset,cluster_id,cluster_type,namespace, workload_name)
           kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'},
         "service", "$1", "workload_name", "(.*)" )
       labels:
@@ -114,7 +141,7 @@ spec:
     - expr: |
         label_replace(
           kube_deployment_status_replicas
-          and on(deployment,cluster_id,cluster_type,namespace, workload_name) 
+          and on(deployment,cluster_id,cluster_type,namespace, workload_name)
           kube_deployment_labels{label_giantswarm_io_monitoring_basic_sli='true'},
         "service", "$1", "workload_name", "(.*)" )
       labels:
@@ -124,7 +151,7 @@ spec:
     - expr: |
         label_replace(
           kube_statefulset_status_replicas
-          and on(statefulset,cluster_id,cluster_type,namespace, workload_name) 
+          and on(statefulset,cluster_id,cluster_type,namespace, workload_name)
           kube_statefulset_labels{label_giantswarm_io_monitoring_basic_sli='true'},
         "service", "$1", "workload_name", "(.*)" )
       labels:
