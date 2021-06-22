@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.41.2] - 2021-06-22
+
 ### Fixed
 
 - Fix typo in `AzureClusterCreationFailed` and `AzureClusterUpgradeFailed`
@@ -1160,7 +1162,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.2...HEAD
+[1.41.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.1...v1.41.2
 [1.41.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.0...v1.41.1
 [1.41.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
