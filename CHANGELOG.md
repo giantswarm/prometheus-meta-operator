@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix CoreDNSMaxHPAReplicasReached alert to not fire in case max and min are equal.
 - Business-hours alert for azure clusters not creating in time.
 
+### Removed
+
+- Remove AlertManager ingress to avoid conflicts with the existing one, until the new AlertManager is ready to replace the one from _g8s-prometheus_
+
 ## [1.41.0] - 2021-06-17
 
 ### Added
