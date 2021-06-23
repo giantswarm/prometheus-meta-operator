@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.44.0] - 2021-06-23
+
 ### Removed
 
 - Migrate existing rules to https://github.com/giantswarm/prometheus-rules.
@@ -1179,7 +1181,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.43.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.0...HEAD
+[1.44.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.43.0...v1.44.0
 [1.43.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.42.0...v1.43.0
 [1.42.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.2...v1.42.0
 [1.41.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.1...v1.41.2
