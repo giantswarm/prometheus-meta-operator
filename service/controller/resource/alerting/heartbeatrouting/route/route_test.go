@@ -22,8 +22,6 @@ var (
 )
 
 func TestEnsureCreated(t *testing.T) {
-	var groupInterval, _ = model.ParseDuration("30s")
-	var groupWait, _ = model.ParseDuration("5m")
 	var repeatInterval, _ = model.ParseDuration("1m")
 
 	testCases := []struct {
@@ -39,7 +37,7 @@ func TestEnsureCreated(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "heartbeat_installation_cluster",
 							Match: map[string]string{
 								"cluster_id":   "cluster",
@@ -47,8 +45,7 @@ func TestEnsureCreated(t *testing.T) {
 								"type":         "heartbeat",
 							},
 							Continue:       false,
-							GroupInterval:  &groupInterval,
-							GroupWait:      &groupWait,
+							GroupBy:        []model.LabelName{"..."},
 							RepeatInterval: &repeatInterval,
 						},
 					},
@@ -63,7 +60,7 @@ func TestEnsureCreated(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "heartbeat_installation_cluster",
 							Match: map[string]string{
 								"cluster_id":   "cluster",
@@ -71,8 +68,7 @@ func TestEnsureCreated(t *testing.T) {
 								"type":         "wrong",
 							},
 							Continue:       false,
-							GroupInterval:  &groupInterval,
-							GroupWait:      &groupWait,
+							GroupBy:        []model.LabelName{"..."},
 							RepeatInterval: &repeatInterval,
 						},
 					},
@@ -87,7 +83,7 @@ func TestEnsureCreated(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "not me",
 							Match: map[string]string{
 								"cluster":      "cluster",
@@ -95,8 +91,7 @@ func TestEnsureCreated(t *testing.T) {
 								"type":         "heartbeat",
 							},
 							Continue:       false,
-							GroupInterval:  &groupInterval,
-							GroupWait:      &groupWait,
+							GroupBy:        []model.LabelName{"..."},
 							RepeatInterval: &repeatInterval,
 						},
 					},
@@ -167,10 +162,10 @@ func TestEnsureDeleted(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "one",
 						},
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "two",
 						},
 					},
@@ -196,13 +191,13 @@ func TestEnsureDeleted(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "heartbeat_installation_cluster",
 						},
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "one",
 						},
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "two",
 						},
 					},
@@ -217,13 +212,13 @@ func TestEnsureDeleted(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "one",
 						},
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "heartbeat_installation_cluster",
 						},
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "two",
 						},
 					},
@@ -238,13 +233,13 @@ func TestEnsureDeleted(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "one",
 						},
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "two",
 						},
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "heartbeat_installation_cluster",
 						},
 					},
@@ -259,7 +254,7 @@ func TestEnsureDeleted(t *testing.T) {
 				Route: &alertmanagerconfig.Route{
 					Receiver: "root",
 					Routes: []*alertmanagerconfig.Route{
-						&alertmanagerconfig.Route{
+						{
 							Receiver: "heartbeat_installation_cluster",
 						},
 					},
