@@ -12,17 +12,6 @@ import (
 )
 
 func toRoute(cluster metav1.Object, installation string) (alertmanagerconfig.Route, error) {
-	groupInterval, err := model.ParseDuration("30s")
-	if err != nil {
-		return alertmanagerconfig.Route{}, microerror.Mask(err)
-	}
-
-	// We wait for 5 minutes before we start to ping OpsGenie to allow the prometheus server to start
-	groupWait, err := model.ParseDuration("5m")
-	if err != nil {
-		return alertmanagerconfig.Route{}, microerror.Mask(err)
-	}
-
 	// We ping OpsGenie every minute
 	repeatInterval, err := model.ParseDuration("1m")
 	if err != nil {
@@ -37,8 +26,7 @@ func toRoute(cluster metav1.Object, installation string) (alertmanagerconfig.Rou
 			key.TypeKey():         key.Heartbeat(),
 		},
 		Continue:       false,
-		GroupWait:      &groupWait,
-		GroupInterval:  &groupInterval,
+		GroupBy:        []model.LabelName{"..."},
 		RepeatInterval: &repeatInterval,
 	}
 
