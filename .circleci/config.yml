@@ -29,7 +29,7 @@ workflows:
           type: approval
 
       - architect/push-to-docker:
-          name: push-to-aliyun
+          name: push-to-aliyun-pr
           context: "architect"
           image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/prometheus-meta-operator"
           username_envar: "ALIYUN_USERNAME"
