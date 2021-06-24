@@ -17,6 +17,8 @@ Installation:
           Size: 1Gi
       Grafana:
         Address: ""
+      GrafanaCloud:
+        RemoteWriteURL: ""
       Prometheus:
         Address: "https://prometheus:9090"
         Bastions: []
