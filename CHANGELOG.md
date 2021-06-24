@@ -7,7 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix node role label for metrics.
+
 ## [1.44.2] - 2021-06-24
+
+### Fixed
+
+- Fix invalid architect orb version
 
 ## [1.44.1] - 2021-06-24
 
