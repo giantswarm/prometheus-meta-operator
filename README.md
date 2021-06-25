@@ -17,6 +17,28 @@ Build it using the standard `go build` command.
 go build github.com/giantswarm/prometheus-meta-operator
 ```
 
+### How to update upstream code
+
+We store modified upstream code for our own usage.
+Here is how to update this code.
+
+```
+$ git checkout -b upstream-code
+$ git tag -d $(git tag -l)
+$ git remote add -f alertmanager https://github.com/prometheus/alertmanager.git
+$ git checkout v0.22.2
+$ git subtree split -P config/ -b alertmanager-config
+$ git checkout upstream-code
+$ git subtree merge --squash -P pkg/alertmanager/config alertmanager-config
+# fix conflicts if any and commit
+# push for review
+$ git push -u origin HEAD
+
+# restore local tags
+$ git tag -d $(git tag -l)
+$ git fetch origin
+```
+
 
 [operatorkit]: https://github.com/giantswarm/operatorkit
 [prometheus-operator]: https://github.com/prometheus-operator/prometheus-operator
