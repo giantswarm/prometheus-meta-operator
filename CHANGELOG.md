@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use Grafana Cloud remote-write URL from config instead of hardcoding it, to
+  allow overriding the URL in installations which can't access Grafana Cloud
+  directly.
+
 ## [1.44.2] - 2021-06-24
 
 ## [1.44.1] - 2021-06-24
