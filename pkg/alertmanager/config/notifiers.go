@@ -21,7 +21,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	commoncfg "github.com/prometheus/common/config"
+	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 )
 
 var (
