@@ -20,7 +20,11 @@ go build github.com/giantswarm/prometheus-meta-operator
 ### How to update upstream code
 
 We store modified upstream code for our own usage.
-Here is how to update this code.
+
+- pkg/alertmanager/config
+- pkg/prometheus/common/config
+
+Example on how to update pkg/alertmanager/config :
 
 ```
 $ git checkout -b upstream-code
