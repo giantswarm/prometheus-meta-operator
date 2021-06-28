@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.44.3] - 2021-06-28
+
 ### Changed
 
 - Use Grafana Cloud remote-write URL from config instead of hardcoding it, to
@@ -1191,7 +1193,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.3...HEAD
+[1.44.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.2...v1.44.3
 [1.44.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.1...v1.44.2
 [1.44.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.0...v1.44.1
 [1.44.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.43.0...v1.44.0
