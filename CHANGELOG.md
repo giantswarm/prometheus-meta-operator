@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Changed scrape configuration to only preserve metrics from `kube-system` and
+  `giantswarm` namespaces on workload clusters to cut down on a massive amount
+  of metrics coming from _kube-state-metrics_ on clusters with a lot of
+  activity.
+
 ## [1.45.0] - 2021-06-28
 
 ### Changed
