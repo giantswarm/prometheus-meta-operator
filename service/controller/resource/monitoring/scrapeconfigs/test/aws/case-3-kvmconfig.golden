@@ -1211,6 +1211,10 @@
   - source_labels: [__name__]
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
+  # on workload clusters only keep metrics from namespaces we manage
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*)
+    action: keep
   - source_labels: [app,deployment]
     separator: ;
     regex: kube-state-metrics;(.+)
