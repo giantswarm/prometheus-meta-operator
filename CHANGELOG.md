@@ -7,10 +7,73 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.45.0] - 2021-06-28
+
+### Changed
+
+- Use Grafana Cloud remote-write URL from config instead of hardcoding it, to
+  allow overriding the URL in installations which can't access Grafana Cloud
+  directly.
+
+## [1.44.2] - 2021-06-24
+
+## [1.44.1] - 2021-06-24
+
+## [1.44.0] - 2021-06-23
+
+### Removed
+
+- Migrate existing rules to https://github.com/giantswarm/prometheus-rules.
+
+## [1.43.0] - 2021-06-22
+
+### Changed
+
+- Removed `ServiceLevelBurnRateTicket` alert.
+
+## [1.42.0] - 2021-06-22
+
+### Changed
+
+- Removed `NodeExporterDown` alert and use SLO framework to monitor node-exporters.
+- Change `ServiceLevelBurnRateTooHigh` and `ServiceLevelBurnRateTooHighTicket` to opt-out for services.
+
+## [1.41.2] - 2021-06-22
+
+### Fixed
+
+- Fix typo in `AzureClusterCreationFailed` and `AzureClusterUpgradeFailed`
+
+## [1.41.1] - 2021-06-22
+
 ### Added
 
-- Added Alertmanager managed by Prometheus Operator.
-- Added Alertmanager ingress.
+- Add term to not count api-server errors for clusters in transitioning state.
+- Business-hours alert for azure clusters not updating in time.
+
+### Changed
+
+- Increase `ManagementClusterWebhookDurationExceedsTimeout` duration from 5m to 15m.
+
+### Fixed
+
+- Fix CoreDNSMaxHPAReplicasReached alert to not fire in case max and min are equal.
+- Business-hours alert for azure clusters not creating in time.
+
+### Removed
+
+- Remove AlertManager ingress to avoid conflicts with the existing one, until the new AlertManager is ready to replace the one from _g8s-prometheus_
+
+## [1.41.0] - 2021-06-17
+
+### Added
+
+- Add `AppPendingUpdate` alert.
+- Add scrapeconfig for `falco-exporter` on management clusters.
+- Add Alertmanager managed by Prometheus Operator.
+- Add Alertmanager ingress.
+- Add `WorkloadClusterDeploymentNotSatisfiedLudacris` to monitor `metrics-server` in workload clusters.
+- Add `CoreDNSMaxHPAReplicasReached` business hours alert for when CoreDNS has been scaled to its maximum for too long.
 
 ### Changed
 
@@ -18,7 +81,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Change severity of `ChartOperatorDown` alert to notify.
 - Merge all provider certificate.management-cluster.rules into one prometheus rule.
 
-### Fixed 
+### Fixed
 
 - Fix service name in ingress.
 
@@ -1130,7 +1193,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.45.0...HEAD
+[1.45.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.2...v1.45.0
+[1.44.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.1...v1.44.2
+[1.44.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.0...v1.44.1
+[1.44.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.43.0...v1.44.0
+[1.43.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.42.0...v1.43.0
+[1.42.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.2...v1.42.0
+[1.41.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.1...v1.41.2
+[1.41.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.41.0...v1.41.1
+[1.41.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.40.0...v1.41.0
 [1.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.39.0...v1.40.0
 [1.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.38.0...v1.39.0
 [1.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.37.0...v1.38.0

@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/giantswarm/apiextensions/v3 v3.26.0
+	github.com/giantswarm/apiextensions/v3 v3.27.0
 	github.com/giantswarm/k8sclient/v5 v5.11.0
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.3.0
@@ -30,7 +30,7 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/prometheus/common v0.29.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/viper v1.8.0
+	github.com/spf13/viper v1.8.1
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 // indirect
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 	gomodules.xyz/jsonpatch/v2 v2.1.0 // indirect

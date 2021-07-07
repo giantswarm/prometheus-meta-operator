@@ -1,0 +1,62 @@
+---
+Installation:
+  V1:
+    Auth:
+      Vault:
+        Address: ""
+    Name: ""
+    Customer: ""
+    Infra:
+      TestingEnvironment: false
+    Monitoring:
+      Alertmanager:
+        Address: "https://alertmanager:9093"
+        Storage:
+          Enabled: true
+          CreatePVC: true
+          Size: 1Gi
+      Grafana:
+        Address: ""
+      GrafanaCloud:
+        RemoteWriteURL: ""
+      Prometheus:
+        Address: "https://prometheus:9090"
+        Bastions: []
+        Host: "prometheus:9090"
+        Letsencrypt: false
+        Mayu: ""
+        Storage:
+          Enabled: true
+          CreatePVC: true
+          Size: 100Gi
+        EtcdClientCertificates:
+          Ca: ""
+          Crt: ""
+          Key: ""
+    Provider:
+      Kind: ""
+    Registry:
+      Domain: ""
+    Security:
+      RestrictAccess:
+        Enabled: false
+      Subnet:
+        VPN: ""
+    Slack:
+      ProjectName: ""
+    Secret:
+      Alertmanager:
+        Slack:
+          ApiUrl: ""
+      Certificate:
+        Monitoring:
+          CrtPem: ""
+          KeyPem: ""
+      Prometheus:
+        Cortex:
+          ApiKey: ""
+        Heartbeat:
+          OpsgenieKey: ""
+      Registry:
+        PullSecret:
+          DockerConfigJSON: ""

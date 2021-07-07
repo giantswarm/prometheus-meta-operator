@@ -38,7 +38,7 @@ data:
         logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.prometheus.mayu }}
         remoteWrite:
-          url: https://prometheus-us-central1.grafana.net/api/prom/push
+          url: {{ .Values.Installation.V1.Monitoring.GrafanaCloud.RemoteWriteURL }}
         retention:
           duration: 2w
           size: 90GB
