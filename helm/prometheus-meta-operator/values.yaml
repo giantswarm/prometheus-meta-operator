@@ -30,8 +30,8 @@ alertmanager:
 
 certificate:
   monitoring:
-    crtPem: ""
-    keyPem: ""
+    crtPem: Cg==
+    keyPem: Cg==
 
 grafana:
   address: ""
