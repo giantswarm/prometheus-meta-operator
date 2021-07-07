@@ -38,7 +38,7 @@ data:
         logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.prometheus.mayu }}
         remoteWrite:
-          url: {{ .Values.Installation.V1.Monitoring.GrafanaCloud.RemoteWriteURL }}
+          url: {{ .grafanaCloud.remoteWriteURL }}
         retention:
           duration: 2w
           size: 90GB
