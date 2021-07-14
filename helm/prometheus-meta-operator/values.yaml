@@ -2,10 +2,10 @@ image:
   name: "giantswarm/prometheus-meta-operator"
   tag: "[[ .Version ]]"
 
-Installation:
-  V1:
-    Registry:
-      Domain: quay.io
+registry:
+  domain: quay.io
+  pullSecret:
+    dockerConfigJSON: "Cg=="
 
 pod:
   user:
@@ -18,7 +18,60 @@ project:
   commit: "[[ .SHA ]]"
 
 alertmanager:
+  address: "https://alertmanager:9093"
+  host: "alertmanager:9093"
   logLevel: info
+  slack:
+    apiURL: ""
+  storage:
+    enabled: true
+    createPVC: true
+    size: 1Gi
+
+certificate:
+  monitoring:
+    crtPem: Cg==
+    keyPem: Cg==
+
+grafana:
+  address: ""
+
+grafanaCloud:
+  remoteWriteURL: ""
+
+managementCluster:
+  name: ""
+  customer: ""
+  pipeline: ""
+  provider:
+    kind: ""
 
 prometheus:
+  address: "https://prometheus:9090"
+  bastions: []
+  cortex:
+    apiKey: ""
+  etcdClientCertificates:
+    ca: ""
+    crt: ""
+    key: ""
+  heartbeat:
+    opsgenieKey: ""
+  host: "prometheus:9090"
   logLevel: info
+  letsencrypt: false
+  mayu: ""
+  storage:
+    createPVC: true
+    enabled: true
+
+security:
+  restrictAccess:
+    enabled: false
+  subnet:
+    vpn: ""
+
+slack:
+  projectName: ""
+
+vaultHost: ""
