@@ -622,7 +622,7 @@
     action: keep
 [[- if eq .ClusterType "workload_cluster" ]]
   # on workload clusters only scrape metrics from namespaces we manage
-  - source_labels: [namespace]
+  - source_labels: [__meta_kubernetes_namespace]
     regex: (kube-system|giantswarm.*)
     action: keep
 [[- end ]]
