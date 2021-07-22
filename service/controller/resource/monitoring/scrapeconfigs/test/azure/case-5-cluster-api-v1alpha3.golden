@@ -1031,6 +1031,10 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: keep
+  # on workload clusters only scrape metrics from namespaces we manage
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*)
+    action: keep
     # if __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path is present, we use it as the metrics path
   - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
     action: replace
@@ -1096,10 +1100,6 @@
   - source_labels: [__name__]
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_duration_seconds_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
-  # on workload clusters only keep metrics from namespaces we manage
-  - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*)
-    action: keep
   - source_labels: [app,deployment]
     separator: ;
     regex: kube-state-metrics;(.+)
