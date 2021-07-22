@@ -35,20 +35,20 @@ spec:
             path: secret.yml
       - name: etcd-client-ca
         hostPath:
-          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Ca }}
+          path: {{ .Values.prometheus.etcdClientCertificates.ca }}
       - name: etcd-client-crt
         hostPath:
-          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Crt }}
+          path: {{ .Values.prometheus.etcdClientCertificates.crt }}
       - name: etcd-client-key
         hostPath:
-          path: {{ .Values.Installation.V1.Monitoring.Prometheus.EtcdClientCertificates.Key }}
+          path: {{ .Values.prometheus.etcdClientCertificates.key }}
       serviceAccountName: {{ include "resource.default.name"  . }}
       securityContext:
         runAsUser: {{ .Values.pod.user.id }}
         runAsGroup: {{ .Values.pod.group.id }}
       containers:
       - name: {{ include "name" . }}
-        image: "{{ .Values.Installation.V1.Registry.Domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
+        image: "{{ .Values.registry.domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
         args:
         - daemon
         - --config.dirs=/var/run/{{ include "name" . }}/configmap/,/var/run/{{ include "name" . }}/secret/

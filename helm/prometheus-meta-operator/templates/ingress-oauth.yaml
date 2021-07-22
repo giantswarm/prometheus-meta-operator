@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1beta1
 kind: Ingress
 metadata:
-  {{- if .Values.Installation.V1.Monitoring.Prometheus.Letsencrypt }}
+  {{- if .Values.prometheus.letsencrypt }}
   annotations:
     kubernetes.io/tls-acme: "true"
   {{- end }}
@@ -11,7 +11,7 @@ metadata:
   namespace: monitoring
 spec:
   rules:
-  - host: {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+  - host: {{ .Values.prometheus.host }}
     http:
       paths:
       - backend:
@@ -20,5 +20,5 @@ spec:
         path: /oauth2
   tls:
   - hosts:
-    - {{ .Values.Installation.V1.Monitoring.Prometheus.Host }}
+    - {{ .Values.prometheus.host }}
     secretName: prometheus-tls

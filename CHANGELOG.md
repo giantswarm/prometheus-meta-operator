@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   of metrics coming from _kube-state-metrics_ on clusters with a lot of
   activity.
 
+## [1.46.0] - 2021-07-14
+
+### Changed
+
+- Use `giantswarm/config` to generate managed configuration.
+
 ## [1.45.0] - 2021-06-28
 
 ### Changed
@@ -1200,7 +1206,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.45.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.46.0...HEAD
+[1.46.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.45.0...v1.46.0
 [1.45.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.2...v1.45.0
 [1.44.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.1...v1.44.2
 [1.44.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.0...v1.44.1
