@@ -1031,6 +1031,10 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: keep
+  # on workload clusters only scrape metrics from namespaces we manage
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*)
+    action: keep
     # if __meta_kubernetes_service_annotation_giantswarm_io_monitoring_path is present, we use it as the metrics path
   - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_path]
     action: replace
