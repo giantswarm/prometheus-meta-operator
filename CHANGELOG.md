@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Add the service label in the alert templates for the `ServiceLevelBurnRateTooHigh` alert.
+
 ## [1.46.0] - 2021-07-14
 
 ### Changed
