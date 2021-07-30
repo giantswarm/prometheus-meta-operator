@@ -4,6 +4,7 @@ metadata:
     app.kubernetes.io/instance: bob
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: bob
   name: bob
   namespace: bob-prometheus
 spec:
@@ -47,6 +48,7 @@ spec:
       app.kubernetes.io/instance: bob
       app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: prometheus
+      giantswarm.io/cluster: bob
       giantswarm.io/monitoring: "true"
   priorityClassName: prometheus
   remoteWrite:
@@ -97,9 +99,12 @@ spec:
     runAsGroup: 65534
     runAsNonRoot: true
     runAsUser: 1000
+  serviceMonitorNamespaceSelector:
+    matchLabels:
+      giantswarm.io/cluster: bob
   serviceMonitorSelector:
     matchLabels:
-      cluster_id: bob
+      giantswarm.io/cluster: bob
   storage:
     volumeClaimTemplate:
       metadata: {}

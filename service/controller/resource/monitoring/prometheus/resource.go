@@ -192,11 +192,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			Retention:      config.RetentionDuration,
 			RetentionSize:  config.RetentionSize,
 			WALCompression: &walCompression,
-			ServiceMonitorSelector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					key.ClusterIDKey(): key.ClusterID(cluster),
-				},
-			},
 			AdditionalScrapeConfigs: &corev1.SecretKeySelector{
 				LocalObjectReference: corev1.LocalObjectReference{
 					Name: key.PrometheusAdditionalScrapeConfigsSecretName(),
@@ -328,6 +323,18 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				},
 			},
 		}
+
+		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"giantswarm.io/cluster": key.ClusterID(cluster),
+			},
+		}
+
+		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
+			MatchLabels: map[string]string{
+				"giantswarm.io/cluster": key.ClusterID(cluster),
+			},
+		}
 	} else {
 		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
@@ -351,6 +358,24 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					Key:      "cluster_type",
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"workload_cluster"},
+				},
+			},
+		}
+
+		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				metav1.LabelSelectorRequirement{
+					Key:      "giantswarm.io/cluster",
+					Operator: metav1.LabelSelectorOpDoesNotExist,
+				},
+			},
+		}
+
+		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				metav1.LabelSelectorRequirement{
+					Key:      "giantswarm.io/cluster",
+					Operator: metav1.LabelSelectorOpDoesNotExist,
 				},
 			},
 		}

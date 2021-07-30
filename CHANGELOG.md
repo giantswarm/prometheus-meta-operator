@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add the service label in the alert templates for the `ServiceLevelBurnRateTooHigh` alert.
-- Update Prometheus to 2.28.1
+- Update Prometheus to 2.28.1.
+- Ensure the workload cluster Prometheus detects Service Monitor in the cluster and workload cluster prometheus namespace and that management cluster prometheus detects Service Monitors from all the other namespaces.
 
 ## [1.46.0] - 2021-07-14
 
