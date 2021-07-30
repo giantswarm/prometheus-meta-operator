@@ -40,7 +40,7 @@ spec:
     provider: provider
     region: onprem
   externalUrl: http://prometheus/foo
-  image: quay.io/giantswarm/prometheus:v2.27.1
+  image: quay.io/giantswarm/prometheus:v2.28.1
   logLevel: debug
   podMetadata:
     labels:
