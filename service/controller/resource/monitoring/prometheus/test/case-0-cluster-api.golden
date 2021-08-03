@@ -99,12 +99,6 @@ spec:
     runAsGroup: 65534
     runAsNonRoot: true
     runAsUser: 1000
-  serviceMonitorNamespaceSelector:
-    matchLabels:
-      giantswarm.io/cluster: bob
-  serviceMonitorSelector:
-    matchLabels:
-      giantswarm.io/cluster: bob
   storage:
     volumeClaimTemplate:
       metadata: {}

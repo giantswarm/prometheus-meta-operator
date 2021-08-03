@@ -323,18 +323,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				},
 			},
 		}
-
-		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
-			MatchLabels: map[string]string{
-				"giantswarm.io/cluster": key.ClusterID(cluster),
-			},
-		}
-
-		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchLabels: map[string]string{
-				"giantswarm.io/cluster": key.ClusterID(cluster),
-			},
-		}
 	} else {
 		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
