@@ -12,6 +12,13 @@ route:
   repeat_interval: 4h
   receiver: root
   routes:
+
+  # Falco noise Slack
+  - receiver: falco_noise_slack
+    matchers:
+    - alertname=~"Falco.*"
+    continue: false
+
     # Team Ops Opsgenie
   - receiver: opsgenie_router
     match:
@@ -105,6 +112,29 @@ route:
 
 receivers:
 - name: root
+
+- name: falco_noise_slack
+  slack_configs:
+  - channel: '#noise-falco'
+    send_resolved: true
+    actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{`{{ (index .Alerts 0).Annotations.opsrecipe }}`}}'
+      style: '{{`{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}`}}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{`{{ template "__alert_linked_postmortems" . }}`}}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{`{{ (index .Alerts 0).GeneratorURL }}`}}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: '{{ .Values.grafana.address }}/{{`{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{`{{ template "__alert_silence_link" . }}`}}'
+      style: '{{`{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}`}}'
 
 - name: sig_customers_slack
   slack_configs:
