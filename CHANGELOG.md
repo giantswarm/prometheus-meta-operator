@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.47.0] - 2021-08-05
+
 ### Changed
 
 - Add the service label in the alert templates for the `ServiceLevelBurnRateTooHigh` alert.
@@ -1205,7 +1207,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.46.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.47.0...HEAD
+[1.47.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.46.0...v1.47.0
 [1.46.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.45.0...v1.46.0
 [1.45.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.2...v1.45.0
 [1.44.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.44.1...v1.44.2
