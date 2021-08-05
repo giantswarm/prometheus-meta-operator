@@ -4,6 +4,7 @@ metadata:
     app.kubernetes.io/instance: foo
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: foo
   name: prometheus
   namespace: foo-prometheus
 spec:

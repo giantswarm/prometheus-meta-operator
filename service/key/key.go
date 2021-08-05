@@ -97,6 +97,7 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 		"app.kubernetes.io/name":       "prometheus",
 		"app.kubernetes.io/managed-by": project.Name(),
 		"app.kubernetes.io/instance":   ClusterID(cluster),
+		"giantswarm.io/cluster":        ClusterID(cluster),
 	}
 }
 
