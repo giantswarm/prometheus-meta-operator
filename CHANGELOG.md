@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add receiver and route for `#noise-falco` Slack channel.
+
 ## [1.47.0] - 2021-08-05
 
 ### Changed
