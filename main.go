@@ -125,6 +125,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Storage.Size, "1Gi", "Storage size for alertmanagers.")
 	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Version, "v0.22.1", "Alertmanager container image version.")
 
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.AdditionalScrapeConfigs, "", "Additional installation-specific scrape configs.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Address, "", "Address to access Prometheus UI.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.BaseDomain, "", "Base domain to create Prometheus Ingress resources under.")
 	daemonCommand.PersistentFlags().StringSlice(f.Service.Prometheus.Bastions, make([]string, 0), "Address of the bastions.")

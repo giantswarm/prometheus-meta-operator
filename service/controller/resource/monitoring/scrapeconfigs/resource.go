@@ -24,8 +24,10 @@ const (
 )
 
 type Config struct {
-	K8sClient                 k8sclient.Interface
-	Logger                    micrologger.Logger
+	K8sClient k8sclient.Interface
+	Logger    micrologger.Logger
+
+	AdditionalScrapeConfigs   string
 	Bastions                  []string
 	Installation              string
 	Provider                  string
@@ -36,6 +38,7 @@ type Config struct {
 }
 
 type TemplateData struct {
+	AdditionalScrapeConfigs   string
 	APIServerURL              string
 	Bastions                  []string
 	Provider                  string
@@ -158,6 +161,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
+		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
 		Bastions:                  config.Bastions,
 		ClusterID:                 clusterID,

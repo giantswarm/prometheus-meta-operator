@@ -89,16 +89,32 @@ func TestAzureScrapeconfigs(t *testing.T) {
 	}
 }
 
+const additionalScrapeConfigs = `- job_name: test1
+  static_configs:
+  - targets:
+    - 1.1.1.1:123
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+- job_name: test2
+  static_configs:
+  - targets:
+    - 8.8.8.8:123
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target`
+
 func TestKVMScrapeconfigs(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 
 		config := Config{
-			TemplatePath: path,
-			Provider:     "kvm",
-			Vault:        "vault1.some-installation.test",
-			Installation: "test-installation",
+			AdditionalScrapeConfigs: additionalScrapeConfigs,
+			TemplatePath:            path,
+			Provider:                "kvm",
+			Vault:                   "vault1.some-installation.test",
+			Installation:            "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return toData(v, config)

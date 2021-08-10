@@ -36,13 +36,14 @@ type resourcesConfig struct {
 	HTTPSProxy string
 	NoProxy    string
 
-	Bastions     []string
-	Customer     string
-	Installation string
-	Pipeline     string
-	Provider     string
-	Region       string
-	Registry     string
+	AdditionalScrapeConfigs string
+	Bastions                []string
+	Customer                string
+	Installation            string
+	Pipeline                string
+	Provider                string
+	Region                  string
+	Registry                string
 
 	AlertmanagerAddress     string
 	AlertmanagerCreatePVC   bool
@@ -232,13 +233,15 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			Bastions:     config.Bastions,
-			Provider:     config.Provider,
-			Installation: config.Installation,
-			Mayu:         config.Mayu,
-			Vault:        config.Vault,
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			AdditionalScrapeConfigs: config.AdditionalScrapeConfigs,
+			Bastions:                config.Bastions,
+			Provider:                config.Provider,
+			Installation:            config.Installation,
+			Mayu:                    config.Mayu,
+			Vault:                   config.Vault,
 		}
 
 		scrapeConfigResource, err = scrapeconfigs.New(c)
