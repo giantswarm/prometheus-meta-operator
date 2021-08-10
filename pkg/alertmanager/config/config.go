@@ -25,13 +25,14 @@ import (
 	"strings"
 	"time"
 
-	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 	"github.com/pkg/errors"
 	"github.com/prometheus/common/model"
 	"gopkg.in/yaml.v2"
 
 	"github.com/prometheus/alertmanager/pkg/labels"
 	"github.com/prometheus/alertmanager/timeinterval"
+
+	commoncfg "github.com/giantswarm/prometheus-meta-operator/pkg/prometheus/common/config"
 )
 
 // Secret is a string that must not be revealed on marshaling.
