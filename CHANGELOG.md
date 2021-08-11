@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `kyverno` to scrape targets.
+
 ## [1.48.0] - 2021-08-09
 
 ### Added
