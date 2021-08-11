@@ -47,6 +47,7 @@ managementCluster:
     kind: ""
 
 prometheus:
+  additionalScrapeConfigs: ""
   address: "https://prometheus:9090"
   bastions: []
   cortex:

@@ -2616,6 +2616,21 @@
   - target_label: installation
     replacement: test-installation
 
+# installation-specific configs from config repo
+- job_name: test1
+  static_configs:
+  - targets:
+    - 1.1.1.1:123
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
+- job_name: test2
+  static_configs:
+  - targets:
+    - 8.8.8.8:123
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: __param_target
 
 
 

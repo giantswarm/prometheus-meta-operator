@@ -7,6 +7,7 @@ import (
 	"os"
 	"sync"
 
+	providerv1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v5/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
@@ -15,11 +16,9 @@ import (
 	"github.com/giantswarm/versionbundle"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"github.com/spf13/viper"
-	"k8s.io/client-go/rest"
-
-	providerv1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/provider/v1alpha1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	"k8s.io/client-go/rest"
 	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
@@ -135,13 +134,14 @@ func New(config Config) (*Service, error) {
 			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
 			NoProxy:    os.Getenv("NO_PROXY"),
 
-			Bastions:     config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Customer:     config.Viper.GetString(config.Flag.Service.Installation.Customer),
-			Installation: config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Pipeline:     config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			Provider:     provider,
-			Region:       config.Viper.GetString(config.Flag.Service.Installation.Region),
-			Registry:     config.Viper.GetString(config.Flag.Service.Installation.Registry),
+			AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
+			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Provider:                provider,
+			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
 			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
@@ -179,13 +179,14 @@ func New(config Config) (*Service, error) {
 			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
 			NoProxy:    os.Getenv("NO_PROXY"),
 
-			Bastions:     config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Customer:     config.Viper.GetString(config.Flag.Service.Installation.Customer),
-			Installation: config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Pipeline:     config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			Provider:     provider,
-			Region:       config.Viper.GetString(config.Flag.Service.Installation.Region),
-			Registry:     config.Viper.GetString(config.Flag.Service.Installation.Registry),
+			AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
+			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Provider:                provider,
+			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
 			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
@@ -224,13 +225,14 @@ func New(config Config) (*Service, error) {
 			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
 			NoProxy:    os.Getenv("NO_PROXY"),
 
-			Bastions:     config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Customer:     config.Viper.GetString(config.Flag.Service.Installation.Customer),
-			Installation: config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Pipeline:     config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			Provider:     provider,
-			Region:       config.Viper.GetString(config.Flag.Service.Installation.Region),
-			Registry:     config.Viper.GetString(config.Flag.Service.Installation.Registry),
+			AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
+			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Provider:                provider,
+			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
 			AlertmanagerAddress:     config.Viper.GetString(config.Flag.Service.Alertmanager.Address),
 			AlertmanagerCreatePVC:   config.Viper.GetBool(config.Flag.Service.Alertmanager.Storage.CreatePVC),
@@ -240,7 +242,8 @@ func New(config Config) (*Service, error) {
 			GrafanaAddress:          config.Viper.GetString(config.Flag.Service.Grafana.Address),
 			SlackApiURL:             config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
 			SlackProjectName:        config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
-			OpsgenieKey:             config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+
+			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
 			PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
