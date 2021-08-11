@@ -34,13 +34,14 @@ type Config struct {
 	HTTPSProxy string
 	NoProxy    string
 
-	Bastions     []string
-	Customer     string
-	Installation string
-	Pipeline     string
-	Provider     string
-	Region       string
-	Registry     string
+	AdditionalScrapeConfigs string
+	Bastions                []string
+	Customer                string
+	Installation            string
+	Pipeline                string
+	Provider                string
+	Region                  string
+	Registry                string
 
 	OpsgenieKey string
 
@@ -176,11 +177,13 @@ func New(config Config) ([]resource.Interface, error) {
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			Bastions:     config.Bastions,
-			Provider:     config.Provider,
-			Installation: config.Installation,
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+
+			AdditionalScrapeConfigs: config.AdditionalScrapeConfigs,
+			Bastions:                config.Bastions,
+			Provider:                config.Provider,
+			Installation:            config.Installation,
 		}
 
 		scrapeConfigResource, err = scrapeconfigs.New(c)

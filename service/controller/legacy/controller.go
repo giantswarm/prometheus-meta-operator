@@ -25,13 +25,14 @@ type ControllerConfig struct {
 	HTTPSProxy string
 	NoProxy    string
 
-	Bastions     []string
-	Customer     string
-	Installation string
-	Pipeline     string
-	Provider     string
-	Region       string
-	Registry     string
+	AdditionalScrapeConfigs string
+	Bastions                []string
+	Customer                string
+	Installation            string
+	Pipeline                string
+	Provider                string
+	Region                  string
+	Registry                string
 
 	OpsgenieKey string
 

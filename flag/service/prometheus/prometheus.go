@@ -1,15 +1,16 @@
 package prometheus
 
 type Prometheus struct {
-	Address     string
-	BaseDomain  string
-	Bastions    string
-	LogLevel    string
-	Mayu        string
-	Storage     PrometheusStorage
-	Retention   PrometheusRetention
-	RemoteWrite PrometheusRemoteWrite
-	Version     string
+	AdditionalScrapeConfigs string
+	Address                 string
+	BaseDomain              string
+	Bastions                string
+	LogLevel                string
+	Mayu                    string
+	Storage                 PrometheusStorage
+	Retention               PrometheusRetention
+	RemoteWrite             PrometheusRemoteWrite
+	Version                 string
 }
 
 type PrometheusStorage struct {

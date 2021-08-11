@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `additionalScrapeConfigs` flag which accepts a string which will be appended to the management cluster scrape config
+  template for installation specific configuration.
+
 ## [1.48.0] - 2021-08-09
 
 ### Added
