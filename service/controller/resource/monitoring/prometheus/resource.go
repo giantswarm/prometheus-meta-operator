@@ -350,23 +350,24 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			},
 		}
 
-		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				metav1.LabelSelectorRequirement{
-					Key:      "giantswarm.io/cluster",
-					Operator: metav1.LabelSelectorOpDoesNotExist,
-				},
-			},
-		}
+	}
 
-		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				metav1.LabelSelectorRequirement{
-					Key:      "giantswarm.io/cluster",
-					Operator: metav1.LabelSelectorOpDoesNotExist,
-				},
+	prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
+		MatchExpressions: []metav1.LabelSelectorRequirement{
+			metav1.LabelSelectorRequirement{
+				Key:      "giantswarm.io/cluster",
+				Operator: metav1.LabelSelectorOpDoesNotExist,
 			},
-		}
+		},
+	}
+
+	prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
+		MatchExpressions: []metav1.LabelSelectorRequirement{
+			metav1.LabelSelectorRequirement{
+				Key:      "giantswarm.io/cluster",
+				Operator: metav1.LabelSelectorOpDoesNotExist,
+			},
+		},
 	}
 
 	return prometheus, nil
