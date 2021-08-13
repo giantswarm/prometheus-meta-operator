@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/instance: bar
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: bar
   name: prometheus-bar
   namespace: bar-prometheus
 spec:

@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/instance: kubernetes
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: kubernetes
   name: prometheus-kubernetes
   namespace: kubernetes-prometheus
 spec:

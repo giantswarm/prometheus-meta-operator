@@ -10,6 +10,7 @@ metadata:
     app.kubernetes.io/instance: alice
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: alice
   name: prometheus-alice
   namespace: alice-prometheus
 spec:

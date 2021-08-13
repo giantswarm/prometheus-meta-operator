@@ -4,6 +4,7 @@ metadata:
     app.kubernetes.io/instance: bob
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: bob
   name: prometheus
   namespace: bob-prometheus
 spec:

@@ -29,6 +29,10 @@ data:
           createPVC: {{ and .Values.alertmanager.storage.enabled .Values.alertmanager.storage.createPVC }}
           size: {{ .Values.alertmanager.storage.pvcSize }}
       prometheus:
+        {{- if .Values.prometheus.additionalScrapeConfigs }}
+        additionalScrapeConfigs: |-
+          {{- .Values.prometheus.additionalScrapeConfigs | nindent 10 }}
+        {{- end }}
         address: {{ .Values.prometheus.address }}
         baseDomain: {{ .Values.prometheus.host }}
         bastions:

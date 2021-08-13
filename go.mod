@@ -7,14 +7,14 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/giantswarm/apiextensions/v3 v3.30.0
-	github.com/giantswarm/k8sclient/v5 v5.11.0
+	github.com/giantswarm/k8sclient/v5 v5.12.0
 	github.com/giantswarm/microendpoint v0.2.0
 	github.com/giantswarm/microerror v0.3.0
 	github.com/giantswarm/microkit v0.2.2
 	github.com/giantswarm/micrologger v0.5.0
 	github.com/giantswarm/operatorkit/v4 v4.3.1
 	github.com/giantswarm/versionbundle v0.2.0
-	github.com/go-kit/kit v0.10.0
+	github.com/go-kit/log v0.1.0
 	github.com/go-logr/logr v0.3.0 // indirect
 	github.com/google/go-cmp v0.5.6
 	github.com/google/gofuzz v1.2.0 // indirect
