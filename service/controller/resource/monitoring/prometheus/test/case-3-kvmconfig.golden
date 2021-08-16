@@ -99,6 +99,14 @@ spec:
     runAsGroup: 65534
     runAsNonRoot: true
     runAsUser: 1000
+  serviceMonitorNamespaceSelector:
+    matchExpressions:
+    - key: nonexistentkey
+      operator: Exists
+  serviceMonitorSelector:
+    matchExpressions:
+    - key: nonexistentkey
+      operator: Exists
   storage:
     volumeClaimTemplate:
       metadata: {}
