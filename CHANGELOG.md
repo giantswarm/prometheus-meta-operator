@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade prometheus-operator to v0.49.0
 
+### Fixed
+
+- Fix an issue where prometheus config is empty, due to missing serviceMonitorSelector.
+
 ## [1.49.0] - 2021-08-11
 
 ### Added

@@ -280,7 +280,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			},
 			Name: key.ClusterID(cluster),
 			WriteRelabelConfigs: []promv1.RelabelConfig{
-				promv1.RelabelConfig{
+				{
 					SourceLabels: []string{"__name__"},
 					Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|prometheus_tsdb_head_samples_appended_total|^slo_.+)",
 					Action:       "keep",
@@ -316,10 +316,28 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{
-				metav1.LabelSelectorRequirement{
+				{
 					Key:      "cluster_type",
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"management_cluster"},
+				},
+			},
+		}
+
+		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				{
+					Key:      "nonexistentkey",
+					Operator: metav1.LabelSelectorOpExists,
+				},
+			},
+		}
+
+		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				{
+					Key:      "nonexistentkey",
+					Operator: metav1.LabelSelectorOpExists,
 				},
 			},
 		}
@@ -342,7 +360,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{
-				metav1.LabelSelectorRequirement{
+				{
 					Key:      "cluster_type",
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"workload_cluster"},
@@ -352,7 +370,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{
-				metav1.LabelSelectorRequirement{
+				{
 					Key:      "giantswarm.io/cluster",
 					Operator: metav1.LabelSelectorOpDoesNotExist,
 				},
@@ -361,7 +379,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 
 		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{
-				metav1.LabelSelectorRequirement{
+				{
 					Key:      "giantswarm.io/cluster",
 					Operator: metav1.LabelSelectorOpDoesNotExist,
 				},
