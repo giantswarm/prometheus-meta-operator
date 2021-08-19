@@ -113,8 +113,8 @@
 [[ include "_apiserver" . ]]
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    regex: kyverno
+  - source_labels: [__meta_kubernetes_service_name]
+    regex: kyverno-svc-metrics
     action: keep
   - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
     target_label: app
