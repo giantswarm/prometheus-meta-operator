@@ -11,6 +11,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `kyverno` to scrape targets.
 
+## [1.50.0] - 2021-08-16
+
+### Changed
+
+- Upgrade prometheus-operator to v0.49.0
+
+### Fixed
+
+- Fix an issue where prometheus config is empty, due to missing serviceMonitorSelector.
+
 ## [1.49.0] - 2021-08-11
 
 ### Added
@@ -1224,7 +1234,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.49.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.50.0...HEAD
+[1.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.49.0...v1.50.0
 [1.49.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.48.0...v1.49.0
 [1.48.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.47.0...v1.48.0
 [1.47.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.46.0...v1.47.0
