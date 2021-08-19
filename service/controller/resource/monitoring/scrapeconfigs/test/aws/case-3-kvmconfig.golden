@@ -743,11 +743,9 @@
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
-
   - source_labels: [__meta_kubernetes_service_name]
     regex: chart-operator
     action: keep
-
   - target_label: __address__
     replacement: master.bar:443
   - source_labels: [__meta_kubernetes_pod_name]

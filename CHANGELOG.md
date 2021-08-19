@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `kyverno` to scrape targets.
 
+### Changed
+
+- Scrape `chart-operator` service instead of `chart-operator-unique` on MCs.
+
 ## [1.50.0] - 2021-08-16
 
 ### Changed
