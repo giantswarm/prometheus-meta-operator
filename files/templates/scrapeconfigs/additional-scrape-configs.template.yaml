@@ -116,8 +116,8 @@
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
     regex: kyverno
     action: keep
-  # - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
-  #   target_label: app
+  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
+    target_label: app
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
 [[- end ]]
