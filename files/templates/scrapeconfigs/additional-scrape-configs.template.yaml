@@ -420,15 +420,9 @@
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
-[[ if eq .ClusterType "management_cluster" ]]
-  - source_labels: [__meta_kubernetes_service_name]
-    regex: chart-operator-unique
-    action: keep
-[[ else ]]
   - source_labels: [__meta_kubernetes_service_name]
     regex: chart-operator
     action: keep
-[[ end ]]
   - target_label: __address__
     replacement: [[ .APIServerURL ]]
   - source_labels: [__meta_kubernetes_pod_name]
