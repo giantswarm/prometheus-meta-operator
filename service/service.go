@@ -19,7 +19,6 @@ import (
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"k8s.io/client-go/rest"
-	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
@@ -92,7 +91,6 @@ func New(config Config) (*Service, error) {
 			RestConfig: restConfig,
 			SchemeBuilder: k8sclient.SchemeBuilder{
 				apiextensionsv1.AddToScheme,
-				capiv1alpha2.AddToScheme,
 				capiv1alpha3.AddToScheme,
 				providerv1alpha1.AddToScheme,
 			},

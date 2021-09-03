@@ -12,7 +12,6 @@ import (
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
-	capiv1alpha2 "sigs.k8s.io/cluster-api/api/v1alpha2"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -123,8 +122,6 @@ func getClusterFactoryFunc(ctrlClient client.Client) (func() runtime.Object, err
 	// Decide which object to construct based on storage version.
 	var fn func() runtime.Object
 	switch storageVersion {
-	case "v1alpha2":
-		fn = func() runtime.Object { return new(capiv1alpha2.Cluster) }
 	case "v1alpha3":
 		fn = func() runtime.Object { return new(capiv1alpha3.Cluster) }
 	default:
