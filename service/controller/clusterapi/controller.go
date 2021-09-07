@@ -13,6 +13,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
@@ -124,6 +125,8 @@ func getClusterFactoryFunc(ctrlClient client.Client) (func() runtime.Object, err
 	switch storageVersion {
 	case "v1alpha3":
 		fn = func() runtime.Object { return new(capiv1alpha3.Cluster) }
+	case "v1alpha4":
+		fn = func() runtime.Object { return new(capiv1alpha4.Cluster) }
 	default:
 		return nil, microerror.Maskf(unsupportedStorageVersionError, "implementation does not support storage version %q", storageVersion)
 	}
