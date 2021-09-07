@@ -17,6 +17,8 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"github.com/spf13/viper"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"k8s.io/client-go/rest"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
@@ -165,8 +167,12 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var legacyController *legacy.Controller
-	if provider != "vmware" {
+	var legacyController *legacy.Controller = nil
+	createLegacyController, err := shouldCreateLegacyController(k8sClient, provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if createLegacyController {
 		c := legacy.ControllerConfig{
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
@@ -207,8 +213,6 @@ func New(config Config) (*Service, error) {
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-	} else {
-		legacyController = nil
 	}
 
 	var managementclusterController *managementcluster.Controller
@@ -294,6 +298,35 @@ func New(config Config) (*Service, error) {
 	}
 
 	return s, nil
+}
+
+func shouldCreateLegacyController(clients k8sclient.Interface, provider string) (bool, error) {
+	switch provider {
+	case "aws":
+		_, err := clients.G8sClient().ProviderV1alpha1().AWSConfigs("default").List(context.Background(), v1.ListOptions{})
+		if apierrors.IsNotFound(err) {
+			return false, nil
+		} else if err != nil {
+			return false, microerror.Mask(err)
+		}
+	case "azure":
+		_, err := clients.G8sClient().ProviderV1alpha1().AzureConfigs("default").List(context.Background(), v1.ListOptions{})
+		if apierrors.IsNotFound(err) {
+			return false, nil
+		} else if err != nil {
+			return false, microerror.Mask(err)
+		}
+	case "kvm":
+		_, err := clients.G8sClient().ProviderV1alpha1().KVMConfigs("default").List(context.Background(), v1.ListOptions{})
+		if apierrors.IsNotFound(err) {
+			return false, nil
+		} else if err != nil {
+			return false, microerror.Mask(err)
+		}
+	case "vmware":
+		return false, nil
+	}
+	return true, nil
 }
 
 func (s *Service) Boot(ctx context.Context) {

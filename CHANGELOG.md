@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
 - Drop `v1alpha2` scheme.
+
+### Fixed
+
+- Do not create the legacy controller on new installations.
 
 ## [1.50.0] - 2021-08-16
 
