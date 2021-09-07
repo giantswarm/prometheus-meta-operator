@@ -38,7 +38,7 @@ require (
 	k8s.io/autoscaler/vertical-pod-autoscaler v0.9.2
 	k8s.io/client-go v12.0.0+incompatible
 	sigs.k8s.io/cluster-api v0.3.19
-	sigs.k8s.io/controller-runtime v0.9.7
+	sigs.k8s.io/controller-runtime v0.9.7 // indirect
 	sigs.k8s.io/yaml v1.2.0
 )
 
@@ -50,5 +50,5 @@ replace (
 	// cf. https://github.com/prometheus/prometheus/issues/6048#issuecomment-534549253 and https://github.com/ctron/enmasse/commit/4e30e62e83fcfcd87b4cdada3b30edbffbe09e85
 	github.com/prometheus/prometheus => github.com/prometheus/prometheus v0.0.0-20201126101154-26d89b4b0776
 	k8s.io/client-go => k8s.io/client-go v0.21.4
-// sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.13-gs.0.20210906124400-92d03cd8aa04
+	sigs.k8s.io/cluster-api => github.com/giantswarm/cluster-api v0.3.13-gs
 )
