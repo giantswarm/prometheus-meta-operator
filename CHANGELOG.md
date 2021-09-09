@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.51.0] - 2021-09-09
+
 ### Changed
 
 - Drop `v1alpha2` scheme.
@@ -1239,7 +1241,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.50.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.0...HEAD
+[1.51.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.50.0...v1.51.0
 [1.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.49.0...v1.50.0
 [1.49.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.48.0...v1.49.0
 [1.48.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.47.0...v1.48.0
