@@ -29,22 +29,6 @@ route:
       severity: page
     continue: true
 
-  # Project Customer Slack
-  - receiver: sig_customers_slack
-    match_re:
-      severity: notify
-      team: se
-    repeat_interval: 24h
-    continue: false
-
-  # SIG Customer Slack
-  - receiver: sig_customers_slack
-    match_re:
-      severity: page|notify
-      sig: customers
-    repeat_interval: 24h
-    continue: true
-
   - receiver: team_biscuit_slack
     match:
       alertname: ServiceLevelBurnRateTooHigh
