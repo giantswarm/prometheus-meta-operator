@@ -111,25 +111,23 @@ func getClusterFactoryFunc(ctrlClient client.Client) (func() runtime.Object, err
 		return nil, microerror.Mask(err)
 	}
 
-	// Find out configured storage version.
-	var storageVersion string
+	var crdVersions []string
 	for _, v := range clusterCRD.Spec.Versions {
-		if v.Storage {
-			storageVersion = v.Name
-			break
+		crdVersions = append(crdVersions, v.Name)
+	}
+
+	// Decide which object to construct based cluster CRD versions.
+	supportedVerions := map[string]func() runtime.Object{
+		"v1alpha3": func() runtime.Object { return new(capiv1alpha3.Cluster) },
+		"v1alpha2": func() runtime.Object { return new(capiv1alpha2.Cluster) },
+	}
+	for supportedVersion, versionFN := range supportedVerions {
+		for _, v := range crdVersions {
+			if v == supportedVersion {
+				return versionFN, nil
+			}
 		}
 	}
 
-	// Decide which object to construct based on storage version.
-	var fn func() runtime.Object
-	switch storageVersion {
-	case "v1alpha2":
-		fn = func() runtime.Object { return new(capiv1alpha2.Cluster) }
-	case "v1alpha3":
-		fn = func() runtime.Object { return new(capiv1alpha3.Cluster) }
-	default:
-		return nil, microerror.Maskf(unsupportedStorageVersionError, "implementation does not support storage version %q", storageVersion)
-	}
-
-	return fn, nil
+	return nil, microerror.Maskf(unsupportedStorageVersionError, "implementation does not support storage version %#v", crdVersions)
 }
