@@ -129,5 +129,5 @@ func getClusterFactoryFunc(ctrlClient client.Client) (func() runtime.Object, err
 		}
 	}
 
-	return nil, microerror.Maskf(unsupportedStorageVersionError, "implementation does not support storage version %#v", crdVersions)
+	return nil, microerror.Maskf(unsupportedStorageVersionError, "implementation does not support storage version %q", crdVersions)
 }
