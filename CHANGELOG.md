@@ -16,7 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Drop `v1alpha2` scheme.
-- Reconcile `v1alpha3` cluster.
 
 ### Fixed
 
