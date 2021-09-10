@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove cloud limit alerts from customer channel.
+
 ## [1.51.0] - 2021-09-09
 
 ### Changed
