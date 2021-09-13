@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
 ### Removed
 
 - Remove cloud limit alerts from customer channel.
+
+## [1.51.1] - 2021-09-10
+
+### Fixed
+
+- Re-introduce `v1alpha2` scheme.
 
 ## [1.51.0] - 2021-09-09
 
@@ -1245,7 +1252,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.1...HEAD
+[1.51.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.0...v1.51.1
 [1.51.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.50.0...v1.51.0
 [1.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.49.0...v1.50.0
 [1.49.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.48.0...v1.49.0
