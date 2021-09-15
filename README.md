@@ -43,6 +43,5 @@ $ git tag -d $(git tag -l)
 $ git fetch origin
 ```
 
-
 [operatorkit]: https://github.com/giantswarm/operatorkit
 [prometheus-operator]: https://github.com/prometheus-operator/prometheus-operator
