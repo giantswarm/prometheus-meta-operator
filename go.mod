@@ -25,7 +25,7 @@ require (
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.8
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.49.0
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.51.0
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.49.0
 	github.com/prometheus/alertmanager v0.22.2
 	github.com/prometheus/client_golang v1.11.0
