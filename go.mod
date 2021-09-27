@@ -45,7 +45,7 @@ require (
 	k8s.io/utils v0.0.0-20201110183641-67b214c5f920 // indirect
 	sigs.k8s.io/cluster-api v0.3.19
 	sigs.k8s.io/controller-runtime v0.6.4
-	sigs.k8s.io/yaml v1.2.0
+	sigs.k8s.io/yaml v1.3.0
 )
 
 replace (
