@@ -459,44 +459,6 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-# cert-exporter
-- job_name: [[ .ClusterID ]]-prometheus/cert-exporter-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-[[ if eq .ClusterType "management_cluster" ]]
-      - monitoring
-[[ else ]]
-      - kube-system
-[[ end ]]
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
-  relabel_configs:
-  - source_labels: [__address__]
-    target_label: instance
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: cert-exporter
-    action: keep
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (cert-exporter.*)
-    target_label: __metrics_path__
-[[ if eq .ClusterType "management_cluster" ]]
-    replacement: /api/v1/namespaces/monitoring/pods/${1}:9005/proxy/metrics
-[[ else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:9005/proxy/metrics
-[[ end ]]
-  - source_labels: [__meta_kubernetes_service_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
 # node-exporter
 - job_name: [[ .ClusterID ]]-prometheus/node-exporter-[[ .ClusterID ]]/0
   honor_labels: true
@@ -1816,10 +1778,6 @@
     - [[ .Vault ]]:10300
     labels:
       app: vault
-  - targets:
-    - [[ .Vault ]]:9005
-    labels:
-      app: cert-exporter
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
 # nginx-ingress-controller

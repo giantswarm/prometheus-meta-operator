@@ -6,7 +6,6 @@
 - app-operator
 - cadvisor
 - calico
-- cert-exporter
 - cert-operator
 - chart-operator
 - cluster-autoscaler
