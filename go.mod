@@ -31,7 +31,7 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/prometheus/common v0.30.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/viper v1.8.1
+	github.com/spf13/viper v1.9.0
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
 	gomodules.xyz/jsonpatch/v2 v2.1.0 // indirect
