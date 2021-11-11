@@ -53,9 +53,9 @@ prometheus:
   cortex:
     apiKey: ""
   etcdClientCertificates:
-    ca: ""
-    crt: ""
-    key: ""
+    ca: "ca"
+    crt: "crt"
+    key: "key"
   heartbeat:
     opsgenieKey: ""
   host: "prometheus:9090"

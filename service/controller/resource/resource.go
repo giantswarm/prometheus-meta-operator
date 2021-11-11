@@ -89,6 +89,10 @@ func New(config Config) ([]resource.Interface, error) {
 					NamespaceFunc: key.NamespaceDefault,
 				},
 				{
+					NameFunc:      key.Namespace,
+					NamespaceFunc: key.OrganizationNamespace,
+				},
+				{
 					NameFunc:      key.CAPICertificateName,
 					NamespaceFunc: key.CAPICertificateNamespace,
 				},
