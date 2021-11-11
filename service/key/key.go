@@ -51,6 +51,10 @@ func NamespaceDefault(cluster metav1.Object) string {
 	return v1.NamespaceDefault
 }
 
+func OrganizationNamespace(cluster metav1.Object) string {
+	return cluster.GetNamespace()
+}
+
 func NamespaceMonitoring() string {
 	return monitoring
 }

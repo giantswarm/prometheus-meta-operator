@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.51.2] - 2021-10-28
+
+### Fixed
+
+- Fix finding certificates in organization namespaces.
 
 ### Removed
 
@@ -1252,7 +1257,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.2...HEAD
+[1.51.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.1...v1.51.2
 [1.51.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.0...v1.51.1
 [1.51.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.50.0...v1.51.0
 [1.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.49.0...v1.50.0
