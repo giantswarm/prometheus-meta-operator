@@ -49,7 +49,7 @@ $ git fetch alertmanager
 $ git checkout v0.22.2
 $ git subtree split -P config/ -b alertmanager-config
 $ git checkout -b alertmanager-0.22.2 origin/master
-$ git subtree merge --squash -P pkg/alertmanager/config alertmanager-config
+$ git subtree merge --message "Upgrade alertmanager/config to v0.22.2" --squash -P pkg/alertmanager/config alertmanager-config
 # fix conflicts (the usual way) if any
 
 # restore local tags
@@ -62,7 +62,7 @@ $ git push -u origin HEAD
 /!\ Do not merge with squash, once approved merge to master manually.
 /!\ We need to preserve commit history otherwise following git subtree commands won't work.
 $ git checkout master
-$ git merge alertmanager-0.22.2
+$ git merge --ff-only alertmanager-0.22.2
 $ git push
 ```
 
