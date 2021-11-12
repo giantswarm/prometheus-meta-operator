@@ -26,6 +26,7 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -334,11 +335,11 @@ func TestNewClientFromConfig(t *testing.T) {
 			handler: func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.Path {
 				case "/redirected":
-					fmt.Fprintf(w, ExpectedMessage)
+					fmt.Fprint(w, ExpectedMessage)
 				default:
 					w.Header().Set("Location", "/redirected")
 					w.WriteHeader(http.StatusFound)
-					fmt.Fprintf(w, "It should follow the redirect.")
+					fmt.Fprint(w, "It should follow the redirect.")
 				}
 			},
 		}, {
@@ -358,7 +359,7 @@ func TestNewClientFromConfig(t *testing.T) {
 				default:
 					w.Header().Set("Location", "/redirected")
 					w.WriteHeader(http.StatusFound)
-					fmt.Fprintf(w, ExpectedMessage)
+					fmt.Fprint(w, ExpectedMessage)
 				}
 			},
 		},
@@ -452,6 +453,25 @@ func TestCustomDialContextFunc(t *testing.T) {
 	_, err = client.Get("http://localhost")
 	if err == nil || !strings.Contains(err.Error(), ExpectedError) {
 		t.Errorf("Expected error %q but got %q", ExpectedError, err)
+	}
+}
+
+func TestCustomIdleConnTimeout(t *testing.T) {
+	timeout := time.Second * 5
+
+	cfg := HTTPClientConfig{}
+	rt, err := NewRoundTripperFromConfig(cfg, "test", WithIdleConnTimeout(timeout))
+	if err != nil {
+		t.Fatalf("Can't create a round-tripper from this config: %+v", cfg)
+	}
+
+	transport, ok := rt.(*http.Transport)
+	if !ok {
+		t.Fatalf("Unexpected transport: %+v", transport)
+	}
+
+	if transport.IdleConnTimeout != timeout {
+		t.Fatalf("Unexpected idle connection timeout: %+v", timeout)
 	}
 }
 
@@ -1274,5 +1294,127 @@ endpoint_params:
 	authorization = resp.Request.Header.Get("Authorization")
 	if authorization != "Bearer 12345" {
 		t.Fatalf("Expected authorization header to be 'Bearer 12345', got '%s'", authorization)
+	}
+}
+
+func TestMarshalURL(t *testing.T) {
+	urlp, err := url.Parse("http://example.com/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	u := &URL{urlp}
+
+	c, err := json.Marshal(u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(c) != "\"http://example.com/\"" {
+		t.Fatalf("URL not properly marshaled in JSON got '%s'", string(c))
+	}
+
+	c, err = yaml.Marshal(u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(c) != "http://example.com/\n" {
+		t.Fatalf("URL not properly marshaled in YAML got '%s'", string(c))
+	}
+}
+
+func TestMarshalURLWrapperWithNilValue(t *testing.T) {
+	u := &URL{}
+
+	c, err := json.Marshal(u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(c) != "null" {
+		t.Fatalf("URL with nil value not properly marshaled into JSON, got %q", c)
+	}
+
+	c, err = yaml.Marshal(u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if string(c) != "null\n" {
+		t.Fatalf("URL with nil value not properly marshaled into JSON, got %q", c)
+	}
+}
+
+func TestUnmarshalNullURL(t *testing.T) {
+	b := []byte(`null`)
+
+	{
+		var u URL
+		err := json.Unmarshal(b, &u)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !isEmptyNonNilURL(u.URL) {
+			t.Fatalf("`null` literal not properly unmarshaled from JSON as URL, got %#v", u.URL)
+		}
+	}
+
+	{
+		var u URL
+		err := yaml.Unmarshal(b, &u)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if u.URL != nil { // UnmarshalYAML is not called when parsing null literal.
+			t.Fatalf("`null` literal not properly unmarshaled from YAML as URL, got %#v", u.URL)
+		}
+	}
+}
+
+func TestUnmarshalEmptyURL(t *testing.T) {
+	b := []byte(`""`)
+
+	{
+		var u URL
+		err := json.Unmarshal(b, &u)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !isEmptyNonNilURL(u.URL) {
+			t.Fatalf("empty string not properly unmarshaled from JSON as URL, got %#v", u.URL)
+		}
+	}
+
+	{
+		var u URL
+		err := yaml.Unmarshal(b, &u)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if !isEmptyNonNilURL(u.URL) {
+			t.Fatalf("empty string not properly unmarshaled from YAML as URL, got %#v", u.URL)
+		}
+	}
+}
+
+// checks if u equals to &url.URL{}
+func isEmptyNonNilURL(u *url.URL) bool {
+	return u != nil && *u == url.URL{}
+}
+
+func TestUnmarshalURL(t *testing.T) {
+	b := []byte(`"http://example.com/a b"`)
+	var u URL
+
+	err := json.Unmarshal(b, &u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if u.String() != "http://example.com/a%20b" {
+		t.Fatalf("URL not properly unmarshaled in JSON, got '%s'", u.String())
+	}
+
+	err = yaml.Unmarshal(b, &u)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if u.String() != "http://example.com/a%20b" {
+		t.Fatalf("URL not properly unmarshaled in YAML, got '%s'", u.String())
 	}
 }
