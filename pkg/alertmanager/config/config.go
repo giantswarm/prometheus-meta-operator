@@ -95,7 +95,7 @@ func (u URL) MarshalJSON() ([]byte, error) {
 	if u.URL != nil {
 		return json.Marshal(u.URL.String())
 	}
-	return nil, nil
+	return []byte("null"), nil
 }
 
 // UnmarshalJSON implements the json.Marshaler interface for URL.
@@ -215,6 +215,9 @@ func resolveFilepaths(baseDir string, cfg *Config) {
 			cfg.HTTPConfig.SetDirectory(baseDir)
 		}
 		for _, cfg := range receiver.WechatConfigs {
+			cfg.HTTPConfig.SetDirectory(baseDir)
+		}
+		for _, cfg := range receiver.SNSConfigs {
 			cfg.HTTPConfig.SetDirectory(baseDir)
 		}
 	}
@@ -420,6 +423,11 @@ func (c *Config) UnmarshalYAML(unmarshal func(interface{}) error) error {
 					return fmt.Errorf("no global VictorOps API Key set")
 				}
 				voc.APIKey = c.Global.VictorOpsAPIKey
+			}
+		}
+		for _, sns := range rcv.SNSConfigs {
+			if sns.HTTPConfig == nil {
+				sns.HTTPConfig = c.Global.HTTPConfig
 			}
 		}
 		names[rcv.Name] = struct{}{}
@@ -759,6 +767,7 @@ type Receiver struct {
 	WechatConfigs    []*WechatConfig    `yaml:"wechat_configs,omitempty" json:"wechat_configs,omitempty"`
 	PushoverConfigs  []*PushoverConfig  `yaml:"pushover_configs,omitempty" json:"pushover_configs,omitempty"`
 	VictorOpsConfigs []*VictorOpsConfig `yaml:"victorops_configs,omitempty" json:"victorops_configs,omitempty"`
+	SNSConfigs       []*SNSConfig       `yaml:"sns_configs,omitempty" json:"sns_configs,omitempty"`
 }
 
 // UnmarshalYAML implements the yaml.Unmarshaler interface for Receiver.
@@ -842,7 +851,7 @@ func (re Regexp) MarshalJSON() ([]byte, error) {
 	if re.original != "" {
 		return json.Marshal(re.original)
 	}
-	return nil, nil
+	return []byte("null"), nil
 }
 
 // Matchers is label.Matchers with an added UnmarshalYAML method to implement the yaml.Unmarshaler interface
@@ -895,7 +904,7 @@ func (m *Matchers) UnmarshalJSON(data []byte) error {
 // MarshalJSON implements the json.Marshaler interface for Matchers.
 func (m Matchers) MarshalJSON() ([]byte, error) {
 	if len(m) == 0 {
-		return nil, nil
+		return []byte("[]"), nil
 	}
 	result := make([]string, len(m))
 	for i, matcher := range m {
