@@ -24,23 +24,46 @@ We store modified upstream code for our own usage.
 - pkg/alertmanager/config
 - pkg/prometheus/common/config
 
-Example on how to update pkg/alertmanager/config :
+#### Initial upstream setup
+
+Add the upstream git repository:
 
 ```
-$ git checkout -b upstream-code
+$ git remote add alertmanager https://github.com/prometheus/alertmanager.git
+```
+
+On first run commands are the same as for Upgrade except for `git subtree merge` which has to be replaced with:
+
+```
+$ git subtree add --squash -P pkg/alertmanager/config alertmanager-config
+```
+
+
+#### Upgrade
+
+```
+# add upstream tags
 $ git tag -d $(git tag -l)
-$ git remote add -f alertmanager https://github.com/prometheus/alertmanager.git
+$ git fetch alertmanager
+
 $ git checkout v0.22.2
 $ git subtree split -P config/ -b alertmanager-config
-$ git checkout upstream-code
+$ git checkout -b alertmanager-0.22.2 origin/master
 $ git subtree merge --squash -P pkg/alertmanager/config alertmanager-config
-# fix conflicts if any and commit
-# push for review
-$ git push -u origin HEAD
+# fix conflicts (the usual way) if any
 
 # restore local tags
 $ git tag -d $(git tag -l)
-$ git fetch origin
+$ git fetch
+
+# push for review
+$ git push -u origin HEAD
+
+/!\ Do not merge with squash, once approved merge to master manually.
+/!\ We need to preserve commit history otherwise following git subtree commands won't work.
+$ git checkout master
+$ git merge alertmanager-0.22.2
+$ git push
 ```
 
 
