@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade alertmanager to v0.23.0
+- Upgrade prometheus-operator v0.49.0 to v0.50.0
 
 ## [1.51.2] - 2021-10-28
 
