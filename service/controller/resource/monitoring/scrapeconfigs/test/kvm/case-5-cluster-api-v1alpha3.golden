@@ -41,11 +41,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &#39;&#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &#39;;(.*)&#39;
+    target_label: role
+    replacement: $1
 
 
 
@@ -95,11 +100,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &#39;&#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &#39;;(.*)&#39;
+    target_label: role
+    replacement: $1
   metric_relabel_configs:
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
@@ -151,11 +161,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -220,11 +235,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &#39;&#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &#39;;(.*)&#39;
+    target_label: role
+    replacement: $1
 # Add kubelet configuration
 - job_name: baz-prometheus/kubelet-baz/0
   honor_labels: true
@@ -268,11 +288,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &#39;&#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &#39;;(.*)&#39;
+    target_label: role
+    replacement: $1
 # kube-controller-manager
 - job_name: baz-prometheus/kubernetes-controller-manager-baz/0
   honor_labels: true
@@ -323,11 +348,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -390,11 +420,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -458,11 +493,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -528,11 +568,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -600,11 +645,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -674,11 +724,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -748,11 +803,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -827,11 +887,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -907,11 +972,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -1015,11 +1085,16 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: &amp;#39;&amp;#39;
-    target_label: role
+  # Add a temporary label.
+  - source_labels: [ __address__ ] # using address because I need this replacement to always happen.
+    target_label: default_role
     replacement: worker
+  # If role is empty, we default to worker
+  - source_labels: [role, default_role]
+    separator: ;
+    regex: &amp;#39;;(.*)&amp;#39;
+    target_label: role
+    replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
