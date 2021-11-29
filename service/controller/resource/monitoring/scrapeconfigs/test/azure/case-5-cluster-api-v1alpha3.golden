@@ -47,6 +47,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -112,6 +113,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -170,6 +172,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -231,6 +234,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -305,6 +309,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -358,6 +363,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -418,6 +424,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -490,6 +497,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -563,6 +571,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -638,6 +647,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -715,6 +725,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -794,6 +805,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -873,6 +885,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -957,6 +970,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -1042,6 +1056,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
@@ -1155,6 +1170,7 @@
     replacement: worker
   # If role is empty, we default to worker
   - source_labels: [role, default_role]
+    action: replace
     separator: ;
     regex: ;(.*)
     target_label: role
