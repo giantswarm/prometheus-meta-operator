@@ -9,7 +9,7 @@
 # If role is empty, we default to worker
 - source_labels: [role, default_role]
   separator: ;
-  regex: ';(.*)'
+  regex: ;(.*)
   target_label: role
   replacement: $1
 [[- end -]]
