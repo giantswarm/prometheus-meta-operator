@@ -46,12 +46,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
 
 
 
@@ -104,12 +104,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   metric_relabel_configs:
   - source_labels: [__name__]
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
@@ -166,12 +166,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   metric_relabel_configs:
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
@@ -228,12 +228,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -302,12 +302,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
 # Add kubelet configuration
 - job_name: foo-prometheus/kubelet-foo/0
   honor_labels: true
@@ -356,12 +356,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
 # kube-controller-manager
 - job_name: foo-prometheus/kubernetes-controller-manager-foo/0
   honor_labels: true
@@ -417,12 +417,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -490,12 +490,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -564,12 +564,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -640,12 +640,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -718,12 +718,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -798,12 +798,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -878,12 +878,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -963,12 +963,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -1049,12 +1049,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -1163,12 +1163,12 @@
     target_label: default_role
     replacement: worker
   # If role is empty, we default to worker
-  - source_labels: [role, default_role]
-    action: replace
-    separator: ;
-    regex: ;(.*)
-    target_label: role
-    replacement: $1
+  #- source_labels: [role, default_role]
+  #  action: replace
+  #  separator: ;
+  #  regex: ;(.*)
+  #  target_label: role
+  #  replacement: $1
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
