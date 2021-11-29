@@ -4,7 +4,7 @@
   target_label: role
 # If role is empty, we default to worker
 - source_labels: [__meta_kubernetes_node_label_role]
-  regex: null
+  regex: ^$
   target_label: role
   replacement: worker
 [[- end -]]

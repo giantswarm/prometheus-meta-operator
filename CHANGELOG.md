@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade alertmanager to v0.23.0
 
+### Fixed
+
+- Fix defaulting of node role when the `role` label is missing in the Kubernetes `Node` resource.
+
 ## [1.51.2] - 2021-10-28
 
 ### Fixed
