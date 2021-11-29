@@ -43,7 +43,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
 
@@ -103,7 +103,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
 
@@ -156,7 +156,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   metric_relabel_configs:
@@ -212,7 +212,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -274,7 +274,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -343,7 +343,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
 # Add kubelet configuration
@@ -391,7 +391,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
 # kube-controller-manager
@@ -446,7 +446,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -513,7 +513,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -581,7 +581,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -651,7 +651,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -723,7 +723,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -797,7 +797,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -871,7 +871,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -950,7 +950,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -1030,7 +1030,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
@@ -1138,7 +1138,7 @@
     target_label: role
   # If role is empty, we default to worker
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: ^$
+    regex: ''
     target_label: role
     replacement: worker
   # Add cluster_id label.
