@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix defaulting of node role when the `role` label is missing in the Kubernetes `Node` resource.
+- Avoid defaulting of `role` label (containing the role of the k8s node). If data is missing we can't reliably default it.
 
 ## [1.51.2] - 2021-10-28
 
