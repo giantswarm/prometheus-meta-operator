@@ -454,3 +454,8 @@ inhibit_rules:
     outside_working_hours: true
   target_match:
     cancel_if_outside_working_hours: true
+- source_match:
+    has_worker_nodes: false
+  target_match:
+    cancel_if_has_no_workers: true
+  equal: [cluster_id]
