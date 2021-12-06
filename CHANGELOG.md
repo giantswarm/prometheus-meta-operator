@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade alertmanager to v0.23.0
 
+### Fixed
+
+- Avoid defaulting of `role` label (containing the role of the k8s node). If data is missing we can't reliably default it.
+
 ## [1.51.2] - 2021-10-28
 
 ### Fixed

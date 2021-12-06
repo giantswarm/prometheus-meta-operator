@@ -41,11 +41,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
 
 
 
@@ -93,11 +88,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   metric_relabel_configs:
   - source_labels: [__name__]
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
@@ -149,11 +139,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   metric_relabel_configs:
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
@@ -205,11 +190,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -273,11 +253,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
 # Add kubelet configuration
 - job_name: foo-prometheus/kubelet-foo/0
   honor_labels: true
@@ -321,11 +296,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
 # kube-controller-manager
 - job_name: foo-prometheus/kubernetes-controller-manager-foo/0
   honor_labels: true
@@ -376,11 +346,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -443,11 +408,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -511,11 +471,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -581,11 +536,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -653,11 +603,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -727,11 +672,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -801,11 +741,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -880,11 +815,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -960,11 +890,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -1068,11 +993,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-  # If role is empty, we default to worker
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: null
-    target_label: role
-    replacement: worker
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
