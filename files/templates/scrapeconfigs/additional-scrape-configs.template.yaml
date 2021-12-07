@@ -648,9 +648,9 @@
     regex: (.*)
     target_label: app
     action: replace
-  - source_labels: [__meta_kubernetes_endpoints_label_helm_sh_chart]
+  - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_label]
     regex: (.*)
-    target_label: helm_chart
+    target_label: app
     action: replace
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
