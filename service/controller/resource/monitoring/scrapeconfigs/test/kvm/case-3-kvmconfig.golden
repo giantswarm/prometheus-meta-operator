@@ -978,6 +978,10 @@
     regex: (.*)
     target_label: app
     action: replace
+  - source_labels: [__meta_kubernetes_endpoints_label_helm_sh_chart]
+    regex: (.*)
+    target_label: helm_chart
+    action: replace
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
