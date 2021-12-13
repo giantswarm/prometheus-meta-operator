@@ -648,6 +648,10 @@
     regex: (.*)
     target_label: app
     action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_label]
+    regex: (.*)
+    target_label: app
+    action: replace
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
   metric_relabel_configs:

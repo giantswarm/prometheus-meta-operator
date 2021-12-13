@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add new inhibition for clusters without workers.
+- Add relabeling for `__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_label`
 
 ### Changed
 
