@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.52.0] - 2021-12-13
+
 ### Added
 
 - Add new inhibition for clusters without workers.
@@ -1271,7 +1273,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.0...HEAD
+[1.52.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.2...v1.52.0
 [1.51.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.1...v1.51.2
 [1.51.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.0...v1.51.1
 [1.51.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.50.0...v1.51.0
