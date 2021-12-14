@@ -292,8 +292,9 @@ github.com/giantswarm/operatorkit/v4 v4.3.1/go.mod h1:3qAcrnajddL8y8SnIPPVXI3wnn
 github.com/giantswarm/to v0.3.0 h1:cEzMYkWLGI3cI8x3a0L3nPCQYJTb/cAaqcIPvxnDmpQ=
 github.com/giantswarm/to v0.3.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
 github.com/giantswarm/versionbundle v0.2.0/go.mod h1:n7GOlSXpX9TpP3EsYhErCjskN++c7uYHEEfV81NCH7s=
-github.com/giantswarm/versionbundle v0.3.0 h1:LhX2i314wiS3xXhAH35jauv4Z3ae4wdwQelN9kIVyLk=
 github.com/giantswarm/versionbundle v0.3.0/go.mod h1:zxTDitk/SfCvx/TbvouwPWW0hNGSdPDyGXXX3xm27Ik=
+github.com/giantswarm/versionbundle v1.0.0 h1:36wuA6qrA5MkqKLKyUWmQLab1f293svA8/ac28VAG+4=
+github.com/giantswarm/versionbundle v1.0.0/go.mod h1:zxTDitk/SfCvx/TbvouwPWW0hNGSdPDyGXXX3xm27Ik=
 github.com/gin-contrib/sse v0.0.0-20190301062529-5545eab6dad3/go.mod h1:VJ0WA2NBN22VlZ2dKZQPAPnyWw5XTlK1KymzLKsr59s=
 github.com/gin-contrib/sse v0.1.0/go.mod h1:RHrZQHXnP2xjPF+u1gW/2HnVO7nvIa9PG3Gm+fLHvGI=
 github.com/gin-gonic/gin v1.4.0/go.mod h1:OW2EZn3DO8Ln9oIKOvM++LBO+5UPHJJDH72/q/3rZdM=

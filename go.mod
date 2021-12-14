@@ -11,7 +11,7 @@ require (
 	github.com/giantswarm/microkit v0.3.0
 	github.com/giantswarm/micrologger v0.6.0
 	github.com/giantswarm/operatorkit/v4 v4.3.1
-	github.com/giantswarm/versionbundle v0.3.0
+	github.com/giantswarm/versionbundle v1.0.0
 	github.com/go-kit/log v0.2.0
 	github.com/google/go-cmp v0.5.6
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
