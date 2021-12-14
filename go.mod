@@ -1,6 +1,6 @@
 module github.com/giantswarm/prometheus-meta-operator
 
-go 1.14
+go 1.17
 
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
