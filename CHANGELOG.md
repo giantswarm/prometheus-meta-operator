@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade to Go 1.17
+- Upgrade github.com/giantswarm/microkit v0.2.2 to v1.0.0
+- Upgrade github.com/giantswarm/versionbundle v0.2.0 to v1.0.0
+- Upgrade github.com/giantswarm/microendpoint v0.2.0 to v0.3.0
+- Upgrade github.com/giantswarm/microerror v0.3.0 to v0.4.0
+- Upgrade github.com/giantswarm/micrologger v0.5.0 to v0.6.0
+- Upgrade github.com/spf13/viper v1.9.0 to v1.10.0
+
+### Removed
+
+- Remove versionbundle.Changelog
 
 ## [1.52.1] - 2021-12-14
 
