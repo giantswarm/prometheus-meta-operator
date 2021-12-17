@@ -457,5 +457,5 @@ inhibit_rules:
 - source_match:
     has_worker_nodes: false
   target_match:
-    cancel_if_has_no_workers: true
+    cancel_if_cluster_has_no_workers: true
   equal: [cluster_id]

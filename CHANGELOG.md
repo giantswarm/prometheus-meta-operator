@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Renamed `cancel_if_has_no_workers` inhibition to `cancel_if_cluster_has_no_workers` to make it explicit it's about clusters and not node pools.
+
 ## [1.52.1] - 2021-12-14
 
 ### Fixed
