@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove versionbundle.Changelog
 
+## [1.53.0] - 2021-12-17
+
+### Changed
+
+- Renamed `cancel_if_has_no_workers` inhibition to `cancel_if_cluster_has_no_workers` to make it explicit it's about clusters and not node pools.
+
 ## [1.52.1] - 2021-12-14
 
 ### Fixed
@@ -1293,7 +1299,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.53.0...HEAD
+[1.53.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.1...v1.53.0
 [1.52.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.0...v1.52.1
 [1.52.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.2...v1.52.0
 [1.51.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.1...v1.51.2
