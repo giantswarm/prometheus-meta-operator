@@ -172,7 +172,7 @@ jobs:
         with:
           body: ${{ steps.changelog_reader.outputs.changes }}
           tag_name: "v1.53.0"
-          release_name: "v1.53.0"
+          release_name: "v1.54.0"
 
   create-release-branch:
     name: Create release branch
