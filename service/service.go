@@ -331,7 +331,7 @@ func shouldCreateLegacyController(clients k8sclient.Interface, provider string) 
 	return true, nil
 }
 
-func shouldCreateCAPIController(provider kind) bool {
+func shouldCreateCAPIController(provider string) bool {
 	// KVM installations do not currently support cluster-api clusters.
 	// This is being tracked here: https://github.com/giantswarm/roadmap/issues/319
 	if provider == "kvm" {
