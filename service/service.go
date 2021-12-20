@@ -124,46 +124,48 @@ func New(config Config) (*Service, error) {
 
 	var clusterapiController *clusterapi.Controller
 	{
-		c := clusterapi.ControllerConfig{
-			K8sClient:        k8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: prometheusClient,
-			VpaClient:        vpaClient,
+		if shouldCreateCAPIController(provider) {
+			c := clusterapi.ControllerConfig{
+				K8sClient:        k8sClient,
+				Logger:           config.Logger,
+				PrometheusClient: prometheusClient,
+				VpaClient:        vpaClient,
 
-			HTTPProxy:  os.Getenv("HTTP_PROXY"),
-			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
-			NoProxy:    os.Getenv("NO_PROXY"),
+				HTTPProxy:  os.Getenv("HTTP_PROXY"),
+				HTTPSProxy: os.Getenv("HTTPS_PROXY"),
+				NoProxy:    os.Getenv("NO_PROXY"),
 
-			AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
-			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
-			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
-			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-			Provider:                provider,
-			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
-			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
+				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
+				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
+				Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+				Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+				Provider:                provider,
+				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
+				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
-			PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-			PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			PrometheusCreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-			PrometheusStorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-			PrometheusLogLevel:            config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-			PrometheusRemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
-			PrometheusRemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
-			PrometheusRemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
-			PrometheusRetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-			PrometheusRetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-			PrometheusVersion:             config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+				PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+				PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+				PrometheusCreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
+				PrometheusStorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
+				PrometheusLogLevel:            config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
+				PrometheusRemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
+				PrometheusRemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
+				PrometheusRemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
+				PrometheusRetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+				PrometheusRetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+				PrometheusVersion:             config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
-			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
-			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
-		}
+				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
+				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+			}
 
-		clusterapiController, err = clusterapi.NewController(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
+			clusterapiController, err = clusterapi.NewController(c)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
 		}
 	}
 
@@ -329,12 +331,24 @@ func shouldCreateLegacyController(clients k8sclient.Interface, provider string) 
 	return true, nil
 }
 
+func shouldCreateCAPIController(provider kind) bool {
+	// KVM installations do not currently support cluster-api clusters.
+	// This is being tracked here: https://github.com/giantswarm/roadmap/issues/319
+	if provider == "kvm" {
+		return false
+	}
+
+	return true
+}
+
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
 		if s.legacyController != nil {
 			go s.legacyController.Boot(ctx)
 		}
-		go s.clusterapiController.Boot(ctx)
+		if s.clusterapiController != nil {
+			go s.clusterapiController.Boot(ctx)
+		}
 		go s.managementclusterController.Boot(ctx)
 	})
 }
