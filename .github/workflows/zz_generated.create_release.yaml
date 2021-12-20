@@ -152,7 +152,7 @@ jobs:
         run: |
           version="${{ needs.gather_facts.outputs.version }}"
           echo "git tag ${version} ${{ github.sha }}"
-      - name: Create Release
+      - name: Create Release (debug)
         run: |
           tag_name="v${{ needs.gather_facts.outputs.version }}"
           release_name="v${{ needs.gather_facts.outputs.version }}"
@@ -164,6 +164,15 @@ jobs:
           ${{ steps.changelog_reader.outputs.changes }}
           CHANGES_END
           echo "CHANGELOG END"
+      - name: Create release
+        id: create_gh_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          body: ${{ steps.changelog_reader.outputs.changes }}
+          tag_name: "v1.53.0"
+          release_name: "v1.53.0"
 
   create-release-branch:
     name: Create release branch
