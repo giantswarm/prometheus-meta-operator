@@ -156,22 +156,15 @@ jobs:
       - name: Create tag
         run: |
           version="${{ needs.gather_facts.outputs.version }}"
-          git config --local user.name "github-actions"
-          git tag "v$version" ${{ github.sha }}
-      - name: Push tag
-        env:
-          REMOTE_REPO: "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          echo "git tag ${version} ${{ github.sha }}"
+      - name: Create Release
         run: |
-          git push "${REMOTE_REPO}" --tags
-      - name: Create release
-        id: create_gh_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body: ${{ steps.changelog_reader.outputs.changes }}
-          tag_name: "v${{ needs.gather_facts.outputs.version }}"
-          release_name: "v${{ needs.gather_facts.outputs.version }}"
+          body=${{ steps.changelog_reader.outputs.changes }}
+          tag_name="v${{ needs.gather_facts.outputs.version }}"
+          release_name="v${{ needs.gather_facts.outputs.version }}"
+          echo "tag_name=${tag_name}"
+          echo "release_name=${release_name}"
+          echo "body=${body}"
 
   create-release-branch:
     name: Create release branch
