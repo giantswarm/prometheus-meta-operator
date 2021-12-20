@@ -159,7 +159,11 @@ jobs:
           echo "tag_name=${tag_name}"
           echo "release_name=${release_name}"
 
-          echo "${{ steps.changelog_reader.outputs.changes }}"
+          echo "CHANGELOG START"
+          cat <<- 'CHANGES_END'
+          ${{ steps.changelog_reader.outputs.changes }}
+          CHANGES_END
+          echo "CHANGELOG END"
 
   create-release-branch:
     name: Create release branch
