@@ -142,12 +142,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: ${{ github.sha }}
-      - name: Ensure correct version in project.go
-        if: ${{ needs.gather_facts.outputs.project_go_path != '' && needs.gather_facts.outputs.ref_version != 'true' }}
-        run: |
-          file="${{ needs.gather_facts.outputs.project_go_path }}"
-          version="${{ needs.gather_facts.outputs.version }}"
-          grep -qE "version[[:space:]]*=[[:space:]]*\"$version\"" $file
       - name: Get Changelog Entry
         id: changelog_reader
         uses: mindsers/changelog-reader-action@v2
