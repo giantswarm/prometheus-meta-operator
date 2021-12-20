@@ -154,12 +154,12 @@ jobs:
           echo "git tag ${version} ${{ github.sha }}"
       - name: Create Release
         run: |
-          body=${{ steps.changelog_reader.outputs.changes }}
           tag_name="v${{ needs.gather_facts.outputs.version }}"
           release_name="v${{ needs.gather_facts.outputs.version }}"
           echo "tag_name=${tag_name}"
           echo "release_name=${release_name}"
-          echo "body=${body}"
+
+          echo "${{ steps.changelog_reader.outputs.changes }}"
 
   create-release-branch:
     name: Create release branch
