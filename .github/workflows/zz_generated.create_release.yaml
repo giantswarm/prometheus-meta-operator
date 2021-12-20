@@ -164,15 +164,6 @@ jobs:
           ${{ steps.changelog_reader.outputs.changes }}
           CHANGES_END
           echo "CHANGELOG END"
-      - name: Create release
-        id: create_gh_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          body: ${{ steps.changelog_reader.outputs.changes }}
-          tag_name: "v1.54.0"
-          release_name: "v1.54.0"
 
   create-release-branch:
     name: Create release branch
