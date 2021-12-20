@@ -3,15 +3,7 @@
 #    devctl@4.11.1-dev
 #
 name: Create Release
-on:
-  push:
-    branches:
-      - 'legacy'
-      - 'main'
-      - 'master'
-      - 'release-v*.*.x'
-      # "!" negates previous positive patterns so it has to be at the end.
-      - '!release-v*.x.x'
+on: push
 jobs:
   debug_info:
     name: Debug info
@@ -45,7 +37,7 @@ jobs:
           if echo $title | grep -iqE '^Release v[0-9]+\.[0-9]+\.[0-9]+([.-][^ .-][^ ]*)?( \(#[0-9]+\))?$' ; then
             version=$(echo $title | cut -d ' ' -f 2)
           fi
-          version="${version#v}" # Strip "v" prefix.
+          version="${1.53.0#v}" # Strip "v" prefix.
           echo "version=\"$version\""
           echo "::set-output name=version::${version}"
       - name: Checkout code
