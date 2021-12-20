@@ -15,7 +15,6 @@ import (
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/kubernetes/scheme"
-	"sigs.k8s.io/cluster-api/api/v1alpha2"
 	"sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/yaml"
 )
@@ -162,10 +161,6 @@ func inputValue(inputFile string) (pkgruntime.Object, error) {
 	// Giant Swarm objects.
 	s := pkgruntime.NewScheme()
 	err = scheme.AddToScheme(s)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	err = v1alpha2.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
