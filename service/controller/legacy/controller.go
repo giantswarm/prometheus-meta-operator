@@ -5,11 +5,11 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/operatorkit/v4/pkg/controller"
-	"github.com/giantswarm/operatorkit/v4/pkg/resource"
+	"github.com/giantswarm/operatorkit/v7/pkg/controller"
+	"github.com/giantswarm/operatorkit/v7/pkg/resource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
-	"k8s.io/apimachinery/pkg/runtime"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
@@ -71,19 +71,19 @@ func NewController(config ControllerConfig) (*Controller, error) {
 
 	var operatorkitController *controller.Controller
 	{
-		var runtimeFunc func() runtime.Object
+		var runtimeFunc func() client.Object
 		{
 			switch config.Provider {
 			case "aws":
-				runtimeFunc = func() runtime.Object {
+				runtimeFunc = func() client.Object {
 					return new(v1alpha1.AWSConfig)
 				}
 			case "azure":
-				runtimeFunc = func() runtime.Object {
+				runtimeFunc = func() client.Object {
 					return new(v1alpha1.AzureConfig)
 				}
 			case "kvm":
-				runtimeFunc = func() runtime.Object {
+				runtimeFunc = func() client.Object {
 					return new(v1alpha1.KVMConfig)
 				}
 			default:
