@@ -4,12 +4,13 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"sync"
 
 	providerv1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/provider/v1alpha1"
-	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
-	"github.com/giantswarm/k8sclient/v5/pkg/k8srestconfig"
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v7/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -18,10 +19,10 @@ import (
 	"github.com/spf13/viper"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"k8s.io/client-go/rest"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/prometheus-meta-operator/flag"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
@@ -303,31 +304,16 @@ func New(config Config) (*Service, error) {
 }
 
 func shouldCreateLegacyController(clients k8sclient.Interface, provider string) (bool, error) {
-	switch provider {
-	case "aws":
-		_, err := clients.G8sClient().ProviderV1alpha1().AWSConfigs("default").List(context.Background(), v1.ListOptions{})
-		if apierrors.IsNotFound(err) {
-			return false, nil
-		} else if err != nil {
-			return false, microerror.Mask(err)
-		}
-	case "azure":
-		_, err := clients.G8sClient().ProviderV1alpha1().AzureConfigs("default").List(context.Background(), v1.ListOptions{})
-		if apierrors.IsNotFound(err) {
-			return false, nil
-		} else if err != nil {
-			return false, microerror.Mask(err)
-		}
-	case "kvm":
-		_, err := clients.G8sClient().ProviderV1alpha1().KVMConfigs("default").List(context.Background(), v1.ListOptions{})
-		if apierrors.IsNotFound(err) {
-			return false, nil
-		} else if err != nil {
-			return false, microerror.Mask(err)
-		}
-	case "vmware":
+	name := fmt.Sprintf("%sconfigs.provider.giantswarm.io", provider)
+
+	var crd apiextensionsv1.CustomResourceDefinition
+	err := clients.CtrlClient().Get(context.Background(), client.ObjectKey{Name: name}, &crd)
+	if apierrors.IsNotFound(err) {
 		return false, nil
+	} else if err != nil {
+		return false, microerror.Mask(err)
 	}
+
 	return true, nil
 }
 
