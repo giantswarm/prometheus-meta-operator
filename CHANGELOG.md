@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Disable cluster-api controller on KVM instllations.
 - Upgrade to Go 1.17
 - Upgrade github.com/giantswarm/microkit v0.2.2 to v1.0.0
 - Upgrade github.com/giantswarm/versionbundle v0.2.0 to v1.0.0
