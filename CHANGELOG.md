@@ -18,11 +18,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade github.com/giantswarm/micrologger v0.5.0 to v0.6.0
 - Upgrade github.com/spf13/viper v1.9.0 to v1.10.0
 - Upgrade github.com/giantswarm/k8sclient v5.12.0 to v7.0.1
-- Upgrade k8s.io/api v0.19.4 to v0.20.12
-- Upgrade k8s.io/apiextensions-apiserver v0.19.4 to v0.20.12
+- Upgrade k8s.io/api v0.19.4 to v0.21.4
+- Upgrade k8s.io/apiextensions-apiserver v0.19.4 to v0.21.4
 - Upgrade sigs.k8s.io/controller-runtime v0.6.4 to v0.8.3
-- Upgrade k8s.io/client-go v0.19.4 to v0.20.12
+- Upgrade k8s.io/client-go v0.19.4 to v0.21.4
 - Upgrade github.com/giantswarm/operatorkit v4.3.1 to v7.0.0
+- Upgrade sigs.k8s.io/cluster-api v0.3.19 to v0.4.5
+- Upgrade sigs.k8s.io/controller-runtime v0.8.3 to v0.9.7
 
 ### Removed
 
