@@ -304,7 +304,7 @@ func New(config Config) (*Service, error) {
 }
 
 func shouldCreateLegacyController(clients k8sclient.Interface, provider string) (bool, error) {
-	name := fmt.Sprintf("%sconfigs.v1alpha1.provider.giantswarm.io", provider)
+	name := fmt.Sprintf("%sconfigs.provider.giantswarm.io", provider)
 
 	var crd apiextensionsv1.CustomResourceDefinition
 	err := clients.CtrlClient().Get(context.Background(), client.ObjectKey{Name: name}, &crd)
