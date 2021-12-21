@@ -55,7 +55,7 @@ func mainE(ctx context.Context) error {
 
 			newService, err = service.New(c)
 			if err != nil {
-				panic(microerror.JSON(err))
+				return microerror.Mask(err)
 			}
 
 			go newService.Boot(ctx)
@@ -73,7 +73,7 @@ func mainE(ctx context.Context) error {
 
 			newServer, err = server.New(c)
 			if err != nil {
-				panic(microerror.JSON(err))
+				return microerror.Mask(err)
 			}
 		}
 
