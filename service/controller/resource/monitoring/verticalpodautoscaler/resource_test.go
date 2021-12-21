@@ -8,8 +8,8 @@ import (
 
 	"github.com/giantswarm/micrologger"
 
-	"github.com/giantswarm/k8sclient/v5/pkg/k8sclient"
-	k8sclientfake "github.com/giantswarm/k8sclient/v5/pkg/k8sclient/fake"
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	k8sclientfake "github.com/giantswarm/k8sclient/v7/pkg/k8sclient/fake"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/runtime"
