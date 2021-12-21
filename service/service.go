@@ -18,6 +18,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"github.com/spf13/viper"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"k8s.io/client-go/rest"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
@@ -307,7 +308,9 @@ func shouldCreateLegacyController(clients k8sclient.Interface, provider string) 
 
 	var crd apiextensionsv1.CustomResourceDefinition
 	err := clients.CtrlClient().Get(context.Background(), client.ObjectKey{Name: name}, &crd)
-	if err != nil {
+	if apierrors.IsNotFound(err) {
+		return false, nil
+	} else if err != nil {
 		return false, microerror.Mask(err)
 	}
 
