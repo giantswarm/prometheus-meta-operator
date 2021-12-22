@@ -122,8 +122,10 @@ replace (
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
-	k8s.io/api => k8s.io/api v0.21.4
-	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.21.4
-	k8s.io/apimachinery => k8s.io/apimachinery v0.21.4
-	k8s.io/client-go => k8s.io/client-go v0.21.4
+	// NOTE: we need to stay on k8s v1.19 as some installations still run v1.18.
+	k8s.io/api => k8s.io/api v0.19.16
+	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.19.16
+	k8s.io/apimachinery => k8s.io/apimachinery v0.20.14
+	k8s.io/client-go => k8s.io/client-go v0.19.16
+	sigs.k8s.io/controller-runtime => sigs.k8s.io/controller-runtime v0.8.3
 )
