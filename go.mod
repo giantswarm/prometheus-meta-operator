@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/giantswarm/apiextensions/v3 v3.38.0
+	github.com/giantswarm/apiextensions/v3 v3.39.0
 	github.com/giantswarm/microendpoint v1.0.0
 	github.com/giantswarm/microerror v0.4.0
 	github.com/giantswarm/microkit v1.0.0
@@ -23,7 +23,7 @@ require (
 	github.com/prometheus/common v0.30.0
 	github.com/prometheus/common/sigv4 v0.1.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/viper v1.10.0
+	github.com/spf13/viper v1.10.1
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	gopkg.in/yaml.v2 v2.4.0
