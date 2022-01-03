@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2022-01-03
+
 ### Changed
 
 - Disable cluster-api controller on KVM installations.
@@ -1312,7 +1314,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.53.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.53.0...v2.0.0
 [1.53.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.1...v1.53.0
 [1.52.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.0...v1.52.1
 [1.52.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.51.2...v1.52.0
