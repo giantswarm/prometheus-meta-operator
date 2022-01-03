@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgrade github.com/giantswarm/operatorkit v4.3.1 to v7.0.0
 - Upgrade sigs.k8s.io/cluster-api v0.3.19 to v0.4.5
 - Upgrade sigs.k8s.io/controller-runtime v0.8.3 to v0.9.7
+- Upgrade github.com/prometheus-operator v0.50.0 to v0.52.1
 
 ### Removed
 
