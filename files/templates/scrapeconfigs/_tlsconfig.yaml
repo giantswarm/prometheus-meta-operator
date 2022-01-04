@@ -5,6 +5,8 @@ tls_config:
   cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
   key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
   insecure_skip_verify: false
+authorization:
+  credentials_file: /etc/prometheus/secrets/[[ .SecretName ]]/token
 [[- else -]]
 bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 tls_config:

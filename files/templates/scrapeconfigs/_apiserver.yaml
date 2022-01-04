@@ -6,5 +6,7 @@
       cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
       key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
       insecure_skip_verify: false
+    authorization:
+      credentials_file: /etc/prometheus/secrets/[[ .SecretName ]]/token
 [[- end -]]
 [[- end -]]
