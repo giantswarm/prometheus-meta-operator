@@ -135,7 +135,6 @@ workflows:
           app_collection_repo: "openstack-app-collection"
           requires:
             - push-to-quay
-            - push-to-aliyun
             - app-catalog
           filters:
             branches:
