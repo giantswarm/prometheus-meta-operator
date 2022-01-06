@@ -2,11 +2,15 @@
 [[- if ne .ClusterType "management_cluster" -]]
 tls_config:
   ca_file: /etc/prometheus/secrets/[[ .SecretName ]]/ca
+  [[- if eq .AuthenticationMechanism "certificate" ]]
   cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
   key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
+  [[- end -]]
   insecure_skip_verify: false
+[[- if eq .AuthenticationMechanism "token" ]]
 authorization:
   credentials_file: /etc/prometheus/secrets/[[ .SecretName ]]/token
+[[- end -]]
 [[- else -]]
 bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 tls_config:

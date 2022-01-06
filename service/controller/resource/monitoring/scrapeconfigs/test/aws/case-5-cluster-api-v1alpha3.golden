@@ -8,17 +8,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
@@ -60,17 +54,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: false
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: cluster-autoscaler
@@ -117,17 +105,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: false
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -170,17 +152,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: false
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   relabel_configs:
   - source_labels: [__address__]
     replacement: ${1}:9091
@@ -234,17 +210,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: false
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   relabel_configs:
   - target_label: __address__
     replacement: master.baz:443
@@ -296,11 +266,7 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
-
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -349,17 +315,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - target_label: app
     replacement: kubelet
@@ -399,17 +359,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10257
@@ -465,17 +419,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10259
@@ -531,17 +479,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10249
@@ -598,17 +540,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -667,17 +603,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -740,17 +670,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -813,17 +737,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -886,17 +804,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app]
     regex: node-exporter
@@ -970,17 +882,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -1064,17 +970,11 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+      key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: false
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  authorization:
-    credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    key_file: /etc/prometheus/secrets/cluster-certificates/keyinsecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*

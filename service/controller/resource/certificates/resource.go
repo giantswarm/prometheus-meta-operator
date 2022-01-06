@@ -102,7 +102,7 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 	secretData := sourceSecret.Data
 
 	if key.IsCAPICluster(cluster) {
-		// CAPI Secret is a kubeconfig so we need to extract the certs from it
+		// CAPI Secret is a kubeconfig so we need to extract the certs or tokens from it
 		if kubeconfig, ok := secretData["value"]; ok {
 			capiKubeconfig, err := clientcmd.Load(kubeconfig)
 			if err != nil {
@@ -164,7 +164,7 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret
 	}
 
 	if secret == nil {
-		err := fmt.Errorf("No certificates found for %s", key.ClusterID(cluster))
+		err := fmt.Errorf("no certificates found for %s", key.ClusterID(cluster))
 		return nil, microerror.Mask(err)
 	}
 

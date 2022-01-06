@@ -23,7 +23,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(v, config)
+			return toData(v, config, "certificate")
 		}
 	}
 
@@ -62,7 +62,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(v, config)
+			return toData(v, config, "certificate")
 		}
 	}
 
@@ -117,7 +117,7 @@ func TestKVMScrapeconfigs(t *testing.T) {
 			Installation:            "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(v, config)
+			return toData(v, config, "certificate")
 		}
 	}
 

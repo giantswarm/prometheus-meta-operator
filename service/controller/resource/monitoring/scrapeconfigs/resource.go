@@ -40,6 +40,7 @@ type Config struct {
 type TemplateData struct {
 	AdditionalScrapeConfigs   string
 	APIServerURL              string
+	AuthenticationMechanism   string
 	Bastions                  []string
 	Provider                  string
 	ClusterID                 string
@@ -52,6 +53,19 @@ type TemplateData struct {
 	Vault                     string
 	WorkloadClusterETCDDomain string
 	CAPICluster               bool
+}
+
+func getAPIAuthenticationMechanism(cluster metav1.Object, config Config) (string, error) {
+	secret, err := config.K8sClient.K8sClient().CoreV1().Secrets(key.Namespace(cluster)).Get(context.Background(), key.SecretAPICertificates(cluster), metav1.GetOptions{})
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	if val, ok := secret.StringData["token"]; ok && len(val) >= 0 {
+		return "token", nil
+	}
+	return "certificate", nil
+
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -100,6 +114,11 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	authenticationMechanism, err := getAPIAuthenticationMechanism(cluster, config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	var workloadClusterETCDDomain string = ""
 	if "workload_cluster" == key.ClusterType(v) {
 		clusterID := key.ClusterID(cluster)
@@ -117,7 +136,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	}
 	config.WorkloadClusterETCDDomain = workloadClusterETCDDomain
 
-	scrapeConfigs, err := toData(v, config)
+	scrapeConfigs, err := toData(v, config, authenticationMechanism)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -138,13 +157,13 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	return scrapeConfigsSecret, nil
 }
 
-func toData(v interface{}, config Config) ([]byte, error) {
+func toData(v interface{}, config Config, authenticationMechanism string) ([]byte, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	templateData, err := getTemplateData(cluster, config)
+	templateData, err := getTemplateData(cluster, config, authenticationMechanism)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -157,12 +176,13 @@ func toData(v interface{}, config Config) ([]byte, error) {
 	return scrapeConfigs, nil
 }
 
-func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
+func getTemplateData(cluster metav1.Object, config Config, authenticationMechanism string) (*TemplateData, error) {
 	clusterID := key.ClusterID(cluster)
 
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
+		AuthenticationMechanism:   authenticationMechanism,
 		Bastions:                  config.Bastions,
 		ClusterID:                 clusterID,
 		ClusterType:               key.ClusterType(cluster),
