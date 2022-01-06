@@ -6,7 +6,7 @@
       [[- if eq .AuthenticationMechanism "certificate" ]]
       cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
       key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
-      [[- end -]]
+      [[- end ]]
       insecure_skip_verify: false
     [[- if eq .AuthenticationMechanism "token" ]]
     authorization:

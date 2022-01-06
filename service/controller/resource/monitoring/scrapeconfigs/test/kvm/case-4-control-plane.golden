@@ -231,8 +231,7 @@
 
   tls_config:
     ca_file: /etc/prometheus/secrets/etcd-certificates/ca
-    cert_file: /etc/prometheus/secrets/etcd-certificates/crt
-    key_file: /etc/prometheus/secrets/etcd-certificates/key
+    
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_node_label_role]

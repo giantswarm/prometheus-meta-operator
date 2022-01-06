@@ -24,13 +24,13 @@ spec:
             values:
             - master
   apiserverConfig:
+    authorization:
+      credentialsFile: /etc/prometheus/secrets/cluster-certificates/token
     host: https://master.bar:443
     tlsConfig:
       ca: {}
       caFile: /etc/prometheus/secrets/cluster-certificates/ca
       cert: {}
-      certFile: /etc/prometheus/secrets/cluster-certificates/crt
-      keyFile: /etc/prometheus/secrets/cluster-certificates/key
   arbitraryFSAccessThroughSMs: {}
   externalLabels:
     cluster_id: bar

@@ -55,17 +55,20 @@ type TemplateData struct {
 	CAPICluster               bool
 }
 
-func getAPIAuthenticationMechanism(cluster metav1.Object, config Config) (string, error) {
+func getAPIAuthenticationMechanism(cluster metav1.Object, clusterType string, config Config) (string, error) {
+	if clusterType == "management_cluster" {
+		return "certificate", nil
+	}
+
 	secret, err := config.K8sClient.K8sClient().CoreV1().Secrets(key.Namespace(cluster)).Get(context.Background(), key.SecretAPICertificates(cluster), metav1.GetOptions{})
 	if err != nil {
 		return "", microerror.Mask(err)
 	}
 
-	if val, ok := secret.StringData["token"]; ok && len(val) >= 0 {
+	if val, ok := secret.Data["token"]; ok && len(val) >= 0 {
 		return "token", nil
 	}
 	return "certificate", nil
-
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -114,7 +117,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	authenticationMechanism, err := getAPIAuthenticationMechanism(cluster, config)
+	authenticationMechanism, err := getAPIAuthenticationMechanism(cluster, key.ClusterType(v), config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

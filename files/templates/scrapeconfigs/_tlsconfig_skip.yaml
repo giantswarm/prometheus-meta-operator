@@ -5,12 +5,12 @@ tls_config:
   [[- if eq .AuthenticationMechanism "certificate" ]]
   cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
   key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
-  [[- end -]]
+  [[- end ]]
   insecure_skip_verify: true
 [[- if eq .AuthenticationMechanism "token" ]]
 authorization:
   credentials_file: /etc/prometheus/secrets/[[ .SecretName ]]/token
-[[- end -]]
+[[- end ]]
 [[- else -]]
 bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 tls_config:

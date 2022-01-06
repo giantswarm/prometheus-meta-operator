@@ -191,6 +191,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := prometheus.Config{
 			Address:           config.PrometheusAddress,
 			PrometheusClient:  config.PrometheusClient,
+			K8sClient:         config.K8sClient,
 			Logger:            config.Logger,
 			CreatePVC:         config.PrometheusCreatePVC,
 			Customer:          config.Customer,

@@ -3,6 +3,7 @@ package key
 import (
 	"fmt"
 	"math"
+	"strings"
 
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
@@ -203,7 +204,9 @@ func APIUrl(obj interface{}) string {
 	case *v1.Service:
 		return fmt.Sprintf("%s:443", v.Spec.ClusterIP)
 	case *capiv1alpha3.Cluster: // Support CAPI Clusters
-		return fmt.Sprintf("%s:%d", v.Spec.ControlPlaneEndpoint.Host, v.Spec.ControlPlaneEndpoint.Port)
+		host := strings.TrimPrefix(v.Spec.ControlPlaneEndpoint.Host, "https://")
+		host = strings.TrimPrefix(host, "http://")
+		return fmt.Sprintf("%s:%d", host, v.Spec.ControlPlaneEndpoint.Port)
 	case metav1.Object:
 		return fmt.Sprintf("master.%s:443", v.GetName())
 	}

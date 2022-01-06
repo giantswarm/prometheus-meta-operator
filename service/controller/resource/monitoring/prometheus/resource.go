@@ -1,11 +1,13 @@
 package prometheus
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"reflect"
 	"strings"
 
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
@@ -24,6 +26,7 @@ const (
 
 type Config struct {
 	PrometheusClient promclient.Interface
+	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 
 	Address           string
@@ -69,6 +72,19 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	return r, nil
+}
+
+func getAPIAuthenticationMechanism(cluster metav1.Object, config Config) (string, error) {
+	secret, err := config.K8sClient.K8sClient().CoreV1().Secrets(key.Namespace(cluster)).Get(context.Background(), key.SecretAPICertificates(cluster), metav1.GetOptions{})
+	if err != nil {
+		return "", microerror.Mask(err)
+	}
+
+	if val, ok := secret.Data["token"]; ok && len(val) >= 0 {
+		return "token", nil
+	}
+
+	return "certificate", nil
 }
 
 func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
@@ -300,14 +316,29 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	if !key.IsInCluster(cluster) {
+		authenticationMechanism, err := getAPIAuthenticationMechanism(cluster, config)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		tlsConfig := &promv1.TLSConfig{
+			CAFile: fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
+		}
+
+		if authenticationMechanism == "certificate" {
+			tlsConfig.CertFile = fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret())
+			tlsConfig.KeyFile = fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret())
+		}
 		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
-			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
-			TLSConfig: &promv1.TLSConfig{
-				CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-				CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-				KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
-			},
+			Host:      fmt.Sprintf("https://%s", key.APIUrl(cluster)),
+			TLSConfig: tlsConfig,
+		}
+
+		if authenticationMechanism == "token" {
+			prometheus.Spec.APIServerConfig.Authorization = &promv1.Authorization{
+				CredentialsFile: fmt.Sprintf("/etc/prometheus/secrets/%s/token", key.Secret()),
+			}
 		}
 
 		prometheus.Spec.Secrets = []string{

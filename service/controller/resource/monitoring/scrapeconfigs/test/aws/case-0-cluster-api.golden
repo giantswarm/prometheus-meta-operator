@@ -202,7 +202,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
     api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
