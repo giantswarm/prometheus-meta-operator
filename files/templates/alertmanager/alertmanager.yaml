@@ -40,7 +40,7 @@ route:
   - receiver: team_firecracker_slack
   [[ else if eq .Provider "azure" ]]
   - receiver: team_celestial_slack
-  [[ else if or (eq .Provider "kvm") (eq .Provider "vmware") ]]
+  [[ else ]]
   - receiver: team_rocket_slack
   [[ end ]]
     match:
