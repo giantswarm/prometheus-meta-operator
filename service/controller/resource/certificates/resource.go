@@ -111,7 +111,7 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 			kubeconfigAdminUser := fmt.Sprintf("%s-admin", cluster.GetName())
 			kubeconfigCapiAdminUser := fmt.Sprintf("%s-capi-admin", cluster.GetName())
 			secretData["ca"] = capiKubeconfig.Clusters[cluster.GetName()].CertificateAuthorityData
-			if capiKubeconfig.AuthInfos[kubeconfigAdminUser] != nil {
+			if _, ok := capiKubeconfig.AuthInfos[kubeconfigAdminUser]; ok {
 				secretData["crt"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientCertificateData
 				secretData["key"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientKeyData
 				secretData["token"] = []byte(capiKubeconfig.AuthInfos[kubeconfigAdminUser].Token)
