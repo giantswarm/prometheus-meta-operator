@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
 ### Fixed
 
 - Support EKS CAPI clusters.
+
+## [2.1.0] - 2022-01-10
 
 ## Added
 
@@ -1322,7 +1325,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.53.0...v2.0.0
 [1.53.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.1...v1.53.0
 [1.52.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v1.52.0...v1.52.1
