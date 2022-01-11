@@ -12,6 +12,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/pkg/authentication"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -53,22 +54,6 @@ type TemplateData struct {
 	Vault                     string
 	WorkloadClusterETCDDomain string
 	CAPICluster               bool
-}
-
-func getAPIAuthenticationMechanism(cluster metav1.Object, clusterType string, config Config) (string, error) {
-	if clusterType == "management_cluster" {
-		return "certificate", nil
-	}
-
-	secret, err := config.K8sClient.K8sClient().CoreV1().Secrets(key.Namespace(cluster)).Get(context.Background(), key.SecretAPICertificates(cluster), metav1.GetOptions{})
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	if val, ok := secret.Data["token"]; ok && len(val) >= 0 {
-		return "token", nil
-	}
-	return "certificate", nil
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -117,11 +102,6 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	authenticationMechanism, err := getAPIAuthenticationMechanism(cluster, key.ClusterType(v), config)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	var workloadClusterETCDDomain string = ""
 	if "workload_cluster" == key.ClusterType(v) {
 		clusterID := key.ClusterID(cluster)
@@ -139,7 +119,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	}
 	config.WorkloadClusterETCDDomain = workloadClusterETCDDomain
 
-	scrapeConfigs, err := toData(v, config, authenticationMechanism)
+	scrapeConfigs, err := toData(v, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -160,13 +140,13 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	return scrapeConfigsSecret, nil
 }
 
-func toData(v interface{}, config Config, authenticationMechanism string) ([]byte, error) {
+func toData(v interface{}, config Config) ([]byte, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	templateData, err := getTemplateData(cluster, config, authenticationMechanism)
+	templateData, err := getTemplateData(cluster, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -179,8 +159,13 @@ func toData(v interface{}, config Config, authenticationMechanism string) ([]byt
 	return scrapeConfigs, nil
 }
 
-func getTemplateData(cluster metav1.Object, config Config, authenticationMechanism string) (*TemplateData, error) {
+func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
 	clusterID := key.ClusterID(cluster)
+
+	authenticationMechanism, err := authentication.GetAPIAuthenticationMechanism(context.Background(), config.K8sClient.K8sClient(), cluster, key.ClusterType(cluster))
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,

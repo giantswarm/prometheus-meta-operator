@@ -16,6 +16,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/pkg/authentication"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -72,19 +73,6 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	return r, nil
-}
-
-func getAPIAuthenticationMechanism(cluster metav1.Object, config Config) (string, error) {
-	secret, err := config.K8sClient.K8sClient().CoreV1().Secrets(key.Namespace(cluster)).Get(context.Background(), key.SecretAPICertificates(cluster), metav1.GetOptions{})
-	if err != nil {
-		return "", microerror.Mask(err)
-	}
-
-	if val, ok := secret.Data["token"]; ok && len(val) >= 0 {
-		return "token", nil
-	}
-
-	return "certificate", nil
 }
 
 func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
@@ -316,7 +304,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	if !key.IsInCluster(cluster) {
-		authenticationMechanism, err := getAPIAuthenticationMechanism(cluster, config)
+		authenticationMechanism, err := authentication.GetAPIAuthenticationMechanism(context.Background(), config.K8sClient.K8sClient(), cluster, key.ClusterType(v))
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

@@ -6,7 +6,17 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	k8sclientfake "github.com/giantswarm/k8sclient/v7/pkg/k8sclient/fake"
+	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/micrologger"
+	v1 "k8s.io/api/apps/v1"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+
 	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 var update = flag.Bool("update", false, "update the ouput file")
@@ -23,7 +33,48 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(v, config, "certificate")
+			cluster, err := key.ToCluster(v)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+
+			// Create a fake secret to get the authentication mechanism for this given cluster
+			var secret runtime.Object
+			{
+				secret = &corev1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      key.SecretAPICertificates(cluster),
+						Namespace: key.Namespace(cluster),
+					},
+					Data: map[string][]byte{
+						"token": []byte("token"),
+					}}
+			}
+
+			var k8sClient k8sclient.Interface
+			{
+				var logger micrologger.Logger
+				{
+					c := micrologger.Config{}
+
+					logger, err = micrologger.New(c)
+					if err != nil {
+						t.Fatal(err)
+					}
+				}
+
+				c := k8sclient.ClientsConfig{
+					Logger:        logger,
+					SchemeBuilder: k8sclient.SchemeBuilder(v1.SchemeBuilder),
+				}
+				k8sClient, err = k8sclientfake.NewClients(c, secret)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			config.K8sClient = k8sClient
+
+			return toData(v, config)
 		}
 	}
 
@@ -62,7 +113,48 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(v, config, "certificate")
+			cluster, err := key.ToCluster(v)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+
+			// Create a fake secret to get the authentication mechanism for this given cluster
+			var secret runtime.Object
+			{
+				secret = &corev1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      key.SecretAPICertificates(cluster),
+						Namespace: key.Namespace(cluster),
+					},
+					Data: map[string][]byte{
+						"crt": []byte("crt"),
+					}}
+			}
+
+			var logger micrologger.Logger
+			{
+				c := micrologger.Config{}
+
+				logger, err = micrologger.New(c)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			var k8sClient k8sclient.Interface
+			{
+				c := k8sclient.ClientsConfig{
+					Logger:        logger,
+					SchemeBuilder: k8sclient.SchemeBuilder(v1.SchemeBuilder),
+				}
+				k8sClient, err = k8sclientfake.NewClients(c, secret)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			config.K8sClient = k8sClient
+
+			return toData(v, config)
 		}
 	}
 
@@ -117,7 +209,47 @@ func TestKVMScrapeconfigs(t *testing.T) {
 			Installation:            "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(v, config, "certificate")
+			cluster, err := key.ToCluster(v)
+			if err != nil {
+				return nil, microerror.Mask(err)
+			}
+
+			// Create a fake secret to get the authentication mechanism for this given cluster
+			var secret runtime.Object
+			{
+				secret = &corev1.Secret{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      key.SecretAPICertificates(cluster),
+						Namespace: key.Namespace(cluster),
+					},
+					Data: map[string][]byte{
+						"crt": []byte("crt"),
+					}}
+			}
+
+			var logger micrologger.Logger
+			{
+				c := micrologger.Config{}
+
+				logger, err = micrologger.New(c)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
+			var k8sClient k8sclient.Interface
+			{
+				c := k8sclient.ClientsConfig{
+					Logger:        logger,
+					SchemeBuilder: k8sclient.SchemeBuilder(v1.SchemeBuilder),
+				}
+				k8sClient, err = k8sclientfake.NewClients(c, secret)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+			config.K8sClient = k8sClient
+			return toData(v, config)
 		}
 	}
 

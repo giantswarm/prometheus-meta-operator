@@ -114,11 +114,8 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 			if _, ok := capiKubeconfig.AuthInfos[kubeconfigAdminUser]; ok {
 				secretData["crt"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientCertificateData
 				secretData["key"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientKeyData
-				secretData["token"] = []byte(capiKubeconfig.AuthInfos[kubeconfigAdminUser].Token)
 			} else if _, ok := capiKubeconfig.AuthInfos[kubeconfigCapiAdminUser]; ok {
 				// This is the case for eks clusters.
-				secretData["crt"] = capiKubeconfig.AuthInfos[kubeconfigCapiAdminUser].ClientCertificateData
-				secretData["key"] = capiKubeconfig.AuthInfos[kubeconfigCapiAdminUser].ClientKeyData
 				secretData["token"] = []byte(capiKubeconfig.AuthInfos[kubeconfigCapiAdminUser].Token)
 			}
 		}

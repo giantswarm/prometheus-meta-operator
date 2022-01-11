@@ -1,12 +1,12 @@
 metadata:
   creationTimestamp: null
   labels:
-    app.kubernetes.io/instance: bob
+    app.kubernetes.io/instance: foo
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
-    giantswarm.io/cluster: bob
-  name: bob
-  namespace: bob-prometheus
+    giantswarm.io/cluster: foo
+  name: foo
+  namespace: foo-prometheus
 spec:
   additionalAlertManagerConfigs:
     key: alertmanager-additional.yaml
@@ -24,7 +24,7 @@ spec:
             values:
             - master
   apiserverConfig:
-    host: https://master.bob:443
+    host: https://master.foo:443
     tlsConfig:
       ca: {}
       caFile: /etc/prometheus/secrets/cluster-certificates/ca
@@ -33,22 +33,22 @@ spec:
       keyFile: /etc/prometheus/secrets/cluster-certificates/key
   arbitraryFSAccessThroughSMs: {}
   externalLabels:
-    cluster_id: bob
+    cluster_id: foo
     cluster_type: workload_cluster
     customer: Giant Swarm
     installation: test-installation
     pipeline: testing
     provider: provider
     region: onprem
-  externalUrl: http://prometheus/bob
+  externalUrl: http://prometheus/foo
   image: quay.io/giantswarm/prometheus:v2.28.1
   logLevel: debug
   podMetadata:
     labels:
-      app.kubernetes.io/instance: bob
+      app.kubernetes.io/instance: foo
       app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: prometheus
-      giantswarm.io/cluster: bob
+      giantswarm.io/cluster: foo
       giantswarm.io/monitoring: "true"
   priorityClassName: prometheus
   remoteWrite:
@@ -59,7 +59,7 @@ spec:
       username:
         key: username
         name: remote-write
-    name: bob
+    name: foo
     queueConfig:
       capacity: 10000
       maxSamplesPerSend: 1000
@@ -80,7 +80,7 @@ spec:
       memory: "1073741824"
   retention: 2w
   retentionSize: 45Gi
-  routePrefix: /bob
+  routePrefix: /foo
   ruleNamespaceSelector:
     matchLabels:
       name: monitoring
@@ -126,4 +126,4 @@ spec:
     whenUnsatisfiable: ScheduleAnyway
   walCompression: true
   web:
-    pageTitle: test-installation/bob Prometheus
+    pageTitle: test-installation/foo Prometheus
