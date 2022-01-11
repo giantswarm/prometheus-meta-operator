@@ -11,7 +11,7 @@ import (
 )
 
 func GetAPIAuthenticationMechanism(ctx context.Context, k8sclient kubernetes.Interface, cluster metav1.Object, clusterType string) (string, error) {
-	if clusterType == "management_cluster" {
+	if clusterType == key.ManagementCluster {
 		return "certificate", nil
 	}
 

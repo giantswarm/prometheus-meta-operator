@@ -2,6 +2,7 @@ package certificates
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -117,6 +118,8 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 			} else if _, ok := capiKubeconfig.AuthInfos[kubeconfigCapiAdminUser]; ok {
 				// This is the case for eks clusters.
 				secretData["token"] = []byte(capiKubeconfig.AuthInfos[kubeconfigCapiAdminUser].Token)
+			} else {
+				return nil, errors.New("no supported user found in the CAPI secret")
 			}
 		}
 	}

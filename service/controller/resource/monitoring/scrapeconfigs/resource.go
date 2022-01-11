@@ -103,7 +103,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	}
 
 	var workloadClusterETCDDomain string = ""
-	if "workload_cluster" == key.ClusterType(v) {
+	if key.WorkloadCluster == key.ClusterType(v) {
 		clusterID := key.ClusterID(cluster)
 		// Try to get the etcd url from the Giant Swarm way
 		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(context.Background(), "master", metav1.GetOptions{})

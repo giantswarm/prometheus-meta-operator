@@ -16,7 +16,9 @@ import (
 )
 
 const (
-	monitoring = "monitoring"
+	monitoring        = "monitoring"
+	ManagementCluster = "management_cluster"
+	WorkloadCluster   = "workload_cluster"
 
 	PrometheusMemoryLimitCoefficient float64 = 1.2
 )
@@ -225,10 +227,10 @@ func IsInCluster(obj interface{}) bool {
 
 func ClusterType(obj interface{}) string {
 	if IsInCluster(obj) {
-		return "management_cluster"
+		return ManagementCluster
 	}
 
-	return "workload_cluster"
+	return WorkloadCluster
 }
 
 func BearerTokenPath() string {
