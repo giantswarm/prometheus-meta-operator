@@ -2,6 +2,7 @@ package certificates
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -111,8 +112,12 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 			}
 			kubeconfigAdminUser := fmt.Sprintf("%s-admin", cluster.GetName())
 			secretData["ca"] = capiKubeconfig.Clusters[cluster.GetName()].CertificateAuthorityData
-			secretData["crt"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientCertificateData
-			secretData["key"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientKeyData
+			if _, ok := capiKubeconfig.AuthInfos[kubeconfigAdminUser]; ok {
+				secretData["crt"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientCertificateData
+				secretData["key"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientKeyData
+			} else {
+				return nil, errors.New("no supported user found in the CAPI secret")
+			}
 		}
 	}
 
