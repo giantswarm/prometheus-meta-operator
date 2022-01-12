@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Prevent panic when encountering a different user in the CAPI kubeconfig.
+
+
 ## [2.1.0] - 2022-01-10
 
 ## Added
