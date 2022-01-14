@@ -46,8 +46,14 @@ func updateMeta(c, d metav1.Object) {
 	d.SetCreationTimestamp(c.GetCreationTimestamp())
 	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
 	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	d.SetLabels(c.GetLabels())
-	d.SetAnnotations(c.GetAnnotations())
+	// without this, it's impossible to change labels on resources
+	if len(d.GetLabels()) == 0 {
+		d.SetLabels(c.GetLabels())
+	}
+	// without this, it's impossible to change annotations on resources
+	if len(d.GetAnnotations()) == 0 {
+		d.SetAnnotations(c.GetAnnotations())
+	}
 	d.SetFinalizers(c.GetFinalizers())
 	d.SetOwnerReferences(c.GetOwnerReferences())
 	d.SetClusterName(c.GetClusterName())
