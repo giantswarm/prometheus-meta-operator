@@ -14,7 +14,7 @@ require (
 	github.com/go-kit/log v0.2.0
 	github.com/google/go-cmp v0.5.6
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
-	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.8
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.9
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.52.1
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.52.1
