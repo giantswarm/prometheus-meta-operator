@@ -920,14 +920,20 @@
     target_label: __address__
     regex: ([^:]+):(\d+);(\d+)
     replacement: $1:$3
+    # if the protocol is empty, we set it to http by default, this allows to override the protocol for services using https like prometheus operator
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_protocol]
+    action: replace
+    target_label: __meta_kubernetes_service_annotation_giantswarm_io_monitoring_protocol
+    regex: (.*);
+    replacement: "http"
   - source_labels: [__meta_kubernetes_pod_ip, __address__]
     regex: (.*);([^:]+):(\d+)
     replacement: $1:$3
     target_label: instance
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __address__, __metrics_path__]
-    regex: (.*);(.*);(.+:)(\d+);(.*)
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_protocol, __meta_kubernetes_pod_name, __address__, __metrics_path__]
+    regex: (.*);(.*);(.*);(.+:)(\d+);(.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/${1}/pods/${2}:${4}/proxy${5}
+    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}:${5}/proxy${6}
     action: replace
   - regex: (.*)
     target_label: __address__
