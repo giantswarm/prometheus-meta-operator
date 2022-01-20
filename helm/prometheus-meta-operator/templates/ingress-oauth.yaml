@@ -1,23 +1,34 @@
+{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
+apiVersion: networking.k8s.io/v1
+{{- else -}}
 apiVersion: networking.k8s.io/v1beta1
+{{- end }}
 kind: Ingress
 metadata:
-  {{- if .Values.prometheus.letsencrypt }}
   annotations:
-    kubernetes.io/tls-acme: "true"
-  {{- end }}
+    kubernetes.io/tls-acme: "{{ .Values.prometheus.letsencrypt }}"
   labels:
     {{- include "labels.common" . | nindent 4 }}
   name: {{ include "resource.default.name" . }}
   namespace: monitoring
 spec:
+  ingressClassName: nginx
   rules:
   - host: {{ .Values.prometheus.host }}
     http:
       paths:
       - backend:
+          {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+          service:
+            name: oauth2-proxy
+            port:
+              number: 4180
+          {{- else }}
           serviceName: oauth2-proxy
           servicePort: 4180
+          {{- end }}
         path: /oauth2
+        pathType: ImplementationSpecific
   tls:
   - hosts:
     - {{ .Values.prometheus.host }}

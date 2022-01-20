@@ -19,6 +19,10 @@ const (
 	Name = "ingress"
 )
 
+var (
+	ingressClassName = "nginx"
+)
+
 type Config struct {
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
@@ -60,7 +64,6 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	}
 
 	annotations := map[string]string{
-		"kubernetes.io/ingress.class":             "nginx",
 		"nginx.ingress.kubernetes.io/auth-signin": "https://$host/oauth2/start?rd=$escaped_request_uri",
 		"nginx.ingress.kubernetes.io/auth-url":    "https://$host/oauth2/auth",
 	}
@@ -114,6 +117,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 		},
 		ObjectMeta: objectMeta,
 		Spec: networkingv1beta1.IngressSpec{
+			IngressClassName: &ingressClassName,
 			Rules: []networkingv1beta1.IngressRule{
 				{
 					Host: config.BaseDomain,
@@ -142,5 +146,5 @@ func hasChanged(current, desired metav1.Object) bool {
 	c := current.(*networkingv1beta1.Ingress)
 	d := desired.(*networkingv1beta1.Ingress)
 
-	return !reflect.DeepEqual(c.Spec, d.Spec)
+	return !reflect.DeepEqual(c.Spec, d.Spec) || !reflect.DeepEqual(c.GetAnnotations(), d.GetAnnotations())
 }
