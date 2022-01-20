@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Allow overriding the scraping protocol
+
 ### Fixed
 
 - Set ingress class name in ingress spec instead of annotation to prepare supporting ingress v1.
