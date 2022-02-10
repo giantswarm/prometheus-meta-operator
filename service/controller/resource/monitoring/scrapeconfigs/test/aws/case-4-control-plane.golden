@@ -762,7 +762,7 @@
 # node-exporter
 - job_name: kubernetes-prometheus/node-exporter-kubernetes/0
   honor_labels: true
-  scheme: http
+  scheme: https
   kubernetes_sd_configs:
   - role: pod
 

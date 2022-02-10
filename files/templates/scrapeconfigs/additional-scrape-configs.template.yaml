@@ -502,7 +502,7 @@
 # node-exporter
 - job_name: [[ .ClusterID ]]-prometheus/node-exporter-[[ .ClusterID ]]/0
   honor_labels: true
-  scheme: http
+  scheme: https
   kubernetes_sd_configs:
   - role: pod
 [[ include "_apiserver" . ]]

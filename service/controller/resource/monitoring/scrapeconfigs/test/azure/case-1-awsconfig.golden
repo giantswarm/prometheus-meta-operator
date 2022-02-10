@@ -811,7 +811,7 @@
 # node-exporter
 - job_name: alice-prometheus/node-exporter-alice/0
   honor_labels: true
-  scheme: http
+  scheme: https
   kubernetes_sd_configs:
   - role: pod
 
