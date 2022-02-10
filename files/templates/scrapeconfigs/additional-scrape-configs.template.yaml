@@ -157,9 +157,9 @@
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
 [[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]kj
+[[ include "_labelingschema" . | indent 2 ]]
 # aws-node
-[[ if eq .Provider "aws" ]]
+[[- if eq .Provider "aws" ]]
 - job_name: [[ .ClusterID ]]-prometheus/aws-node-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -181,7 +181,7 @@
     target_label: app
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
+[[- end ]]
 # Add etcd configuration
 - job_name: [[ .ClusterID ]]-prometheus/etcd-[[ .ClusterID ]]/0
   honor_labels: true

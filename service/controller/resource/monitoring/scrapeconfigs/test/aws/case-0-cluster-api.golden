@@ -197,6 +197,7 @@
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
     action: keep
+# calico-node
 - job_name: bob-prometheus/calico-node-bob/0
   honor_labels: true
   scheme: https
@@ -256,7 +257,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-
+# aws-node
 - job_name: bob-prometheus/aws-node-bob/0
   honor_labels: true
   scheme: https

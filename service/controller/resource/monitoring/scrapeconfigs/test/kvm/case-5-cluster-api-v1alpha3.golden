@@ -94,6 +94,7 @@
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*)
     action: keep
+# calico-node
 - job_name: baz-prometheus/calico-node-baz/0
   honor_labels: true
   scheme: https
@@ -153,7 +154,7 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-
+# aws-node
 # Add etcd configuration
 - job_name: baz-prometheus/etcd-baz/0
   honor_labels: true
@@ -710,12 +711,7 @@
   honor_labels: true
   scheme: http
   kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-
-      - kube-system
-
+  - role: pod
 
     api_server: https://master.baz:443
     tls_config:
@@ -729,29 +725,17 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: node-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_service_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
+  - target_label: __address__
+    replacement: master.baz:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (node-exporter.*)
     target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10300/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;node-exporter.*
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
