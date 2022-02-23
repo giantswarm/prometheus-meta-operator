@@ -12,7 +12,7 @@ require (
 	github.com/giantswarm/operatorkit/v7 v7.0.0
 	github.com/giantswarm/versionbundle v1.0.0
 	github.com/go-kit/log v0.2.0
-	github.com/google/go-cmp v0.5.6
+	github.com/google/go-cmp v0.5.7
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.9
 	github.com/pkg/errors v0.9.1
