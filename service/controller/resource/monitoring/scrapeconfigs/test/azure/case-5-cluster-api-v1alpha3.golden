@@ -806,21 +806,8 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
