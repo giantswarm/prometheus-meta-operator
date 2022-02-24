@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix failing `aggregation:prometheus:memory_percentage` due to duplicated series from node exporter.
+
 ## [2.2.0] - 2022-01-20
 
 ### Changed
