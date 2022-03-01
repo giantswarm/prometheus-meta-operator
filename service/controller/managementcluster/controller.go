@@ -33,6 +33,7 @@ type ControllerConfig struct {
 	Provider                string
 	Region                  string
 	Registry                string
+	IngressApiVersion       string
 
 	AlertmanagerAddress     string
 	AlertmanagerCreatePVC   bool
