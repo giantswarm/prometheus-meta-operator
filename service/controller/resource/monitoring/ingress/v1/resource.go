@@ -109,6 +109,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 	// resource that also defines the source of the certificates (i.e. the
 	// Let's Encrypt annotation or the static source for the installation)
 	// so we know as soon as it's updated IC will be using it.
+	pathType := networkingv1.PathTypeImplementationSpecific
 	ingress := &networkingv1.Ingress{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: networkingv1.SchemeGroupVersion.Version,
@@ -133,6 +134,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 											},
 										},
 									},
+									PathType: &pathType,
 								},
 							},
 						},
