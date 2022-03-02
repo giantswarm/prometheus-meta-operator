@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support ingress v1 by default.
 
+## [2.2.1] - 2022-02-24
+
+### Fixed
+
+- Fix failing `aggregation:prometheus:memory_percentage` due to duplicated series from node exporter.
+
 ## [2.2.0] - 2022-01-20
 
 ### Changed
@@ -1341,7 +1347,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.2.1...HEAD
+[2.2.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.1.1...v2.2.0
 [2.1.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.0.0...v2.1.0

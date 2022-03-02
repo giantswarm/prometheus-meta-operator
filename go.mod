@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/giantswarm/apiextensions/v3 v3.39.0
+	github.com/giantswarm/apiextensions/v3 v3.40.0
 	github.com/giantswarm/microendpoint v1.0.0
 	github.com/giantswarm/microerror v0.4.0
 	github.com/giantswarm/microkit v1.0.0
@@ -12,9 +12,9 @@ require (
 	github.com/giantswarm/operatorkit/v7 v7.0.0
 	github.com/giantswarm/versionbundle v1.0.0
 	github.com/go-kit/log v0.2.0
-	github.com/google/go-cmp v0.5.6
+	github.com/google/go-cmp v0.5.7
 	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
-	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.9
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.10
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.52.1
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.52.1
