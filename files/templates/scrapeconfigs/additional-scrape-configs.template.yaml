@@ -133,6 +133,7 @@
     regex: (kube-system|giantswarm.*)
     action: keep
 [[- end ]]
+# calico-node
 - job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -157,7 +158,8 @@
     target_label: app
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ if eq .Provider "aws" ]]
+# aws-node
+[[- if eq .Provider "aws" ]]
 - job_name: [[ .ClusterID ]]-prometheus/aws-node-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -179,7 +181,7 @@
     target_label: app
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
+[[- end ]]
 # Add etcd configuration
 - job_name: [[ .ClusterID ]]-prometheus/etcd-[[ .ClusterID ]]/0
   honor_labels: true
@@ -500,39 +502,23 @@
 # node-exporter
 - job_name: [[ .ClusterID ]]-prometheus/node-exporter-[[ .ClusterID ]]/0
   honor_labels: true
-  scheme: http
+  scheme: https
   kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-[[ if eq .ClusterType "management_cluster" ]]
-      - monitoring
-[[ else ]]
-      - kube-system
-[[ end ]]
+  - role: pod
 [[ include "_apiserver" . ]]
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: node-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_service_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (node-exporter.*)
     target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
+    replacement: /api/v1/namespaces/[[ include "_node_exporter_namespace" . ]]/pods/${1}:10300/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: [[ include "_node_exporter_namespace" . ]];node-exporter.*
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
