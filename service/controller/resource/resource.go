@@ -43,7 +43,7 @@ type Config struct {
 	Provider                string
 	Region                  string
 	Registry                string
-	IngressApiVersion       string
+	IngressAPIVersion       string
 
 	OpsgenieKey string
 
@@ -198,7 +198,7 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 	var ingressResource resource.Interface
-	if config.IngressApiVersion == "networking.k8s.io/v1beta1" {
+	if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
 		c := ingressv1beta1.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,

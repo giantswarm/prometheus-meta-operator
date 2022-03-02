@@ -6,5 +6,5 @@ type Installation struct {
 	Pipeline          string
 	Region            string
 	Registry          string
-	IngressApiVersion string
+	IngressAPIVersion string
 }
