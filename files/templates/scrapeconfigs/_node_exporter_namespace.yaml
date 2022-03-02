@@ -1,0 +1,7 @@
+[[- define "_node_exporter_namespace" -]]
+[[- if eq .ClusterType "management_cluster" -]]
+monitoring
+[[- else -]]
+kube-system
+[[- end -]]
+[[- end -]]
