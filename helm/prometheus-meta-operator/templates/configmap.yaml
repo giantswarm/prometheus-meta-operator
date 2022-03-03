@@ -80,5 +80,10 @@ data:
         region: onprem
         {{- end }}
         registry: {{ .Values.registry.domain }}
+        {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
+        ingressAPIVersion: networking.k8s.io/v1
+        {{- else -}}
+        ingressAPIVersion: networking.k8s.io/v1beta1
+        {{- end }}
       vault:
         host: {{ .Values.vaultHost }}

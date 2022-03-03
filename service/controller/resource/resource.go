@@ -14,7 +14,8 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress"
+	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
+	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
@@ -42,6 +43,7 @@ type Config struct {
 	Provider                string
 	Region                  string
 	Registry                string
+	IngressAPIVersion       string
 
 	OpsgenieKey string
 
@@ -195,10 +197,9 @@ func New(config Config) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
-
 	var ingressResource resource.Interface
-	{
-		c := ingress.Config{
+	if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
+		c := ingressv1beta1.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,
 			BaseDomain:              config.PrometheusBaseDomain,
@@ -206,7 +207,20 @@ func New(config Config) ([]resource.Interface, error) {
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 		}
 
-		ingressResource, err = ingress.New(c)
+		ingressResource, err = ingressv1beta1.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	} else {
+		c := ingressv1.Config{
+			K8sClient:               config.K8sClient,
+			Logger:                  config.Logger,
+			BaseDomain:              config.PrometheusBaseDomain,
+			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
+			WhitelistedSubnets:      config.WhitelistedSubnets,
+		}
+
+		ingressResource, err = ingressv1.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
