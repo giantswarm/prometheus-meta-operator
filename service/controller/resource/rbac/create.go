@@ -16,9 +16,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		current, err := r.k8sClient.K8sClient().RbacV1beta1().ClusterRoles().Get(ctx, desired.GetName(), metav1.GetOptions{})
+		current, err := r.k8sClient.K8sClient().RbacV1().ClusterRoles().Get(ctx, desired.GetName(), metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			current, err = r.k8sClient.K8sClient().RbacV1beta1().ClusterRoles().Create(ctx, desired, metav1.CreateOptions{})
+			current, err = r.k8sClient.K8sClient().RbacV1().ClusterRoles().Create(ctx, desired, metav1.CreateOptions{})
 		}
 		if err != nil {
 			return microerror.Mask(err)
@@ -26,7 +26,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		if hasClusterRoleChanged(current, desired) {
 			updateMeta(current, desired)
-			_, err = r.k8sClient.K8sClient().RbacV1beta1().ClusterRoles().Update(ctx, desired, metav1.UpdateOptions{})
+			_, err = r.k8sClient.K8sClient().RbacV1().ClusterRoles().Update(ctx, desired, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -40,9 +40,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		current, err := r.k8sClient.K8sClient().RbacV1beta1().ClusterRoleBindings().Get(ctx, desired.GetName(), metav1.GetOptions{})
+		current, err := r.k8sClient.K8sClient().RbacV1().ClusterRoleBindings().Get(ctx, desired.GetName(), metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			current, err = r.k8sClient.K8sClient().RbacV1beta1().ClusterRoleBindings().Create(ctx, desired, metav1.CreateOptions{})
+			current, err = r.k8sClient.K8sClient().RbacV1().ClusterRoleBindings().Create(ctx, desired, metav1.CreateOptions{})
 		}
 		if err != nil {
 			return microerror.Mask(err)
@@ -50,7 +50,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		if hasClusterRoleBindingChanged(current, desired) {
 			updateMeta(current, desired)
-			_, err = r.k8sClient.K8sClient().RbacV1beta1().ClusterRoleBindings().Update(ctx, desired, metav1.UpdateOptions{})
+			_, err = r.k8sClient.K8sClient().RbacV1().ClusterRoleBindings().Update(ctx, desired, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
