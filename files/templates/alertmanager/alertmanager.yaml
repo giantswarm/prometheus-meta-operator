@@ -36,11 +36,11 @@ route:
     continue: false
 
   # Service Level slack -- chooses the slack channel based on the provider
-  [[ if or (eq .Provider "aws") (eq .Provider "azure") ]]
+  [[- if or (eq .Provider "aws") (eq .Provider "azure") ]]
   - receiver: team_phoenix_slack
-  [[ else ]]
+  [[- else ]]
   - receiver: team_rocket_slack
-  [[ end ]]
+  [[- end ]]
     match:
       alertname: ServiceLevelBurnRateTooHigh
     continue: false
@@ -209,9 +209,9 @@ receivers:
 - name: team_phoenix_slack
   slack_configs:
   [[- if eq .Pipeline "stable" ]]
-  - channel: '#alertphoenix'
+  - channel: '#alert-phoenix'
   [[- else ]]
-  - channel: '#alertphoenix-test'
+  - channel: '#alert-phoenix-test'
   [[- end ]]
     send_resolved: true
     actions:
