@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support ingress v1 by default.
 - Scrape node-exporter trough apiserver proxy.
 
+### Fixed
+
+- Old references to Firecracker and Celestial replaced with Phoenix
+
 ## [2.2.1] - 2022-02-24
 
 ### Fixed
