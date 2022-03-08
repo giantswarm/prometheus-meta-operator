@@ -143,3 +143,43 @@ func TestKVMScrapeconfigs(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestOpenStackScrapeconfigs(t *testing.T) {
+	var testFunc unittest.TestFunc
+	{
+		path := path.Join(unittest.ProjectRoot(), templatePath)
+
+		config := Config{
+			AdditionalScrapeConfigs: additionalScrapeConfigs,
+			TemplatePath:            path,
+			Provider:                "openstack",
+			Vault:                   "vault1.some-installation.test",
+			Installation:            "test-installation",
+		}
+		testFunc = func(v interface{}) (interface{}, error) {
+			return toData(v, config)
+		}
+	}
+
+	outputDir, err := filepath.Abs("./test/openstack")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	c := unittest.Config{
+		OutputDir:            outputDir,
+		T:                    t,
+		TestFunc:             testFunc,
+		Update:               *update,
+		TestFuncReturnsBytes: true,
+	}
+	runner, err := unittest.NewRunner(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = runner.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+}
