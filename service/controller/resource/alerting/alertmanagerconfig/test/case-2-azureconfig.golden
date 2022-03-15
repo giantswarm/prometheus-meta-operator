@@ -38,20 +38,6 @@ route:
       team: atlas
     continue: false
 
-  # Team Batman Slack (team)
-  - receiver: team_batman_slack
-    match_re:
-      severity: page|notify
-      team: batman
-    continue: false
-
-  # Team Biscuit Slack (team)
-  - receiver: team_biscuit_slack
-    match_re:
-      severity: page
-      team: biscuit
-    continue: false
-
   # Team Celestial Slack (team)
   - receiver: team_phoenix_slack
     match_re:
@@ -71,13 +57,6 @@ route:
     match_re:
       severity: page|notify
       team: phoenix
-    continue: false
-
-  # Team Ludacris Slack (team)
-  - receiver: team_ludacris_slack
-    match_re:
-      severity: page|notify
-      team: ludacris
     continue: false
 
   # Team Rocket Slack (team)
@@ -172,7 +151,7 @@ receivers:
 - name: opsgenie_router
   opsgenie_configs:
   - api_key: opsgenie-key
-    tags: "{{`{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }}`}},aws,test-installation,testing"
+    tags: "{{$labels.alertname }},{{$labels.cluster_type }},{{$labels.severity }},{{$labels.team }},{{$labels.area }},aws,test-installation,testing"
 
 - name: team_ops_slack
   slack_configs:

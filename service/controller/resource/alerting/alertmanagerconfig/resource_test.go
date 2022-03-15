@@ -17,14 +17,14 @@ func TestAlertmanagerconfigsecret(t *testing.T) {
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 
 		config := Config{
-			TemplatePath:     path,
-			Provider:         "aws",
+			GrafanaAddress:   "https://grafana",
 			Installation:     "test-installation",
 			OpsgenieKey:      "opsgenie-key",
-			GrafanaAddress:   "https://grafana",
+			Pipeline:         "testing",
+			Provider:         "aws",
 			SlackApiURL:      "https://slack",
 			SlackProjectName: "my-slack-project",
-			Pipeline:         "testing",
+			TemplatePath:     path,
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return toData(v, config)

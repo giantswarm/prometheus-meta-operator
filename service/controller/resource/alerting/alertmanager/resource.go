@@ -176,6 +176,10 @@ func toAlertmanager(v interface{}, config Config) (metav1.Object, error) {
 					},
 				},
 			},
+			// This field needs to be specified
+			AlertmanagerConfigSelector: &metav1.LabelSelector{
+				MatchLabels: key.AlertmanagerLabels(),
+			},
 			PriorityClassName: "prometheus",
 		},
 	}

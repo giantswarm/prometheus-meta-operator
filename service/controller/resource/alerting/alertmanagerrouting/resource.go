@@ -67,7 +67,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      key.ClusterID(cluster),
 		Namespace: key.NamespaceMonitoring(),
-		Labels:    key.AlertmanagerLabels(cluster),
+		Labels:    key.AlertmanagerLabels(),
 	}, nil
 }
 
@@ -87,7 +87,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	labels := make(map[string]string)
-	for k, v := range key.AlertmanagerLabels(cluster) {
+	for k, v := range key.AlertmanagerLabels() {
 		labels[k] = v
 	}
 
