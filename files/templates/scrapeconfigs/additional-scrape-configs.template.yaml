@@ -130,7 +130,7 @@
     action: keep
 [[- else ]]
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*)
+    regex: (kube-system|giantswarm.*|kong.*)
     action: keep
 [[- end ]]
 # calico-node
