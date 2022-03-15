@@ -108,19 +108,6 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfigResource resource.Interface
-	{
-		c := alertmanagerconfig.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var remoteWriteConfigResource resource.Interface
 	{
 		c := remotewriteconfig.Config{
@@ -153,7 +140,6 @@ func New(config Config) ([]resource.Interface, error) {
 			StorageSize:       config.PrometheusStorageSize,
 			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
-			LogLevel:          config.PrometheusLogLevel,
 			RetentionSize:     config.PrometheusRetentionSize,
 			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
 			HTTPProxy:         config.HTTPProxy,

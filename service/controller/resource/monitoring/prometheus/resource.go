@@ -32,7 +32,6 @@ type Config struct {
 	Customer          string
 	Installation      string
 	Pipeline          string
-	Version           string
 	Provider          string
 	Region            string
 	Registry          string
@@ -171,8 +170,7 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-			LogLevel: config.LogLevel,
-			Image:    &image,
+			Image: &image,
 			Web: &promv1.WebSpec{
 				PageTitle: &pageTitle,
 			},

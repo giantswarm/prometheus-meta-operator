@@ -16,6 +16,13 @@ import (
 
 const (
 	Name = "monitoringingress"
+<<<<<<< HEAD
+=======
+)
+
+var (
+	ingressClassName = "nginx"
+>>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
 )
 
 type Config struct {

@@ -6,23 +6,42 @@ metadata:
     nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
   creationTimestamp: null
   labels:
+<<<<<<< HEAD
     app.kubernetes.io/instance: alertmanager
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: alertmanager
   name: alertmanager
+=======
+    app.kubernetes.io/instance: kubernetes
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: kubernetes
+  name: prometheus-kubernetes
+>>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
   namespace: kubernetes-prometheus
 spec:
   ingressClassName: nginx
   rules:
+<<<<<<< HEAD
   - host: https://alertmanager
+=======
+  - host: https://prometheus
+>>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
     http:
       paths:
       - backend:
           service:
+<<<<<<< HEAD
             name: alertmanager-operated
             port:
               number: 9093
         path: /
+=======
+            name: prometheus-operated
+            port:
+              number: 9090
+        path: /kubernetes
+>>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
         pathType: ImplementationSpecific
 status:
   loadBalancer: {}

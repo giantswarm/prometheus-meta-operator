@@ -98,12 +98,12 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	}
 	address := urlAddress.String()
 
-	var proxyURL *string = nil
+	var proxyURL string = ""
 	if !strings.Contains(config.NoProxy, "api.opsgenie.com") {
 		if len(config.HTTPSProxy) > 0 {
-			proxyURL = &config.HTTPSProxy
+			proxyURL = config.HTTPSProxy
 		} else if len(config.HTTPProxy) > 0 {
-			proxyURL = &config.HTTPProxy
+			proxyURL = config.HTTPProxy
 		}
 	}
 
