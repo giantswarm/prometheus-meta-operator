@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Migrate to rbac/v1 from rbac/v1beta1.
 
+### Fixed
+
+- Do not trail right whitespaces in config.
+
 ## [2.3.0] - 2022-03-04
 
 ### Changed
