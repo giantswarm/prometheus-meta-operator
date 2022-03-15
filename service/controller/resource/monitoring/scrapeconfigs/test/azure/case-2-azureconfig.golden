@@ -195,7 +195,7 @@
     target_label: role
   metric_relabel_configs:
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*)
+    regex: (kube-system|giantswarm.*|kong.*)
     action: keep
 # calico-node
 - job_name: foo-prometheus/calico-node-foo/0
