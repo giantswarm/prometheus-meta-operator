@@ -10,7 +10,7 @@ metadata:
 spec:
   additionalAlertManagerConfigs:
     key: alertmanager-additional.yaml
-    name: alertmanager-config
+    name: new-alertmanager-config
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs
@@ -42,7 +42,7 @@ spec:
     region: onprem
   externalUrl: http://prometheus/bar
   image: quay.io/giantswarm/prometheus:v2.28.1
-  logLevel: debug
+  logLevel: info
   podMetadata:
     labels:
       app.kubernetes.io/instance: bar

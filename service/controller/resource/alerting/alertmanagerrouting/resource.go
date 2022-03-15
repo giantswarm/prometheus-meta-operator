@@ -34,7 +34,7 @@ type Config struct {
 
 func New(config Config) (*generic.Resource, error) {
 	clientFunc := func(namespace string) generic.Interface {
-		c := config.Client.MonitoringV1alpha1().AlertmanagerConfigs(fmt.Sprintf("%s-prometheus", config.Installation))
+		c := config.Client.MonitoringV1alpha1().AlertmanagerConfigs(namespace)
 		return wrappedClient{client: c}
 	}
 
@@ -66,7 +66,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 
 	return metav1.ObjectMeta{
 		Name:      key.ClusterID(cluster),
-		Namespace: fmt.Sprintf("%s-prometheus", config.Installation),
+		Namespace: key.NamespaceMonitoring(),
 		Labels:    key.AlertmanagerLabels(cluster),
 	}, nil
 }
@@ -114,12 +114,13 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 				URL: &address,
 				HTTPConfig: &monitoringv1alpha1.HTTPConfig{
 					ProxyURL: proxyURL,
-					BasicAuth: &monitoringv1.BasicAuth{
-						Password: corev1.SecretKeySelector{
+					Authorization: &monitoringv1.SafeAuthorization{
+						Type: "GenieKey",
+						Credentials: &corev1.SecretKeySelector{
 							LocalObjectReference: corev1.LocalObjectReference{
-								Name: fmt.Sprintf("alertmanager-%s", config.Installation),
+								Name: key.AlertManagerSecretName(),
 							},
-							Key: "opsgenie.key",
+							Key: key.OpsgenieKey(),
 						},
 					},
 				},
@@ -139,7 +140,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 					{Name: key.TypeKey(), Value: key.Heartbeat()},
 				},
 				Continue: false,
-				// We wait for 5 minutes before we start to ping OpsGenie to allow the prometheus server to start
+				// We wait for 5 minutes before we start to ping Ops Genie to allow the prometheus server to start
 				GroupWait:     "5m",
 				GroupInterval: "30s",
 				// We ping OpsGenie every minute

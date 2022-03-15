@@ -10,8 +10,8 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
@@ -171,15 +171,15 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfigResource resource.Interface
+	var alertmanagerWiringResource resource.Interface
 	{
-		c := alertmanagerconfig.Config{
+		c := alertmanagerwiring.Config{
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
 			Installation: config.Installation,
 		}
 
-		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
+		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -263,10 +263,9 @@ func New(config Config) ([]resource.Interface, error) {
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
-		alertmanagerConfigResource,
 		scrapeConfigResource,
 		alertmanagerRoutingResource,
-		alertmanagerConfigResource,
+		alertmanagerWiringResource,
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,

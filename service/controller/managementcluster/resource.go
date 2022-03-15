@@ -12,8 +12,8 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerrouting"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
@@ -54,7 +54,6 @@ type resourcesConfig struct {
 	AlertmanagerStorageSize string
 	AlertmanagerVersion     string
 	GrafanaAddress          string
-	HeartbeatName           string
 	OpsgenieKey             string
 	SlackApiURL             string
 	SlackProjectName        string
@@ -156,39 +155,37 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfigSecretResource resource.Interface
+	var alertmanagerWiringResource resource.Interface
 	{
-		c := alertmanagerconfigsecret.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-
-			Installation:     config.Installation,
-			Pipeline:         config.Pipeline,
-			Provider:         config.Provider,
-			HTTPProxy:        config.HTTPProxy,
-			HTTPSProxy:       config.HTTPSProxy,
-			NoProxy:          config.NoProxy,
-			HeartbeatName:    config.HeartbeatName,
-			OpsgenieKey:      config.OpsgenieKey,
-			GrafanaAddress:   config.GrafanaAddress,
-			SlackApiURL:      config.SlackApiURL,
-			SlackProjectName: config.SlackProjectName,
+		c := alertmanagerwiring.Config{
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Installation: config.Installation,
 		}
 
-		alertmanagerConfigSecretResource, err = alertmanagerconfigsecret.New(c)
+		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 	}
-
-	var alertmanagerConfigResource resource.Interface
+	var alertmanagerConfigSecretResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			K8sClient:        config.K8sClient,
+			Logger:           config.Logger,
+			Installation:     config.Installation,
+			Provider:         config.Provider,
+			HTTPProxy:        config.HTTPProxy,
+			HTTPSProxy:       config.HTTPSProxy,
+			NoProxy:          config.NoProxy,
+			OpsgenieKey:      config.OpsgenieKey,
+			GrafanaAddress:   config.GrafanaAddress,
+			SlackApiURL:      config.SlackApiURL,
+			SlackProjectName: config.SlackProjectName,
+			Pipeline:         config.Pipeline,
 		}
 
-		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
+		alertmanagerConfigSecretResource, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -352,9 +349,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		rbacResource,
 		alertmanagerResource,
 		alertmanagerRoutingResource,
-		alertmanagerConfigResource,
-		alertmanagerConfigSecretResource,
 		//alertmanagerIngressResource,
+		alertmanagerWiringResource,
+		alertmanagerConfigSecretResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,

@@ -167,8 +167,9 @@ func PrometheusSTSName(cluster metav1.Object) string {
 	return fmt.Sprintf("prometheus-%s", ClusterID(cluster))
 }
 
+// TODO rename once g8s-prometheus is gone
 func AlertManagerSecretName() string {
-	return "alertmanager-config"
+	return "new-alertmanager-config"
 }
 
 func AlertmanagerKey() string {
@@ -181,6 +182,10 @@ func AlertmanagerPort() int32 {
 
 func AlertManagerKey() string {
 	return "alertmanager-additional.yaml"
+}
+
+func OpsgenieKey() string {
+	return "opsgenie.key"
 }
 
 func APIUrl(obj interface{}) string {
@@ -203,6 +208,10 @@ func IsInCluster(obj interface{}) bool {
 	default:
 		return false
 	}
+}
+
+func IngressClassName() string {
+	return "nginx"
 }
 
 func ClusterType(obj interface{}) string {

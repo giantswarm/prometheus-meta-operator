@@ -16,6 +16,7 @@ spec:
             operator: NotIn
             values:
             - master
+  configSecret: new-alertmanager-config
   externalUrl: http://alertmanager/cluster
   podMetadata:
     labels:

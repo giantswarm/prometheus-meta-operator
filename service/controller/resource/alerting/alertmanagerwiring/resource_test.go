@@ -1,4 +1,4 @@
-package v1beta1
+package alertmanagerwiring
 
 import (
 	"flag"
@@ -10,7 +10,7 @@ import (
 
 var update = flag.Bool("update", false, "update the ouput file")
 
-func TestIngress(t *testing.T) {
+func TestAlertmanagerconfig(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
 	if err != nil {
 		t.Fatal(err)
@@ -20,9 +20,10 @@ func TestIngress(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toIngress(v, Config{BaseDomain: "https://alertmanager"})
+			return toData(v, Config{Installation: "test-installation"}), nil
 		},
-		Update: *update,
+		TestFuncReturnsBytes: true,
+		Update:               *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {

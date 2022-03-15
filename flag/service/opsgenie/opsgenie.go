@@ -1,6 +1,5 @@
 package opsgenie
 
 type Opsgenie struct {
-	Key           string
-	HeartbeatName string
+	Key string
 }

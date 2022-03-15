@@ -18,13 +18,6 @@ const (
 	Name = "alertingingress"
 )
 
-<<<<<<< HEAD
-=======
-var (
-	ingressClassName = "nginx"
-)
-
->>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
 type Config struct {
 	K8sClient               k8sclient.Interface
 	Logger                  micrologger.Logger
@@ -66,11 +59,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	}
 
 	annotations := map[string]string{
-<<<<<<< HEAD
 		"kubernetes.io/ingress.class":             key.IngressClassName(),
-=======
-		"kubernetes.io/ingress.class":             "nginx",
->>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
 		"nginx.ingress.kubernetes.io/auth-signin": "https://$host/oauth2/start?rd=$escaped_request_uri",
 		"nginx.ingress.kubernetes.io/auth-url":    "https://$host/oauth2/auth",
 	}
@@ -82,11 +71,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:        "alertmanager",
 		Namespace:   key.Namespace(cluster),
-<<<<<<< HEAD
 		Labels:      key.AlertmanagerLabels(),
-=======
-		Labels:      key.AlertmanagerLabels(cluster),
->>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
 		Annotations: annotations,
 	}, nil
 }
@@ -123,10 +108,6 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 		},
 		ObjectMeta: objectMeta,
 		Spec: networkingv1beta1.IngressSpec{
-<<<<<<< HEAD
-=======
-			IngressClassName: &ingressClassName,
->>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
 			Rules: []networkingv1beta1.IngressRule{
 				{
 					Host: config.BaseDomain,

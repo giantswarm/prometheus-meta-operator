@@ -20,11 +20,7 @@ func TestIngress(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-<<<<<<< HEAD
 			return toIngress(v, Config{BaseDomain: "https://alertmanager"})
-=======
-			return toIngress(v, Config{BaseDomain: "https://prometheus"})
->>>>>>> 524cfb4 (Support both ingress v1 and v1beta1 for alertmanager)
 		},
 		Update: *update,
 	}

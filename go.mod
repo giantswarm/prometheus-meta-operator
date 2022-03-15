@@ -11,11 +11,8 @@ require (
 	github.com/giantswarm/micrologger v0.6.0
 	github.com/giantswarm/operatorkit/v7 v7.0.1
 	github.com/giantswarm/versionbundle v1.0.0
-	github.com/go-kit/log v0.2.0
 	github.com/google/go-cmp v0.5.7
-	github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.10
-	github.com/pkg/errors v0.9.1
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.52.1
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.52.1
 	github.com/prometheus/alertmanager v0.23.0
@@ -25,8 +22,6 @@ require (
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.10.1
 	golang.org/x/net v0.0.0-20211209124913-491a49abca63
-	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	gopkg.in/yaml.v2 v2.4.0
 	k8s.io/api v0.22.3
 	k8s.io/apiextensions-apiserver v0.22.3
 	k8s.io/apimachinery v0.22.3
@@ -39,15 +34,20 @@ require (
 
 require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
+	github.com/go-kit/log v0.2.0 // indirect
 	github.com/gobuffalo/flect v0.2.3 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/onsi/gomega v1.15.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
+	github.com/prometheus/client_golang v1.11.0 // indirect
+	github.com/prometheus/common v0.30.0 // indirect
+	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
-	github.com/aws/aws-sdk-go v1.40.45 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.2 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -77,8 +77,6 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/jpillora/backoff v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
