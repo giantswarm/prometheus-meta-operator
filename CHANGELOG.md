@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Migrate to rbac/v1 from rbac/v1beta1.
+- Change additional scraping config to keep cadvisor metrics for `kong.*` named namespaces
 
 ### Fixed
 
