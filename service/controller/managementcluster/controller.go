@@ -36,6 +36,7 @@ type ControllerConfig struct {
 	IngressAPIVersion       string
 
 	AlertmanagerAddress     string
+	AlertmanagerBaseDomain  string
 	AlertmanagerCreatePVC   bool
 	AlertmanagerLogLevel    string
 	AlertmanagerStorageSize string

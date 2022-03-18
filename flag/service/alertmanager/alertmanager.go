@@ -1,10 +1,11 @@
 package alertmanager
 
 type Alertmanager struct {
-	Address  string
-	LogLevel string
-	Storage  AlertmanagerStorage
-	Version  string
+	Address    string
+	BaseDomain string
+	LogLevel   string
+	Storage    AlertmanagerStorage
+	Version    string
 }
 
 type AlertmanagerStorage struct {

@@ -238,15 +238,15 @@ func New(config Config) (*Service, error) {
 			IngressAPIVersion:       config.Viper.GetString(config.Flag.Service.Installation.IngressAPIVersion),
 
 			AlertmanagerAddress:     config.Viper.GetString(config.Flag.Service.Alertmanager.Address),
+			AlertmanagerBaseDomain:  config.Viper.GetString(config.Flag.Service.Alertmanager.BaseDomain),
 			AlertmanagerCreatePVC:   config.Viper.GetBool(config.Flag.Service.Alertmanager.Storage.CreatePVC),
 			AlertmanagerLogLevel:    config.Viper.GetString(config.Flag.Service.Alertmanager.LogLevel),
 			AlertmanagerStorageSize: config.Viper.GetString(config.Flag.Service.Alertmanager.Storage.Size),
 			AlertmanagerVersion:     config.Viper.GetString(config.Flag.Service.Alertmanager.Version),
 			GrafanaAddress:          config.Viper.GetString(config.Flag.Service.Grafana.Address),
+			OpsgenieKey:             config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 			SlackApiURL:             config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
 			SlackProjectName:        config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
-
-			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
 			PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
