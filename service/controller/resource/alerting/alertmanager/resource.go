@@ -58,15 +58,10 @@ func New(config Config) (*generic.Resource, error) {
 }
 
 func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
-	cluster, err := key.ToCluster(v)
-	if err != nil {
-		return metav1.ObjectMeta{}, microerror.Mask(err)
-	}
-
 	return metav1.ObjectMeta{
 		Name:      "alertmanager",
 		Namespace: key.NamespaceMonitoring(),
-		Labels:    key.AlertmanagerLabels(cluster),
+		Labels:    key.AlertmanagerLabels(),
 	}, nil
 }
 
@@ -80,13 +75,8 @@ func toAlertmanager(v interface{}, config Config) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	cluster, err := key.ToCluster(v)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	labels := make(map[string]string)
-	for k, v := range key.AlertmanagerLabels(cluster) {
+	for k, v := range key.AlertmanagerLabels() {
 		labels[k] = v
 	}
 

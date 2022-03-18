@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add alertmanager ingress oauth endpoint
+- Add alertmanager ingress oauth endpoint.
+- Add resources for alertmanager ingress.
 
 ### Removed
 
