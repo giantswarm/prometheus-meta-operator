@@ -14,7 +14,7 @@ metadata:
   namespace: kubernetes-prometheus
 spec:
   rules:
-  - host: https://prometheus
+  - host: https://alertmanager
     http:
       paths:
       - backend:
