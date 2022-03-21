@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add alertmanager ingress oauth endpoint
 
+### Fixed
+
+- Fix notification templates.
+
 ### Removed
 
 - Remove old teams from alertmanager template.
