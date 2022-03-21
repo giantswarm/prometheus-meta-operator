@@ -20,7 +20,9 @@ const (
 var (
 	alertmanagerConfig = `- static_configs:
   - targets:
-    - alertmanager-operated.monitoring:9093
+    - alertmanager.monitoring:9093
+  - targets:
+    - alertmanager-operated.monitoring:9093	
   scheme: http
   timeout: 10s
   api_version: v2

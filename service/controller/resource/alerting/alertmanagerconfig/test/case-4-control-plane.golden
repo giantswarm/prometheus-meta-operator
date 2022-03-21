@@ -21,55 +21,55 @@ route:
 
     # Team Ops Opsgenie
   - receiver: opsgenie_router
-    match:
-      severity: page
+    matchers:
+    - severity="page"
     continue: true
 
   # Service Level slack -- chooses the slack channel based on the provider
   - receiver: team_phoenix_slack
-    match:
-      alertname: ServiceLevelBurnRateTooHigh
+    matchers:
+    - alertname="ServiceLevelBurnRateTooHigh"
     continue: false
 
   # Team Atlas Slack (team)
   - receiver: team_atlas_slack
-    match_re:
-      severity: page
-      team: atlas
+    matchers:
+    - severity="page"
+    - team="atlas"
     continue: false
 
   # Team Celestial Slack (team)
   - receiver: team_phoenix_slack
-    match_re:
-      severity: page|notify
-      team: celestial
+    matchers:
+    - severity=~"page|notify"
+    - team="celestial"
     continue: false
 
   # Team Firecracker Slack (team)
   - receiver: team_phoenix_slack
-    match_re:
-      severity: page|notify
-      team: firecracker
+    matchers:
+    - severity=~"page|notify"
+    - team="firecracker"
     continue: false
 
   # Team Phoenix Slack (team)
   - receiver: team_phoenix_slack
-    match_re:
-      severity: page|notify
-      team: phoenix
+    matchers:
+    - severity=~"page|notify"
+    - team="phoenix"
     continue: false
 
   # Team Rocket Slack (team)
   - receiver: team_rocket_slack
-    match_re:
-      severity: page|notify
-      team: rocket
+    matchers:
+    - severity=~"page|notify"
+    - team="rocket"
     continue: false
 
   # Team Ops Slack
   - receiver: team_ops_slack
-    match_re:
-      severity: page|notify
+    matchers:
+    - severity=~"page|notify"
     continue: true
 
 receivers:
@@ -78,6 +78,25 @@ receivers:
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
+    send_resolved: true
+    actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" .}}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 - name: team_atlas_slack
   slack_configs:
@@ -86,21 +105,21 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{`{{ (index .Alerts 0).Annotations.opsrecipe }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}`}}'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
-      url: '{{`{{ template "__alert_linked_postmortems" . }}`}}'
+      url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{`{{ (index .Alerts 0).GeneratorURL }}`}}'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{`{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
-      url: '{{`{{ template "__alert_silence_link" . }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}`}}'
+      url: '{{ template "__alert_silence_link" .}}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 - name: team_phoenix_slack
   slack_configs:
@@ -109,21 +128,21 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{`{{ (index .Alerts 0).Annotations.opsrecipe }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}`}}'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
-      url: '{{`{{ template "__alert_linked_postmortems" . }}`}}'
+      url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{`{{ (index .Alerts 0).GeneratorURL }}`}}'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{`{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
-      url: '{{`{{ template "__alert_silence_link" . }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}`}}'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 - name: team_rocket_slack
   slack_configs:
@@ -132,26 +151,26 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{`{{ (index .Alerts 0).Annotations.opsrecipe }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}`}}'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
-      url: '{{`{{ template "__alert_linked_postmortems" . }}`}}'
+      url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{`{{ (index .Alerts 0).GeneratorURL }}`}}'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{`{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
-      url: '{{`{{ template "__alert_silence_link" . }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}`}}'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 - name: opsgenie_router
   opsgenie_configs:
   - api_key: opsgenie-key
-    tags: "{{$labels.alertname }},{{$labels.cluster_type }},{{$labels.severity }},{{$labels.team }},{{$labels.area }},aws,test-installation,testing"
+    tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},aws,test-installation,testing"
 
 - name: team_ops_slack
   slack_configs:
@@ -160,137 +179,137 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{`{{ (index .Alerts 0).Annotations.opsrecipe }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}`}}'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
-      url: '{{`{{ template "__alert_linked_postmortems" . }}`}}'
+      url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{`{{ (index .Alerts 0).GeneratorURL }}`}}'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{`{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
-      url: '{{`{{ template "__alert_silence_link" . }}`}}'
-      style: '{{`{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}`}}'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 inhibit_rules:
-- source_match:
-    kube_state_metrics_down: true
-  target_match:
-    cancel_if_kube_state_metrics_down: true
+- source_matchers:
+  - kube_state_metrics_down=true
+  target_matchers:
+  - cancel_if_kube_state_metrics_down=true
   equal: [cluster_id]
-- source_match:
-    kube_state_metrics_down: true
-    cluster_id: 'test-installation'
-  target_match:
-    cancel_if_mc_kube_state_metrics_down: true
-- source_match:
-    kube_state_metrics_down: true
-  target_match:
-    cancel_if_any_kube_state_metrics_down: true
-- source_match:
-    cluster_status_creating: true
-  target_match:
-    cancel_if_cluster_status_creating: true
+- source_matchers:
+  - kube_state_metrics_down=true
+  - cluster_id='test-installation'
+  target_matchers:
+  - cancel_if_mc_kube_state_metrics_down=true
+- source_matchers:
+  - kube_state_metrics_down=true
+  target_matchers:
+  - cancel_if_any_kube_state_metrics_down=true
+- source_matchers:
+  - cluster_status_creating=true
+  target_matchers:
+  - cancel_if_cluster_status_creating=true
   equal: [cluster_id]
-- source_match:
-    cluster_status_created: true
-  target_match:
-    cancel_if_cluster_status_created: true
+- source_matchers:
+  - cluster_status_created=true
+  target_matchers:
+  - cancel_if_cluster_status_created=true
   equal: [cluster_id]
-- source_match:
-    cluster_status_updating: true
-  target_match:
-    cancel_if_cluster_status_updating: true
+- source_matchers:
+  - cluster_status_updating=true
+  target_matchers:
+  - cancel_if_cluster_status_updating=true
   equal: [cluster_id]
-- source_match:
-    cluster_status_updated: true
-  target_match:
-    cancel_if_cluster_status_updated: true
+- source_matchers:
+  - cluster_status_updated=true
+  target_matchers:
+  - cancel_if_cluster_status_updated=true
   equal: [cluster_id]
-- source_match:
-    cluster_status_deleting: true
-  target_match:
-    cancel_if_cluster_status_deleting: true
+- source_matchers:
+  - cluster_status_deleting=true
+  target_matchers:
+  - cancel_if_cluster_status_deleting=true
   equal: [cluster_id]
-- source_match:
-    cluster_with_no_nodepools: true
-  target_match:
-    cancel_if_cluster_with_no_nodepools: true
+- source_matchers:
+  - cluster_with_no_nodepools=true
+  target_matchers:
+  - cancel_if_cluster_with_no_nodepools=true
   equal: [cluster_id]
-- source_match:
-    cluster_with_scaling_nodepools: true
-  target_match:
-    cancel_if_cluster_with_scaling_nodepools: true
+- source_matchers:
+  - cluster_with_scaling_nodepools=true
+  target_matchers:
+  - cancel_if_cluster_with_scaling_nodepools=true
   equal: [cluster_id]
-- source_match:
-    cluster_with_notready_nodepools: true
-  target_match:
-    cancel_if_cluster_with_notready_nodepools: true
+- source_matchers:
+  - cluster_with_notready_nodepools=true
+  target_matchers:
+  - cancel_if_cluster_with_notready_nodepools=true
   equal: [cluster_id]
-- source_match:
-    instance_state_not_running: true
-  target_match:
-    cancel_if_instance_state_not_running: true
+- source_matchers:
+  - instance_state_not_running=true
+  target_matchers:
+  - cancel_if_instance_state_not_running=true
   equal: [node]
-- source_match:
-    kiam_has_errors: true
-  target_match:
-    cancel_if_kiam_has_errors: true
+- source_matchers:
+  - kiam_has_errors=true
+  target_matchers:
+  - cancel_if_kiam_has_errors=true
   equal: [cluster_id]
-- source_match:
-    kubelet_down: true
-  target_match:
-    cancel_if_kubelet_down: true
+- source_matchers:
+  - kubelet_down=true
+  target_matchers:
+  - cancel_if_kubelet_down=true
   equal: [cluster_id, ip]
-- source_match:
-    kubelet_down: true
-  target_match:
-    cancel_if_any_kubelet_down: true
+- source_matchers:
+  - kubelet_down=true
+  target_matchers:
+  - cancel_if_any_kubelet_down=true
   equal: [cluster_id]
-- source_match:
-    kubelet_not_ready: true
-  target_match:
-    cancel_if_kubelet_not_ready: true
+- source_matchers:
+  - kubelet_not_ready=true
+  target_matchers:
+  - cancel_if_kubelet_not_ready=true
   equal: [cluster_id, ip]
-- source_match:
-    kubelet_not_ready: true
-  target_match:
-    cancel_if_any_kubelet_not_ready: true
+- source_matchers:
+  - kubelet_not_ready=true
+  target_matchers:
+  - cancel_if_any_kubelet_not_ready=true
   equal: [cluster_id]
-- source_match:
-    nodes_down: true
-  target_match:
-    cancel_if_nodes_down: true
+- source_matchers:
+  - nodes_down=true
+  target_matchers:
+  - cancel_if_nodes_down=true
   equal: [cluster_id]
-- source_match:
-    scrape_timeout: true
-  target_match:
-    cancel_if_scrape_timeout: true
+- source_matchers:
+  - scrape_timeout=true
+  target_matchers:
+  - cancel_if_scrape_timeout=true
   equal: [cluster_id, instance]
-- source_match:
-    master_node_down: true
-  target_match:
-    cancel_if_master_node_down: true
+- source_matchers:
+  - master_node_down=true
+  target_matchers:
+  - cancel_if_master_node_down=true
   equal: [cluster_id]
-- source_match:
-    apiserver_down: true
-  target_match:
-    cancel_if_apiserver_down: true
+- source_matchers:
+  - apiserver_down=true
+  target_matchers:
+  - cancel_if_apiserver_down=true
   equal: [cluster_id]
-- source_match:
-    apiserver_down: true
-  target_match:
-    cancel_if_any_apiserver_down: true
-- source_match:
-    outside_working_hours: true
-  target_match:
-    cancel_if_outside_working_hours: true
-- source_match:
-    has_worker_nodes: false
-  target_match:
-    cancel_if_cluster_has_no_workers: true
+- source_matchers:
+  - apiserver_down=true
+  target_matchers:
+  - cancel_if_any_apiserver_down=true
+- source_matchers:
+  - outside_working_hours=true
+  target_matchers:
+  - cancel_if_outside_working_hours=true
+- source_matchers:
+  - has_worker_nodes=false
+  target_matchers:
+  - cancel_if_cluster_has_no_workers=true
   equal: [cluster_id]
