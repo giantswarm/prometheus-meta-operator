@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: alertmanager
+  name: alertmanager
+  namespace: baz-prometheus
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: https://alertmanager
+    http:
+      paths:
+      - backend:
+          service:
+            name: alertmanager-operated
+            port:
+              number: 9093
+        path: /
+        pathType: ImplementationSpecific
+status:
+  loadBalancer: {}

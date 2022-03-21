@@ -210,10 +210,6 @@ func IsInCluster(obj interface{}) bool {
 	}
 }
 
-func IngressClassName() string {
-	return "nginx"
-}
-
 func ClusterType(obj interface{}) string {
 	if IsInCluster(obj) {
 		return "management_cluster"
