@@ -6,7 +6,7 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"k8s.io/api/rbac/v1beta1"
+	v1 "k8s.io/api/rbac/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -39,7 +39,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toClusterRole(v interface{}) (*v1beta1.ClusterRole, error) {
+func toClusterRole(v interface{}) (*v1.ClusterRole, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -47,11 +47,11 @@ func toClusterRole(v interface{}) (*v1beta1.ClusterRole, error) {
 
 	name := cluster.GetName()
 
-	clusterRole := &v1beta1.ClusterRole{
+	clusterRole := &v1.ClusterRole{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 		},
-		Rules: []v1beta1.PolicyRule{
+		Rules: []v1.PolicyRule{
 			{
 				APIGroups: []string{
 					"",
@@ -96,7 +96,7 @@ func toClusterRole(v interface{}) (*v1beta1.ClusterRole, error) {
 	return clusterRole, nil
 }
 
-func toClusterRoleBinding(v interface{}) (*v1beta1.ClusterRoleBinding, error) {
+func toClusterRoleBinding(v interface{}) (*v1.ClusterRoleBinding, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -104,16 +104,16 @@ func toClusterRoleBinding(v interface{}) (*v1beta1.ClusterRoleBinding, error) {
 
 	name := cluster.GetName()
 
-	clusterRoleBinding := &v1beta1.ClusterRoleBinding{
+	clusterRoleBinding := &v1.ClusterRoleBinding{
 		ObjectMeta: metav1.ObjectMeta{
 			Name: name,
 		},
-		RoleRef: v1beta1.RoleRef{
-			APIGroup: v1beta1.SchemeGroupVersion.Group,
+		RoleRef: v1.RoleRef{
+			APIGroup: v1.SchemeGroupVersion.Group,
 			Kind:     "ClusterRole",
 			Name:     name,
 		},
-		Subjects: []v1beta1.Subject{
+		Subjects: []v1.Subject{
 			{
 				Kind:      "ServiceAccount",
 				Name:      "default",
@@ -125,10 +125,10 @@ func toClusterRoleBinding(v interface{}) (*v1beta1.ClusterRoleBinding, error) {
 	return clusterRoleBinding, nil
 }
 
-func hasClusterRoleChanged(current, desired *v1beta1.ClusterRole) bool {
+func hasClusterRoleChanged(current, desired *v1.ClusterRole) bool {
 	return !reflect.DeepEqual(current.Rules, desired.Rules)
 }
 
-func hasClusterRoleBindingChanged(current, desired *v1beta1.ClusterRoleBinding) bool {
+func hasClusterRoleBindingChanged(current, desired *v1.ClusterRoleBinding) bool {
 	return !reflect.DeepEqual(current.RoleRef, desired.RoleRef) || !reflect.DeepEqual(current.Subjects, desired.Subjects)
 }

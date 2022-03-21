@@ -1,4 +1,2 @@
-# Automatically request reviews from team Atlas on **release PRs**.
-# This uses the fact that release PRs always modify this file but almost no
-# other PR does.
-pkg/project/project.go  @giantswarm/team-atlas
+# Automatically request reviews from team Atlas on every PR.
+* @giantswarm/team-atlas

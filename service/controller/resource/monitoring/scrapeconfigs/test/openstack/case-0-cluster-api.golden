@@ -1,10 +1,10 @@
-- job_name: alice-prometheus/kubernetes-apiserver-alice/0
+- job_name: bob-prometheus/kubernetes-apiserver-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -20,7 +20,7 @@
     regex: apiserver
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     regex: https
     action: keep
@@ -28,13 +28,13 @@
     replacement: kubernetes
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -42,70 +42,16 @@
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
 
-
-- job_name: alice-prometheus/cluster-autoscaler-alice/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - kube-system
-
-    api_server: https://master.alice:443
-    tls_config:
-      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: false
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: cluster-autoscaler
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoint_port_name]
-    regex: metrics
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_ip]
-    target_label: instance
-    replacement: ${1}:8085
-  - target_label: __address__
-    replacement: master.alice:443
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: alice
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
 
 
 # Add scrape configuration for docker
-- job_name: alice-prometheus/docker-alice/0
+- job_name: bob-prometheus/docker-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -118,7 +64,7 @@
     insecure_skip_verify: false
   relabel_configs:
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:9323/proxy/metrics
@@ -129,13 +75,13 @@
     target_label: instance
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -148,13 +94,13 @@
     action: keep
 
 # Add scrape configuration for cadvisor
-- job_name: alice-prometheus/cadvisor-alice/0
+- job_name: bob-prometheus/cadvisor-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -169,7 +115,7 @@
   - source_labels: [__address__]
     target_label: instance
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
@@ -180,13 +126,13 @@
     target_label: node
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -195,16 +141,15 @@
     target_label: role
   metric_relabel_configs:
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|kong.*)
+    regex: (kube-system|giantswarm.*)
     action: keep
-# calico-node
-- job_name: alice-prometheus/calico-node-alice/0
+- job_name: bob-prometheus/calico-node-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: pod
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -220,7 +165,7 @@
     replacement: ${1}:9091
     target_label: instance
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (calico-node.*)
     target_label: __metrics_path__
@@ -247,25 +192,25 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-# aws-node
+
 # Add etcd configuration
-- job_name: alice-prometheus/etcd-alice/0
+- job_name: bob-prometheus/etcd-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -295,13 +240,13 @@
     source_labels: [__meta_kubernetes_node_address_InternalIP]
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -309,13 +254,13 @@
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
 # Add kubelet configuration
-- job_name: alice-prometheus/kubelet-alice/0
+- job_name: bob-prometheus/kubelet-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: node
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -332,19 +277,19 @@
   - source_labels: [__address__]
     target_label: instance
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -352,7 +297,7 @@
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
 # kube-controller-manager
-- job_name: alice-prometheus/kubernetes-controller-manager-alice/0
+- job_name: bob-prometheus/kubernetes-controller-manager-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -361,7 +306,7 @@
       names:
       - kube-system
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -380,7 +325,7 @@
     regex: (k8s-controller-manager|kube-controller-manager)
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
@@ -403,18 +348,18 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
 # kube-scheduler
-- job_name: alice-prometheus/kubernetes-scheduler-alice/0
+- job_name: bob-prometheus/kubernetes-scheduler-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -423,7 +368,7 @@
       names:
       - kube-system
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -442,7 +387,7 @@
     regex: (k8s-scheduler|kube-scheduler)
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
@@ -465,18 +410,18 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
 # kube-proxy
-- job_name: alice-prometheus/kube-proxy-alice/0
+- job_name: bob-prometheus/kube-proxy-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -485,7 +430,7 @@
       names:
       - kube-system
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -504,7 +449,7 @@
     regex: (kube-proxy.*)
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-proxy.*)
     target_label: __metrics_path__
@@ -528,18 +473,18 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
 # coredns
-- job_name: alice-prometheus/coredns-alice/0
+- job_name: bob-prometheus/coredns-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -548,7 +493,7 @@
       names:
       - kube-system
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -566,7 +511,7 @@
     regex: coredns
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (coredns.*)
     target_label: __metrics_path__
@@ -593,18 +538,18 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
 # chart-operator
-- job_name: alice-prometheus/chart-operator-alice/0
+- job_name: bob-prometheus/chart-operator-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -613,7 +558,7 @@
       names:
       - giantswarm
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -633,7 +578,7 @@
     action: keep
 
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (chart-operator.*)
     target_label: __metrics_path__
@@ -660,18 +605,18 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
 # net-exporter
-- job_name: alice-prometheus/net-exporter-alice/0
+- job_name: bob-prometheus/net-exporter-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -682,7 +627,7 @@
       - kube-system
 
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -700,7 +645,7 @@
     regex: net-exporter
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (net-exporter.*)
     target_label: __metrics_path__
@@ -729,18 +674,18 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
 # cert-exporter
-- job_name: alice-prometheus/cert-exporter-alice/0
+- job_name: bob-prometheus/cert-exporter-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -751,7 +696,7 @@
       - kube-system
 
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -769,7 +714,7 @@
     regex: cert-exporter
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (cert-exporter.*)
     target_label: __metrics_path__
@@ -798,24 +743,29 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
 # node-exporter
-- job_name: alice-prometheus/node-exporter-alice/0
+- job_name: bob-prometheus/node-exporter-bob/0
   honor_labels: true
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
-  - role: pod
+  - role: endpoints
+    namespaces:
+      names:
 
-    api_server: https://master.alice:443
+      - kube-system
+
+
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -827,31 +777,53 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
-  - target_label: __address__
-    replacement: master.alice:443
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (node-exporter.*)
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10300/proxy/metrics
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
-    regex: kube-system;node-exporter.*
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: node-exporter
     action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -862,7 +834,7 @@
     action: replace
     replacement: $1
 # kube-state-metrics
-- job_name: alice-prometheus/kube-state-metrics-alice/0
+- job_name: bob-prometheus/kube-state-metrics-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -873,7 +845,7 @@
       - kube-system
 
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -891,7 +863,7 @@
     regex: kube-state-metrics
     action: keep
   - target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (kube-state-metrics.*)
     target_label: __metrics_path__
@@ -920,13 +892,13 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -957,13 +929,13 @@
     target_label: workload_name
     replacement: ${1}
 
-- job_name: alice-prometheus/workload-alice/0
+- job_name: bob-prometheus/workload-bob/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
 
-    api_server: https://master.alice:443
+    api_server: https://master.bob:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -989,24 +961,18 @@
     target_label: __address__
     regex: ([^:]+):(\d+);(\d+)
     replacement: $1:$3
-    # if the protocol is empty, we set it to http by default, this allows to override the protocol for services using https like prometheus operator
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_protocol]
-    action: replace
-    target_label: __meta_kubernetes_service_annotation_giantswarm_io_monitoring_protocol
-    regex: (.*);
-    replacement: "http"
   - source_labels: [__meta_kubernetes_pod_ip, __address__]
     regex: (.*);([^:]+):(\d+)
     replacement: $1:$3
     target_label: instance
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_service_annotation_giantswarm_io_monitoring_protocol, __meta_kubernetes_pod_name, __address__, __metrics_path__]
-    regex: (.*);(.*);(.*);(.+:)(\d+);(.*)
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name, __address__, __metrics_path__]
+    regex: (.*);(.*);(.+:)(\d+);(.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/${1}/pods/${2}:${3}:${5}/proxy${6}
+    replacement: /api/v1/namespaces/${1}/pods/${2}:${4}/proxy${5}
     action: replace
   - regex: (.*)
     target_label: __address__
-    replacement: master.alice:443
+    replacement: master.bob:443
     action: replace
   - source_labels: [__meta_kubernetes_service_name]
     regex: (.*)
@@ -1033,13 +999,13 @@
     target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -1086,10 +1052,10 @@
     action: replace
 
 # prometheus
-- job_name: alice-prometheus/prometheus-alice/0
+- job_name: bob-prometheus/prometheus-bob/0
   honor_labels: true
   scheme: http
-  metrics_path: /alice/metrics
+  metrics_path: /bob/metrics
   static_configs:
     - targets: ['localhost:9090']
   relabel_configs:
@@ -1097,13 +1063,13 @@
     target_label: app
   # Add cluster_id label.
   - target_label: cluster_id
-    replacement: alice
+    replacement: bob
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation

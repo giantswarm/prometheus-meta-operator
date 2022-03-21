@@ -7,9 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add alertmanager ingress oauth endpoint
+
 ### Fixed
 
 - Fix ingress api version v1beta1 in configmap
+
+### Removed
+
+- Remove old teams from alertmanager template.
+
+## [2.4.0] - 2022-03-16
+
+### Changed
+
+- Migrate to rbac/v1 from rbac/v1beta1.
+- Change additional scraping config to keep cadvisor metrics for `kong.*` named namespaces
+
+### Fixed
+
+- Do not trail right whitespaces in config.
 
 ## [2.3.0] - 2022-03-04
 
@@ -1358,7 +1377,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.3.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.4.0...HEAD
+[2.4.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.2.1...v2.3.0
 [2.2.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.2.0...v2.2.1
 [2.2.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.1.1...v2.2.0

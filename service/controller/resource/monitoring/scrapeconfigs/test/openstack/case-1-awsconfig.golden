@@ -34,7 +34,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -42,60 +42,6 @@
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
 
-
-- job_name: alice-prometheus/cluster-autoscaler-alice/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - kube-system
-
-    api_server: https://master.alice:443
-    tls_config:
-      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: false
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: cluster-autoscaler
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoint_port_name]
-    regex: metrics
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_ip]
-    target_label: instance
-    replacement: ${1}:8085
-  - target_label: __address__
-    replacement: master.alice:443
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: alice
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
 
 
 # Add scrape configuration for docker
@@ -135,7 +81,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -186,7 +132,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -253,7 +199,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -301,7 +247,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -344,7 +290,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -409,7 +355,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -471,7 +417,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -534,7 +480,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -599,7 +545,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -666,7 +612,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -735,7 +681,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -804,7 +750,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -851,7 +797,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -926,7 +872,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -1039,7 +985,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -1103,7 +1049,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: azure
+    replacement: openstack
   # Add installation label.
   - target_label: installation
     replacement: test-installation
