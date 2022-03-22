@@ -1,4 +1,4 @@
-package alertmanagerconfig
+package alertmanagerwiring
 
 import (
 	"github.com/giantswarm/microerror"

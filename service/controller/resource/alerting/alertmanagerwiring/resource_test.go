@@ -1,4 +1,4 @@
-package alertmanagerconfig
+package alertmanagerwiring
 
 import (
 	"flag"
@@ -20,7 +20,7 @@ func TestAlertmanagerconfig(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toData(v)
+			return toData(v), nil
 		},
 		TestFuncReturnsBytes: true,
 		Update:               *update,

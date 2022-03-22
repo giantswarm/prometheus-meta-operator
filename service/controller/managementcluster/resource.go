@@ -11,8 +11,8 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfigsecret"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
@@ -161,14 +161,14 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerConfigResource resource.Interface
+	var alertmanagerWiringResource resource.Interface
 	{
-		c := alertmanagerconfig.Config{
+		c := alertmanagerwiring.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 		}
 
-		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
+		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -347,7 +347,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		rbacResource,
 		alertmanagerResource,
 		alertmanagerConfigSecretResource,
-		alertmanagerConfigResource,
+		alertmanagerWiringResource,
 		//alertmanagerIngressResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,

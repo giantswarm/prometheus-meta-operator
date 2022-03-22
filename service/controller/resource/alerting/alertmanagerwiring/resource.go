@@ -1,4 +1,4 @@
-package alertmanagerconfig
+package alertmanagerwiring
 
 import (
 	"reflect"
@@ -14,17 +14,19 @@ import (
 )
 
 const (
-	Name = "alertmanagerconfig"
+	Name = "alertmanagerwiring"
 )
 
 var (
-	alertmanagerConfig = []byte(`- static_configs:
+	alertmanagerConfig = `- static_configs:
   - targets:
     - alertmanager.monitoring:9093
+  - targets:
+    - alertmanager-operated.monitoring:9093	
   scheme: http
   timeout: 10s
   api_version: v2
-`)
+`
 )
 
 type Config struct {
@@ -39,7 +41,6 @@ func New(config Config) (*generic.Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
 		return wrappedClient{client: c}
@@ -73,8 +74,8 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toData(v interface{}) ([]byte, error) {
-	return alertmanagerConfig, nil
+func toData(v interface{}) []byte {
+	return []byte(alertmanagerConfig)
 }
 
 func toSecret(v interface{}) (metav1.Object, error) {
@@ -83,15 +84,10 @@ func toSecret(v interface{}) (metav1.Object, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	data, err := toData(v)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			key.AlertManagerKey(): data,
+			key.AlertManagerKey(): toData(v),
 		},
 	}
 
