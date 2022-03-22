@@ -278,3 +278,7 @@ func IsCAPICluster(obj metav1.Object) bool {
 func IngressClassName() string {
 	return "nginx"
 }
+
+func OpsgenieKey() string {
+	return "opsgenie.key"
+}
