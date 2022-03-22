@@ -15,11 +15,7 @@ import (
 )
 
 const (
-	Name = "ingress"
-)
-
-var (
-	ingressClassName = "nginx"
+	Name = "monitoringingress"
 )
 
 type Config struct {
@@ -110,6 +106,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 	// Let's Encrypt annotation or the static source for the installation)
 	// so we know as soon as it's updated IC will be using it.
 	pathType := networkingv1.PathTypeImplementationSpecific
+	ingressClassName := key.IngressClassName()
 	ingress := &networkingv1.Ingress{
 		TypeMeta: metav1.TypeMeta{
 			APIVersion: networkingv1.SchemeGroupVersion.Version,

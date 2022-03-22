@@ -1,7 +1,6 @@
 package v1beta1
 
 import (
-	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -16,7 +15,7 @@ import (
 )
 
 const (
-	Name = "monitoringingress"
+	Name = "alertingingress"
 )
 
 type Config struct {
@@ -70,9 +69,9 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:        fmt.Sprintf("prometheus-%s", key.ClusterID(cluster)),
+		Name:        "alertmanager",
 		Namespace:   key.Namespace(cluster),
-		Labels:      key.PrometheusLabels(cluster),
+		Labels:      key.AlertmanagerLabels(),
 		Annotations: annotations,
 	}, nil
 }
@@ -83,11 +82,6 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	objectMeta, err := getObjectMeta(v, config)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -121,10 +115,10 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 						HTTP: &networkingv1beta1.HTTPIngressRuleValue{
 							Paths: []networkingv1beta1.HTTPIngressPath{
 								{
-									Path: fmt.Sprintf("/%s", key.ClusterID(cluster)),
+									Path: "/",
 									Backend: networkingv1beta1.IngressBackend{
-										ServiceName: "prometheus-operated",
-										ServicePort: intstr.FromInt(int(key.PrometheusPort())),
+										ServiceName: "alertmanager-operated",
+										ServicePort: intstr.FromInt(int(key.AlertmanagerPort())),
 									},
 								},
 							},

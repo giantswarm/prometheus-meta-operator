@@ -88,7 +88,7 @@ func EtcdSecret(obj interface{}) string {
 	return Secret()
 }
 
-func AlertmanagerLabels(cluster metav1.Object) map[string]string {
+func AlertmanagerLabels() map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "alertmanager",
 		"app.kubernetes.io/managed-by": project.Name(),
@@ -273,4 +273,8 @@ func IsCAPICluster(obj metav1.Object) bool {
 	default:
 		return false
 	}
+}
+
+func IngressClassName() string {
+	return "nginx"
 }
