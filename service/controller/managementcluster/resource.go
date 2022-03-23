@@ -12,7 +12,6 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -179,19 +178,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var alertmanagerWiringResource resource.Interface
-	{
-		c := alertmanagerwiring.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var remoteWriteConfigResource resource.Interface
 	{
 		c := remotewriteconfig.Config{
@@ -336,7 +322,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		rbacResource,
 		alertmanagerResource,
 		alertmanagerConfigResource,
-		alertmanagerWiringResource,
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,

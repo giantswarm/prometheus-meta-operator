@@ -8,9 +8,6 @@ metadata:
   name: bar
   namespace: bar-prometheus
 spec:
-  additionalAlertManagerConfigs:
-    key: alertmanager-additional.yaml
-    name: new-alertmanager-config
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs
@@ -23,6 +20,18 @@ spec:
             operator: NotIn
             values:
             - master
+  alerting:
+    alertmanagers:
+    - apiVersion: v2
+      name: alertmanager
+      namespace: monitoring
+      port: 9093
+      scheme: http
+    - apiVersion: v2
+      name: alertmanager-operated
+      namespace: monitoring
+      port: 9093
+      scheme: http
   apiserverConfig:
     host: https://master.bar:443
     tlsConfig:

@@ -13,6 +13,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/intstr"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -164,6 +165,24 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				"provider":            config.Provider,
 				"region":              config.Region,
 			},
+			Alerting: &promv1.AlertingSpec{
+				Alertmanagers: []promv1.AlertmanagerEndpoints{
+					{
+						Name:       "alertmanager",
+						Namespace:  key.NamespaceMonitoring(),
+						Port:       intstr.FromInt(9093),
+						Scheme:     "http",
+						APIVersion: "v2",
+					},
+					{
+						Name:       "alertmanager-operated",
+						Namespace:  key.NamespaceMonitoring(),
+						Port:       intstr.FromInt(9093),
+						Scheme:     "http",
+						APIVersion: "v2",
+					},
+				},
+			},
 			ExternalURL: externalURL.String(),
 			RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
@@ -197,12 +216,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 					Name: key.PrometheusAdditionalScrapeConfigsSecretName(),
 				},
 				Key: key.PrometheusAdditionalScrapeConfigsName(),
-			},
-			AdditionalAlertManagerConfigs: &corev1.SecretKeySelector{
-				LocalObjectReference: corev1.LocalObjectReference{
-					Name: key.AlertManagerSecretName(),
-				},
-				Key: key.AlertManagerKey(),
 			},
 			SecurityContext: &corev1.PodSecurityContext{
 				RunAsUser:    &uid,
