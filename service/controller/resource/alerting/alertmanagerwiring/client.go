@@ -1,15 +1,15 @@
-package alertmanagerconfig
+package alertmanagerwiring
 
 import (
 	"context"
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	clientcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
+	v1 "k8s.io/client-go/kubernetes/typed/core/v1"
 )
 
 type wrappedClient struct {
-	client clientcorev1.SecretInterface
+	client v1.SecretInterface
 }
 
 func (c wrappedClient) Create(ctx context.Context, o metav1.Object, options metav1.CreateOptions) (metav1.Object, error) {
