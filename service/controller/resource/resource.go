@@ -10,6 +10,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -121,6 +122,19 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		heartbeatWebhookConfigResource, err = heartbeatwebhookconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerWiringResource resource.Interface
+	{
+		c := alertmanagerwiring.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -265,6 +279,7 @@ func New(config Config) ([]resource.Interface, error) {
 		namespaceResource,
 		apiCertificatesResource,
 		heartbeatWebhookConfigResource,
+		alertmanagerWiringResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
