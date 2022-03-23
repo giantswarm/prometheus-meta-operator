@@ -138,10 +138,6 @@ func AlertmanagerKey() string {
 	return "alertmanager.yaml"
 }
 
-func AlertmanagerPort() int32 {
-	return 9093
-}
-
 func PrometheusPort() int32 {
 	return 9090
 }
