@@ -1,7 +1,6 @@
 package heartbeatwebhookconfig
 
 import (
-	"fmt"
 	"net/url"
 	"reflect"
 	"strings"
@@ -92,7 +91,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	sendResolved := false
-	urlAddress, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", key.HeartbeatName(cluster, config.Installation)))
+	urlAddress, err := url.Parse(key.HeartbeatAPI(cluster, config.Installation))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

@@ -174,6 +174,10 @@ func HeartbeatReceiverName(cluster metav1.Object, installation string) string {
 	return fmt.Sprintf("heartbeat_%s_%s", installation, ClusterID(cluster))
 }
 
+func HeartbeatAPI(cluster metav1.Object, installation string) string {
+	return fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", HeartbeatName(cluster, installation))
+}
+
 func PrometheusAdditionalScrapeConfigsSecretName() string {
 	return "additional-scrape-configs"
 }
