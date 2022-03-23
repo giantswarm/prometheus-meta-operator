@@ -1,7 +1,6 @@
 package receiver
 
 import (
-	"fmt"
 	"net/url"
 	"reflect"
 
@@ -16,7 +15,7 @@ import (
 )
 
 func toReceiver(cfg alertmanagerconfig.Config, cluster metav1.Object, installation string, opsgenieKey string) (alertmanagerconfig.Receiver, error) {
-	u, err := url.Parse(fmt.Sprintf("https://api.opsgenie.com/v2/heartbeats/%s/ping", key.HeartbeatName(cluster, installation)))
+	u, err := url.Parse(key.HeartbeatAPI(cluster, installation))
 	if err != nil {
 		return alertmanagerconfig.Receiver{}, microerror.Mask(err)
 	}

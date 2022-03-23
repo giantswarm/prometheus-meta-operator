@@ -13,6 +13,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatwebhookconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1beta1"
@@ -103,6 +104,24 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		apiCertificatesResource, err = certificates.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var heartbeatWebhookConfigResource resource.Interface
+	{
+		c := heartbeatwebhookconfig.Config{
+			Client: config.PrometheusClient,
+			Logger: config.Logger,
+
+			Installation: config.Installation,
+			HTTPProxy:    config.HTTPProxy,
+			HTTPSProxy:   config.HTTPSProxy,
+			NoProxy:      config.NoProxy,
+		}
+
+		heartbeatWebhookConfigResource, err = heartbeatwebhookconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -259,6 +278,7 @@ func New(config Config) ([]resource.Interface, error) {
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
+		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,

@@ -111,7 +111,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		Data: map[string][]byte{
 			key.AlertmanagerKey():         alertmanagerConfig,
 			"notification-templates.tmpl": notificationTemplate,
-			"opsgenie.key":                []byte(config.OpsgenieKey),
+			key.OpsgenieKey():             []byte(config.OpsgenieKey),
 		},
 		Type: "Opaque",
 	}
