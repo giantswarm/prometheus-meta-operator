@@ -8,7 +8,6 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
@@ -24,20 +23,6 @@ func ToCluster(obj interface{}) (metav1.Object, error) {
 	clusterMetaObject, ok := obj.(metav1.Object)
 	if !ok {
 		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements 'metav1.Object'", obj)
-	}
-
-	return clusterMetaObject, nil
-}
-
-type MetaRuner interface {
-	metav1.Object
-	runtime.Object
-}
-
-func ToClusterMR(obj interface{}) (MetaRuner, error) {
-	clusterMetaObject, ok := obj.(MetaRuner)
-	if !ok {
-		return nil, microerror.Maskf(wrongTypeError, "'%T' does not implements 'MetaRuner'", obj)
 	}
 
 	return clusterMetaObject, nil
@@ -190,8 +175,9 @@ func PrometheusSTSName(cluster metav1.Object) string {
 	return fmt.Sprintf("prometheus-%s", ClusterID(cluster))
 }
 
+// TODO rename once g8s-prometheus is gone
 func AlertManagerSecretName() string {
-	return "alertmanager-config"
+	return "new-alertmanager-config"
 }
 
 func AlertManagerKey() string {

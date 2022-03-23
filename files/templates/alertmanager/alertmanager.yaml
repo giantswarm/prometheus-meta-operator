@@ -223,7 +223,7 @@ inhibit_rules:
   equal: [cluster_id]
 - source_matchers:
   - kube_state_metrics_down=true
-  - cluster_id='[[ .Installation ]]'
+  - cluster_id=[[ .Installation ]]
   target_matchers:
   - cancel_if_mc_kube_state_metrics_down=true
 - source_matchers:

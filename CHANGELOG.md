@@ -10,8 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add alertmanager ingress oauth endpoint.
-- Add resources for alertmanager ingress.
-- Wire prometheus to both alertmanagers.
+- Configure alertmanager and wire prometheus to both legacy and new alertmanagers.
 
 ### Changed
 
