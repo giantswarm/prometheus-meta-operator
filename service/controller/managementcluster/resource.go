@@ -174,35 +174,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	/*
-		var alertmanagerIngressResource resource.Interface
-		if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
-			c := alertingingressv1beta1.Config{
-				K8sClient:               config.K8sClient,
-				Logger:                  config.Logger,
-				BaseDomain:              config.AlertmanagerBaseDomain,
-				RestrictedAccessEnabled: config.RestrictedAccessEnabled,
-				WhitelistedSubnets:      config.WhitelistedSubnets,
-			}
-			alertmanagerIngressResource, err = alertingingressv1beta1.New(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-		} else {
-			c := alertingingressv1.Config{
-				K8sClient:               config.K8sClient,
-				Logger:                  config.Logger,
-				BaseDomain:              config.AlertmanagerBaseDomain,
-				RestrictedAccessEnabled: config.RestrictedAccessEnabled,
-				WhitelistedSubnets:      config.WhitelistedSubnets,
-			}
-			alertmanagerIngressResource, err = alertingingressv1.New(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-		}
-	*/
-
 	var remoteWriteConfigResource resource.Interface
 	{
 		c := remotewriteconfig.Config{
@@ -348,7 +319,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerResource,
 		alertmanagerConfigSecretResource,
 		alertmanagerConfigResource,
-		//alertmanagerIngressResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
