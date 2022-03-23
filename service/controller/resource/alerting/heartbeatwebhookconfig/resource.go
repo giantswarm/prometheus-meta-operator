@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	Name = "alertmanagerrouting"
+	Name = "heartbeatwebhookconfig"
 )
 
 type Config struct {

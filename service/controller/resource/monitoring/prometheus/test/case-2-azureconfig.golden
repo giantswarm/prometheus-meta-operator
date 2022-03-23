@@ -10,7 +10,7 @@ metadata:
 spec:
   additionalAlertManagerConfigs:
     key: alertmanager-additional.yaml
-    name: alertmanager-config
+    name: new-alertmanager-config
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs

@@ -1,4 +1,4 @@
-package alertmanagerconfigsecret
+package alertmanagerconfig
 
 import (
 	"github.com/giantswarm/microerror"

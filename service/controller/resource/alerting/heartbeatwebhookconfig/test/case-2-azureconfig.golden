@@ -14,7 +14,7 @@ spec:
         authorization:
           credentials:
             key: opsgenie.key
-            name: alertmanager-config
+            name: new-alertmanager-config
           type: GenieKey
       sendResolved: false
       url: https://api.opsgenie.com/v2/heartbeats/test-installation-foo/ping

@@ -119,10 +119,15 @@ func toAlertmanager(v interface{}, config Config) (metav1.Object, error) {
 			PodMetadata: &monitoringv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-			Version:     config.Version,
-			LogLevel:    config.LogLevel,
-			ExternalURL: address.String(),
-			Replicas:    &replicas,
+			// This field needs to be specified to select alertmanagerconfig CR
+			AlertmanagerConfigSelector: &metav1.LabelSelector{
+				MatchLabels: key.AlertmanagerLabels(),
+			},
+			ConfigSecret: key.AlertManagerSecretName(),
+			Version:      config.Version,
+			LogLevel:     config.LogLevel,
+			ExternalURL:  address.String(),
+			Replicas:     &replicas,
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
 					// cpu: 100m

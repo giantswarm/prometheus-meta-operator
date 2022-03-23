@@ -16,6 +16,12 @@ spec:
             operator: NotIn
             values:
             - master
+  alertmanagerConfigSelector:
+    matchLabels:
+      app.kubernetes.io/instance: alertmanager
+      app.kubernetes.io/managed-by: prometheus-meta-operator
+      app.kubernetes.io/name: alertmanager
+  configSecret: new-alertmanager-config
   externalUrl: http://alertmanager/cluster
   podMetadata:
     labels:
