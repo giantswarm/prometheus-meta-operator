@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Remove deprecated matcher types from alertmanager config.
+- Changed scrape_interval to 180s and scrape_timeout to 60s for azure-collector.
 
 ### Removed
 
