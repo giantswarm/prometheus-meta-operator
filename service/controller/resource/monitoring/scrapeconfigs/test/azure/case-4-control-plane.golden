@@ -2423,6 +2423,8 @@
 - job_name: kubernetes-prometheus/azure-collector-kubernetes/0
   honor_labels: true
   scheme: http
+  scrape_timeout: 60s
+  scrape_interval: 180s
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
