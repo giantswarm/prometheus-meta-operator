@@ -10,8 +10,8 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatwebhookconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/certificates"
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
@@ -246,16 +246,14 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var heartbeatRoutingResource resource.Interface
+	var alertmanagerWiringResource resource.Interface
 	{
-		c := heartbeatrouting.Config{
-			Installation: config.Installation,
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			OpsgenieKey:  config.OpsgenieKey,
+		c := alertmanagerwiring.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
 		}
 
-		heartbeatRoutingResource, err = heartbeatrouting.New(c)
+		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -267,11 +265,11 @@ func New(config Config) ([]resource.Interface, error) {
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
+		alertmanagerWiringResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
 		ingressResource,
 		heartbeatResource,
-		heartbeatRoutingResource,
 	}
 
 	{

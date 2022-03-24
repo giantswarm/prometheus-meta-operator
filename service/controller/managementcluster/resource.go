@@ -12,8 +12,8 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerconfig"
+	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeat"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatrouting"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/alerting/heartbeatwebhookconfig"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/etcd-certificates"
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
@@ -160,6 +160,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var alertmanagerWiringResource resource.Interface
+	{
+		c := alertmanagerwiring.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var heartbeatWebhookConfigResource resource.Interface
 	{
 		c := heartbeatwebhookconfig.Config{
@@ -301,21 +314,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var heartbeatRoutingResource resource.Interface
-	{
-		c := heartbeatrouting.Config{
-			Installation: config.Installation,
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
-			OpsgenieKey:  config.OpsgenieKey,
-		}
-
-		heartbeatRoutingResource, err = heartbeatrouting.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	resources := []resource.Interface{
 		namespaceResource,
 		etcdCertificatesResource,
@@ -323,13 +321,13 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerResource,
 		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
+		alertmanagerWiringResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
 		monitoringIngressResource,
 		heartbeatResource,
-		heartbeatRoutingResource,
 	}
 
 	{

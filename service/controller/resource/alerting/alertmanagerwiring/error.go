@@ -1,4 +1,4 @@
-package heartbeatrouting
+package alertmanagerwiring
 
 import (
 	"github.com/giantswarm/microerror"
