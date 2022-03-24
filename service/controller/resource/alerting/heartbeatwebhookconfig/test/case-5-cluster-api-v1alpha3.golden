@@ -8,7 +8,7 @@ metadata:
   namespace: monitoring
 spec:
   receivers:
-  - name: heartbeat_test-installation_baz
+  - name: heartbeat
     webhookConfigs:
     - httpConfig:
         authorization:
@@ -28,5 +28,5 @@ spec:
       value: test-installation
     - name: type
       value: heartbeat
-    receiver: heartbeat_test-installation_baz
+    receiver: heartbeat
     repeatInterval: 1m

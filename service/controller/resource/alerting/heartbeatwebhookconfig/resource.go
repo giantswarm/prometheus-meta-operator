@@ -106,8 +106,9 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 		}
 	}
 
+	// We define the receiver name as heartbeat as prometheus operator will add the monitoring-clusterId as a prefix
 	receiver := monitoringv1alpha1.Receiver{
-		Name: key.HeartbeatReceiverName(cluster, config.Installation),
+		Name: "heartbeat",
 		WebhookConfigs: []monitoringv1alpha1.WebhookConfig{
 			{
 				URL: &address,
@@ -132,7 +133,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 		ObjectMeta: objectMeta,
 		Spec: monitoringv1alpha1.AlertmanagerConfigSpec{
 			Route: &monitoringv1alpha1.Route{
-				Receiver: key.HeartbeatReceiverName(cluster, config.Installation),
+				Receiver: "heartbeat",
 				Matchers: []monitoringv1alpha1.Matcher{
 					{Name: key.ClusterIDKey(), Value: key.ClusterID(cluster)},
 					{Name: key.InstallationKey(), Value: config.Installation},
