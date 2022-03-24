@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Remove old teams from alertmanager template.
+- Remove code to manage legacy alertmanager.
 
 ## [2.4.0] - 2022-03-16
 

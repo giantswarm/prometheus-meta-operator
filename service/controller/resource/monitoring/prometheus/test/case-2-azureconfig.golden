@@ -23,11 +23,6 @@ spec:
   alerting:
     alertmanagers:
     - apiVersion: v2
-      name: alertmanager
-      namespace: monitoring
-      port: 9093
-      scheme: http
-    - apiVersion: v2
       name: alertmanager-operated
       namespace: monitoring
       port: 9093

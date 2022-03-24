@@ -168,13 +168,6 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 			Alerting: &promv1.AlertingSpec{
 				Alertmanagers: []promv1.AlertmanagerEndpoints{
 					{
-						Name:       "alertmanager",
-						Namespace:  key.NamespaceMonitoring(),
-						Port:       intstr.FromInt(9093),
-						Scheme:     "http",
-						APIVersion: "v2",
-					},
-					{
 						Name:       "alertmanager-operated",
 						Namespace:  key.NamespaceMonitoring(),
 						Port:       intstr.FromInt(9093),
