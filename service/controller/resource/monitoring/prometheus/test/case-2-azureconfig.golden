@@ -8,6 +8,9 @@ metadata:
   name: foo
   namespace: foo-prometheus
 spec:
+  additionalAlertManagerConfigs:
+    key: alertmanager-additional.yaml
+    name: new-alertmanager-config
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs
@@ -20,13 +23,6 @@ spec:
             operator: NotIn
             values:
             - master
-  alerting:
-    alertmanagers:
-    - apiVersion: v2
-      name: alertmanager-operated
-      namespace: monitoring
-      port: 9093
-      scheme: http
   apiserverConfig:
     host: https://master.foo:443
     tlsConfig:

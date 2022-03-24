@@ -13,7 +13,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
@@ -165,16 +164,16 @@ func toPrometheus(v interface{}, config Config) (metav1.Object, error) {
 				"provider":            config.Provider,
 				"region":              config.Region,
 			},
-			Alerting: &promv1.AlertingSpec{
-				Alertmanagers: []promv1.AlertmanagerEndpoints{
-					{
-						Name:       "alertmanager-operated",
-						Namespace:  key.NamespaceMonitoring(),
-						Port:       intstr.FromInt(9093),
-						Scheme:     "http",
-						APIVersion: "v2",
-					},
+			// We need to use this to connect each WC prometheus with the central alertmanager instead of the alerting section of the Prometheus CR
+			// because the alerting section tries to find the alertmanager service in the workload cluster and not in the management cluster
+			// as it is using the secrets defined under prometheus.Spec.APIServerConfig.
+			//
+			// This forces us to use the static config defined in resource/alerting/alertmanagerwiring.
+			AdditionalAlertManagerConfigs: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: key.AlertManagerSecretName(),
 				},
+				Key: key.AlertManagerKey(),
 			},
 			ExternalURL: externalURL.String(),
 			RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
