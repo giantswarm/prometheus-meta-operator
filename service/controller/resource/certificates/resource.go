@@ -65,6 +65,7 @@ func New(config Config) (*Resource, error) {
 
 	r := &Resource{
 		name:      config.Name,
+		provider:  config.Provider,
 		logger:    config.Logger,
 		k8sClient: config.K8sClient,
 		sources:   config.Sources,
@@ -108,7 +109,7 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 
 	secretData := sourceSecret.Data
 
-	if key.IsCAPICluster(cluster) {
+	if key.IsCAPICluster(cluster, r.provider) {
 		// CAPI Secret is a kubeconfig so we need to extract the certs from it
 		if kubeconfig, ok := secretData["value"]; ok {
 			capiKubeconfig, err := clientcmd.Load(kubeconfig)
