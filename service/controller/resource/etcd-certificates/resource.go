@@ -61,7 +61,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -73,13 +73,13 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func (sc *secretCopier) ToCR(v interface{}) (metav1.Object, error) {
-	objectMeta, err := getObjectMeta(v)
+func (sc *secretCopier) ToCR(ctx context.Context, v interface{}) (metav1.Object, error) {
+	objectMeta, err := getObjectMeta(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	data, err := sc.getSource(context.TODO(), v)
+	data, err := sc.getSource(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

@@ -10,6 +10,7 @@ import (
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	monitoringv1alpha1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1alpha1"
 	monitoringclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
+	"golang.org/x/net/context"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -41,10 +42,10 @@ func New(config Config) (*generic.Resource, error) {
 		ClientFunc: clientFunc,
 		Logger:     config.Logger,
 		Name:       Name,
-		GetObjectMeta: func(v interface{}) (metav1.ObjectMeta, error) {
+		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 			return getObjectMeta(v, config)
 		},
-		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
+		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toAlertmanagerConfig(v, config)
 		},
 		HasChangedFunc: hasChanged,
