@@ -31,13 +31,16 @@ func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace
 		return nil, microerror.Mask(err)
 	}
 
-	if ca, ok := secret.Data["ca.crt"]; !ok {
+	var ca, crt, key string
+	var ok bool
+
+	if ca, ok = secret.Data["ca.crt"]; !ok {
 		return nil, microerror.Maskf(keyMissingError, "ca.crt key missing in secret %s/%s", namespace, name)
 	}
-	if crt, ok := secret.Data["tls.crt"]; !ok {
+	if crt, ok = secret.Data["tls.crt"]; !ok {
 		return nil, microerror.Maskf(keyMissingError, "tls.crt key missing in secret %s/%s", namespace, name)
 	}
-	if key, ok := secret.Data["tls.key"]; !ok {
+	if key, ok = secret.Data["tls.key"]; !ok {
 		return nil, microerror.Maskf(keyMissingError, "tls.key key missing in secret %s/%s", namespace, name)
 	}
 
