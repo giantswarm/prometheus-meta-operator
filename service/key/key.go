@@ -73,6 +73,14 @@ func EtcdSecret(obj interface{}) string {
 	return Secret()
 }
 
+func EtcdSecretSourceName() string {
+	return "etcd-certs"
+}
+
+func EtcdSecretSourceNamespace() string {
+	return "giantswarm"
+}
+
 func AlertmanagerLabels() map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "alertmanager",

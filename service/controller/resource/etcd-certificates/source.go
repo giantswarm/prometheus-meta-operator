@@ -5,12 +5,13 @@ import (
 	"io/ioutil"
 
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // getSource retrieve data for the desired Secret.
 func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string][]byte, error) {
-	data, err := sc.getSourceFromSecret(ctx, "etcd-certs", "giantswarm")
+	data, err := sc.getSourceFromSecret(ctx, key, EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
 	if err != nil {
 		sc.logger.Errorf(ctx, err, "could not get certificates from secret")
 
