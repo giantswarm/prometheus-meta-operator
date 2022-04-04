@@ -91,7 +91,7 @@ func (sc *secretCopier) ToCR(ctx context.Context, v interface{}) (metav1.Object,
 
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
-		Data:       data,
+		StringData: data,
 	}
 
 	return secret, nil
