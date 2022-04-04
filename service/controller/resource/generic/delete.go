@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	object, err := r.getObjectMeta(obj)
+	object, err := r.getObjectMeta(ctx, obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
