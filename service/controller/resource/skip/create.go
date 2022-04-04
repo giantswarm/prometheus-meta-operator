@@ -5,6 +5,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/reconciliationcanceledcontext"
+
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
