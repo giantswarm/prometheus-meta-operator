@@ -14,7 +14,7 @@ import (
 func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string]string, error) {
 	data, err := sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
 	if err != nil {
-		sc.logger.Errorf(ctx, err, "could not get certificates from secret")
+		sc.logger.Debugf(ctx, err, "could not get certificates from secret")
 
 		data, err = sc.getSourceFromDisk()
 		if err != nil {
