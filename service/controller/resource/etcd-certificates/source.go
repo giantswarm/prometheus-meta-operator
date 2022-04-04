@@ -31,7 +31,7 @@ func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace
 		return nil, microerror.Mask(err)
 	}
 
-	var ca, crt, key string
+	var ca, crt, key []byte
 	var ok bool
 
 	if ca, ok = secret.Data["ca.crt"]; !ok {
