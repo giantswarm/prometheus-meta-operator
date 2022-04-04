@@ -9,8 +9,8 @@ import (
 )
 
 // getSource retrieve data for the desired Secret.
-func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string]string, error) {
-	data, err := sc.getSourceFromDisk()
+func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string][]byte, error) {
+	data, err := sc.getSourceFromSecret(ctx, "etcd-certs", "giantswarm")
 	if err != nil {
 		sc.logger.Errorf(ctx, err, "could not get certificates from secret")
 
@@ -32,7 +32,7 @@ func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace
 	return secret.Data, nil
 }
 
-func (sc *secretCopier) getSourceFromDisk() (map[string]string, error) {
+func (sc *secretCopier) getSourceFromDisk() (map[string][]byte, error) {
 	ca, err := ioutil.ReadFile("/etcd-client-certs/ca.pem")
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -48,10 +48,10 @@ func (sc *secretCopier) getSourceFromDisk() (map[string]string, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	data := map[string]string{
-		"ca":  string(ca),
-		"crt": string(crt),
-		"key": string(key),
+	data := map[string][]byte{
+		"ca":  ca,
+		"crt": crt,
+		"key": key,
 	}
 
 	return data, nil
