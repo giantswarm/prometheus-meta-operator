@@ -248,8 +248,11 @@ func RemoteWritePasswordKey() string {
 
 // IsCAPICluster returns true if the cluster is in v1alpha3 and does not have the "azure-operator.giantswarm.io/version" label added by the azure operator.
 // We do not have a provider agnostic label like "giantswarm.io/version" to define this.
-func IsCAPICluster(obj metav1.Object) bool {
+func IsCAPICluster(obj metav1.Object, provider string) bool {
 	// TODO once we have migrated all clusters to CAPI, we can remove this
+	if provider == "openstack" {
+		return true
+	}
 	switch v := obj.(type) {
 	case *capiv1alpha3.Cluster:
 		if _, ok := v.Labels["azure-operator.giantswarm.io/version"]; ok {

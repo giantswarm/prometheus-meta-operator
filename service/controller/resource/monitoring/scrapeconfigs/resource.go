@@ -173,7 +173,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		Vault:                     config.Vault,
 		Mayu:                      config.Mayu,
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
-		CAPICluster:               key.IsCAPICluster(cluster),
+		CAPICluster:               key.IsCAPICluster(cluster, config.Provider),
 	}
 
 	return d, nil

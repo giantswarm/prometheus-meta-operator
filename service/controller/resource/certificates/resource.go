@@ -20,6 +20,7 @@ import (
 
 type Config struct {
 	Name      string
+	Provider  string
 	Sources   []CertificateSource
 	Target    NameFunc
 	K8sClient k8sclient.Interface
@@ -35,6 +36,7 @@ type CertificateSource struct {
 
 type Resource struct {
 	name      string
+	provider  string
 	sources   []CertificateSource
 	target    NameFunc
 	k8sClient k8sclient.Interface
@@ -44,6 +46,9 @@ type Resource struct {
 func New(config Config) (*Resource, error) {
 	if config.Name == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Name must not be empty", config)
+	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
 	}
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)

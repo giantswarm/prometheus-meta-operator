@@ -83,6 +83,7 @@ func New(config Config) ([]resource.Interface, error) {
 	{
 		c := certificates.Config{
 			Name:      "api-certificates",
+			Provider:  config.Provider,
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Sources: []certificates.CertificateSource{
