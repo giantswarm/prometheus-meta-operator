@@ -12,7 +12,7 @@ import (
 
 // getSource retrieve data for the desired Secret.
 func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string][]byte, error) {
-	data, err := sc.getSourceFromSecret(ctx, key, EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
+	data, err := sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
 	if err != nil {
 		sc.logger.Errorf(ctx, err, "could not get certificates from secret")
 
