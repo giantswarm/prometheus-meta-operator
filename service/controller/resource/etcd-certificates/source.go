@@ -31,7 +31,23 @@ func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace
 		return nil, microerror.Mask(err)
 	}
 
-	return secret.Data, nil
+	if ca, ok := secret.Data["ca.crt"]; !ok {
+		return nil, microerror.Maskf(keyMissingError, "ca.crt key missing in secret %s/%s", namespace, name)
+	}
+	if crt, ok := secret.Data["tls.crt"]; !ok {
+		return nil, microerror.Maskf(keyMissingError, "tls.crt key missing in secret %s/%s", namespace, name)
+	}
+	if key, ok := secret.Data["tls.key"]; !ok {
+		return nil, microerror.Maskf(keyMissingError, "tls.key key missing in secret %s/%s", namespace, name)
+	}
+
+	data := map[string]string{
+		"ca":  string(ca),
+		"crt": string(crt),
+		"key": string(key),
+	}
+
+	return data, nil
 }
 
 func (sc *secretCopier) getSourceFromDisk() (map[string]string, error) {

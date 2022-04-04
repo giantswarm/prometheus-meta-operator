@@ -21,3 +21,12 @@ var wrongTypeError = &microerror.Error{
 func IsWrongType(err error) bool {
 	return microerror.Cause(err) == wrongTypeError
 }
+
+var keyMissingError = &microerror.Error{
+	Kind: "keyMissingError",
+}
+
+// IsKeyMissing asserts keyMissingError.
+func IsKeyMissing(err error) bool {
+	return microerror.Cause(err) == keyMissingError
+}
