@@ -2,7 +2,6 @@ package etcdcertificates
 
 import (
 	"context"
-	"io/ioutil"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -27,7 +26,9 @@ type Config struct {
 // secretCopier provides a `ToCR` method which copies data from the source
 // cluster secret CR
 type secretCopier struct {
+	logger     micrologger.Logger
 	clientFunc func(string) generic.Interface
+	k8sClient  k8sclient.Interface
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -43,7 +44,11 @@ func New(config Config) (*generic.Resource, error) {
 		return wrappedClient{client: c}
 	}
 
-	sc := secretCopier{clientFunc: clientFunc}
+	sc := secretCopier{
+		logger:     config.Logger,
+		clientFunc: clientFunc,
+		k8sClient:  config.K8sClient,
+	}
 
 	c := generic.Config{
 		ClientFunc:       clientFunc,
