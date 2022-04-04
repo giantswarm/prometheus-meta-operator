@@ -97,32 +97,6 @@ func (sc *secretCopier) ToCR(ctx context.Context, v interface{}) (metav1.Object,
 	return secret, nil
 }
 
-// getSource returns the Secret to be copied, i.e. default/$CLUSTER_ID-prometheus
-func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string]string, error) {
-	ca, err := ioutil.ReadFile("/etcd-client-certs/ca.pem")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	crt, err := ioutil.ReadFile("/etcd-client-certs/crt.pem")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	key, err := ioutil.ReadFile("/etcd-client-certs/key.pem")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	data := map[string]string{
-		"ca":  string(ca),
-		"crt": string(crt),
-		"key": string(key),
-	}
-
-	return data, nil
-}
-
 func hasChanged(current, desired metav1.Object) bool {
 	c := current.(*corev1.Secret)
 	d := desired.(*corev1.Secret)
