@@ -5,16 +5,31 @@ import (
 	"io/ioutil"
 
 	"github.com/giantswarm/microerror"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 // getSource retrieve data for the desired Secret.
 func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string]string, error) {
 	data, err := sc.getSourceFromDisk()
 	if err != nil {
-		return nil, microerror.Mask(err)
+		sc.logger.Errorf(ctx, err, "could not get certificates from secret")
+
+		data, err = sc.getSourceFromDisk()
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 	}
 
 	return data, nil
+}
+
+func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace string) (map[string][]byte, error) {
+	secret, err := sc.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return secret.Data, nil
 }
 
 func (sc *secretCopier) getSourceFromDisk() (map[string]string, error) {
