@@ -4,10 +4,10 @@ import (
 	"context"
 	"io/ioutil"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
-
 	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 // getSource retrieve data for the desired Secret.
