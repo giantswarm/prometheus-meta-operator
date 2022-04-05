@@ -67,6 +67,8 @@ type Config struct {
 func New(config Config) ([]resource.Interface, error) {
 	var err error
 
+	// Skip objects matching installation name to avoid duplicate handling of MC.
+	// MC are handled in a different set of resources.
 	var skipResource resource.Interface
 	{
 		c := skip.Config{
