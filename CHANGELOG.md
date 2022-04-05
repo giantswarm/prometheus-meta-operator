@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add support for etcd-certificates on OpenStack.
 - Add context to generic resources.
 
 ### Fixed
