@@ -10,7 +10,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
-// getSource retrieve data for the desired Secret.
+// getSource retrieves data for the desired Secret.
 func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string]string, error) {
 	data, err := sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
 	if err != nil {
@@ -25,6 +25,7 @@ func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[strin
 	return data, nil
 }
 
+// getSourceFromSecret retrieves etcd certificates from a kubernetes secret.
 func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace string) (map[string]string, error) {
 	secret, err := sc.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
