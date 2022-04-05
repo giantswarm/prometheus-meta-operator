@@ -53,6 +53,7 @@ func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace
 	return data, nil
 }
 
+// getSourceFromDisk retrieves etcd certificates from the filesystem.
 func (sc *secretCopier) getSourceFromDisk() (map[string]string, error) {
 	ca, err := ioutil.ReadFile("/etcd-client-certs/ca.pem")
 	if err != nil {
