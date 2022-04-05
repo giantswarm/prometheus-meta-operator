@@ -69,8 +69,8 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:        config.Logger,
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
-		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config)
+		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
+			return toSecret(ctx, v, config)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -82,7 +82,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -94,7 +94,7 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
+func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -104,7 +104,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	if "workload_cluster" == key.ClusterType(v) {
 		clusterID := key.ClusterID(cluster)
 		// Try to get the etcd url from the Giant Swarm way
-		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(context.Background(), "master", metav1.GetOptions{})
+		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(ctx, "master", metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
 			// TODO we ignore ETCD for capi clusters for now. Find a way to do it later
 		} else if err != nil {
@@ -122,7 +122,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	objectMeta, err := getObjectMeta(v)
+	objectMeta, err := getObjectMeta(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

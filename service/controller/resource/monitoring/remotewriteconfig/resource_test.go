@@ -1,6 +1,7 @@
 package remotewriteconfig
 
 import (
+	"context"
 	"flag"
 	"path/filepath"
 	"testing"
@@ -20,7 +21,7 @@ func TestRemoteWriteSecret(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toSecret(v, Config{
+			return toSecret(context.TODO(), v, Config{
 				RemoteWriteUsername: "test",
 				RemoteWritePassword: "test",
 			})

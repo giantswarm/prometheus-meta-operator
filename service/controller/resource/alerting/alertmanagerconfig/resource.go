@@ -1,6 +1,7 @@
 package alertmanagerconfig
 
 import (
+	"context"
 	"io/ioutil"
 	"path"
 	"reflect"
@@ -67,10 +68,10 @@ func New(config Config) (*generic.Resource, error) {
 		ClientFunc: clientFunc,
 		Logger:     config.Logger,
 		Name:       Name,
-		GetObjectMeta: func(v interface{}) (metav1.ObjectMeta, error) {
+		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 			return getObjectMeta(v, config)
 		},
-		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
+		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toSecret(v, config)
 		},
 		HasChangedFunc: hasChanged,

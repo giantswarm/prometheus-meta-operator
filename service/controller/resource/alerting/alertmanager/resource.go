@@ -8,6 +8,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	monitoringv1client "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
+	"golang.org/x/net/context"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -44,8 +45,8 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:        config.Logger,
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
-		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
-			return toAlertmanager(v, config)
+		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
+			return toAlertmanager(ctx, v, config)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -57,7 +58,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      "alertmanager",
 		Namespace: key.NamespaceMonitoring(),
@@ -65,12 +66,12 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toAlertmanager(v interface{}, config Config) (metav1.Object, error) {
+func toAlertmanager(ctx context.Context, v interface{}, config Config) (metav1.Object, error) {
 	if v == nil {
 		return nil, nil
 	}
 
-	objectMeta, err := getObjectMeta(v)
+	objectMeta, err := getObjectMeta(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

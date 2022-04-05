@@ -1,6 +1,7 @@
 package alertmanagerwiring
 
 import (
+	"context"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -60,7 +61,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -76,8 +77,8 @@ func toData(v interface{}) []byte {
 	return []byte(alertmanagerConfig)
 }
 
-func toSecret(v interface{}) (metav1.Object, error) {
-	objectMeta, err := getObjectMeta(v)
+func toSecret(ctx context.Context, v interface{}) (metav1.Object, error) {
+	objectMeta, err := getObjectMeta(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
