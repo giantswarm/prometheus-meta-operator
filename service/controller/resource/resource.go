@@ -70,8 +70,8 @@ func New(config Config) ([]resource.Interface, error) {
 	var skipResource resource.Interface
 	{
 		c := skip.Config{
-			Logger:       config.Logger,
-			Installation: config.Installation,
+			Logger: config.Logger,
+			Name:   config.Installation,
 		}
 
 		skipResource, err = skip.New(c)
