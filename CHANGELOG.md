@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add context to generic resources.
 
+### Fixed
+
+- Add skip resource, to fix MC duplicated handling.
+
 ## [3.0.0] - 2022-03-28
 
 ### Added
