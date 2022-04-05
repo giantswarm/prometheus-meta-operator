@@ -1,6 +1,7 @@
 package alertmanager
 
 import (
+	"context"
 	"flag"
 	"path/filepath"
 	"testing"
@@ -27,7 +28,7 @@ func TestAlertmanager(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toAlertmanager(v, config)
+			return toAlertmanager(context.TODO(), v, config)
 		},
 		Update: *update,
 	}

@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"context"
 	"flag"
 	"path/filepath"
 	"testing"
@@ -20,7 +21,7 @@ func TestNamespace(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toNamespace(v)
+			return toNamespace(context.TODO(), v)
 		},
 		Update: *update,
 	}

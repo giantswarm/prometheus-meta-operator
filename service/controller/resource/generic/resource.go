@@ -31,11 +31,11 @@ type Config struct {
 	// GetObjectMeta is a function that takes a resource object, casts it to
 	// appropriate type and returns the metadata of that object, i.e. its
 	// metav1.ObjectMeta part (name, namespace, labels, annotations, etc.).
-	GetObjectMeta func(interface{}) (metav1.ObjectMeta, error)
+	GetObjectMeta func(context.Context, interface{}) (metav1.ObjectMeta, error)
 
 	// GetDesiredObject is a function that takes a resource object and returns the
 	// object populated with the desired state.
-	GetDesiredObject func(interface{}) (metav1.Object, error)
+	GetDesiredObject func(context.Context, interface{}) (metav1.Object, error)
 
 	// HasChangedFunc is a function that takes two copies of an object - first
 	// with existing state in the cluster and second with the desired state for
@@ -48,8 +48,8 @@ type Resource struct {
 	clientFunc       func(string) Interface
 	logger           micrologger.Logger
 	name             string
-	getObjectMeta    func(interface{}) (metav1.ObjectMeta, error)
-	getDesiredObject func(interface{}) (metav1.Object, error)
+	getObjectMeta    func(context.Context, interface{}) (metav1.ObjectMeta, error)
+	getDesiredObject func(context.Context, interface{}) (metav1.Object, error)
 	hasChangedFunc   func(metav1.Object, metav1.Object) bool
 }
 

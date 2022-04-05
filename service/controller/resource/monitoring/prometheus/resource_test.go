@@ -1,6 +1,7 @@
 package prometheus
 
 import (
+	"context"
 	"flag"
 	"path/filepath"
 	"testing"
@@ -37,7 +38,7 @@ func TestPrometheus(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toPrometheus(v, config)
+			return toPrometheus(context.TODO(), v, config)
 		},
 		Update: *update,
 	}

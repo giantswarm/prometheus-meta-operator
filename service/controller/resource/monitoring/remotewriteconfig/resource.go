@@ -1,6 +1,7 @@
 package remotewriteconfig
 
 import (
+	"context"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -35,8 +36,8 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:        config.Logger,
 		Name:          Name,
 		GetObjectMeta: getObjectMeta,
-		GetDesiredObject: func(v interface{}) (metav1.Object, error) {
-			return toSecret(v, config)
+		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
+			return toSecret(ctx, v, config)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -48,7 +49,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -60,8 +61,8 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta(v)
+func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
+	objectMeta, err := getObjectMeta(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
