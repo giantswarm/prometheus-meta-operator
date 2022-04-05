@@ -9,19 +9,22 @@ const (
 )
 
 type Config struct {
-	Logger       micrologger.Logger
-	Installation string
+	Logger micrologger.Logger
+
+	// Name will be checked against the current object name.
+	// If those match the entire reconciliation loop will be canceled.
+	Name string
 }
 
 type Resource struct {
-	logger       micrologger.Logger
-	installation string
+	logger micrologger.Logger
+	name   string
 }
 
 func New(config Config) (*Resource, error) {
 	r := &Resource{
-		logger:       config.Logger,
-		installation: config.Installation,
+		logger: config.Logger,
+		name:   config.Name,
 	}
 
 	return r, nil

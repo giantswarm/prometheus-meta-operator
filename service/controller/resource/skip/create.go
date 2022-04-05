@@ -15,7 +15,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	if cluster.GetName() == r.installation {
+	if cluster.GetName() == r.name {
 		r.logger.Debugf(ctx, "cancel reconciliation")
 		reconciliationcanceledcontext.SetCanceled(ctx)
 		return nil
