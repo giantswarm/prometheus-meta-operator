@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.1.0] - 2022-04-08
+
 ### Added
 
 - Add support for etcd-certificates on OpenStack.
@@ -1391,7 +1393,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.1.0...HEAD
+[3.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.4.0...v3.0.0
 [2.4.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.3.0...v2.4.0
 [2.3.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.2.1...v2.3.0
