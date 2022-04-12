@@ -65,12 +65,16 @@ func IsMonitoringDisabled(cluster metav1.Object) bool {
 	return ok && ignored == "false"
 }
 
-func EtcdSecret(obj interface{}) string {
-	if IsInCluster(obj) {
+func EtcdSecret(installation string, obj interface{}) string {
+	if IsInCluster(installation, obj) {
 		return "etcd-certificates"
 	}
 
 	return Secret()
+}
+
+func IsCAPIManagementCluster(provider string) bool {
+	return provider == "openstack" || provider == "vsphere" || provider == "gcp"
 }
 
 func EtcdSecretSourceName() string {
@@ -205,17 +209,22 @@ func APIUrl(obj interface{}) string {
 	return ""
 }
 
-func IsInCluster(obj interface{}) bool {
-	switch obj.(type) {
+func IsInCluster(installation string, obj interface{}) bool {
+	switch v := obj.(type) {
 	case *v1.Service:
 		return true
+	case *capiv1alpha3.Cluster:
+		if val, ok := v.Labels["cluster.x-k8s.io/cluster-name"]; ok && val == installation {
+			return true
+		}
+		return false
 	default:
 		return false
 	}
 }
 
-func ClusterType(obj interface{}) string {
-	if IsInCluster(obj) {
+func ClusterType(installation string, obj interface{}) string {
+	if IsInCluster(installation, obj) {
 		return "management_cluster"
 	}
 

@@ -101,7 +101,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	}
 
 	var workloadClusterETCDDomain string = ""
-	if "workload_cluster" == key.ClusterType(v) {
+	if "workload_cluster" == key.ClusterType(config.Installation, v) {
 		clusterID := key.ClusterID(cluster)
 		// Try to get the etcd url from the Giant Swarm way
 		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(ctx, "master", metav1.GetOptions{})
@@ -165,11 +165,11 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		APIServerURL:              key.APIUrl(cluster),
 		Bastions:                  config.Bastions,
 		ClusterID:                 clusterID,
-		ClusterType:               key.ClusterType(cluster),
+		ClusterType:               key.ClusterType(config.Installation, cluster),
 		Provider:                  config.Provider,
 		Installation:              config.Installation,
 		SecretName:                key.Secret(),
-		EtcdSecretName:            key.EtcdSecret(cluster),
+		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
 		Vault:                     config.Vault,
 		Mayu:                      config.Mayu,
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,

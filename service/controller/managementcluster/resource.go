@@ -25,6 +25,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 type resourcesConfig struct {
@@ -96,8 +97,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var etcdCertificatesResource resource.Interface
 	{
 		c := etcdcertificates.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Installation: config.Installation,
 		}
 
 		etcdCertificatesResource, err = etcdcertificates.New(c)
@@ -350,7 +352,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	{
+	if !key.IsCAPIManagementCluster(config.Provider) {
 		resources, err = Wrap(resources, config)
 		if err != nil {
 			return nil, microerror.Mask(err)

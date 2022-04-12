@@ -158,7 +158,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		Spec: promv1.PrometheusSpec{
 			ExternalLabels: map[string]string{
 				key.ClusterIDKey():    key.ClusterID(cluster),
-				"cluster_type":        key.ClusterType(cluster),
+				"cluster_type":        key.ClusterType(config.Installation, cluster),
 				"customer":            config.Customer,
 				key.InstallationKey(): config.Installation,
 				"pipeline":            config.Pipeline,
@@ -305,7 +305,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		prometheus.Spec.RemoteWrite = []promv1.RemoteWriteSpec{remoteWriteSpec}
 	}
 
-	if !key.IsInCluster(cluster) {
+	if !key.IsInCluster(config.Installation, cluster) {
 		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
@@ -361,7 +361,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		}
 
 		prometheus.Spec.Secrets = []string{
-			key.EtcdSecret(cluster),
+			key.EtcdSecret(config.Installation, cluster),
 		}
 
 		prometheus.Spec.RuleSelector = &metav1.LabelSelector{

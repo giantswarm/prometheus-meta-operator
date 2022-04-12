@@ -21,7 +21,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/skip"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
@@ -66,21 +65,6 @@ type Config struct {
 
 func New(config Config) ([]resource.Interface, error) {
 	var err error
-
-	// Skip objects matching installation name to avoid duplicate handling of MC.
-	// MC are handled in a different set of resources.
-	var skipResource resource.Interface
-	{
-		c := skip.Config{
-			Logger: config.Logger,
-			Name:   config.Installation,
-		}
-
-		skipResource, err = skip.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
 
 	var namespaceResource resource.Interface
 	{
@@ -276,7 +260,6 @@ func New(config Config) ([]resource.Interface, error) {
 	}
 
 	resources := []resource.Interface{
-		skipResource,
 		namespaceResource,
 		apiCertificatesResource,
 		heartbeatWebhookConfigResource,
