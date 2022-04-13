@@ -1,6 +1,7 @@
 package etcdcertificates
 
 import (
+	"context"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -17,15 +18,18 @@ const (
 )
 
 type Config struct {
+	Installation string
+
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 }
 
 // secretCopier provides a way to create a new secret from different data source.
 type secretCopier struct {
-	logger     micrologger.Logger
-	clientFunc func(string) generic.Interface
-	k8sClient  k8sclient.Interface
+	logger       micrologger.Logger
+	clientFunc   func(string) generic.Interface
+	k8sClient    k8sclient.Interface
+	installation string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -35,6 +39,9 @@ func New(config Config) (*generic.Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
+	if config.Installation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
+	}
 
 	// Wrapping the secret client into a generic interface.
 	clientFunc := func(namespace string) generic.Interface {
@@ -43,16 +50,19 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	sc := secretCopier{
-		logger:     config.Logger,
-		clientFunc: clientFunc,
-		k8sClient:  config.K8sClient,
+		logger:       config.Logger,
+		clientFunc:   clientFunc,
+		k8sClient:    config.K8sClient,
+		installation: config.Installation,
 	}
 
 	c := generic.Config{
-		ClientFunc:       clientFunc,
-		Logger:           config.Logger,
-		Name:             Name,
-		GetObjectMeta:    getObjectMeta,
+		ClientFunc: clientFunc,
+		Logger:     config.Logger,
+		Name:       Name,
+		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
+			return getObjectMeta(v, config.Installation)
+		},
 		GetDesiredObject: sc.ToSecret,
 		HasChangedFunc:   hasChanged,
 	}

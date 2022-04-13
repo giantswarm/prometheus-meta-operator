@@ -270,7 +270,12 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  - role: node
+  
+  - role: pod
+    namespaces:
+      names:
+      - kube-system
+  
 
     api_server: https://master.baz:443
     tls_config:

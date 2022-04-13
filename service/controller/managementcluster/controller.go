@@ -10,9 +10,11 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/service/key"
 )
 
 type ControllerConfig struct {
@@ -84,17 +86,26 @@ func NewController(config ControllerConfig) (*Controller, error) {
 
 	var operatorkitController *controller.Controller
 	{
+		selectors := labels.Set{
+			"component": "apiserver",
+		}
+		if key.IsCAPIManagementCluster(config.Provider) {
+			selectors = labels.Set{
+				"cluster.x-k8s.io/cluster-name": config.Installation,
+			}
+		}
 		c := controller.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Name:      project.Name() + "-management-cluster-controller",
 			NewRuntimeObjectFunc: func() client.Object {
+				if key.IsCAPIManagementCluster(config.Provider) {
+					return new(capiv1alpha3.Cluster)
+				}
 				return new(v1.Service)
 			},
 			Resources: resources,
-			Selector: labels.SelectorFromSet(labels.Set{
-				"component": "apiserver",
-			}),
+			Selector:  labels.SelectorFromSet(selectors),
 		}
 
 		operatorkitController, err = controller.New(c)

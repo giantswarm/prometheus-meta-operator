@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change how MC managed with CAPI are reconciled in PMO (using the cluster CR instead of the Kubernetes Service)
+
+### Fixed
+
+- Fix etcd service discovery for CAPI clusters.
+
+### Removed
+
+- Remove skip resource
+
 ## [3.1.0] - 2022-04-08
 
 ### Added

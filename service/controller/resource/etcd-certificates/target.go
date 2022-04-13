@@ -11,21 +11,21 @@ import (
 )
 
 // getObjectMeta returns the target secret metadata.
-func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
+func getObjectMeta(v interface{}, installation string) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
 	return metav1.ObjectMeta{
-		Name:      key.EtcdSecret(v),
+		Name:      key.EtcdSecret(installation, v),
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
 
 // ToSecret returns the target secret by combining results of getObjectMeta and getSource.
 func (sc *secretCopier) ToSecret(ctx context.Context, v interface{}) (metav1.Object, error) {
-	objectMeta, err := getObjectMeta(ctx, v)
+	objectMeta, err := getObjectMeta(v, sc.installation)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
