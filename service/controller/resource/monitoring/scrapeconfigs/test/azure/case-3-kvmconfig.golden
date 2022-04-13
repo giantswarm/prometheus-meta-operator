@@ -263,7 +263,9 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
+  
   - role: node
+  
 
     api_server: https://master.bar:443
     tls_config:

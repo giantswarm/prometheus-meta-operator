@@ -226,7 +226,9 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
+  
   - role: node
+  
 
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
 
@@ -1653,72 +1655,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-# vault-exporter
-- job_name: kubernetes-prometheus/vault-exporter-kubernetes/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: vault-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__]
-    target_label:  instance
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
-  - source_labels: [__meta_kubernetes_pod_node_name]
-    target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
 # alertmanager
 - job_name: kubernetes-prometheus/alertmanager-kubernetes/0
   honor_labels: true
@@ -2485,6 +2421,72 @@
     labels:
       app: cert-exporter
   relabel_configs:
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: management_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+# vault-exporter
+- job_name: kubernetes-prometheus/vault-exporter-kubernetes/0
+  honor_labels: true
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - giantswarm
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: vault-exporter
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__]
+    target_label:  instance
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
