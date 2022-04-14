@@ -1088,7 +1088,8 @@
     action: replace
   # nodepool name. Defaults to the cluster name (to ensure there is always a value for management clusters that don't have node pools).
   - source_labels: [app,cluster_id]
-    separator: kube-state-metrics;(.+)
+    separator: ;
+    regex: kube-state-metrics;(.+)
     target_label: nodepool
     replacement: ${1}
     action: replace
