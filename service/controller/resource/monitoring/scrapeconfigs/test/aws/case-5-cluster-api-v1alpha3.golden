@@ -916,6 +916,21 @@
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
+  # nodepool name. Defaults to the cluster name (to ensure there is always a value for management clusters that don't have node pools).
+  - source_labels: [cluster_id]
+    regex: (.*)
+    target_label: nodepool
+    replacement: ${1}
+  # Override with label for AWS clusters if exists.
+  - source_labels: [label_giantswarm_io_machine_deployment]
+    regex: (.+)
+    target_label: nodepool
+    replacement: ${1}
+  # Override with label for Azure clusters if exists.
+  - source_labels: [label_giantswarm_io_machine_pool]
+    regex: (.+)
+    target_label: nodepool
+    replacement: ${1}
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
@@ -968,21 +983,6 @@
   - source_labels: [statefulset]
     regex: (.+)
     target_label: workload_name
-    replacement: ${1}
-  # nodepool name. Defaults to the cluster name (to ensure there is always a value for management clusters that don't have node pools).
-  - source_labels: [cluster_id]
-    regex: (.*)
-    target_label: nodepool
-    replacement: ${1}
-  # Override with label for AWS clusters if exists.
-  - source_labels: [label_giantswarm_io_machine_deployment]
-    regex: (.+)
-    target_label: nodepool
-    replacement: ${1}
-  # Override with label for Azure clusters if exists.
-  - source_labels: [label_giantswarm_io_machine_pool]
-    regex: (.+)
-    target_label: nodepool
     replacement: ${1}
 
 - job_name: baz-prometheus/workload-baz/0
