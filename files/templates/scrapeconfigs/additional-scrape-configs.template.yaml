@@ -707,6 +707,8 @@
     target_label: nodepool
     replacement: ${1}
     action: replace
+  - action: labeldrop
+    regex: "label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment"
 [[ if eq .ClusterType "management_cluster" ]]
 # app-operator
 - job_name: [[ .ClusterID ]]-prometheus/app-operator-[[ .ClusterID ]]/0

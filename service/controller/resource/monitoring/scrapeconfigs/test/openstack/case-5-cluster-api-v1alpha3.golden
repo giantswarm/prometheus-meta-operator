@@ -999,6 +999,8 @@
     target_label: nodepool
     replacement: ${1}
     action: replace
+  - action: labeldrop
+    regex: "label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment"
 
 # prometheus
 - job_name: baz-prometheus/prometheus-baz/0
