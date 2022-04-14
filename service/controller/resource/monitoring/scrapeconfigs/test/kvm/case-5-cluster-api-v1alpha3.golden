@@ -987,13 +987,6 @@
     target_label: workload_name
     replacement: ${1}
     action: replace
-  # nodepool name. Defaults to the cluster name (to ensure there is always a value for management clusters that don't have node pools).
-  - source_labels: [app,cluster_id]
-    separator: ;
-    regex: kube-state-metrics;(.+)
-    target_label: nodepool
-    replacement: ${1}
-    action: replace
   # Override with label for AWS clusters if exists.
   - source_labels: [app,label_giantswarm_io_machine_deployment]
     regex: kube-state-metrics;(.+)
