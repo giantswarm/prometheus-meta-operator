@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Add `nodepool` label to `kube-state-metrics` metrics.
+
 ## [3.2.0] - 2022-04-13
 
 ### Changed
