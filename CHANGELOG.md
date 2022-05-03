@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Add `nodepool` label to `kube-state-metrics` metrics.
+- Improve CAPI cluster detection.
 
 ## [3.2.0] - 2022-04-13
 

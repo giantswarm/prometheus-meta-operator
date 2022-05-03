@@ -9,6 +9,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
+	capiv1beta1 "sigs.k8s.io/cluster-api/api/v1beta1"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
@@ -267,15 +269,31 @@ func RemoteWritePasswordKey() string {
 // We do not have a provider agnostic label like "giantswarm.io/version" to define this.
 func IsCAPICluster(obj metav1.Object) bool {
 	// TODO once we have migrated all clusters to CAPI, we can remove this
-	switch v := obj.(type) {
-	case *capiv1alpha3.Cluster:
-		if _, ok := v.Labels["azure-operator.giantswarm.io/version"]; ok {
+
+	checker := func(labels map[string]string) bool {
+		if _, ok := labels["azure-operator.giantswarm.io/version"]; ok {
+			return false
+		}
+		if _, ok := labels["release.giantswarm.io/version"]; ok {
+			return false
+		}
+		if _, ok := labels["cluster-operator.giantswarm.io/version"]; ok {
 			return false
 		}
 		return true
-	default:
-		return false
 	}
+
+	switch v := obj.(type) {
+	case *capiv1alpha3.Cluster:
+		return checker(v.Labels)
+	case *capiv1alpha4.Cluster:
+		return checker(v.Labels)
+	case *capiv1beta1.Cluster:
+		return checker(v.Labels)
+	}
+
+	// We didn't recognize the type, we assume CAPI
+	return true
 }
 
 func IngressClassName() string {
