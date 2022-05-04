@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `PodMonitor` support on management clusters.
+
 ### Changed
 
 - Add `nodepool` label to `kube-state-metrics` metrics.

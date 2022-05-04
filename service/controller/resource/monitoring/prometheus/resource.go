@@ -391,6 +391,24 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 			},
 		}
+
+		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				{
+					Key:      "giantswarm.io/cluster",
+					Operator: metav1.LabelSelectorOpDoesNotExist,
+				},
+			},
+		}
+
+		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				{
+					Key:      "giantswarm.io/cluster",
+					Operator: metav1.LabelSelectorOpDoesNotExist,
+				},
+			},
+		}
 	}
 
 	return prometheus, nil
