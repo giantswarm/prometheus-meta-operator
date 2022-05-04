@@ -265,8 +265,7 @@ func RemoteWritePasswordKey() string {
 	return "password"
 }
 
-// IsCAPICluster returns true if the cluster is in v1alpha3 and does not have the "azure-operator.giantswarm.io/version" label added by the azure operator.
-// We do not have a provider agnostic label like "giantswarm.io/version" to define this.
+// IsCAPICluster returns true if the cluster has any of the legacy labels such as azure-operator.giantswarm.io/version.
 func IsCAPICluster(obj metav1.Object) bool {
 	// TODO once we have migrated all clusters to CAPI, we can remove this
 
