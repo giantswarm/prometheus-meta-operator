@@ -265,15 +265,12 @@ func RemoteWritePasswordKey() string {
 	return "password"
 }
 
-// IsCAPICluster returns true if the cluster has any of the legacy labels such as azure-operator.giantswarm.io/version.
+// IsCAPICluster returns false if the cluster has any of the legacy labels such as azure-operator.giantswarm.io/version.
 func IsCAPICluster(obj metav1.Object) bool {
 	// TODO once we have migrated all clusters to CAPI, we can remove this
 
 	checker := func(labels map[string]string) bool {
 		if _, ok := labels["azure-operator.giantswarm.io/version"]; ok {
-			return false
-		}
-		if _, ok := labels["release.giantswarm.io/version"]; ok {
 			return false
 		}
 		if _, ok := labels["cluster-operator.giantswarm.io/version"]; ok {
