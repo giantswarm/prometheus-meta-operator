@@ -11,9 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `PodMonitor` support on management clusters.
 
+## [3.3.0] - 2022-05-04
+
 ### Changed
 
 - Add `nodepool` label to `kube-state-metrics` metrics.
+- Improve CAPI cluster detection.
 
 ## [3.2.0] - 2022-04-13
 
@@ -1415,7 +1418,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.1.0...v3.2.0
 [3.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.0.0...v3.1.0
 [3.0.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v2.4.0...v3.0.0
