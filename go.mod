@@ -23,8 +23,8 @@ require (
 	k8s.io/apimachinery v0.22.3
 	k8s.io/autoscaler/vertical-pod-autoscaler v0.9.2
 	k8s.io/client-go v12.0.0+incompatible
-	sigs.k8s.io/cluster-api v0.4.5
-	sigs.k8s.io/controller-runtime v0.9.7
+	sigs.k8s.io/cluster-api v1.0.5
+	sigs.k8s.io/controller-runtime v0.10.3
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -33,7 +33,7 @@ require (
 	github.com/go-kit/log v0.2.0 // indirect
 	github.com/gobuffalo/flect v0.2.3 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/onsi/gomega v1.15.0 // indirect
+	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.12.1 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
@@ -107,7 +107,7 @@ require (
 	k8s.io/component-base v0.22.3 // indirect
 	k8s.io/klog/v2 v2.10.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211110013926-83f114cd0513 // indirect
-	k8s.io/utils v0.0.0-20210819203725-bdf08cb9a70a // indirect
+	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.1.2 // indirect
 )
 

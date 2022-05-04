@@ -98,55 +98,6 @@
     target_label: role
 
 
-# Add scrape configuration for docker
-- job_name: foo-prometheus/docker-foo/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: node
-
-    api_server: https://master.foo:443
-    tls_config:
-      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: false
-  relabel_configs:
-  - target_label: __address__
-    replacement: master.foo:443
-  - source_labels: [__meta_kubernetes_node_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:9323/proxy/metrics
-  - target_label: app
-    replacement: docker
-  - source_labels: [__meta_kubernetes_node_address_InternalIP]
-    replacement: ${1}:9323
-    target_label: instance
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: foo
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  metric_relabel_configs:
-  - source_labels: [__name__]
-    regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
-    action: keep
-
 # Add scrape configuration for cadvisor
 - job_name: foo-prometheus/cadvisor-foo/0
   honor_labels: true
@@ -320,7 +271,10 @@
   scheme: https
   kubernetes_sd_configs:
   
-  - role: node
+  - role: pod
+    namespaces:
+      names:
+      - kube-system
   
 
     api_server: https://master.foo:443
@@ -336,13 +290,14 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_node_label_role]
-    regex: master
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (etcd)
     action: keep
-  - source_labels: [__address__]
-    regex: (.*):10250
-    target_label: __address__
-    replacement: ${1}:2379
+  - target_label: __address__
+    replacement: master.foo:443
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:2381/proxy/metrics
     action: replace
   - target_label: app
     replacement: etcd
@@ -432,7 +387,7 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
-    replacement: $1:10252
+    replacement: $1:10257
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-controller-manager|kube-controller-manager)
@@ -441,7 +396,7 @@
     replacement: master.foo:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10257/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
   # Add namespace label.
@@ -494,7 +449,7 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
-    replacement: $1:10251
+    replacement: $1:10259
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-scheduler|kube-scheduler)
@@ -503,7 +458,7 @@
     replacement: master.foo:443
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10259/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
   # Add namespace label.
