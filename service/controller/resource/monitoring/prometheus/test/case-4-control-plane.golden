@@ -50,6 +50,14 @@ spec:
       app.kubernetes.io/name: prometheus
       giantswarm.io/cluster: kubernetes
       giantswarm.io/monitoring: "true"
+  podMonitorNamespaceSelector:
+    matchExpressions:
+    - key: giantswarm.io/cluster
+      operator: DoesNotExist
+  podMonitorSelector:
+    matchExpressions:
+    - key: giantswarm.io/cluster
+      operator: DoesNotExist
   priorityClassName: prometheus
   remoteWrite:
   - basicAuth:
