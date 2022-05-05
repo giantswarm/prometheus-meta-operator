@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix CAPI cluster detection for legacy Management Clusters.
+
 ## [3.4.0] - 2022-05-04
 
 ### Added
