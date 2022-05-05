@@ -286,6 +286,8 @@ func IsCAPICluster(obj metav1.Object) bool {
 		return checker(v.Labels)
 	case *capiv1beta1.Cluster:
 		return checker(v.Labels)
+	default:
+		fmt.Printf("IsCAPICluster: obj is %s\n", v)
 	}
 
 	// We didn't recognize the type, we assume CAPI
