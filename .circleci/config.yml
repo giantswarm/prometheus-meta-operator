@@ -41,7 +41,7 @@ workflows:
           password_envar: "QUAY_PASSWORD"
           requires:
             - docker-build
-            - push-to-quay
+            - push-to-docker
           filters:
             tags:
               only: /^v.*/
