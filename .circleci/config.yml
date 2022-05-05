@@ -40,7 +40,6 @@ workflows:
           username_envar: "QUAY_USERNAME"
           password_envar: "QUAY_PASSWORD"
           requires:
-            - docker-build
             - push-to-docker
           filters:
             tags:
@@ -56,7 +55,7 @@ workflows:
           username_envar: "ALIYUN_USERNAME"
           password_envar: "ALIYUN_PASSWORD"
           requires:
-            - docker-build
+            - push-to-quay
             - aliyun-approval
           filters:
             tags:
