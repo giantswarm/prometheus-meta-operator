@@ -41,6 +41,7 @@ workflows:
           password_envar: "QUAY_PASSWORD"
           requires:
             - docker-build
+            - push-to-quay
           filters:
             tags:
               only: /^v.*/
@@ -69,6 +70,8 @@ workflows:
           password_envar: "ALIYUN_PASSWORD"
           requires:
             - docker-build
+            - push-to-docker
+            - push-to-quay
           filters:
             branches:
               ignore: /.*/
