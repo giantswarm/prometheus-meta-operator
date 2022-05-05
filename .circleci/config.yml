@@ -13,26 +13,34 @@ workflows:
             tags:
               only: /^v.*/
 
-      - architect/push-to-docker:
-          name: push-to-docker
-          context: "architect"
-          image: "docker.io/giantswarm/prometheus-meta-operator"
-          username_envar: "DOCKER_USERNAME"
-          password_envar: "DOCKER_PASSWORD"
+      - architect/docker-build:
+          name: docker-build
           requires:
             - build
           filters:
             tags:
               only: /^v.*/
 
-      - architect/push-to-docker:
+      - architect/docker-push:
+          name: push-to-docker
+          context: "architect"
+          image: "docker.io/giantswarm/prometheus-meta-operator"
+          username_envar: "DOCKER_USERNAME"
+          password_envar: "DOCKER_PASSWORD"
+          requires:
+            - docker-build
+          filters:
+            tags:
+              only: /^v.*/
+
+      - architect/docker-push:
           name: push-to-quay
           context: "architect"
           image: "quay.io/giantswarm/prometheus-meta-operator"
           username_envar: "QUAY_USERNAME"
           password_envar: "QUAY_PASSWORD"
           requires:
-            - build
+            - docker-build
           filters:
             tags:
               only: /^v.*/
@@ -40,14 +48,14 @@ workflows:
       - aliyun-approval:
           type: approval
 
-      - architect/push-to-docker:
+      - architect/docker-push:
           name: push-to-aliyun-pr
           context: "architect"
           image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/prometheus-meta-operator"
           username_envar: "ALIYUN_USERNAME"
           password_envar: "ALIYUN_PASSWORD"
           requires:
-            - build
+            - docker-build
             - aliyun-approval
           filters:
             tags:
@@ -60,7 +68,7 @@ workflows:
           username_envar: "ALIYUN_USERNAME"
           password_envar: "ALIYUN_PASSWORD"
           requires:
-            - build
+            - docker-build
           filters:
             branches:
               ignore: /.*/
@@ -74,7 +82,7 @@ workflows:
           app_catalog_test: "control-plane-test-catalog"
           chart: "prometheus-meta-operator"
           requires:
-            - build
+            - docker-build
           filters:
             tags:
               only: /^v.*/
