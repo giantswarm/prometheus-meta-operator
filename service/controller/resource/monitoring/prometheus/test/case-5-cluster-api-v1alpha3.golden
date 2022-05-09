@@ -32,6 +32,11 @@ spec:
       certFile: /etc/prometheus/secrets/cluster-certificates/crt
       keyFile: /etc/prometheus/secrets/cluster-certificates/key
   arbitraryFSAccessThroughSMs: {}
+  containers:
+  - name: prometheus
+    readinessProbe:
+      initialDelaySeconds: 300
+    resources: {}
   externalLabels:
     cluster_id: baz
     cluster_type: workload_cluster
