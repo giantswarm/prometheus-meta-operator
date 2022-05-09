@@ -290,8 +290,16 @@
   - source_labels: [__meta_kubernetes_node_label_role]
     regex: master
     action: keep
+  # by default use node address
   - source_labels: [__address__]
     regex: (.*):10250
+    target_label: __address__
+    replacement: ${1}:2379
+    action: replace
+
+  # if the 'ip' label is present, use the value
+  - source_labels: [__meta_kubernetes_node_label_ip]
+    regex: (.+)
     target_label: __address__
     replacement: ${1}:2379
     action: replace
