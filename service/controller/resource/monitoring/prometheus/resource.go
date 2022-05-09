@@ -257,6 +257,15 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		},
 	}
 
+	prometheus.Spec.Containers = []corev1.Container{
+		{
+			Name: "prometheus",
+			ReadinessProbe: &corev1.Probe{
+				InitialDelaySeconds: 300,
+			},
+		},
+	}
+
 	if config.RemoteWriteURL != "" {
 		remoteWriteSpec := promv1.RemoteWriteSpec{
 			URL: config.RemoteWriteURL,

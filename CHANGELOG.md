@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Add 5mn initial delay before performing readiness checks.
+
 ## [3.4.2] - 2022-05-09
 
 ### Fixed
