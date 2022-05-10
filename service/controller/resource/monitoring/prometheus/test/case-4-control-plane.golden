@@ -32,6 +32,11 @@ spec:
       cert: {}
       insecureSkipVerify: true
   arbitraryFSAccessThroughSMs: {}
+  containers:
+  - name: prometheus
+    readinessProbe:
+      initialDelaySeconds: 300
+    resources: {}
   externalLabels:
     cluster_id: kubernetes
     cluster_type: management_cluster

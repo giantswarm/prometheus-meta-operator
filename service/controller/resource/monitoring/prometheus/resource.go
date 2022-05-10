@@ -257,6 +257,19 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		},
 	}
 
+	// Add 5mn initial delay to the readinessProbe to give Prometheus more
+	// time to load data and start. This fixes the current 10mn delay set
+	// by default in prometheus-operator which results in crash looping Prometheus
+	// when there are too much data to load.
+	prometheus.Spec.Containers = []corev1.Container{
+		{
+			Name: "prometheus",
+			ReadinessProbe: &corev1.Probe{
+				InitialDelaySeconds: 300,
+			},
+		},
+	}
+
 	if config.RemoteWriteURL != "" {
 		remoteWriteSpec := promv1.RemoteWriteSpec{
 			URL: config.RemoteWriteURL,
