@@ -38,6 +38,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -93,6 +96,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -141,6 +147,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -208,6 +217,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # aws-node
 # Add etcd configuration
 - job_name: alice-prometheus/etcd-alice/0
@@ -262,6 +274,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -305,6 +320,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -370,6 +388,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # kube-scheduler
 - job_name: alice-prometheus/kubernetes-scheduler-alice/0
   honor_labels: true
@@ -432,6 +453,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # kube-proxy
 - job_name: alice-prometheus/kube-proxy-alice/0
   honor_labels: true
@@ -495,6 +519,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # coredns
 - job_name: alice-prometheus/coredns-alice/0
   honor_labels: true
@@ -560,6 +587,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # chart-operator
 - job_name: alice-prometheus/chart-operator-alice/0
   honor_labels: true
@@ -627,6 +657,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # net-exporter
 - job_name: alice-prometheus/net-exporter-alice/0
   honor_labels: true
@@ -696,6 +729,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # cert-exporter
 - job_name: alice-prometheus/cert-exporter-alice/0
   honor_labels: true
@@ -765,6 +801,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # node-exporter
 - job_name: alice-prometheus/node-exporter-alice/0
   honor_labels: true
@@ -812,6 +851,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   - source_labels: [mountpoint]
     target_label: pod_id
@@ -887,6 +929,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 
   metric_relabel_configs:
   - source_labels: [deployment]
@@ -1000,6 +1045,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -1078,3 +1126,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest

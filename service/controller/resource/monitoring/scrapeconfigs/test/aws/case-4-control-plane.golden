@@ -31,6 +31,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -69,6 +72,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -124,6 +130,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # Add scrape configuration for cadvisor
 - job_name: kubernetes-prometheus/cadvisor-kubernetes/0
   honor_labels: true
@@ -160,6 +169,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -220,6 +232,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # aws-node
 - job_name: kubernetes-prometheus/aws-node-kubernetes/0
   honor_labels: true
@@ -270,6 +285,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # Add etcd configuration
 - job_name: kubernetes-prometheus/etcd-kubernetes/0
   honor_labels: true
@@ -322,6 +340,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -358,6 +379,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -416,6 +440,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # kube-scheduler
 - job_name: kubernetes-prometheus/kubernetes-scheduler-kubernetes/0
   honor_labels: true
@@ -471,6 +498,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # kube-proxy
 - job_name: kubernetes-prometheus/kube-proxy-kubernetes/0
   honor_labels: true
@@ -527,6 +557,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # coredns
 - job_name: kubernetes-prometheus/coredns-kubernetes/0
   honor_labels: true
@@ -585,6 +618,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # chart-operator
 - job_name: kubernetes-prometheus/chart-operator-kubernetes/0
   honor_labels: true
@@ -645,6 +681,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # net-exporter
 - job_name: kubernetes-prometheus/net-exporter-kubernetes/0
   honor_labels: true
@@ -707,6 +746,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # cert-exporter
 - job_name: kubernetes-prometheus/cert-exporter-kubernetes/0
   honor_labels: true
@@ -769,6 +811,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # node-exporter
 - job_name: kubernetes-prometheus/node-exporter-kubernetes/0
   honor_labels: true
@@ -809,6 +854,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   - source_labels: [mountpoint]
     target_label: pod_id
@@ -877,6 +925,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 
 - job_name: kubernetes-prometheus/workload-kubernetes/0
   honor_labels: true
@@ -957,6 +1008,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -1077,6 +1131,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # cluster-operator
 - job_name: kubernetes-prometheus/cluster-operator-kubernetes/0
   honor_labels: true
@@ -1138,6 +1195,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # etcd-backup-operator
 - job_name: kubernetes-prometheus/etcd-backup-operator-kubernetes/0
   honor_labels: true
@@ -1204,6 +1264,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # node-operator
 - job_name: kubernetes-prometheus/node-operator-kubernetes/0
   honor_labels: true
@@ -1268,6 +1331,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # release-operator
 - job_name: kubernetes-prometheus/release-operator-kubernetes/0
   honor_labels: true
@@ -1332,6 +1398,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # organization-operator
 - job_name: kubernetes-prometheus/organization-operator-kubernetes/0
   honor_labels: true
@@ -1398,6 +1467,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # prometheus-meta-operator
 - job_name: kubernetes-prometheus/prometheus-meta-operator-kubernetes/0
   honor_labels: true
@@ -1464,6 +1536,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # rbac-operator
 - job_name: kubernetes-prometheus/rbac-operator-kubernetes/0
   honor_labels: true
@@ -1530,6 +1605,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # cert-operator
 - job_name: kubernetes-prometheus/cert-operator-kubernetes/0
   honor_labels: true
@@ -1596,6 +1674,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # draughtsman
 - job_name: kubernetes-prometheus/draughtsman-kubernetes/0
   honor_labels: true
@@ -1660,6 +1741,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # app-exporter
 - job_name: kubernetes-prometheus/app-exporter-kubernetes/0
   honor_labels: true
@@ -1726,6 +1810,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # alertmanager
 - job_name: kubernetes-prometheus/alertmanager-kubernetes/0
   honor_labels: true
@@ -1790,6 +1877,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # grafana
 - job_name: kubernetes-prometheus/grafana-kubernetes/0
   honor_labels: true
@@ -1854,6 +1944,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # fluentbit
 - job_name: kubernetes-prometheus/fluentbit-kubernetes/0
   honor_labels: true
@@ -1918,6 +2011,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # giantswarm-api
 - job_name: kubernetes-prometheus/giantswarm-api-kubernetes/0
   honor_labels: true
@@ -1981,6 +2077,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # tokend
 - job_name: kubernetes-prometheus/tokend-kubernetes/0
   honor_labels: true
@@ -2044,6 +2143,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # companyd
 - job_name: kubernetes-prometheus/companyd-kubernetes/0
   honor_labels: true
@@ -2107,6 +2209,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # userd
 - job_name: kubernetes-prometheus/userd-kubernetes/0
   honor_labels: true
@@ -2170,6 +2275,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # kubernetesd
 - job_name: kubernetes-prometheus/kubernetesd-kubernetes/0
   honor_labels: true
@@ -2233,6 +2341,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # credentiald
 - job_name: kubernetes-prometheus/credentiald-kubernetes/0
   honor_labels: true
@@ -2296,6 +2407,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # cluster-service
 - job_name: kubernetes-prometheus/cluster-service-kubernetes/0
   honor_labels: true
@@ -2359,6 +2473,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 
 
 # aws-operator
@@ -2425,6 +2542,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 
 
 
@@ -2453,6 +2573,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # vault-exporter
 - job_name: kubernetes-prometheus/vault-exporter-kubernetes/0
   honor_labels: true
@@ -2519,6 +2642,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # nginx-ingress-controller
 - job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0
   honor_labels: true
@@ -2565,6 +2691,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -2591,3 +2720,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest

@@ -11,4 +11,7 @@
 # Add installation label.
 - target_label: installation
   replacement: [[ .Installation ]]
+# Add priority label.
+- target_label: service_priority
+  replacement: [[ .ServicePriority | default "highest"]]
 [[- end -]]
