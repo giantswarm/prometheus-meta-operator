@@ -124,8 +124,8 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-# Add scrape configuration for cadvisor
-- job_name: kubernetes-prometheus/cadvisor-kubernetes/0
+# cadvisor embedded in kubelet - deprecated and to be removed
+- job_name: kubernetes-prometheus/cadvisor-kubernetes-kubelet/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -143,6 +143,49 @@
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
+  - target_label: app
+    replacement: cadvisor
+  # Add node name.
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+    target_label: node
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: management_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: kvm
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  metric_relabel_configs:
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
+    action: keep
+# cadvisor standalone deployed as a managed app
+- job_name: kubernetes-prometheus/cadvisor-kubernetes-daemonset/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: instance
+  - target_label: __address__
+    replacement: 127.0.0.1:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10260/metrics
   - target_label: app
     replacement: cadvisor
   # Add node name.

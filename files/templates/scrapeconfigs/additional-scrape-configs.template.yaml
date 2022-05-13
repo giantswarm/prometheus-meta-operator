@@ -100,8 +100,8 @@
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
 [[- end ]]
-# Add scrape configuration for cadvisor
-- job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
+# cadvisor embedded in kubelet - deprecated and to be removed
+- job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]-kubelet/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
@@ -116,6 +116,39 @@
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
+  - target_label: app
+    replacement: cadvisor
+  # Add node name.
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+    target_label: node
+[[ include "_labelingschema" . | indent 2 ]]
+[[ include "_node_role" . | indent 2 ]]
+  metric_relabel_configs:
+[[- if eq .ClusterType "management_cluster" ]]
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
+    action: keep
+[[- else ]]
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|kong.*)
+    action: keep
+[[- end ]]
+# cadvisor standalone deployed as a managed app
+- job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]-daemonset/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig" . | indent 2 ]]
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: instance
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10260/metrics
   - target_label: app
     replacement: cadvisor
   # Add node name.
