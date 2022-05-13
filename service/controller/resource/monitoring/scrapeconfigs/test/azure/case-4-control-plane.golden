@@ -34,6 +34,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -75,6 +81,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -133,6 +145,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # Add scrape configuration for cadvisor
 - job_name: kubernetes-prometheus/cadvisor-kubernetes/0
   honor_labels: true
@@ -172,6 +190,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -235,6 +259,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # aws-node
 # Add etcd configuration
 - job_name: kubernetes-prometheus/etcd-kubernetes/0
@@ -291,6 +321,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -330,6 +366,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -391,6 +433,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # kube-scheduler
 - job_name: kubernetes-prometheus/kubernetes-scheduler-kubernetes/0
   honor_labels: true
@@ -449,6 +497,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # kube-proxy
 - job_name: kubernetes-prometheus/kube-proxy-kubernetes/0
   honor_labels: true
@@ -508,6 +562,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # coredns
 - job_name: kubernetes-prometheus/coredns-kubernetes/0
   honor_labels: true
@@ -569,6 +629,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # chart-operator
 - job_name: kubernetes-prometheus/chart-operator-kubernetes/0
   honor_labels: true
@@ -632,6 +698,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # net-exporter
 - job_name: kubernetes-prometheus/net-exporter-kubernetes/0
   honor_labels: true
@@ -697,6 +769,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # cert-exporter
 - job_name: kubernetes-prometheus/cert-exporter-kubernetes/0
   honor_labels: true
@@ -762,6 +840,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # node-exporter
 - job_name: kubernetes-prometheus/node-exporter-kubernetes/0
   honor_labels: true
@@ -805,6 +889,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   metric_relabel_configs:
   - source_labels: [mountpoint]
     target_label: pod_id
@@ -876,6 +966,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 
 - job_name: kubernetes-prometheus/workload-kubernetes/0
   honor_labels: true
@@ -959,6 +1055,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   metric_relabel_configs:
   # drop metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -1082,6 +1184,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # cluster-operator
 - job_name: kubernetes-prometheus/cluster-operator-kubernetes/0
   honor_labels: true
@@ -1146,6 +1254,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # etcd-backup-operator
 - job_name: kubernetes-prometheus/etcd-backup-operator-kubernetes/0
   honor_labels: true
@@ -1215,6 +1329,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # node-operator
 - job_name: kubernetes-prometheus/node-operator-kubernetes/0
   honor_labels: true
@@ -1282,6 +1402,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # release-operator
 - job_name: kubernetes-prometheus/release-operator-kubernetes/0
   honor_labels: true
@@ -1349,6 +1475,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # organization-operator
 - job_name: kubernetes-prometheus/organization-operator-kubernetes/0
   honor_labels: true
@@ -1418,6 +1550,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # prometheus-meta-operator
 - job_name: kubernetes-prometheus/prometheus-meta-operator-kubernetes/0
   honor_labels: true
@@ -1487,6 +1625,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # rbac-operator
 - job_name: kubernetes-prometheus/rbac-operator-kubernetes/0
   honor_labels: true
@@ -1556,6 +1700,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # cert-operator
 - job_name: kubernetes-prometheus/cert-operator-kubernetes/0
   honor_labels: true
@@ -1625,6 +1775,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # draughtsman
 - job_name: kubernetes-prometheus/draughtsman-kubernetes/0
   honor_labels: true
@@ -1692,6 +1848,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # app-exporter
 - job_name: kubernetes-prometheus/app-exporter-kubernetes/0
   honor_labels: true
@@ -1761,6 +1923,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # alertmanager
 - job_name: kubernetes-prometheus/alertmanager-kubernetes/0
   honor_labels: true
@@ -1828,6 +1996,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # grafana
 - job_name: kubernetes-prometheus/grafana-kubernetes/0
   honor_labels: true
@@ -1895,6 +2069,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # fluentbit
 - job_name: kubernetes-prometheus/fluentbit-kubernetes/0
   honor_labels: true
@@ -1962,6 +2142,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # giantswarm-api
 - job_name: kubernetes-prometheus/giantswarm-api-kubernetes/0
   honor_labels: true
@@ -2028,6 +2214,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # tokend
 - job_name: kubernetes-prometheus/tokend-kubernetes/0
   honor_labels: true
@@ -2094,6 +2286,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # companyd
 - job_name: kubernetes-prometheus/companyd-kubernetes/0
   honor_labels: true
@@ -2160,6 +2358,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # userd
 - job_name: kubernetes-prometheus/userd-kubernetes/0
   honor_labels: true
@@ -2226,6 +2430,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # kubernetesd
 - job_name: kubernetes-prometheus/kubernetesd-kubernetes/0
   honor_labels: true
@@ -2292,6 +2502,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # credentiald
 - job_name: kubernetes-prometheus/credentiald-kubernetes/0
   honor_labels: true
@@ -2358,6 +2574,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # cluster-service
 - job_name: kubernetes-prometheus/cluster-service-kubernetes/0
   honor_labels: true
@@ -2424,6 +2646,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 
 
 
@@ -2494,6 +2722,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # azure-collector
 - job_name: kubernetes-prometheus/azure-collector-kubernetes/0
   honor_labels: true
@@ -2548,6 +2782,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 
 
 - job_name: kubernetes-prometheus/vault-kubernetes/0
@@ -2578,6 +2818,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # vault-exporter
 - job_name: kubernetes-prometheus/vault-exporter-kubernetes/0
   honor_labels: true
@@ -2647,6 +2893,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # nginx-ingress-controller
 - job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0
   honor_labels: true
@@ -2696,6 +2948,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -2725,3 +2983,9 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo

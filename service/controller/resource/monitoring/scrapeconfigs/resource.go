@@ -29,6 +29,7 @@ type Config struct {
 
 	AdditionalScrapeConfigs   string
 	Bastions                  []string
+	Customer                  string
 	Installation              string
 	Provider                  string
 	Mayu                      string
@@ -45,6 +46,8 @@ type TemplateData struct {
 	ClusterID                 string
 	ClusterType               string
 	ServicePriority           string
+	Customer                  string
+	Organization              string
 	SecretName                string
 	EtcdSecretName            string
 	Installation              string
@@ -160,6 +163,7 @@ func toData(v interface{}, config Config) ([]byte, error) {
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
 	clusterID := key.ClusterID(cluster)
+	organization := cluster.GetLabels()["giantswarm.io/organization"]
 
 	var servicePriority string = "highest"
 	if priority, ok := cluster.GetLabels()["giantswarm.io/service-priority"]; ok {
@@ -173,6 +177,8 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		ClusterID:                 clusterID,
 		ClusterType:               key.ClusterType(config.Installation, cluster),
 		ServicePriority:           servicePriority,
+		Customer:                  config.Customer,
+		Organization:              organization,
 		Provider:                  config.Provider,
 		Installation:              config.Installation,
 		SecretName:                key.Secret(),
