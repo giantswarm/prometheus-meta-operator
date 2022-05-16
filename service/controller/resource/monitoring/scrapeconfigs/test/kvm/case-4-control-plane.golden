@@ -198,11 +198,11 @@
   # Add node name.
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
-  - source_labels: [__meta_kubernetes_namespace]
+  - source_labels: [container_label_io_kubernetes_pod_namespace]
     target_label: namespace
-  - source_labels: [__meta_kubernetes_pod_name]
+  - source_labels: [container_label_io_kubernetes_pod_name]
     target_label: pod
-  - source_labels: [__meta_kubernetes_pod_container_name]
+  - source_labels: [container_label_io_kubernetes_container_name]
     target_label: container
   # Add cluster_id label.
   - target_label: cluster_id
