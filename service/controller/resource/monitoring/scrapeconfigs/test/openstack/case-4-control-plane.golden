@@ -196,7 +196,7 @@
   - target_label: app
     replacement: cadvisor
   # Add node name.
-  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+  - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
   # Add cluster_id label.
   - target_label: cluster_id
@@ -210,11 +210,8 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
   metric_relabel_configs:
-  - source_labels: [namespace]
+  - source_labels: [__meta_kubernetes_namespace]
     regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
     action: keep
 # calico-node
