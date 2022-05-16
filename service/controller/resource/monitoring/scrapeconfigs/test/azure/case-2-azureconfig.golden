@@ -207,11 +207,9 @@
     target_label: container
   - regex: container_label_.*
     action: labeldrop
-#
-#  - source_labels: [namespace]
-#    regex: (kube-system|giantswarm.*|kong.*)
-#    action: keep
-#
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|kong.*)
+    action: keep
 # calico-node
 - job_name: foo-prometheus/calico-node-foo/0
   honor_labels: true

@@ -171,15 +171,15 @@
     target_label: container
   - regex: container_label_.*
     action: labeldrop
-#[[- if eq .ClusterType "management_cluster" ]]
-#  - source_labels: [namespace]
-#    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
-#    action: keep
-#[[- else ]]
-#  - source_labels: [namespace]
-#    regex: (kube-system|giantswarm.*|kong.*)
-#    action: keep
-#[[- end ]]
+[[- if eq .ClusterType "management_cluster" ]]
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
+    action: keep
+[[- else ]]
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|kong.*)
+    action: keep
+[[- end ]]
 # calico-node
 - job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
   honor_labels: true
