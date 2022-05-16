@@ -150,12 +150,14 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  metric_relabel_configs:
-  - regex: container_label_.*
-    action: labeldrop
-  - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|kong.*)
-    action: keep
+#  metric_relabel_configs:
+#  - regex: container_label_.*
+#    action: labeldrop
+#
+#  - source_labels: [namespace]
+#    regex: (kube-system|giantswarm.*|kong.*)
+#    action: keep
+#
 # calico-node
 - job_name: baz-prometheus/calico-node-baz/0
   honor_labels: true
