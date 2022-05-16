@@ -161,10 +161,12 @@
   # Add node name.
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
 [[ include "_labelingschema" . | indent 2 ]]
   metric_relabel_configs:
 [[- if eq .ClusterType "management_cluster" ]]
-  - source_labels: [__meta_kubernetes_namespace]
+  - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
     action: keep
 [[- else ]]

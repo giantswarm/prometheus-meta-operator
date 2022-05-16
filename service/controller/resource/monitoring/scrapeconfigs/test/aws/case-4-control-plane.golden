@@ -198,6 +198,8 @@
   # Add node name.
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: kubernetes
@@ -211,7 +213,7 @@
   - target_label: installation
     replacement: test-installation
   metric_relabel_configs:
-  - source_labels: [__meta_kubernetes_namespace]
+  - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
     action: keep
 # calico-node
