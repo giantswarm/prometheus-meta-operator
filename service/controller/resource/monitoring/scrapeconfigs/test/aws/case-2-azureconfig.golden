@@ -155,7 +155,7 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  - role: node
+  - role: pod
 
     api_server: https://master.foo:443
     tls_config:
@@ -170,12 +170,17 @@
     insecure_skip_verify: false
   relabel_configs:
   - source_labels: [__address__]
+    replacement: ${1}:10260
     target_label: instance
   - target_label: __address__
     replacement: master.foo:443
-  - source_labels: [__meta_kubernetes_node_name]
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (cadvisor.*)
     target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:10260/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10260/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;cadvisor.*
+    action: keep
   - target_label: app
     replacement: cadvisor
   # Add node name.
