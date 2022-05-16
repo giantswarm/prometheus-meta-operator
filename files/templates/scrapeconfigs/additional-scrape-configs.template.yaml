@@ -169,7 +169,7 @@
     target_label: container
 [[ include "_labelingschema" . | indent 2 ]]
   metric_relabel_configs:
-  - source_labels: [container_label_annotation_io_kubernetes_container_hash,container_label_annotation_io_kubernetes_container_ports,container_label_annotation_io_kubernetes_container_restartCount,container_label_annotation_io_kubernetes_container_terminationMessagePath,container_label_annotation_io_kubernetes_container_terminationMessagePolicy,container_label_annotation_io_kubernetes_pod_terminationGracePeriod,container_label_io_kubernetes_container_logpath, container_label_io_kubernetes_docker_type,container_label_io_kubernetes_pod_namespace,container_label_io_kubernetes_pod_uid,container_label_io_kubernetes_sandbox_id]
+  - regex: container_label_.*
     action: labeldrop
 [[- if eq .ClusterType "management_cluster" ]]
   - source_labels: [namespace]
