@@ -116,7 +116,7 @@
     insecure_skip_verify: false
   relabel_configs:
   - source_labels: [__address__]
-    replacement: ${1}:10260
+    replacement: ${1}
     target_label: instance
   - target_label: __address__
     replacement: master.alice:443
