@@ -146,6 +146,7 @@
 - job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]-daemonset/0
   honor_labels: true
   scheme: https
+  scrape_timeout: 60s
   kubernetes_sd_configs:
   - role: pod
 [[ include "_apiserver" . ]]

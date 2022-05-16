@@ -100,6 +100,7 @@
 - job_name: foo-prometheus/cadvisor-foo-daemonset/0
   honor_labels: true
   scheme: https
+  scrape_timeout: 60s
   kubernetes_sd_configs:
   - role: pod
 
