@@ -38,6 +38,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -87,6 +90,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -154,6 +160,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # aws-node
 # Add etcd configuration
 - job_name: foo-prometheus/etcd-foo/0
@@ -208,6 +217,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -251,6 +263,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -316,6 +331,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # kube-scheduler
 - job_name: foo-prometheus/kubernetes-scheduler-foo/0
   honor_labels: true
@@ -378,6 +396,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # kube-proxy
 - job_name: foo-prometheus/kube-proxy-foo/0
   honor_labels: true
@@ -441,6 +462,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # coredns
 - job_name: foo-prometheus/coredns-foo/0
   honor_labels: true
@@ -506,6 +530,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # chart-operator
 - job_name: foo-prometheus/chart-operator-foo/0
   honor_labels: true
@@ -573,6 +600,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # net-exporter
 - job_name: foo-prometheus/net-exporter-foo/0
   honor_labels: true
@@ -642,6 +672,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # cert-exporter
 - job_name: foo-prometheus/cert-exporter-foo/0
   honor_labels: true
@@ -711,6 +744,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 # node-exporter
 - job_name: foo-prometheus/node-exporter-foo/0
   honor_labels: true
@@ -758,6 +794,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
   metric_relabel_configs:
   - source_labels: [mountpoint]
     target_label: pod_id
@@ -833,6 +872,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
 
   metric_relabel_configs:
   - source_labels: [deployment]
@@ -946,6 +988,9 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
   metric_relabel_configs:
   # drop metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -1024,3 +1069,6 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
