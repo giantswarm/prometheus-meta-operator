@@ -19,6 +19,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 		config := Config{
 			TemplatePath: path,
 			Provider:     "aws",
+			Customer:     "pmo",
 			Vault:        "vault1.some-installation.test",
 			Installation: "test-installation",
 		}
@@ -58,6 +59,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 		config := Config{
 			TemplatePath: path,
 			Provider:     "azure",
+			Customer:     "pmo",
 			Vault:        "vault1.some-installation.test",
 			Installation: "test-installation",
 		}
@@ -113,6 +115,7 @@ func TestKVMScrapeconfigs(t *testing.T) {
 			AdditionalScrapeConfigs: additionalScrapeConfigs,
 			TemplatePath:            path,
 			Provider:                "kvm",
+			Customer:                "pmo",
 			Vault:                   "vault1.some-installation.test",
 			Installation:            "test-installation",
 		}
@@ -153,6 +156,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 			AdditionalScrapeConfigs: additionalScrapeConfigs,
 			TemplatePath:            path,
 			Provider:                "openstack",
+			Customer:                "pmo",
 			Vault:                   "vault1.some-installation.test",
 			Installation:            "test-installation",
 		}

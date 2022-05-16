@@ -41,6 +41,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -99,6 +105,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -150,6 +162,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -220,6 +238,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # aws-node
 - job_name: bar-prometheus/aws-node-bar/0
   honor_labels: true
@@ -280,6 +304,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # Add etcd configuration
 - job_name: bar-prometheus/etcd-bar/0
   honor_labels: true
@@ -336,6 +366,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -382,6 +418,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -450,6 +492,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # kube-scheduler
 - job_name: bar-prometheus/kubernetes-scheduler-bar/0
   honor_labels: true
@@ -515,6 +563,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # kube-proxy
 - job_name: bar-prometheus/kube-proxy-bar/0
   honor_labels: true
@@ -581,6 +635,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # coredns
 - job_name: bar-prometheus/coredns-bar/0
   honor_labels: true
@@ -649,6 +709,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # chart-operator
 - job_name: bar-prometheus/chart-operator-bar/0
   honor_labels: true
@@ -719,6 +785,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # net-exporter
 - job_name: bar-prometheus/net-exporter-bar/0
   honor_labels: true
@@ -791,6 +863,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # cert-exporter
 - job_name: bar-prometheus/cert-exporter-bar/0
   honor_labels: true
@@ -863,6 +941,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 # node-exporter
 - job_name: bar-prometheus/node-exporter-bar/0
   honor_labels: true
@@ -913,6 +997,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   metric_relabel_configs:
   - source_labels: [mountpoint]
     target_label: pod_id
@@ -991,6 +1081,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 
   metric_relabel_configs:
   - source_labels: [deployment]
@@ -1107,6 +1203,12 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
   metric_relabel_configs:
   # drop metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -1188,3 +1290,9 @@
   # Add priority label.
   - target_label: service_priority
     replacement: lowest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo

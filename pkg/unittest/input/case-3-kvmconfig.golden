@@ -3,4 +3,5 @@ kind: KVMConfig
 metadata:
   labels:
     "giantswarm.io/service-priority": "lowest"
+    giantswarm.io/organization: my-organization
   name: bar

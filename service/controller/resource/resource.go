@@ -193,6 +193,7 @@ func New(config Config) ([]resource.Interface, error) {
 
 			AdditionalScrapeConfigs: config.AdditionalScrapeConfigs,
 			Bastions:                config.Bastions,
+			Customer:                config.Customer,
 			Provider:                config.Provider,
 			Installation:            config.Installation,
 		}
