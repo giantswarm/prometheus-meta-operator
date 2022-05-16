@@ -138,19 +138,11 @@
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
-  # by default use node address
-  - source_labels: [__address__]
-    regex: (.*):10260
-    target_label: __address__
-    replacement: ${1}:10260
-    action: replace
-  
-  # if the 'ip' label is present, use the value
-  - source_labels: [__meta_kubernetes_node_label_ip]
-    regex: (.+)
-    target_label: __address__
-    replacement: ${1}:2379
-    action: replace
+  - target_label: __address__
+    replacement: 127.0.0.1:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
   - target_label: app
     replacement: cadvisor
   # Add node name.
