@@ -132,12 +132,6 @@
   # Add node name.
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
-  - source_labels: [container_label_io_kubernetes_pod_namespace]
-    target_label: namespace
-  - source_labels: [container_label_io_kubernetes_pod_name]
-    target_label: pod
-  - source_labels: [container_label_io_kubernetes_container_name]
-    target_label: container
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: baz
@@ -150,9 +144,15 @@
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-#  metric_relabel_configs:
-#  - regex: container_label_.*
-#    action: labeldrop
+  metric_relabel_configs:
+  - source_labels: [container_label_io_kubernetes_pod_namespace]
+    target_label: namespace
+  - source_labels: [container_label_io_kubernetes_pod_name]
+    target_label: pod
+  - source_labels: [container_label_io_kubernetes_container_name]
+    target_label: container
+  - regex: container_label_.*
+    action: labeldrop
 #
 #  - source_labels: [namespace]
 #    regex: (kube-system|giantswarm.*|kong.*)
