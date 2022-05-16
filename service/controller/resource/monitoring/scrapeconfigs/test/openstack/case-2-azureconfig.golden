@@ -134,6 +134,10 @@
     target_label: node
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
+  - source_labels: [container_label_io_kubernetes_pod_name]
+    target_label: pod
+  - source_labels: [container_label_io_kubernetes_container_name]
+    target_label: container
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: foo
@@ -147,6 +151,8 @@
   - target_label: installation
     replacement: test-installation
   metric_relabel_configs:
+  - source_labels: [container_label_annotation_io_kubernetes_container_hash,container_label_annotation_io_kubernetes_container_ports,container_label_annotation_io_kubernetes_container_restartCount,container_label_annotation_io_kubernetes_container_terminationMessagePath,container_label_annotation_io_kubernetes_container_terminationMessagePolicy,container_label_annotation_io_kubernetes_pod_terminationGracePeriod,container_label_io_kubernetes_container_logpath, container_label_io_kubernetes_docker_type,container_label_io_kubernetes_pod_namespace,container_label_io_kubernetes_pod_uid,container_label_io_kubernetes_sandbox_id]
+    action: labeldrop
   - source_labels: [__meta_kubernetes_namespace]
     regex: (kube-system|giantswarm.*|kong.*)
     action: keep
