@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add Cluster Service Priority label.
 - Add customer and organization label to metrics.
+- Add VCD provider.
 
 ## [3.4.3] - 2022-05-10
 
