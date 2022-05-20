@@ -276,50 +276,17 @@ func New(config Config) (*Service, error) {
 
 	var remotewriteController *remotewrite.Controller
 	{
-		if shouldCreateCAPIController(provider) {
-			c := remotewrite.ControllerConfig{
-				K8sClient:        k8sClient,
-				Logger:           config.Logger,
-				PrometheusClient: prometheusClient,
-				VpaClient:        vpaClient,
-
-				HTTPProxy:  os.Getenv("HTTP_PROXY"),
-				HTTPSProxy: os.Getenv("HTTPS_PROXY"),
-				NoProxy:    os.Getenv("NO_PROXY"),
-
-				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
-				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
-				Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
-				Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-				Provider:                provider,
-				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
-				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
-				IngressAPIVersion:       config.Viper.GetString(config.Flag.Service.Installation.IngressAPIVersion),
-
-				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-
-				PrometheusAddress:             config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-				PrometheusBaseDomain:          config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				PrometheusCreatePVC:           config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
-				PrometheusStorageSize:         config.Viper.GetString(config.Flag.Service.Prometheus.Storage.Size),
-				PrometheusLogLevel:            config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-				PrometheusRemoteWriteURL:      config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.URL),
-				PrometheusRemoteWriteUsername: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Username),
-				PrometheusRemoteWritePassword: config.Viper.GetString(config.Flag.Service.Prometheus.RemoteWrite.BasicAuth.Password),
-				PrometheusRetentionDuration:   config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				PrometheusRetentionSize:       config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-				PrometheusVersion:             config.Viper.GetString(config.Flag.Service.Prometheus.Version),
-
-				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
-				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
-			}
-
-			remotewriteController, err = remotewrite.NewController(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
+		c := remotewrite.ControllerConfig{
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
 		}
+
+		remotewriteController, err = remotewrite.NewController(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
 	}
 
 	var versionService *version.Service
