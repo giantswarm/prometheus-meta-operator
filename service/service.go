@@ -26,7 +26,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/legacy"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/managementcluster"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/remotewrite"
 )
 
 // Config represents the configuration used to create a new service.
@@ -44,7 +43,6 @@ type Service struct {
 	legacyController            *legacy.Controller
 	clusterapiController        *clusterapi.Controller
 	managementclusterController *managementcluster.Controller
-	remotewriteController       *remotewrite.Controller
 }
 
 // New creates a new configured service object.
@@ -274,21 +272,6 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var remotewriteController *remotewrite.Controller
-	{
-		c := remotewrite.ControllerConfig{
-			K8sClient:        k8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: prometheusClient,
-		}
-
-		remotewriteController, err = remotewrite.NewController(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-	}
-
 	var versionService *version.Service
 	{
 		c := version.Config{
@@ -313,7 +296,6 @@ func New(config Config) (*Service, error) {
 		legacyController:            legacyController,
 		clusterapiController:        clusterapiController,
 		managementclusterController: managementclusterController,
-		remotewriteController:       remotewriteController,
 	}
 
 	return s, nil
