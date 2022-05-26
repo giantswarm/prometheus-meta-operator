@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add remotewrite controller.
 
+### Fixed
+
+- dependencies updates
+- fix build by ignoring CVEs we can't fix for the moment
+
 ## [3.5.0] - 2022-05-17
 
 ### Added
