@@ -66,6 +66,19 @@ $ git merge --ff-only alertmanager-0.22.2
 $ git push
 ```
 
+# remoteWrite CRs
+
+Prometheus-meta-operator also manages remoteWrite custom resources.
+
+
+## remoteWrite CRDs
+
+Code for remoteWrite CRDs is in the `api/v1alpha1/` directory.
+
+The actual CRDs are in `config/crd/monitoring.giantswarm.io_remotewrites.yaml`
+
+To generate the CRDs from code, just use `make generate`.
+
 
 [operatorkit]: https://github.com/giantswarm/operatorkit
 [prometheus-operator]: https://github.com/prometheus-operator/prometheus-operator
