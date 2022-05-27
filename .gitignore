@@ -2,3 +2,4 @@
 TODO
 /prometheus-meta-operator
 !vendor/**
+.idea/
