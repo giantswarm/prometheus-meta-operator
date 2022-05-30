@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - dependencies updates
 - fix build by ignoring CVEs we can't fix for the moment
+- Upgrade docker image from Alpine 3.15.1 to Alpine 3.16.0
 
 ### Added
 
