@@ -159,7 +159,6 @@ func New(config Config) ([]resource.Interface, error) {
 			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
 			RetentionSize:     config.PrometheusRetentionSize,
-			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
 			HTTPProxy:         config.HTTPProxy,
 			HTTPSProxy:        config.HTTPSProxy,
 			NoProxy:           config.NoProxy,

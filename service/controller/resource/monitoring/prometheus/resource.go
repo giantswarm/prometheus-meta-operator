@@ -40,7 +40,6 @@ type Config struct {
 	LogLevel          string
 	RetentionDuration string
 	RetentionSize     string
-	RemoteWriteURL    string
 	Version           string
 
 	HTTPProxy  string
@@ -376,6 +375,13 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		}
 	}
 
+	if config.PrometheusClient != nil {
+		err = currentRemoteWrite(ctx, config, prometheus)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	return prometheus, nil
 }
 
@@ -384,4 +390,14 @@ func hasChanged(current, desired metav1.Object) bool {
 	d := desired.(*promv1.Prometheus)
 
 	return !cmp.Equal(c.Spec, d.Spec, cmpopts.EquateEmpty(), cmpopts.IgnoreFields(promv1.PrometheusSpec{}, "RemoteWrite"))
+}
+
+// Fetch current Prometheus CR and update RemoteWrite field
+func currentRemoteWrite(ctx context.Context, config Config, p *promv1.Prometheus) error {
+	current, err := config.PrometheusClient.MonitoringV1().Prometheuses(p.Namespace).Get(ctx, p.Name, metav1.GetOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	p.Spec.RemoteWrite = current.Spec.RemoteWrite
+	return nil
 }
