@@ -389,12 +389,12 @@ func hasChanged(current, desired metav1.Object) bool {
 	c := current.(*promv1.Prometheus)
 	d := desired.(*promv1.Prometheus)
 
-	return !cmp.Equal(c.Spec, d.Spec, cmpopts.EquateEmpty(), cmpopts.IgnoreFields(promv1.PrometheusSpec{}, "RemoteWrite"))
+	return !cmp.Equal(c.Spec, d.Spec, cmpopts.IgnoreFields(promv1.PrometheusSpec{}, "RemoteWrite"))
 }
 
 // Fetch current Prometheus CR and update RemoteWrite field
 func currentRemoteWrite(ctx context.Context, config Config, p *promv1.Prometheus) error {
-	current, err := config.PrometheusClient.MonitoringV1().Prometheuses(p.Namespace).Get(ctx, p.Name, metav1.GetOptions{})
+	current, err := config.PrometheusClient.MonitoringV1().Prometheuses(p.GetNamespace()).Get(ctx, p.GetName(), metav1.GetOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
