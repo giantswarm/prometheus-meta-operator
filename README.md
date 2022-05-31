@@ -79,6 +79,10 @@ The actual CRDs are in `config/crd/monitoring.giantswarm.io_remotewrites.yaml`
 
 To generate the CRDs from code, just use `make generate`.
 
+## Deployment
+
+CRDs deployment is managed within the helm chart.
+The remoteWrite CRD is located under the chart's templates directory as a symbolic link to the generated yaml file. 
 
 [operatorkit]: https://github.com/giantswarm/operatorkit
 [prometheus-operator]: https://github.com/prometheus-operator/prometheus-operator
