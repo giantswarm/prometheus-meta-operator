@@ -3,11 +3,11 @@ package prometheus
 import (
 	"fmt"
 	"net/url"
-	"reflect"
-	"strings"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/google/go-cmp/cmp"
+	"github.com/google/go-cmp/cmp/cmpopts"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"golang.org/x/net/context"
@@ -40,7 +40,6 @@ type Config struct {
 	LogLevel          string
 	RetentionDuration string
 	RetentionSize     string
-	RemoteWriteURL    string
 	Version           string
 
 	HTTPProxy  string
@@ -270,54 +269,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		},
 	}
 
-	if config.RemoteWriteURL != "" {
-		remoteWriteSpec := promv1.RemoteWriteSpec{
-			URL: config.RemoteWriteURL,
-			BasicAuth: &promv1.BasicAuth{
-				Username: corev1.SecretKeySelector{
-					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteSecretName(),
-					},
-					Key: key.RemoteWriteUsernameKey(),
-				},
-				Password: corev1.SecretKeySelector{
-					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteSecretName(),
-					},
-					Key: key.RemoteWritePasswordKey(),
-				},
-			},
-			// Our current Ingestion Rate Limit is set to 100K samples per second
-			QueueConfig: &promv1.QueueConfig{
-				// Capacity controls how many samples are queued in memory per shard before blocking reading from the WAL.
-				// We set it to 10000 (default: 2500) to support bigger installations
-				Capacity: 10000,
-				// (default: 500)
-				MaxSamplesPerSend: 1000,
-				// We set it to 10 (default: 1) to prevent the initial shard scale up
-				MinShards: 10,
-			},
-			Name: key.ClusterID(cluster),
-			WriteRelabelConfigs: []promv1.RelabelConfig{
-				{
-					SourceLabels: []string{"__name__"},
-					Regex:        "(^aggregation:.+|prometheus_tsdb_head_series|prometheus_tsdb_head_samples_appended_total|^slo_.+)",
-					Action:       "keep",
-				},
-			},
-		}
-
-		if !strings.Contains(config.NoProxy, config.RemoteWriteURL) {
-			if len(config.HTTPSProxy) > 0 {
-				remoteWriteSpec.ProxyURL = config.HTTPSProxy
-			} else if len(config.HTTPProxy) > 0 {
-				remoteWriteSpec.ProxyURL = config.HTTPProxy
-			}
-		}
-
-		prometheus.Spec.RemoteWrite = []promv1.RemoteWriteSpec{remoteWriteSpec}
-	}
-
 	if !key.IsInCluster(config.Installation, cluster) {
 		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
@@ -424,6 +375,13 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		}
 	}
 
+	if config.PrometheusClient != nil {
+		err = currentRemoteWrite(ctx, config, prometheus)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	return prometheus, nil
 }
 
@@ -431,5 +389,15 @@ func hasChanged(current, desired metav1.Object) bool {
 	c := current.(*promv1.Prometheus)
 	d := desired.(*promv1.Prometheus)
 
-	return !reflect.DeepEqual(c.Spec, d.Spec)
+	return !cmp.Equal(c.Spec, d.Spec, cmpopts.IgnoreFields(promv1.PrometheusSpec{}, "RemoteWrite"))
+}
+
+// Fetch current Prometheus CR and update RemoteWrite field
+func currentRemoteWrite(ctx context.Context, config Config, p *promv1.Prometheus) error {
+	current, err := config.PrometheusClient.MonitoringV1().Prometheuses(p.GetNamespace()).Get(ctx, p.GetName(), metav1.GetOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	p.Spec.RemoteWrite = current.Spec.RemoteWrite
+	return nil
 }

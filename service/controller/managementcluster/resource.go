@@ -19,7 +19,6 @@ import (
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/prometheus"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/namespace"
@@ -59,17 +58,14 @@ type resourcesConfig struct {
 	SlackApiURL             string
 	SlackProjectName        string
 
-	PrometheusAddress             string
-	PrometheusBaseDomain          string
-	PrometheusCreatePVC           bool
-	PrometheusStorageSize         string
-	PrometheusLogLevel            string
-	PrometheusRemoteWriteURL      string
-	PrometheusRemoteWriteUsername string
-	PrometheusRemoteWritePassword string
-	PrometheusRetentionDuration   string
-	PrometheusRetentionSize       string
-	PrometheusVersion             string
+	PrometheusAddress           string
+	PrometheusBaseDomain        string
+	PrometheusCreatePVC         bool
+	PrometheusStorageSize       string
+	PrometheusLogLevel          string
+	PrometheusRetentionDuration string
+	PrometheusRetentionSize     string
+	PrometheusVersion           string
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
@@ -193,21 +189,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var remoteWriteConfigResource resource.Interface
-	{
-		c := remotewriteconfig.Config{
-			K8sClient:           config.K8sClient,
-			Logger:              config.Logger,
-			RemoteWriteUsername: config.PrometheusRemoteWriteUsername,
-			RemoteWritePassword: config.PrometheusRemoteWritePassword,
-		}
-
-		remoteWriteConfigResource, err = remotewriteconfig.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
@@ -226,7 +207,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
 			RetentionSize:     config.PrometheusRetentionSize,
-			RemoteWriteURL:    config.PrometheusRemoteWriteURL,
 			HTTPProxy:         config.HTTPProxy,
 			HTTPSProxy:        config.HTTPSProxy,
 			NoProxy:           config.NoProxy,
@@ -326,7 +306,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
 		scrapeConfigResource,
-		remoteWriteConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
 		monitoringIngressResource,

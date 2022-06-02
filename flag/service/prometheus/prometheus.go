@@ -9,7 +9,6 @@ type Prometheus struct {
 	Mayu                    string
 	Storage                 PrometheusStorage
 	Retention               PrometheusRetention
-	RemoteWrite             PrometheusRemoteWrite
 	Version                 string
 }
 
@@ -21,11 +20,6 @@ type PrometheusStorage struct {
 type PrometheusRetention struct {
 	Duration string
 	Size     string
-}
-
-type PrometheusRemoteWrite struct {
-	URL       string
-	BasicAuth PrometheusRemoteWriteBasicAuth
 }
 
 type PrometheusRemoteWriteBasicAuth struct {

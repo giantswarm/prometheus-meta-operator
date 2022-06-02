@@ -56,25 +56,6 @@ spec:
       giantswarm.io/cluster: alice
       giantswarm.io/monitoring: "true"
   priorityClassName: prometheus
-  remoteWrite:
-  - basicAuth:
-      password:
-        key: password
-        name: remote-write
-      username:
-        key: username
-        name: remote-write
-    name: alice
-    queueConfig:
-      capacity: 10000
-      maxSamplesPerSend: 1000
-      minShards: 10
-    url: http://grafana/api/prom/push
-    writeRelabelConfigs:
-    - action: keep
-      regex: (^aggregation:.+|prometheus_tsdb_head_series|prometheus_tsdb_head_samples_appended_total|^slo_.+)
-      sourceLabels:
-      - __name__
   replicas: 1
   resources:
     limits:
