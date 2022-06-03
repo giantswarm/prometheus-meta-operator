@@ -311,24 +311,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 			},
 		}
-
-		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      "nonexistentkey",
-					Operator: metav1.LabelSelectorOpExists,
-				},
-			},
-		}
-
-		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      "nonexistentkey",
-					Operator: metav1.LabelSelectorOpExists,
-				},
-			},
-		}
 	} else {
 		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
@@ -356,40 +338,24 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			},
 		}
 
+		// An empty label selector matches all objects.
 		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      "giantswarm.io/cluster",
-					Operator: metav1.LabelSelectorOpDoesNotExist,
-				},
-			},
+			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 
+		// An empty label selector matches all objects.
 		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      "giantswarm.io/cluster",
-					Operator: metav1.LabelSelectorOpDoesNotExist,
-				},
-			},
+			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 
+		// An empty label selector matches all objects.
 		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      "giantswarm.io/cluster",
-					Operator: metav1.LabelSelectorOpDoesNotExist,
-				},
-			},
+			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 
+		// An empty label selector matches all objects.
 		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      "giantswarm.io/cluster",
-					Operator: metav1.LabelSelectorOpDoesNotExist,
-				},
-			},
+			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 	}
 

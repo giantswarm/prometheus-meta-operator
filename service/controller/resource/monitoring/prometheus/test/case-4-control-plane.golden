@@ -55,14 +55,8 @@ spec:
       app.kubernetes.io/name: prometheus
       giantswarm.io/cluster: kubernetes
       giantswarm.io/monitoring: "true"
-  podMonitorNamespaceSelector:
-    matchExpressions:
-    - key: giantswarm.io/cluster
-      operator: DoesNotExist
-  podMonitorSelector:
-    matchExpressions:
-    - key: giantswarm.io/cluster
-      operator: DoesNotExist
+  podMonitorNamespaceSelector: {}
+  podMonitorSelector: {}
   priorityClassName: prometheus
   replicas: 1
   resources:
@@ -93,14 +87,8 @@ spec:
     runAsGroup: 65534
     runAsNonRoot: true
     runAsUser: 1000
-  serviceMonitorNamespaceSelector:
-    matchExpressions:
-    - key: giantswarm.io/cluster
-      operator: DoesNotExist
-  serviceMonitorSelector:
-    matchExpressions:
-    - key: giantswarm.io/cluster
-      operator: DoesNotExist
+  serviceMonitorNamespaceSelector: {}
+  serviceMonitorSelector: {}
   storage:
     volumeClaimTemplate:
       metadata: {}
