@@ -311,6 +311,24 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 			},
 		}
+
+		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				{
+					Key:      "nonexistentkey",
+					Operator: metav1.LabelSelectorOpExists,
+				},
+			},
+		}
+
+		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
+			MatchExpressions: []metav1.LabelSelectorRequirement{
+				{
+					Key:      "nonexistentkey",
+					Operator: metav1.LabelSelectorOpExists,
+				},
+			},
+		}
 	} else {
 		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{

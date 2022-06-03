@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add remotewrite controller.
 - Deployment of remoteWrite CRD in Helm chart
 - Ignore remotewrite field when updating prometheus CR.
+- Add `PodMonitor` support for workload cluster Prometheus.
 
 ### Fixed
 
