@@ -55,6 +55,14 @@ spec:
       app.kubernetes.io/name: prometheus
       giantswarm.io/cluster: baz
       giantswarm.io/monitoring: "true"
+  podMonitorNamespaceSelector:
+    matchExpressions:
+    - key: nonexistentkey
+      operator: Exists
+  podMonitorSelector:
+    matchExpressions:
+    - key: nonexistentkey
+      operator: Exists
   priorityClassName: prometheus
   replicas: 1
   resources:
