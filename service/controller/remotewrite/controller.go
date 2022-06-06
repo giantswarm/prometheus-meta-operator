@@ -5,8 +5,12 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller"
+	"github.com/giantswarm/operatorkit/v7/pkg/resource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 
+	"sigs.k8s.io/controller-runtime/pkg/client"
+
+	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
 )
 
@@ -23,14 +27,23 @@ type Controller struct {
 func NewController(config ControllerConfig) (*Controller, error) {
 	var err error
 
+	var resources []resource.Interface
+	{
+		resources, err = newResources(config)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
 	var operatorkitController *controller.Controller
 	{
 		c := controller.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Name:      project.Name() + "-remote-write-controller",
-
-			//Resources: resources,
+			NewRuntimeObjectFunc: func() client.Object {
+				return new(pmov1alpha1.RemoteWrite)
+			},
+			Resources: resources,
 		}
 
 		operatorkitController, err = controller.New(c)
