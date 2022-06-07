@@ -20,6 +20,7 @@ type RemoteWriteSpec struct {
 	ClusterSelector metav1.LabelSelector `json:"clusterSelector"`
 }
 
+// +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type RemoteWriteList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata"`
