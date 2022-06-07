@@ -4,6 +4,7 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"github.com/google/go-cmp/cmp"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 
@@ -40,15 +41,9 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toPrometheusRemoteWrite(r pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, error) {
+func toPrometheusRemoteWrite(r pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
 
-	if p.Spec.RemoteWrite != nil {
-		p.Spec.RemoteWrite = append(p.Spec.RemoteWrite, r.Spec.RemotWrite)
-	} else {
-		p.Spec.RemoteWrite = []promv1.RemoteWriteSpec{r.Spec.RemotWrite}
-	}
-
-	return &p, nil
+	return ensurePrometheusRemoteWrite(r, p)
 }
 
 func ToRemoteWrite(obj interface{}) (pmov1alpha1.RemoteWrite, error) {
@@ -58,4 +53,34 @@ func ToRemoteWrite(obj interface{}) (pmov1alpha1.RemoteWrite, error) {
 	}
 
 	return remotewrite, nil
+}
+
+func ensurePrometheusRemoteWrite(r pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
+	r.Spec.RemotWrite.Name = r.GetName()
+	if p.Spec.RemoteWrite != nil {
+		if rwIndex, ok := isRemoteWriteExists(r.GetName(), p.Spec.RemoteWrite); !ok { // item not found
+			p.Spec.RemoteWrite = append(p.Spec.RemoteWrite, r.Spec.RemotWrite)
+			return &p, true
+		} else if !cmp.Equal(r.Spec.RemotWrite, p.Spec.RemoteWrite[rwIndex]) { //  item found
+			p.Spec.RemoteWrite[rwIndex] = r.Spec.RemotWrite
+			return &p, true
+		} else {
+			// no update!!
+			return &p, false
+		}
+	} else {
+		p.Spec.RemoteWrite = []promv1.RemoteWriteSpec{r.Spec.RemotWrite}
+		return &p, true
+	}
+}
+
+// isRemoteWriteExists checks if the item exists and return the item index
+func isRemoteWriteExists(name string, items []promv1.RemoteWriteSpec) (int, bool) {
+
+	for i, item := range items {
+		if name == item.Name {
+			return i, true
+		}
+	}
+	return -1, false
 }

@@ -15,6 +15,7 @@ type RemoteWrite struct {
 }
 
 type RemoteWriteSpec struct {
+	// TODO: Refactor change to RemoteWrite
 	RemotWrite      pov1.RemoteWriteSpec `json:"remoteWrite"`
 	ClusterSelector metav1.LabelSelector `json:"clusterSelector"`
 }

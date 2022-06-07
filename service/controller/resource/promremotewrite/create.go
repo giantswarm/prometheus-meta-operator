@@ -2,8 +2,10 @@ package promremotewrite
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -25,21 +27,29 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector '%T'", remoteWrite.Spec.ClusterSelector.String())
 		}
 		if prometheusList == nil && len(prometheusList.Items) == 0 {
-			return microerror.Maskf(noSuchPrometheusForLabel, "No Such Prometheus found with Label '%T'", remoteWrite.Spec.ClusterSelector.String())
-		}
-		currentPrometheus := prometheusList.Items[0]
-
-		desired, err := toPrometheusRemoteWrite(remoteWrite, *currentPrometheus)
-		if err != nil {
-			return microerror.Mask(err)
+			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
+			resourcecanceledcontext.SetCanceled(ctx)
+			return nil
 		}
 
-		updateMeta(currentPrometheus, desired)
-		_, err = r.prometheusClient.MonitoringV1().
-			Prometheuses(currentPrometheus.GetNamespace()).
-			Update(ctx, desired, metav1.UpdateOptions{})
-		if err != nil {
-			return microerror.Mask(err)
+		// loop
+		for _, current := range prometheusList.Items {
+
+			desired, ok := toPrometheusRemoteWrite(remoteWrite, *current)
+			if ok {
+				r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
+			} else {
+				r.logger.Debugf(ctx, fmt.Sprintf("no update required for Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
+				continue
+			}
+
+			updateMeta(current, desired)
+			_, err = r.prometheusClient.MonitoringV1().
+				Prometheuses(current.GetNamespace()).
+				Update(ctx, desired, metav1.UpdateOptions{})
+			if err != nil {
+				return microerror.Mask(err)
+			}
 		}
 
 	}
@@ -51,7 +61,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 func updateMeta(c, d metav1.Object) {
 	d.SetGenerateName(c.GetGenerateName())
-	d.SetUID(c.GetUID())
 	d.SetResourceVersion(c.GetResourceVersion())
 	d.SetGeneration(c.GetGeneration())
 	d.SetSelfLink(c.GetSelfLink())
