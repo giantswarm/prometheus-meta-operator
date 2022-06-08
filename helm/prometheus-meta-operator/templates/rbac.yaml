@@ -77,9 +77,10 @@ rules:
       - alertmanagers
       - alertmanagerconfigs
     verbs:
+      - get
+      - list
       - create
       - delete
-      - get
       - update
   - apiGroups:
       - provider.giantswarm.io
