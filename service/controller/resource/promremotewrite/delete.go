@@ -18,6 +18,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
+		r.logger.Debugf(ctx, "remotewrite obj,", remoteWrite.Spec.ClusterSelector)
 
 		labelMap, err := metav1.LabelSelectorAsMap(&remoteWrite.Spec.ClusterSelector)
 		if err != nil {

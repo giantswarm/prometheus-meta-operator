@@ -17,6 +17,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
+		r.logger.Debugf(ctx, "remotewrite obj,", remoteWrite.Spec.ClusterSelector)
 
 		// fetch current prometheus
 		prometheusList, err := r.prometheusClient.
