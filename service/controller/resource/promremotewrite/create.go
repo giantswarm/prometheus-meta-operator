@@ -25,7 +25,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			Prometheuses(metav1.NamespaceAll).
 			List(ctx, metav1.ListOptions{LabelSelector: remoteWrite.Spec.ClusterSelector.String()})
 		if err != nil {
-			return microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector '%T'", remoteWrite.Spec.ClusterSelector.String())
+			return microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector '%#q'", remoteWrite.Spec.ClusterSelector.String())
 		}
 		if prometheusList == nil && len(prometheusList.Items) == 0 {
 			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
