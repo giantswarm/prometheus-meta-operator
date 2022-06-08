@@ -46,10 +46,10 @@ func toPrometheusRemoteWrite(r pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*p
 	return ensurePrometheusRemoteWrite(r, p)
 }
 
-func ToRemoteWrite(obj interface{}) (pmov1alpha1.RemoteWrite, error) {
-	remotewrite, ok := obj.(pmov1alpha1.RemoteWrite)
+func ToRemoteWrite(obj interface{}) (*pmov1alpha1.RemoteWrite, error) {
+	remotewrite, ok := obj.(*pmov1alpha1.RemoteWrite)
 	if !ok {
-		return pmov1alpha1.RemoteWrite{}, microerror.Maskf(wrongTypeError, "'%T' is not a 'pmov1alpha1.RemoteWrite'", obj)
+		return nil, microerror.Maskf(wrongTypeError, "'%T' is not a 'pmov1alpha1.RemoteWrite'", obj)
 	}
 
 	return remotewrite, nil

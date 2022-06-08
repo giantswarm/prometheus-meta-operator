@@ -35,7 +35,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		// loop
 		for _, current := range prometheusList.Items {
 
-			desired, ok := toPrometheusRemoteWrite(remoteWrite, *current)
+			desired, ok := toPrometheusRemoteWrite(*remoteWrite, *current)
 			if ok {
 				r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
 			} else {
