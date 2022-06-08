@@ -7,7 +7,6 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/labels"
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
@@ -20,16 +19,15 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		}
 		r.logger.Debugf(ctx, "remotewrite obj,", remoteWrite.Spec.ClusterSelector)
 
-		labelMap, err := metav1.LabelSelectorAsMap(&remoteWrite.Spec.ClusterSelector)
+		selector, err := metav1.LabelSelectorAsSelector(&remoteWrite.Spec.ClusterSelector)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-
 		// fetch current prometheus
 		prometheusList, err := r.prometheusClient.
 			MonitoringV1().
 			Prometheuses(metav1.NamespaceAll).
-			List(ctx, metav1.ListOptions{LabelSelector: labels.SelectorFromSet(labelMap).String()})
+			List(ctx, metav1.ListOptions{LabelSelector: selector.String()})
 		if err != nil {
 			return microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector '%#q'", remoteWrite.Spec.ClusterSelector.String())
 		}
