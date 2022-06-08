@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.6.0] - 2022-06-08
+
 ### Added
 
 - Add remotewrite controller.
@@ -1462,7 +1464,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.5.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.6.0...HEAD
+[3.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.5.0...v3.6.0
 [3.5.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.4.3...v3.5.0
 [3.4.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.4.2...v3.4.3
 [3.4.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.4.1...v3.4.2
