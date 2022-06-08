@@ -74,13 +74,27 @@ func ensurePrometheusRemoteWrite(r pmov1alpha1.RemoteWrite, p promv1.Prometheus)
 	}
 }
 
+func omitPrometheusRemoteWrite(r pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
+	r.Spec.RemotWrite.Name = r.GetName()
+	if p.Spec.RemoteWrite != nil {
+		if rwIndex, ok := isRemoteWriteExists(r.GetName(), p.Spec.RemoteWrite); ok { // item found
+			p.Spec.RemoteWrite = remove(p.Spec.RemoteWrite, rwIndex)
+			return &p, true
+		}
+	}
+	return &p, false
+}
+
 // isRemoteWriteExists checks if the item exists and return the item index
 func isRemoteWriteExists(name string, items []promv1.RemoteWriteSpec) (int, bool) {
-
 	for i, item := range items {
 		if name == item.Name {
 			return i, true
 		}
 	}
 	return -1, false
+}
+
+func remove(slice []promv1.RemoteWriteSpec, s int) []promv1.RemoteWriteSpec {
+	return append(slice[:s], slice[s+1:]...)
 }
