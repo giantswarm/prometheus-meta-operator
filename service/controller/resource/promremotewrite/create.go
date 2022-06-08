@@ -17,7 +17,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		r.logger.Debugf(ctx, "remotewrite obj,", remoteWrite.Spec.ClusterSelector)
 
 		selector, err := metav1.LabelSelectorAsSelector(&remoteWrite.Spec.ClusterSelector)
 		if err != nil {
@@ -29,7 +28,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			Prometheuses(metav1.NamespaceAll).
 			List(ctx, metav1.ListOptions{LabelSelector: selector.String()})
 		if err != nil {
-			r.logger.Errorf(ctx, err, "ERROR Could not fetch Prometheus %#q", selector)
 			return microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector '%#q'", remoteWrite.Spec.ClusterSelector.String())
 		}
 		if prometheusList == nil && len(prometheusList.Items) == 0 {
