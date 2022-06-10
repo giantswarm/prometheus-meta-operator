@@ -9,7 +9,7 @@ registry:
 
 pod:
   user:
-    id: 0
+    id: 1000
   group:
     id: 1000
 

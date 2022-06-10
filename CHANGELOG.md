@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fix
+
+- Make PMO run as non root.
+
 ## [3.6.0] - 2022-06-08
 
 ### Added
