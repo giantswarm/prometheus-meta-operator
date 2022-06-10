@@ -1,4 +1,4 @@
-package promremotewrite
+package prometheusremotewrite
 
 import "github.com/giantswarm/microerror"
 

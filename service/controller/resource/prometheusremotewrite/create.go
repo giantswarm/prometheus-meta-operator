@@ -1,4 +1,4 @@
-package promremotewrite
+package prometheusremotewrite
 
 import (
 	"context"
@@ -10,42 +10,33 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	r.logger.Debugf(ctx, "reconcile remotewrite")
+	r.logger.Debugf(ctx, "ensuring prometheus remoteWrite config")
 	{
-		// get remotewrite
 		remoteWrite, err := ToRemoteWrite(obj)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		selector, err := metav1.LabelSelectorAsSelector(&remoteWrite.Spec.ClusterSelector)
+		// fetch current prometheus using the selector provided in remoteWrite resource.
+		prometheusList, err := fetchPrometheusList(ctx, r, remoteWrite)
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		// fetch current prometheus
-		prometheusList, err := r.prometheusClient.
-			MonitoringV1().
-			Prometheuses(metav1.NamespaceAll).
-			List(ctx, metav1.ListOptions{LabelSelector: selector.String()})
-		if err != nil {
-			return microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector '%#q'", remoteWrite.Spec.ClusterSelector.String())
-		}
-		if prometheusList == nil && len(prometheusList.Items) == 0 {
+		if prometheusList == nil || len(prometheusList.Items) == 0 {
 			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
 			resourcecanceledcontext.SetCanceled(ctx)
 			return nil
 		}
 
-		// loop
 		for _, current := range prometheusList.Items {
 
-			desired, ok := toPrometheusRemoteWrite(*remoteWrite, *current)
-			if ok {
-				r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
-			} else {
+			desired, ok := ensurePrometheusRemoteWrite(*remoteWrite, *current)
+			if !ok {
 				r.logger.Debugf(ctx, fmt.Sprintf("no update required for Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
 				continue
 			}
+
+			r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
 
 			updateMeta(current, desired)
 			_, err = r.prometheusClient.MonitoringV1().
@@ -58,7 +49,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	}
 
-	r.logger.Debugf(ctx, "updated")
+	r.logger.Debugf(ctx, "ensured prometheus remoteWrite config")
 
 	return nil
 }

@@ -86,7 +86,8 @@ spec:
                     type: object
                 type: object
               remoteWrite:
-                description: 'TODO: Refactor change to RemoteWrite'
+                description: RemoteWriteSpec defines the remote_write configuration
+                  for prometheus.
                 properties:
                   authorization:
                     description: Authorization section for remote write
