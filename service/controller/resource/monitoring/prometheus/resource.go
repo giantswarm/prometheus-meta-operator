@@ -297,7 +297,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				// We set it to 10 (default: 1) to prevent the initial shard scale up
 				MinShards: 10,
 			},
-			Name: key.ClusterID(cluster),
+			Name: "grafana-cloud",
 			WriteRelabelConfigs: []promv1.RelabelConfig{
 				{
 					SourceLabels: []string{"__name__"},
