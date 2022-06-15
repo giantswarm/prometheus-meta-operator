@@ -18,40 +18,6 @@
     replacement: kubernetes
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-[[ if ne .ClusterType "management_cluster" ]]
-[[ if or (eq .Provider "aws") (eq .Provider "azure") ]]
-- job_name: [[ .ClusterID ]]-prometheus/cluster-autoscaler-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - kube-system
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: cluster-autoscaler
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoint_port_name]
-    regex: metrics
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_ip]
-    target_label: instance
-    replacement: ${1}:8085
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_labelingschema" . | indent 2 ]]
-[[ include "_node_role" . | indent 2 ]]
-[[ end ]]
-[[ end ]]
 [[- if not .CAPICluster ]]
 # Add scrape configuration for docker
 - job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
