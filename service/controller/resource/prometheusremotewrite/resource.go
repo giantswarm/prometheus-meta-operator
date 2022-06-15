@@ -82,7 +82,7 @@ func fetchPrometheusList(ctx context.Context, r *Resource, rw *pmov1alpha1.Remot
 	return prometheusList, nil
 }
 
-func ensurePrometheusRemoteWrite(r *Resource, rw pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
+func (r *Resource) ensurePrometheusRemoteWrite(rw pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
 	rw.Spec.RemoteWrite.Name = rw.GetName()
 
 	if !strings.Contains(r.NoProxy, rw.Spec.RemoteWrite.URL) {
