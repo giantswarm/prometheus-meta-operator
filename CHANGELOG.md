@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Clean up unnecessary target from scrape configs
+
 ## [3.6.0] - 2022-06-08
 
 ### Added

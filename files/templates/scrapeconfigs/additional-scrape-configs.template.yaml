@@ -1,3 +1,5 @@
+### Kaas core components ###
+# kube-apiserver
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-apiserver-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -18,171 +20,80 @@
     replacement: kubernetes
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-[[ if ne .ClusterType "management_cluster" ]]
-[[ if or (eq .Provider "aws") (eq .Provider "azure") ]]
-- job_name: [[ .ClusterID ]]-prometheus/cluster-autoscaler-[[ .ClusterID ]]/0
+
+# kube-controller-manager
+- job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  - role: endpoints
+  - role: pod
     namespaces:
       names:
       - kube-system
 [[ include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
+[[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: cluster-autoscaler
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoint_port_name]
-    regex: metrics
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_ip]
+  - source_labels: [__address__]
+[[- if .CAPICluster ]]
+    replacement: $1:10257
+[[- else ]]
+    replacement: $1:10252
+[[- end ]]
     target_label: instance
-    replacement: ${1}:8085
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (k8s-controller-manager|kube-controller-manager)
+    action: keep
   - target_label: __address__
     replacement: [[ .APIServerURL ]]
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:8085/proxy/metrics
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
+[[- if .CAPICluster ]]
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10257/proxy/metrics
+[[- else ]]
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
+[[- end ]]
+  - target_label: app
+    replacement: kube-controller-manager
+[[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ include "_node_role" . | indent 2 ]]
-[[ end ]]
-[[ end ]]
-[[- if not .CAPICluster ]]
-# Add scrape configuration for docker
-- job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
+
+# kube-scheduler
+- job_name: [[ .ClusterID ]]-prometheus/kubernetes-scheduler-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  - role: node
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
-  relabel_configs:
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_node_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:9323/proxy/metrics
-  - target_label: app
-    replacement: docker
-  - source_labels: [__meta_kubernetes_node_address_InternalIP]
-    replacement: ${1}:9323
-    target_label: instance
-[[ include "_labelingschema" . | indent 2 ]]
-[[ include "_node_role" . | indent 2 ]]
-  metric_relabel_configs:
-  - source_labels: [__name__]
-    regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
-    action: keep
-[[ end ]]
-[[- if eq .ClusterType "management_cluster" ]]
-# falco-exporter
-- job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
+  - role: pod
     namespaces:
       names:
-      - giantswarm
+      - kube-system
 [[ include "_apiserver" . ]]
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    regex: falco-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
-    target_label: app
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-[[- end ]]
-# Add scrape configuration for cadvisor
-- job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: node
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
-  relabel_configs:
   - source_labels: [__address__]
-    target_label: instance
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_node_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
-  - target_label: app
-    replacement: cadvisor
-  # Add node name.
-  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
-    target_label: node
-[[ include "_labelingschema" . | indent 2 ]]
-[[ include "_node_role" . | indent 2 ]]
-  metric_relabel_configs:
-[[- if eq .ClusterType "management_cluster" ]]
-  - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
-    action: keep
+[[- if .CAPICluster ]]
+    replacement: $1:10259
 [[- else ]]
-  - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|kong.*)
-    action: keep
+    replacement: $1:10251
 [[- end ]]
-# calico-node
-- job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: pod
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
-  relabel_configs:
-  - source_labels: [__address__]
-    replacement: ${1}:9091
     target_label: instance
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (k8s-scheduler|kube-scheduler)
+    action: keep
   - target_label: __address__
     replacement: [[ .APIServerURL ]]
   - source_labels: [__meta_kubernetes_pod_name]
-    regex: (calico-node.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:9091/proxy/metrics
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
-    regex: kube-system;calico-node.*
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# aws-node
-[[- if eq .Provider "aws" ]]
-- job_name: [[ .ClusterID ]]-prometheus/aws-node-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: pod
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
-  relabel_configs:
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (aws-node.*)
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:61678/proxy/metrics
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
-    regex: kube-system;aws-node.*
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
+[[- if .CAPICluster ]]
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10259/proxy/metrics
+[[- else ]]
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
 [[- end ]]
-# Add etcd configuration
+  - target_label: app
+    replacement: kube-scheduler
+[[ include "_common" . | indent 2 ]]
+[[ include "_labelingschema" . | indent 2 ]]
+
+# ETCD
 - job_name: [[ .ClusterID ]]-prometheus/etcd-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -255,7 +166,8 @@
     source_labels: [__meta_kubernetes_node_address_InternalIP]
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-# Add kubelet configuration
+
+# Kubelet
 - job_name: [[ .ClusterID ]]-prometheus/kubelet-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -275,76 +187,7 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-# kube-controller-manager
-- job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: pod
-    namespaces:
-      names:
-      - kube-system
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
-  relabel_configs:
-  - source_labels: [__address__]
-[[- if .CAPICluster ]]
-    replacement: $1:10257
-[[- else ]]
-    replacement: $1:10252
-[[- end ]]
-    target_label: instance
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    regex: (k8s-controller-manager|kube-controller-manager)
-    action: keep
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: __metrics_path__
-[[- if .CAPICluster ]]
-    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10257/proxy/metrics
-[[- else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
-[[- end ]]
-  - target_label: app
-    replacement: kube-controller-manager
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# kube-scheduler
-- job_name: [[ .ClusterID ]]-prometheus/kubernetes-scheduler-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: pod
-    namespaces:
-      names:
-      - kube-system
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
-  relabel_configs:
-  - source_labels: [__address__]
-[[- if .CAPICluster ]]
-    replacement: $1:10259
-[[- else ]]
-    replacement: $1:10251
-[[- end ]]
-    target_label: instance
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    regex: (k8s-scheduler|kube-scheduler)
-    action: keep
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: __metrics_path__
-[[- if .CAPICluster ]]
-    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10259/proxy/metrics
-[[- else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
-[[- end ]]
-  - target_label: app
-    replacement: kube-scheduler
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
+
 # kube-proxy
 - job_name: [[ .ClusterID ]]-prometheus/kube-proxy-[[ .ClusterID ]]/0
   honor_labels: true
@@ -373,6 +216,95 @@
     replacement: kube-proxy
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+
+[[- if not .CAPICluster ]]
+# Docker
+- job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig" . | indent 2 ]]
+  relabel_configs:
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:9323/proxy/metrics
+  - target_label: app
+    replacement: docker
+  - source_labels: [__meta_kubernetes_node_address_InternalIP]
+    replacement: ${1}:9323
+    target_label: instance
+[[ include "_labelingschema" . | indent 2 ]]
+[[ include "_node_role" . | indent 2 ]]
+  metric_relabel_configs:
+  - source_labels: [__name__]
+    regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
+    action: keep
+[[ end ]]
+
+# Cadvisor
+- job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig" . | indent 2 ]]
+  relabel_configs:
+  - source_labels: [__address__]
+    target_label: instance
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics/cadvisor
+  - target_label: app
+    replacement: cadvisor
+  # Add node name.
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_hostname]
+    target_label: node
+[[ include "_labelingschema" . | indent 2 ]]
+[[ include "_node_role" . | indent 2 ]]
+  metric_relabel_configs:
+[[- if eq .ClusterType "management_cluster" ]]
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
+    action: keep
+[[- else ]]
+  - source_labels: [namespace]
+    regex: (kube-system|giantswarm.*|kong.*)
+    action: keep
+[[- end ]]
+
+# calico-node
+- job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: pod
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig" . | indent 2 ]]
+  relabel_configs:
+  - source_labels: [__address__]
+    replacement: ${1}:9091
+    target_label: instance
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (calico-node.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:9091/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;calico-node.*
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+[[ include "_common" . | indent 2 ]]
+[[ include "_labelingschema" . | indent 2 ]]
+
 # coredns
 - job_name: [[ .ClusterID ]]-prometheus/coredns-[[ .ClusterID ]]/0
   honor_labels: true
@@ -403,35 +335,95 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-# chart-operator
-- job_name: [[ .ClusterID ]]-prometheus/chart-operator-[[ .ClusterID ]]/0
+
+### Observability ###
+[[ if eq .ClusterType "management_cluster" ]]
+# app-exporter
+- job_name: [[ .ClusterID ]]-prometheus/app-exporter-[[ .ClusterID ]]/0
   honor_labels: true
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
       names:
       - giantswarm
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__address__]
-    target_label: instance
-[[ if eq .ClusterType "management_cluster" ]]
-  - source_labels: [__meta_kubernetes_service_name]
-    regex: chart-operator-unique
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    regex: app-exporter
     action: keep
-[[ else ]]
-  - source_labels: [__meta_kubernetes_service_name]
-    regex: chart-operator
-    action: keep
-[[ end ]]
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (chart-operator.*)
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_version]
+    target_label: version
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/giantswarm/pods/${1}:8000/proxy/metrics
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
+[[ include "_common" . | indent 2 ]]
+[[ include "_labelingschema" . | indent 2 ]]
+
+# prometheus
+- job_name: [[ .ClusterID ]]-prometheus/prometheus-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: http
+  metrics_path: /[[ .ClusterID ]]/metrics
+  static_configs:
+    - targets: ['localhost:9090']
+  relabel_configs:
+  - replacement: prometheus
+    target_label: app
+[[ include "_labelingschema" . | indent 2 ]]
+
+# alertmanager
+- job_name: [[ .ClusterID ]]-prometheus/alertmanager-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - monitoring
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app]
+    regex: alertmanager
+    action: keep
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
@@ -439,82 +431,88 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-# net-exporter
-- job_name: [[ .ClusterID ]]-prometheus/net-exporter-[[ .ClusterID ]]/0
+
+# grafana
+- job_name: [[ .ClusterID ]]-prometheus/grafana-[[ .ClusterID ]]/0
   honor_labels: true
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
       names:
-[[ if eq .ClusterType "management_cluster" ]]
       - monitoring
-[[ else ]]
-      - kube-system
-[[ end ]]
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__address__]
-    target_label: instance
   - source_labels: [__meta_kubernetes_service_label_app]
-    regex: net-exporter
+    regex: grafana
     action: keep
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (net-exporter.*)
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
     target_label: __metrics_path__
-[[ if eq .ClusterType "management_cluster" ]]
-    replacement: /api/v1/namespaces/monitoring/pods/${1}:8000/proxy/metrics
-[[ else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:8000/proxy/metrics
-[[ end ]]
-  - source_labels: [__meta_kubernetes_service_label_app]
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-# cert-exporter
-- job_name: [[ .ClusterID ]]-prometheus/cert-exporter-[[ .ClusterID ]]/0
+
+# fluentbit
+- job_name: [[ .ClusterID ]]-prometheus/fluentbit-[[ .ClusterID ]]/0
   honor_labels: true
-  scheme: https
+  scheme: http
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
       names:
-[[ if eq .ClusterType "management_cluster" ]]
       - monitoring
-[[ else ]]
-      - kube-system
-[[ end ]]
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__address__]
-    target_label: instance
   - source_labels: [__meta_kubernetes_service_label_app]
-    regex: cert-exporter
+    regex: fluentbit
     action: keep
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (cert-exporter.*)
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
     target_label: __metrics_path__
-[[ if eq .ClusterType "management_cluster" ]]
-    replacement: /api/v1/namespaces/monitoring/pods/${1}:9005/proxy/metrics
-[[ else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:9005/proxy/metrics
-[[ end ]]
-  - source_labels: [__meta_kubernetes_service_label_app]
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_pod_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+[[ end ]]
+
 # node-exporter
 - job_name: [[ .ClusterID ]]-prometheus/node-exporter-[[ .ClusterID ]]/0
   honor_labels: true
@@ -547,71 +545,8 @@
     regex: /var/lib/kubelet/pods/([a-zA-Z0-9-]+)/.*
     action: replace
     replacement: $1
-# kube-state-metrics
-- job_name: [[ .ClusterID ]]-prometheus/kube-state-metrics-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-[[ if eq .ClusterType "management_cluster" ]]
-      - monitoring
-[[ else ]]
-      - kube-system
-[[ end ]]
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
-  relabel_configs:
-  - source_labels: [__address__]
-    target_label: instance
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: kube-state-metrics
-    action: keep
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (kube-state-metrics.*)
-    target_label: __metrics_path__
-[[ if eq .ClusterType "management_cluster" ]]
-    replacement: /api/v1/namespaces/monitoring/pods/${1}:10301/proxy/metrics
-[[ else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10301/proxy/metrics
-[[ end ]]
-  - source_labels: [__meta_kubernetes_service_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-[[ if eq .ClusterType "workload_cluster" ]]
-  metric_relabel_configs:
-  - source_labels: [deployment]
-    regex: (.+)
-    target_label: workload_type
-    replacement: deployment
-  - source_labels: [daemonset]
-    regex: (.+)
-    target_label: workload_type
-    replacement: daemonset
-  - source_labels: [statefulset]
-    regex: (.+)
-    target_label: workload_type
-    replacement: statefulset
-  - source_labels: [deployment]
-    regex: (.+)
-    target_label: workload_name
-    replacement: ${1}
-  - source_labels: [daemonset]
-    regex: (.+)
-    target_label: workload_name
-    replacement: ${1}
-  - source_labels: [statefulset]
-    regex: (.+)
-    target_label: workload_name
-    replacement: ${1}
-[[ end ]]
+
+### Workload running on clusters
 - job_name: [[ .ClusterID ]]-prometheus/workload-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -657,6 +592,7 @@
     regex: (.*)
     target_label: app
     action: replace
+    ### TODO investigate this
   - source_labels: [__meta_kubernetes_service_annotation_giantswarm_io_monitoring_app_label]
     regex: (.+)
     target_label: app
@@ -718,46 +654,9 @@
     action: replace
   - action: labeldrop
     regex: "label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment"
+
 [[ if eq .ClusterType "management_cluster" ]]
-# app-operator
-- job_name: [[ .ClusterID ]]-prometheus/app-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    regex: app-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
+### Vintage product scrape targets
 # cluster-operator
 - job_name: [[ .ClusterID ]]-prometheus/cluster-operator-[[ .ClusterID ]]/0
   honor_labels: true
@@ -792,486 +691,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# etcd-backup-operator
-- job_name: [[ .ClusterID ]]-prometheus/etcd-backup-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    regex: etcd-backup-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
-    target_label: version
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# node-operator
-- job_name: [[ .ClusterID ]]-prometheus/node-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    regex: node-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# release-operator
-- job_name: [[ .ClusterID ]]-prometheus/release-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    regex: release-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# organization-operator
-- job_name: [[ .ClusterID ]]-prometheus/organization-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    regex: organization-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
-    target_label: version
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# prometheus-meta-operator
-- job_name: [[ .ClusterID ]]-prometheus/prometheus-meta-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    regex: prometheus-meta-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
-    target_label: version
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# rbac-operator
-- job_name: [[ .ClusterID ]]-prometheus/rbac-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    regex: rbac-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
-    target_label: version
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# cert-operator
-- job_name: [[ .ClusterID ]]-prometheus/cert-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    regex: cert-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
-    target_label: version
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# draughtsman
-- job_name: [[ .ClusterID ]]-prometheus/draughtsman-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - draughtsman
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    regex: draughtsman
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# app-exporter
-- job_name: [[ .ClusterID ]]-prometheus/app-exporter-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    regex: app-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_version]
-    target_label: version
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# alertmanager
-- job_name: [[ .ClusterID ]]-prometheus/alertmanager-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: alertmanager
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# grafana
-- job_name: [[ .ClusterID ]]-prometheus/grafana-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: grafana
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# fluentbit
-- job_name: [[ .ClusterID ]]-prometheus/fluentbit-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: fluentbit
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
 # giantswarm-api
@@ -1540,107 +959,74 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ if .Bastions ]]
-# bastion exporters
-- job_name: [[ .ClusterID ]]-prometheus/bastions-[[ .ClusterID ]]/0
+# cert-operator
+- job_name: [[ .ClusterID ]]-prometheus/cert-operator-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
-  static_configs:
-  - targets:
-    [[- range $bastion := .Bastions ]]
-    - '[[ $bastion]]:10300'
-    [[- end ]]
-    labels:
-      app: node-exporter
-      role: bastion
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - giantswarm
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
   relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    regex: cert-operator
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
+    target_label: app
+  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_version]
+    target_label: version
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
+    regex: (.+)
+    target_label: __metrics_path__
+    replacement: $1
+    action: replace
+  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
+    regex: (.+)(?::\d+);(\d+)
+    target_label: __address__
+    replacement: $1:$2
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
+    regex: (https?)
+    target_label: __scheme__
+    replacement: $1
+    action: replace
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
+    action: drop
+[[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
-[[- if .AdditionalScrapeConfigs ]]
-# installation-specific configs from config repo
-[[ .AdditionalScrapeConfigs ]]
+
+### Provider specific scrape targets
+[[- if eq .Provider "aws" ]]
+# aws-node
+- job_name: [[ .ClusterID ]]-prometheus/aws-node-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: pod
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig" . | indent 2 ]]
+  relabel_configs:
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
+  - source_labels: [__meta_kubernetes_pod_name]
+    regex: (aws-node.*)
+    target_label: __metrics_path__
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:61678/proxy/metrics
+  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
+    regex: kube-system;aws-node.*
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+[[ include "_common" . | indent 2 ]]
+[[ include "_labelingschema" . | indent 2 ]]
 [[- end ]]
-[[ if eq .Provider "aws" ]]
-# aws-operator
-- job_name: [[ .ClusterID ]]-prometheus/aws-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: aws-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
 [[ if eq .Provider "azure" ]]
-# azure-operator
-- job_name: [[ .ClusterID ]]-prometheus/azure-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: azure-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
 # azure-collector
 - job_name: [[ .ClusterID ]]-prometheus/azure-collector-[[ .ClusterID ]]/0
   honor_labels: true
@@ -1669,45 +1055,6 @@
 [[ include "_labelingschema" . | indent 2 ]]
 [[ end ]]
 [[ if eq .Provider "kvm" ]]
-# kvm-operator
-- job_name: [[ .ClusterID ]]-prometheus/kvm-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: kvm-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_service_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
 # flannel-operator
 - job_name: [[ .ClusterID ]]-prometheus/flannel-operator-[[ .ClusterID ]]/0
   honor_labels: true
@@ -1796,6 +1143,30 @@
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
 [[ end ]]
+
+### Other scrape targets
+[[ if .Bastions ]]
+# bastion exporters
+- job_name: [[ .ClusterID ]]-prometheus/bastions-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: http
+  static_configs:
+  - targets:
+    [[- range $bastion := .Bastions ]]
+    - '[[ $bastion]]:10300'
+    [[- end ]]
+    labels:
+      app: node-exporter
+      role: bastion
+  relabel_configs:
+[[ include "_labelingschema" . | indent 2 ]]
+[[ end ]]
+
+[[- if .AdditionalScrapeConfigs ]]
+# installation-specific configs from config repo
+[[ .AdditionalScrapeConfigs ]]
+[[- end ]]
+
 - job_name: [[ .ClusterID ]]-prometheus/vault-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
@@ -1809,47 +1180,6 @@
     labels:
       app: cert-exporter
   relabel_configs:
-[[ include "_labelingschema" . | indent 2 ]]
-# vault-exporter
-- job_name: [[ .ClusterID ]]-prometheus/vault-exporter-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: vault-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__]
-    target_label:  instance
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
 # nginx-ingress-controller
 - job_name: [[ .ClusterID ]]-prometheus/nginx-ingress-controller-[[ .ClusterID ]]/0
@@ -1884,15 +1214,23 @@
     action: drop
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-[[ end ]]
-# prometheus
-- job_name: [[ .ClusterID ]]-prometheus/prometheus-[[ .ClusterID ]]/0
+# falco-exporter
+- job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
-  metrics_path: /[[ .ClusterID ]]/metrics
-  static_configs:
-    - targets: ['localhost:9090']
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - giantswarm
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - replacement: prometheus
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    regex: falco-exporter
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
     target_label: app
+[[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+[[- end ]]
