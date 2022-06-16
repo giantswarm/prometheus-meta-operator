@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement remotewrite CR logic, in order to configure Prometheus remotewrite config.
 
+### Removed
+
+- Remove duplicate scrape config targets.
+
 ## [3.6.0] - 2022-06-08
 
 ### Added
