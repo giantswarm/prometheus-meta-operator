@@ -13,10 +13,13 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
 )
 
-func TestToRemoteWrite(t *testing.T) {
+const (
+	name            = "simple-remotewrite"
+	namespace       = "default"
+	clusterSelector = "giant-cluster"
+)
 
-	name := "simple-remotewrite"
-	namespace := "default"
+func TestToRemoteWrite(t *testing.T) {
 
 	type args struct {
 		obj interface{}
@@ -74,8 +77,8 @@ func TestToRemoteWrite(t *testing.T) {
 		},
 	}
 
-	for name, tc := range cases {
-		t.Run(name, func(t *testing.T) {
+	for n, tc := range cases {
+		t.Run(n, func(t *testing.T) {
 			got, err := ToRemoteWrite(tc.args.obj)
 			if diff := cmp.Diff(tc.want.err, err, unittest.EquateErrors()); diff != "" {
 				t.Errorf("\n%s\nExpand(...): -want, +got:\n%s", tc.reason, diff)
@@ -88,10 +91,6 @@ func TestToRemoteWrite(t *testing.T) {
 }
 
 func TestEnsurePrometheusRemoteWrite(t *testing.T) {
-
-	name := "simple-remotewrite"
-	namespace := "default"
-	clusterSelector := "giant-cluster"
 
 	rw := remoteWrite(name, namespace, clusterSelector)
 	prom := prometheus()
@@ -153,8 +152,8 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 		},
 	}
 
-	for name, tc := range cases {
-		t.Run(name, func(t *testing.T) {
+	for n, tc := range cases {
+		t.Run(n, func(t *testing.T) {
 			got, ok := ensurePrometheusRemoteWrite(tc.args.rw, tc.args.p)
 			if tc.want.ok != ok {
 				t.Errorf("\n%s\nExpand(...): -want, +got:\n%v", tc.reason, ok)
@@ -167,9 +166,6 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 }
 
 func TestRemovePrometheusRemoteWrite(t *testing.T) {
-	name := "simple-remotewrite"
-	namespace := "default"
-	clusterSelector := "giant-cluster"
 
 	rw := remoteWrite(name, namespace, clusterSelector)
 	prom := prometheus()
@@ -212,8 +208,8 @@ func TestRemovePrometheusRemoteWrite(t *testing.T) {
 		},
 	}
 
-	for name, tc := range cases {
-		t.Run(name, func(t *testing.T) {
+	for n, tc := range cases {
+		t.Run(n, func(t *testing.T) {
 			got, ok := removePrometheusRemoteWrite(tc.args.rw, tc.args.p)
 			if tc.want.ok != ok {
 				t.Errorf("\n%s\nExpand(...): -want, +got:\n%v", tc.reason, ok)
