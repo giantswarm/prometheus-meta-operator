@@ -92,6 +92,7 @@ func TestToRemoteWrite(t *testing.T) {
 
 func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 
+	r := NewResource()
 	rw := remoteWrite(name, namespace, clusterSelector)
 	prom := prometheus()
 	expectedPrometheus := wrapperPrometheus(rw, prom)
@@ -154,7 +155,7 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 
 	for n, tc := range cases {
 		t.Run(n, func(t *testing.T) {
-			got, ok := ensurePrometheusRemoteWrite(tc.args.rw, tc.args.p)
+			got, ok := r.ensurePrometheusRemoteWrite(tc.args.rw, tc.args.p)
 			if tc.want.ok != ok {
 				t.Errorf("\n%s\nExpand(...): -want, +got:\n%v", tc.reason, ok)
 			}
@@ -268,12 +269,12 @@ func prometheus() promv1.Prometheus {
 	}
 }
 
-func wrapperPrometheus(r pmov1alpha1.RemoteWrite, prom promv1.Prometheus) struct {
+func wrapperPrometheus(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus) struct {
 	p  *promv1.Prometheus
 	ok bool
 } {
-
-	p, ok := ensurePrometheusRemoteWrite(r, prom)
+	r := NewResource()
+	p, ok := r.ensurePrometheusRemoteWrite(rw, prom)
 	return struct {
 		p  *promv1.Prometheus
 		ok bool
@@ -290,4 +291,14 @@ func wrapperRemoveRemoteWrite(r pmov1alpha1.RemoteWrite, prom promv1.Prometheus)
 		p  *promv1.Prometheus
 		ok bool
 	}{p: p, ok: ok}
+}
+
+func NewResource() *Resource {
+	config := Config{
+		HTTPProxy:  "http://proxy-url",
+		HTTPSProxy: "",
+		NoProxy:    "http://no-proxy",
+	}
+	r, _ := New(config)
+	return r
 }
