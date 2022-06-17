@@ -290,6 +290,10 @@ func New(config Config) (*Service, error) {
 			K8sClient:        k8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
+
+			HTTPProxy:  os.Getenv("HTTP_PROXY"),
+			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
+			NoProxy:    os.Getenv("NO_PROXY"),
 		}
 		remotewriteController, err = remotewrite.NewController(c)
 		if err != nil {

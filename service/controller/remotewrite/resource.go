@@ -16,6 +16,10 @@ func newResources(config ControllerConfig) ([]resource.Interface, error) {
 			K8sClient:        config.K8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: config.PrometheusClient,
+
+			HTTPProxy:  config.HTTPProxy,
+			HTTPSProxy: config.HTTPSProxy,
+			NoProxy:    config.NoProxy,
 		}
 
 		prometheusRemoteWrite, err = prometheusremotewrite.New(c)
