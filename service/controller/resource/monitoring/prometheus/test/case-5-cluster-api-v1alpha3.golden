@@ -64,7 +64,7 @@ spec:
       username:
         key: username
         name: remote-write
-    name: baz
+    name: grafana-cloud
     queueConfig:
       capacity: 10000
       maxSamplesPerSend: 1000

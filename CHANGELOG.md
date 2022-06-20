@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add remotewrite controller.
 - Deployment of remoteWrite CRD in Helm chart
 
+### Changed
+
+- Change remote write name to grafana-cloud.
+
 ### Fixed
 
 - dependencies updates
