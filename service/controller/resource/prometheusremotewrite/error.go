@@ -6,6 +6,14 @@ var errorFetchingPrometheus = &microerror.Error{
 	Kind: "errorFetchingPrometheus",
 }
 
+var errorRetrievingSecret = &microerror.Error{
+	Kind: "errorRetrievingSecret",
+}
+
+var errorCreatingSecret = &microerror.Error{
+	Kind: "errorCreatingSecret",
+}
+
 var noSuchPrometheusForLabel = &microerror.Error{
 	Kind: "noSuchPrometheusForLabel",
 }

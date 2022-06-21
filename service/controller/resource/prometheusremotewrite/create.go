@@ -30,6 +30,12 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		for _, current := range prometheusList.Items {
 
+			// Copy BasicAuth Secrets to Prometheus namespace:
+			err := r.copyBasicAuthSecret(ctx, remoteWrite, current.GetNamespace())
+			if err != nil {
+				return microerror.Mask(err)
+			}
+
 			desired, ok := r.ensurePrometheusRemoteWrite(*remoteWrite, *current)
 			if !ok {
 				r.logger.Debugf(ctx, fmt.Sprintf("no update required for Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
