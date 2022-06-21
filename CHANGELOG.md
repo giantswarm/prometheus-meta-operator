@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove duplicate scrape config targets.
 
+## [3.7.0] - 2022-06-20
+
+This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#992
+
+### Changed
+
+- Change remote write name to grafana-cloud.
+
 ## [3.6.0] - 2022-06-08
 
 ### Added
@@ -1473,7 +1481,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.6.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.7.0...HEAD
+[3.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.6.0...v3.7.0
 [3.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.5.0...v3.6.0
 [3.5.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.4.3...v3.5.0
 [3.4.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.4.2...v3.4.3
