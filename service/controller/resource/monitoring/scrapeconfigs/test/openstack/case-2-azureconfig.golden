@@ -2,7 +2,7 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  - role: endpoints
+  - role: node
 
     api_server: https://master.foo:443
     tls_config:
@@ -16,14 +16,20 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
+  - source_labels: [__meta_kubernetes_node_label_role]
+    separator: ;
+    regex: master
+    replacement: $1
+    action: keep
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
     action: keep
-  - target_label: __address__
-    replacement: master.foo:443
-  - source_labels: [__meta_kubernetes_endpoint_port_name]
-    regex: https
-    action: keep
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*):10250
+    target_label: __address__
+    replacement: ${1}:443
+    action: replace
   - target_label: app
     replacement: kubernetes
   # Add cluster_id label.

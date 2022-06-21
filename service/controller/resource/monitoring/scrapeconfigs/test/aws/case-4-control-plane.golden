@@ -2,21 +2,27 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  - role: endpoints
+  - role: node
 
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
+  - source_labels: [__meta_kubernetes_node_label_role]
+    separator: ;
+    regex: master
+    replacement: $1
+    action: keep
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
     action: keep
-  - target_label: __address__
-    replacement: 127.0.0.1:443
-  - source_labels: [__meta_kubernetes_endpoint_port_name]
-    regex: https
-    action: keep
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.*):10250
+    target_label: __address__
+    replacement: ${1}:443
+    action: replace
   - target_label: app
     replacement: kubernetes
   # Add cluster_id label.

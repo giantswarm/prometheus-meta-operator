@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Scrape all API server pods rather than just a random one through the `kubernetes` service.
+
 ### Added
 
 - Implement remotewrite CR logic, in order to configure Prometheus remotewrite config.
