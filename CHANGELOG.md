@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Implement remotewrite CR logic, in order to configure Prometheus remotewrite config.
 - Add HTTP_PROXY in remotewrite config
+- Add unit tests for remotewrite resource
 
 ### Removed
 
