@@ -57,7 +57,7 @@ func (r *Resource) fetchSecret(ctx context.Context, name, namespace string) (*co
 
 	sc, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
-		return nil, microerror.Maskf(errorRetrievingSecret, "Could not fetch Secret with name %#s in namespace %#s", name, namespace)
+		return nil, microerror.Maskf(errorRetrievingSecret, "Could not fetch Secret with name %s in namespace %s", name, namespace)
 	}
 	return sc, nil
 }
@@ -67,7 +67,7 @@ func (r *Resource) createSecret(ctx context.Context, sc *corev1.Secret, namespac
 
 	newSc, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Create(ctx, sc, metav1.CreateOptions{})
 	if err != nil {
-		return nil, microerror.Maskf(errorCreatingSecret, "Could not create Secret with name %#s in namespace %#s", newSc.GetName(), namespace)
+		return nil, microerror.Maskf(errorCreatingSecret, "Could not create Secret with name %s in namespace %s", newSc.GetName(), namespace)
 	}
 	return newSc, nil
 }
