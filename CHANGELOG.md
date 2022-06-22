@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove duplicate scrape config targets.
 
+### Fixed
+
+- Add `patch` verb for `remoteWrite` resources.
+
 ## [3.7.0] - 2022-06-20
 
 This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#992
