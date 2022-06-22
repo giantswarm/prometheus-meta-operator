@@ -558,6 +558,22 @@ spec:
                 required:
                 - url
                 type: object
+              secrets:
+                description: Secrets that will be created in the relevant Prometheus
+                  namespace
+                items:
+                  properties:
+                    data:
+                      additionalProperties:
+                        format: byte
+                        type: string
+                      type: object
+                    name:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
             required:
             - clusterSelector
             - remoteWrite

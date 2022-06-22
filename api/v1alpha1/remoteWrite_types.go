@@ -17,6 +17,16 @@ type RemoteWrite struct {
 type RemoteWriteSpec struct {
 	RemoteWrite     pov1.RemoteWriteSpec `json:"remoteWrite"`
 	ClusterSelector metav1.LabelSelector `json:"clusterSelector"`
+
+	// Secrets that will be created in the relevant Prometheus namespace
+	// +optional
+	// +immutable
+	Secrets []RemoteWriteSecretSpec `json:"secrets,omitempty"`
+}
+
+type RemoteWriteSecretSpec struct {
+	Name string            `json:"name"`
+	Data map[string][]byte `json:"data,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
