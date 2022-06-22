@@ -2,10 +2,12 @@ package prometheusremotewrite
 
 import (
 	"context"
+
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
 )
 
 func (r *Resource) copyBasicAuthSecret(ctx context.Context, rw *v1alpha1.RemoteWrite, ns string) error {
