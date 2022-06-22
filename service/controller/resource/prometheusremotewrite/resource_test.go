@@ -98,7 +98,7 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 	expectedEmptyPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
 
 	rwAppend := remoteWrite("remotewrite-append", namespace, clusterSelector)
-	expectedPrometheusAppend := expectedPrometheusAppend(rwAppend, *expectedEmptyPrometheus.p.DeepCopy())
+	expectedPrometheusAppend := expectedPrometheusAppend(rwAppend, *expectedEmptyPrometheus.p.DeepCopy(), false)
 
 	rwUpdate := *rw.DeepCopy()
 	rwUpdate.Spec.RemoteWrite.URL = "http://my-fancy-url/needs-update"
@@ -153,6 +153,54 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 				p:  expectedEmptyPrometheus.p.DeepCopy(),
 				ok: false,
 			},
+		},
+	}
+
+	for n, tc := range cases {
+		t.Run(n, func(t *testing.T) {
+			got, ok := r.ensurePrometheusRemoteWrite(tc.args.rw, tc.args.p)
+			if tc.want.ok != ok {
+				t.Errorf("\n%s\nExpand(...): -want, +got:\n%v", tc.reason, ok)
+			}
+			if diff := cmp.Diff(tc.want.p, got); diff != "" {
+				t.Errorf("\n%s\nExpand(...): -want, +got:\n%s", tc.reason, diff)
+			}
+		})
+	}
+}
+
+func TestEnsurePrometheusRemoteWriteWithPoxy(t *testing.T) {
+
+	r := NewResourceWithProxy()
+	rw := remoteWrite(name, namespace, clusterSelector)
+	prom := prometheus()
+	expectedEmptyPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
+
+	rwAppend := remoteWrite("remotewrite-append", namespace, clusterSelector)
+	expectedPrometheusAppend := expectedPrometheusAppend(rwAppend, *expectedEmptyPrometheus.p.DeepCopy(), true)
+
+	type args struct {
+		rw pmov1alpha1.RemoteWrite
+		p  promv1.Prometheus
+	}
+
+	type want struct {
+		p  *promv1.Prometheus
+		ok bool
+	}
+
+	cases := map[string]struct {
+		reason string
+		args   args
+		want   want
+	}{
+		"AppendingRemoteWriteConfigWithProxy": {
+			reason: "Appending Prometheus remote write config",
+			args: args{
+				rw: rwAppend,
+				p:  *expectedEmptyPrometheus.p.DeepCopy(),
+			},
+			want: want(expectedPrometheusAppend),
 		},
 	}
 
@@ -278,13 +326,6 @@ func expectedPrometheusEmptyRemoteWrite(rw pmov1alpha1.RemoteWrite, prom promv1.
 } {
 	rw.Spec.RemoteWrite.Name = rw.GetName()
 
-	r := NewResource()
-	if len(r.HTTPSProxy) > 0 {
-		rw.Spec.RemoteWrite.ProxyURL = r.HTTPSProxy
-	} else if len(r.HTTPProxy) > 0 {
-		rw.Spec.RemoteWrite.ProxyURL = r.HTTPProxy
-	}
-
 	prom.Spec.RemoteWrite = []promv1.RemoteWriteSpec{rw.Spec.RemoteWrite}
 	ok := true
 
@@ -294,16 +335,18 @@ func expectedPrometheusEmptyRemoteWrite(rw pmov1alpha1.RemoteWrite, prom promv1.
 	}{p: &prom, ok: ok}
 }
 
-func expectedPrometheusAppend(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus) struct {
+func expectedPrometheusAppend(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus, proxy bool) struct {
 	p  *promv1.Prometheus
 	ok bool
 } {
 	rw.Spec.RemoteWrite.Name = rw.GetName()
-	r := NewResource()
-	if len(r.HTTPSProxy) > 0 {
-		rw.Spec.RemoteWrite.ProxyURL = r.HTTPSProxy
-	} else if len(r.HTTPProxy) > 0 {
-		rw.Spec.RemoteWrite.ProxyURL = r.HTTPProxy
+	if proxy {
+		r := NewResourceWithProxy()
+		if len(r.HTTPSProxy) > 0 {
+			rw.Spec.RemoteWrite.ProxyURL = r.HTTPSProxy
+		} else if len(r.HTTPProxy) > 0 {
+			rw.Spec.RemoteWrite.ProxyURL = r.HTTPProxy
+		}
 	}
 
 	prom.Spec.RemoteWrite = append(prom.Spec.RemoteWrite, rw.Spec.RemoteWrite)
@@ -320,15 +363,8 @@ func expectedPrometheusUpdate(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus
 	ok bool
 } {
 	rw.Spec.RemoteWrite.Name = rw.GetName()
-	r := NewResource()
-	if len(r.HTTPSProxy) > 0 {
-		rw.Spec.RemoteWrite.ProxyURL = r.HTTPSProxy
-	} else if len(r.HTTPProxy) > 0 {
-		rw.Spec.RemoteWrite.ProxyURL = r.HTTPProxy
-	}
 
 	ok := false
-
 	if !cmp.Equal(rw.Spec.RemoteWrite, prom.Spec.RemoteWrite[rwIndex]) {
 		prom.Spec.RemoteWrite[rwIndex] = rw.Spec.RemoteWrite
 		ok = true
@@ -366,26 +402,13 @@ func expectedRemoveRemoteWriteNotExists(prom promv1.Prometheus) struct {
 	}{p: &prom, ok: false}
 }
 
-//// TODO make it static
-//func wrapperRemoveRemoteWrite(r pmov1alpha1.RemoteWrite, prom promv1.Prometheus) struct {
-//	p  *promv1.Prometheus
-//	ok bool
-//} {
-//	ok := false
-//	r.Spec.RemoteWrite.Name = r.GetName()
-//	if prom.Spec.RemoteWrite != nil {
-//		if rwIndex, ok := remoteWriteExists(r.GetName(), prom.Spec.RemoteWrite); ok {
-//			prom.Spec.RemoteWrite = remove(prom.Spec.RemoteWrite, rwIndex)
-//			ok = true
-//		}
-//	}
-//	return struct {
-//		p  *promv1.Prometheus
-//		ok bool
-//	}{p: &prom, ok: ok}
-//}
-
 func NewResource() *Resource {
+
+	r, _ := New(Config{})
+	return r
+}
+
+func NewResourceWithProxy() *Resource {
 	config := Config{
 		HTTPProxy:  "http://proxy-url",
 		HTTPSProxy: "",
