@@ -201,7 +201,7 @@ func AlertManagerKey() string {
 func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
 	case *v1.Service:
-		return fmt.Sprintf("%s:443", v.Spec.ClusterIP)
+		return "kubernetes.default:443"
 	case *capiv1alpha3.Cluster: // Support CAPI Clusters
 		return fmt.Sprintf("%s:%d", v.Spec.ControlPlaneEndpoint.Host, v.Spec.ControlPlaneEndpoint.Port)
 	case metav1.Object:

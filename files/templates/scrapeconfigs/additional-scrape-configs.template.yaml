@@ -9,8 +9,6 @@
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
     action: keep
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
   - source_labels: [__meta_kubernetes_endpoint_port_name]
     regex: https
     action: keep
