@@ -12,7 +12,7 @@ require (
 	github.com/giantswarm/operatorkit/v7 v7.0.1
 	github.com/giantswarm/versionbundle v1.0.0
 	github.com/google/go-cmp v0.5.8
-	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.12
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.13
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.52.1
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.52.1
 	github.com/sirupsen/logrus v1.8.1
