@@ -1,0 +1,28 @@
+apiVersion: monitoring.giantswarm.io/v1alpha1
+kind: RemoteWrite
+metadata:
+  name: grafana-cloud
+spec:
+  clusterSelector:
+    matchLabels:
+      'giantswarm.io/cluster': 'ginger'
+  remoteWrite:
+    name: test
+    url: https://some-url.grafana.net/api/prom/push
+    basicAuth:
+      password:
+        key: password
+        name: grafana-cloud-auth-basic
+      username:
+        key: username
+        name: grafana-cloud-auth-basic
+    queueConfig:
+      capacity: 10000
+      maxSamplesPerSend: 1000
+      minShards: 10
+  # Secrets provided here must be defined in the remotewrite config
+  secrets:
+    - name: grafana-cloud-auth-basic
+      data:
+        username: YWRtaW4K
+        password: YWRtaW4K
