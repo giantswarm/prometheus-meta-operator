@@ -14,6 +14,10 @@ import (
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
 )
 
+const (
+	Name = "remotewrite"
+)
+
 type Config struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
@@ -34,6 +38,10 @@ func New(config Config) (*Resource, error) {
 	}
 
 	return r, nil
+}
+
+func (r *Resource) Name() string {
+	return Name
 }
 
 func ToRemoteWrite(obj interface{}) (*pmov1alpha1.RemoteWrite, error) {
