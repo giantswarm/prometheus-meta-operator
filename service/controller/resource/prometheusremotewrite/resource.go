@@ -1,18 +1,16 @@
 package prometheusremotewrite
 
 import (
-	"context"
 	"strings"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
-	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/google/go-cmp/cmp"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
 )
 
 const (
@@ -55,31 +53,6 @@ func New(config Config) (*Resource, error) {
 
 func (r *Resource) Name() string {
 	return Name
-}
-
-func ToRemoteWrite(obj interface{}) (*pmov1alpha1.RemoteWrite, error) {
-	remotewrite, ok := obj.(*pmov1alpha1.RemoteWrite)
-	if !ok {
-		return nil, microerror.Maskf(wrongTypeError, "'%T' is not a 'pmov1alpha1.RemoteWrite'", obj)
-	}
-
-	return remotewrite, nil
-}
-
-func fetchPrometheusList(ctx context.Context, r *Resource, rw *pmov1alpha1.RemoteWrite) (*promv1.PrometheusList, error) {
-	selector, err := metav1.LabelSelectorAsSelector(&rw.Spec.ClusterSelector)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-	prometheusList, err := r.prometheusClient.
-		MonitoringV1().
-		Prometheuses(metav1.NamespaceAll).
-		List(ctx, metav1.ListOptions{LabelSelector: selector.String()})
-	if err != nil {
-		return nil, microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector %#q", rw.Spec.ClusterSelector.String())
-	}
-
-	return prometheusList, nil
 }
 
 func (r *Resource) ensurePrometheusRemoteWrite(rw pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
@@ -133,4 +106,12 @@ func remoteWriteExists(name string, items []promv1.RemoteWriteSpec) (int, bool) 
 
 func remove(slice []promv1.RemoteWriteSpec, s int) []promv1.RemoteWriteSpec {
 	return append(slice[:s], slice[s+1:]...)
+}
+
+func toResourceWrapper(r *Resource) *remotewriteutils.ResourceWrapper {
+	return &remotewriteutils.ResourceWrapper{
+		K8sClient:        r.k8sClient,
+		Logger:           r.logger,
+		PrometheusClient: r.prometheusClient,
+	}
 }

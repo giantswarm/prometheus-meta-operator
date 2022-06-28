@@ -44,8 +44,8 @@ func newResources(config ControllerConfig) ([]resource.Interface, error) {
 	}
 
 	resources := []resource.Interface{
-		prometheusRemoteWrite,
 		rwSecretResource,
+		prometheusRemoteWrite,
 	}
 
 	return resources, nil
