@@ -53,9 +53,9 @@ func (r *Resource) ensureRemoteWriteSecret(scSpec pmov1alpha1.RemoteWriteSecretS
 		labels[labelNamespace] = meta.GetNamespace()
 	} else {
 		labels = map[string]string{
-			label:                  Name,
-			labelName:              meta.GetName(),
-			labels[labelNamespace]: meta.GetNamespace(),
+			label:          Name,
+			labelName:      meta.GetName(),
+			labelNamespace: meta.GetNamespace(),
 		}
 	}
 
