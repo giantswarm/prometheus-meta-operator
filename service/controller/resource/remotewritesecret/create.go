@@ -27,7 +27,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		if prometheusList == nil || len(prometheusList.Items) == 0 {
+		if len(prometheusList.Items) == 0 {
 			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
 			resourcecanceledcontext.SetCanceled(ctx)
 			return nil
@@ -55,7 +55,11 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			/*
 			  Cleanup deleted secrets from RemoteWrite CR
 			*/
-			l := labels.SelectorFromSet(labels.Set(map[string]string{label: Name}))
+			l := labels.SelectorFromSet(labels.Set(map[string]string{
+				label:          Name,
+				labelName:      remoteWrite.GetName(),
+				labelNamespace: remoteWrite.GetNamespace(),
+			}))
 			options := metav1.ListOptions{
 				LabelSelector: l.String(),
 			}
@@ -63,14 +67,12 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			if err != nil {
 				return microerror.Mask(err)
 			}
-			if secrets != nil && len(secrets.Items) > 0 {
-				for _, secret := range secrets.Items {
-					// delete secret if it doesn't exist in the remotewrite secrets field
-					if !secretInstalled(secret, installedSecrets) {
-						err := r.performDelete(ctx, secret.GetName(), secret.GetNamespace())
-						if err != nil {
-							return microerror.Mask(err)
-						}
+			for _, secret := range secrets.Items {
+				// delete secret if it doesn't exist in the remotewrite secrets field
+				if !secretInstalled(secret, installedSecrets) {
+					err := r.k8sClient.K8sClient().CoreV1().Secrets(secret.GetNamespace()).Delete(ctx, secret.GetName(), metav1.DeleteOptions{})
+					if err != nil {
+						return microerror.Mask(err)
 					}
 				}
 			}

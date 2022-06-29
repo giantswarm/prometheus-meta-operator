@@ -15,7 +15,8 @@ type RemoteWrite struct {
 }
 
 type RemoteWriteSpec struct {
-	RemoteWrite     pov1.RemoteWriteSpec `json:"remoteWrite"`
+	RemoteWrite pov1.RemoteWriteSpec `json:"remoteWrite"`
+	// +immutable
 	ClusterSelector metav1.LabelSelector `json:"clusterSelector"`
 
 	// Secrets data to be created along with the configured Prometheus resource.

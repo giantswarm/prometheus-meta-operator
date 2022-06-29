@@ -1,8 +1,6 @@
 package remotewritesecret
 
 import (
-	"context"
-
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/micrologger"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
@@ -14,8 +12,10 @@ import (
 )
 
 const (
-	Name  = "remotewrite"
-	label = "monitoring.giantswarm.io/remotewrite"
+	Name           = "remotewrite"
+	label          = "giantswarm.io/resource"
+	labelName      = "remotewrite/name"
+	labelNamespace = "remotewrite/namespace"
 )
 
 type Config struct {
@@ -49,8 +49,14 @@ func (r *Resource) ensureRemoteWriteSecret(scSpec pmov1alpha1.RemoteWriteSecretS
 	labels := meta.GetLabels()
 	if labels != nil {
 		labels[label] = Name
+		labels[labelName] = meta.GetName()
+		labels[labelNamespace] = meta.GetNamespace()
 	} else {
-		labels = map[string]string{label: Name}
+		labels = map[string]string{
+			label:                  Name,
+			labelName:              meta.GetName(),
+			labels[labelNamespace]: meta.GetNamespace(),
+		}
 	}
 
 	return corev1.Secret{
@@ -62,10 +68,6 @@ func (r *Resource) ensureRemoteWriteSecret(scSpec pmov1alpha1.RemoteWriteSecretS
 		},
 		Data: scSpec.Data,
 	}
-}
-
-func (r *Resource) performDelete(ctx context.Context, name, ns string) error {
-	return r.k8sClient.K8sClient().CoreV1().Secrets(ns).Delete(ctx, name, metav1.DeleteOptions{})
 }
 
 func toResourceWrapper(r *Resource) *remotewriteutils.ResourceWrapper {
