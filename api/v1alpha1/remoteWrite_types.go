@@ -11,8 +11,9 @@ import (
 type RemoteWrite struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata"`
-	Spec              RemoteWriteSpec   `json:"spec"`
-	Status            RemoteWriteStatus `json:"status"`
+	Spec              RemoteWriteSpec `json:"spec"`
+	// +kubebuilder:validation:Optional
+	Status RemoteWriteStatus `json:"status"`
 }
 
 type RemoteWriteSpec struct {
