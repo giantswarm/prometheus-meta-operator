@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
@@ -25,8 +24,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 		if len(prometheusList.Items) == 0 {
-			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
-			resourcecanceledcontext.SetCanceled(ctx)
+			r.logger.Debugf(ctx, "no prometheus found, stop reconciliation")
 			return nil
 		}
 
@@ -36,7 +34,6 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			  Cleanup deleted secrets from RemoteWrite CR
 			*/
 			l := labels.SelectorFromSet(labels.Set(map[string]string{
-				label:          Name,
 				labelName:      remoteWrite.GetName(),
 				labelNamespace: remoteWrite.GetNamespace(),
 			}))

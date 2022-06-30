@@ -13,7 +13,6 @@ import (
 
 const (
 	Name           = "remotewrite"
-	label          = "giantswarm.io/resource"
 	labelName      = "remotewrite/name"
 	labelNamespace = "remotewrite/namespace"
 )
@@ -48,12 +47,10 @@ func (r *Resource) ensureRemoteWriteSecret(scSpec pmov1alpha1.RemoteWriteSecretS
 
 	labels := meta.GetLabels()
 	if labels != nil {
-		labels[label] = Name
 		labels[labelName] = meta.GetName()
 		labels[labelNamespace] = meta.GetNamespace()
 	} else {
 		labels = map[string]string{
-			label:          Name,
 			labelName:      meta.GetName(),
 			labelNamespace: meta.GetNamespace(),
 		}

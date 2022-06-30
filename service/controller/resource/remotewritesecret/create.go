@@ -57,7 +57,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			  Cleanup deleted secrets from RemoteWrite CR
 			*/
 			l := labels.SelectorFromSet(labels.Set(map[string]string{
-				label:          Name,
 				labelName:      remoteWrite.GetName(),
 				labelNamespace: remoteWrite.GetNamespace(),
 			}))
