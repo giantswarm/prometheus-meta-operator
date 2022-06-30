@@ -50,7 +50,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			data := fmt.Sprint(`[{ "op": "add", "path": "/status/configuredPrometheuses/-", "value": { "name": "%s", "namespace": "%s" } }]`, current.GetName(), current.GetNamespace())
+			data := fmt.Sprintf(`[{ "op": "add", "path": "/status/configuredPrometheuses/-", "value": { "name": "%s", "namespace": "%s" } }]`, current.GetName(), current.GetNamespace())
 			patch := patch{
 				patchType: types.JSONPatchType,
 				data:      []byte(data),
