@@ -11,7 +11,8 @@ import (
 type RemoteWrite struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata"`
-	Spec              RemoteWriteSpec `json:"spec"`
+	Spec              RemoteWriteSpec   `json:"spec"`
+	Status            RemoteWriteStatus `json:"status"`
 }
 
 type RemoteWriteSpec struct {
@@ -30,6 +31,15 @@ type RemoteWriteSpec struct {
 type RemoteWriteSecretSpec struct {
 	Name string            `json:"name"`
 	Data map[string][]byte `json:"data,omitempty"`
+}
+
+type RemoteWriteStatus struct {
+	ConfiguredPrometheuses []RemoteWriteStatusConfiguredPrometheus `json:"configuredPrometheuses"`
+}
+
+type RemoteWriteStatusConfiguredPrometheus struct {
+	Name      string `json:"name"`
+	Namespace string `json:"namespace"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
