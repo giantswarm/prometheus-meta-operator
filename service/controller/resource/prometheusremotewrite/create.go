@@ -7,6 +7,8 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/types"
 
 	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
 )
@@ -47,6 +49,16 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			if err != nil {
 				return microerror.Mask(err)
 			}
+
+			data := fmt.Sprint(`[{ "op": "add", "path": "/status/configuredPrometheuses/-", "value": { "name": "%s", "namespace": "%s" } }]`, current.GetName(), current.GetNamespace())
+			patch := patch{
+				patchType: types.JSONPatchType,
+				data:      []byte(data),
+			}
+			err = r.k8sClient.CtrlClient().Status().Patch(ctx, remoteWrite, patch)
+			if err != nil {
+				return microerror.Mask(err)
+			}
 		}
 
 	}
@@ -65,4 +77,17 @@ func updateMeta(c, d metav1.Object) {
 	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
 	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
 	d.SetManagedFields(c.GetManagedFields())
+}
+
+type patch struct {
+	patchType types.PatchType
+	data      []byte
+}
+
+func (p patch) Type() types.PatchType {
+	return p.patchType
+}
+
+func (p patch) Data(obj runtime.Object) ([]byte, error) {
+	return p.data, nil
 }
