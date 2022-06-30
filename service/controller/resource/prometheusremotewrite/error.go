@@ -2,10 +2,6 @@ package prometheusremotewrite
 
 import "github.com/giantswarm/microerror"
 
-var errorFetchingPrometheus = &microerror.Error{
-	Kind: "errorFetchingPrometheus",
-}
-
 var noSuchPrometheusForLabel = &microerror.Error{
 	Kind: "noSuchPrometheusForLabel",
 }

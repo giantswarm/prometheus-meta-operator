@@ -35,7 +35,9 @@ rules:
       - create
       - update # Needed to update the additionalScrapeConfigs
       - delete
+      - deletecollection
       - get
+      - list
   - apiGroups:
       - apiextensions.k8s.io
     resources:

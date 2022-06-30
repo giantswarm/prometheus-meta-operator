@@ -559,8 +559,10 @@ spec:
                 - url
                 type: object
               secrets:
-                description: Secrets that will be created in the relevant Prometheus
-                  namespace
+                description: Secrets data to be created along with the configured
+                  Prometheus resource. This provides the data for any v1.SecretKeySelector
+                  used in the subsequent RemoteWrite field. Provided name and keys
+                  should match values in v1.SecretKeySelector fields.
                 items:
                   properties:
                     data:

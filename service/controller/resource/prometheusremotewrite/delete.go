@@ -7,18 +7,20 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	r.logger.Debugf(ctx, "deleting prometheus remoteWrite config")
 	{
-		remoteWrite, err := ToRemoteWrite(obj)
+		remoteWrite, err := remotewriteutils.ToRemoteWrite(obj)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
-		prometheusList, err := fetchPrometheusList(ctx, r, remoteWrite)
+		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
 		if err != nil {
 			return microerror.Mask(err)
 		}
