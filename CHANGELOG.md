@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add unit tests for remotewrite resource
 - Add Secrets field in the RemoteWrite CR
 - Implement sync RemoteWrite Secrets logic
+- Update Secrets Content once changed in RemoteWrite
 
 ### Fixed 
 

@@ -6,6 +6,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
+	"github.com/google/go-cmp/cmp"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -43,6 +44,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				if apierrors.IsNotFound(err) {
 					r.logger.Debugf(ctx, fmt.Sprintf("creating Secret %#q in namespace %#q", desired.Name, desired.Namespace))
 					secret, err = r.k8sClient.K8sClient().CoreV1().Secrets(current.GetNamespace()).Create(ctx, &desired, metav1.CreateOptions{})
+				} else if err == nil && !cmp.Equal(desired.Data, secret.Data) {
+					r.logger.Debugf(ctx, fmt.Sprintf("updating Secret %#q in namespace %#q", desired.Name, desired.Namespace))
+					secret, err = r.k8sClient.K8sClient().CoreV1().Secrets(current.GetNamespace()).Update(ctx, &desired, metav1.UpdateOptions{})
 				}
 				if err != nil {
 					return microerror.Mask(err)
