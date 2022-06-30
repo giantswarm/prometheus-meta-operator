@@ -39,7 +39,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			// Loop over remote write secrets
 			for _, item := range remoteWrite.Spec.Secrets {
 				desired := r.ensureRemoteWriteSecret(item, remoteWrite.ObjectMeta, current.GetNamespace())
-				fmt.Println("Debug:", desired)
 				secret, err := r.k8sClient.K8sClient().CoreV1().Secrets(current.GetNamespace()).Get(ctx, item.Name, metav1.GetOptions{})
 				if apierrors.IsNotFound(err) {
 					r.logger.Debugf(ctx, fmt.Sprintf("creating Secret %#q in namespace %#q", desired.Name, desired.Namespace))
