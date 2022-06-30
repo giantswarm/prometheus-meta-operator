@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.0] - 2022-06-30
+
 ### Added
 
 - Add Secrets field in the RemoteWrite CR
@@ -1467,7 +1469,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.7.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.8.0...HEAD
+[3.8.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.7.0...v3.8.0
 [3.7.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.5.0...v3.7.0
 [3.5.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.4.3...v3.5.0
 [3.4.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.4.2...v3.4.3
