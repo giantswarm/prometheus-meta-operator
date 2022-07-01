@@ -2,6 +2,7 @@ package v1alpha1
 
 import (
 	pov1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -36,12 +37,7 @@ type RemoteWriteSecretSpec struct {
 }
 
 type RemoteWriteStatus struct {
-	ConfiguredPrometheuses []RemoteWriteStatusConfiguredPrometheus `json:"configuredPrometheuses"`
-}
-
-type RemoteWriteStatusConfiguredPrometheus struct {
-	Name      string `json:"name"`
-	Namespace string `json:"namespace"`
+	ConfiguredPrometheuses []corev1.ObjectReference `json:"configuredPrometheuses"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
