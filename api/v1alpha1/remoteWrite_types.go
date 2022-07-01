@@ -6,6 +6,7 @@ import (
 )
 
 // +kubebuilder:resource:categories=common;giantswarm
+// +kubebuilder:subresource:status
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 // RemoteWrite represents schema for managed RemoteWrites in Prometheus. Reconciled by prometheus-meta-operator.
 type RemoteWrite struct {
