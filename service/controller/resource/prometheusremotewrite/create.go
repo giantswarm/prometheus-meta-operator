@@ -7,9 +7,9 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 
 	"github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
-	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
 )
 
@@ -55,18 +55,16 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				Namespace: current.GetNamespace(),
 			}
 
+			gvk, err := apiutil.GVKForObject(remoteWrite, r.k8sClient.Scheme())
+			if err != nil {
+				return microerror.Mask(err)
+			}
+			gvk.Kind = remoteWrite.Kind
+			remoteWrite.SetGroupVersionKind(gvk)
+
 			r.logger.Debugf(ctx, fmt.Sprintf("remotewrite kind %v", remoteWrite.GetObjectKind().GroupVersionKind()))
 			remoteWrite.Status.ConfiguredPrometheuses = append(remoteWrite.Status.ConfiguredPrometheuses, newStatus)
-
-			result := pmov1alpha1.RemoteWrite{}
-			err = r.k8sClient.RESTClient().
-				Post().
-				Namespace(remoteWrite.GetNamespace()).
-				Resource("remotewrites").
-				Body(remoteWrite).
-				Do(ctx).
-				Into(&result)
-
+			err = r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
 			if err != nil {
 				return microerror.Mask(err)
 			}
