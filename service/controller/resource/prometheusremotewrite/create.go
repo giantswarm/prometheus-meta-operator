@@ -34,7 +34,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		for _, current := range prometheusList.Items {
-			err = r.ensureStatus(remoteWrite, current)
+			err = r.ensureStatus(ctx, remoteWrite, current)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -75,7 +75,7 @@ func updateMeta(c, d metav1.Object) {
 	d.SetManagedFields(c.GetManagedFields())
 }
 
-func (r *Resource) ensureStatus(remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus) error {
+func (r *Resource) ensureStatus(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus) error {
 	for _, ref := range remoteWrite.Status.ConfiguredPrometheuses {
 		if ref.Name == prometheus.GetName() && ref.Namespace == prometheus.GetNamespace() {
 			return nil
@@ -88,7 +88,7 @@ func (r *Resource) ensureStatus(remoteWrite *pmov1alpha1.RemoteWrite, prometheus
 	}
 	remoteWrite.Status.ConfiguredPrometheuses = append(remoteWrite.Status.ConfiguredPrometheuses, newStatus)
 
-	err = r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
+	err := r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
 	if err != nil {
 		return microerror.Mask(err)
 	}
