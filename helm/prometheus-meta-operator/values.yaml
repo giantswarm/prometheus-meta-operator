@@ -45,6 +45,7 @@ managementCluster:
   pipeline: ""
   provider:
     kind: ""
+    region: ""
 
 prometheus:
   additionalScrapeConfigs: ""
