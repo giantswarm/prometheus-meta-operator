@@ -32,6 +32,7 @@ type Config struct {
 	Customer                  string
 	Installation              string
 	Provider                  string
+	Region                    string
 	Mayu                      string
 	Vault                     string
 	TemplatePath              string
@@ -43,6 +44,7 @@ type TemplateData struct {
 	APIServerURL              string
 	Bastions                  []string
 	Provider                  string
+	Region                    string
 	ClusterID                 string
 	ClusterType               string
 	ServicePriority           string
@@ -180,6 +182,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		Customer:                  config.Customer,
 		Organization:              organization,
 		Provider:                  config.Provider,
+		Region:                    config.Region,
 		Installation:              config.Installation,
 		SecretName:                key.Secret(),
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),

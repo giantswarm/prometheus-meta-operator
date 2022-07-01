@@ -242,6 +242,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Bastions:                config.Bastions,
 			Customer:                config.Customer,
 			Provider:                config.Provider,
+			Region:                  config.Region,
 			Installation:            config.Installation,
 			Mayu:                    config.Mayu,
 			Vault:                   config.Vault,

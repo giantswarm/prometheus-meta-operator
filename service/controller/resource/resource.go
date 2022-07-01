@@ -194,6 +194,7 @@ func New(config Config) ([]resource.Interface, error) {
 			Bastions:                config.Bastions,
 			Customer:                config.Customer,
 			Provider:                config.Provider,
+			Region:                  config.Region,
 			Installation:            config.Installation,
 		}
 
