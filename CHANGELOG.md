@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Secrets field in the RemoteWrite CR
 - Implement sync RemoteWrite Secrets logic
 
-### Fixed 
+### Fixed
 
 - Fix API server discovery.
 
@@ -23,10 +23,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove duplicate scrape config targets.
 
-### Fixed 
+### Fixed
 
 - Fix API server discovery.
 - Add `patch` verb for `remoteWrite` resources.
+
+### Changed
+
+- Increase `scrape_timeout` in China to `30s`.
 
 ## [3.8.0] - 2022-06-30
 
