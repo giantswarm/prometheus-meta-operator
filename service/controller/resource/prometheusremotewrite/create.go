@@ -6,9 +6,11 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
+	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
 )
 
@@ -32,6 +34,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		for _, current := range prometheusList.Items {
+			err = r.ensureStatus(remoteWrite, current)
+			if err != nil {
+				return microerror.Mask(err)
+			}
 
 			desired, ok := r.ensurePrometheusRemoteWrite(*remoteWrite, *current)
 			if !ok {
@@ -49,17 +55,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			newStatus := v1alpha1.RemoteWriteStatusConfiguredPrometheus{
-				Name:      current.GetName(),
-				Namespace: current.GetNamespace(),
-			}
-			r.logger.Debugf(ctx, fmt.Sprintf("remotewrite kind %v", remoteWrite.GetObjectKind().GroupVersionKind()))
-			remoteWrite.Status.ConfiguredPrometheuses = append(remoteWrite.Status.ConfiguredPrometheuses, newStatus)
-
-			err = r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
-			if err != nil {
-				return microerror.Mask(err)
-			}
 		}
 
 	}
@@ -78,4 +73,25 @@ func updateMeta(c, d metav1.Object) {
 	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
 	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
 	d.SetManagedFields(c.GetManagedFields())
+}
+
+func (r *Resource) ensureStatus(remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus) error {
+	for _, ref := range remoteWrite.Status.ConfiguredPrometheuses {
+		if ref.Name == prometheus.GetName() && ref.Namespace == prometheus.GetNamespace() {
+			return nil
+		}
+	}
+
+	newStatus := corev1.ObjectReference{
+		Name:      prometheus.GetName(),
+		Namespace: prometheus.GetNamespace(),
+	}
+	remoteWrite.Status.ConfiguredPrometheuses = append(remoteWrite.Status.ConfiguredPrometheuses, newStatus)
+
+	err = r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
 }
