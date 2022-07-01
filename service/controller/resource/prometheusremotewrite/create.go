@@ -10,6 +10,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 
+	"github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
 )
 
@@ -50,12 +51,19 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			data := fmt.Sprintf(`[{ "op": "add", "path": "/status/configuredPrometheuses/-", "value": { "name": "%s", "namespace": "%s" } }]`, current.GetName(), current.GetNamespace())
-			patch := patch{
-				patchType: types.JSONPatchType,
-				data:      []byte(data),
+			//data := fmt.Sprintf(`[{ "op": "add", "path": "/status/configuredPrometheuses/-", "value": { "name": "%s", "namespace": "%s" } }]`, current.GetName(), current.GetNamespace())
+			//patch := patch{
+			//	patchType: types.JSONPatchType,
+			//	data:      []byte(data),
+			//}
+			//err = r.k8sClient.CtrlClient().Status().Patch(ctx, remoteWrite, patch)
+			newStatus := v1alpha1.RemoteWriteStatusConfiguredPrometheus{
+				Name:      current.GetName(),
+				Namespace: current.GetNamespace(),
 			}
-			err = r.k8sClient.CtrlClient().Status().Patch(ctx, remoteWrite, patch)
+			remoteWrite.Status.ConfiguredPrometheuses = append(remoteWrite.Status.ConfiguredPrometheuses, newStatus)
+
+			err = r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
 			if err != nil {
 				return microerror.Mask(err)
 			}
