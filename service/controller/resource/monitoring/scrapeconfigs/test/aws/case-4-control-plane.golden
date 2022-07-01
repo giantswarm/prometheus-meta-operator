@@ -1109,6 +1109,7 @@
 - job_name: kubernetes-prometheus/app-exporter-kubernetes/0
   honor_labels: true
   scheme: http
+
   kubernetes_sd_configs:
   - role: endpoints
     namespaces:
