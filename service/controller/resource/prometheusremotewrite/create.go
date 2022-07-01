@@ -53,7 +53,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				Name:      current.GetName(),
 				Namespace: current.GetNamespace(),
 			}
-			r.logger.Debugf(ctx, fmt.Sprintf("remotewrite ns %s", remoteWrite.GetNamespace()))
+			r.logger.Debugf(ctx, fmt.Sprintf("remotewrite kind %v", remoteWrite.GetObjectKind().GroupVersionKind()))
 			remoteWrite.Status.ConfiguredPrometheuses = append(remoteWrite.Status.ConfiguredPrometheuses, newStatus)
 
 			err = r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
