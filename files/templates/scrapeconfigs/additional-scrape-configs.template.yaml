@@ -625,7 +625,7 @@
 - job_name: [[ .ClusterID ]]-prometheus/app-exporter-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
-  [[ if and (eq .provider.kind "aws") (hasPrefix "cn-" .provider.region) ]]
+  [[ if and (eq .Provider.Kind "aws") (hasPrefix "cn-" .Provider.Region) ]]
   scrape_timeout: 30s
   [[ end ]]
   kubernetes_sd_configs:
