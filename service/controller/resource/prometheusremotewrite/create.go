@@ -62,7 +62,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			err = r.k8sClient.RESTClient().
 				Post().
 				Namespace(remoteWrite.GetNamespace()).
-				Resource("remotewrites/status").
+				Resource("remotewrites").
 				Body(remoteWrite).
 				Do(ctx).
 				Into(&result)
