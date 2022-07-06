@@ -57,10 +57,6 @@ func updateMeta(c, d metav1.Object) {
 }
 
 func (r *Resource) setRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus) error {
-	err := r.ensureStatusCreated(ctx, remoteWrite, prometheus)
-	if err != nil {
-		return microerror.Mask(err)
-	}
 
 	desired, ok := r.ensurePrometheusRemoteWrite(*remoteWrite, *prometheus)
 	if !ok {
@@ -71,9 +67,13 @@ func (r *Resource) setRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.
 	r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
 
 	updateMeta(prometheus, desired)
-	_, err = r.prometheusClient.MonitoringV1().
+	_, err := r.prometheusClient.MonitoringV1().
 		Prometheuses(prometheus.GetNamespace()).
 		Update(ctx, desired, metav1.UpdateOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	err = r.ensureStatusCreated(ctx, remoteWrite, prometheus)
 	if err != nil {
 		return microerror.Mask(err)
 	}
