@@ -53,7 +53,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			 * Cleanup deleted secrets from RemoteWrite CR
 			 *  Once RemoteWrite.spec.secrets changed
 			 */
-			r.ensureCleanupSecrets(ctx, remoteWrite, current.GetNamespace(), installedSecrets)
+			err := r.ensureCleanupSecrets(ctx, remoteWrite, current.GetNamespace(), installedSecrets)
+			if err != nil {
+				return microerror.Mask(err)
+			}
 
 		}
 
