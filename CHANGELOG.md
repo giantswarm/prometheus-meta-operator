@@ -15,7 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add Secrets field in the RemoteWrite CR
 - Implement sync RemoteWrite Secrets logic
 
-### Fixed 
+### Changed
+
+- Rename `vcd` to `cloud-director`
+
+### Fixed
 
 - Fix API server discovery.
 
@@ -23,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove duplicate scrape config targets.
 
-### Fixed 
+### Fixed
 
 - Fix API server discovery.
 - Add `patch` verb for `remoteWrite` resources.
