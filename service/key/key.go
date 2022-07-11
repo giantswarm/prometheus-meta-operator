@@ -76,7 +76,7 @@ func EtcdSecret(installation string, obj interface{}) string {
 }
 
 func IsCAPIManagementCluster(provider string) bool {
-	return provider == "gcp" || provider == "openstack" || provider == "vcd" || provider == "vsphere"
+	return provider == "cloud-director" || provider == "gcp" || provider == "openstack" || provider == "vsphere"
 }
 
 func EtcdSecretSourceName() string {
