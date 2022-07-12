@@ -29,10 +29,6 @@ func TestToRemoteWrite(t *testing.T) {
 	}
 
 	successObj := pmov1alpha1.RemoteWrite{
-		//TypeMeta: metav1.TypeMeta{
-		//	Kind:       "RemoteWrite",
-		//	APIVersion: "monitoring.giantswarm.io/v1alpha1",
-		//},
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,

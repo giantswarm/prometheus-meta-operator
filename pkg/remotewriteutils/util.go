@@ -25,12 +25,6 @@ func ToRemoteWrite(obj interface{}) (*pmov1alpha1.RemoteWrite, error) {
 		return nil, microerror.Maskf(wrongTypeError, "'%T' is not a 'pmov1alpha1.RemoteWrite'", obj)
 	}
 
-	//kind := reflect.TypeOf(remotewrite).Elem().Name()
-	//remotewrite.TypeMeta = metav1.TypeMeta{
-	//	Kind:       kind,
-	//	APIVersion: pmov1alpha1.SchemeGroupVersion.String(),
-	//}
-
 	return remotewrite, nil
 }
 
