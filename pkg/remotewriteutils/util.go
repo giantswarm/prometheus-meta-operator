@@ -2,7 +2,6 @@ package remotewriteutils
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -26,11 +25,11 @@ func ToRemoteWrite(obj interface{}) (*pmov1alpha1.RemoteWrite, error) {
 		return nil, microerror.Maskf(wrongTypeError, "'%T' is not a 'pmov1alpha1.RemoteWrite'", obj)
 	}
 
-	kind := reflect.TypeOf(remotewrite).Elem().Name()
-	remotewrite.TypeMeta = metav1.TypeMeta{
-		Kind:       kind,
-		APIVersion: pmov1alpha1.SchemeGroupVersion.String(),
-	}
+	//kind := reflect.TypeOf(remotewrite).Elem().Name()
+	//remotewrite.TypeMeta = metav1.TypeMeta{
+	//	Kind:       kind,
+	//	APIVersion: pmov1alpha1.SchemeGroupVersion.String(),
+	//}
 
 	return remotewrite, nil
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -24,6 +25,11 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
 		if err != nil {
 			return microerror.Mask(err)
+		}
+		if prometheusList == nil && len(prometheusList.Items) == 0 {
+			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
+			resourcecanceledcontext.SetCanceled(ctx)
+			return nil
 		}
 
 		for _, current := range prometheusList.Items {
