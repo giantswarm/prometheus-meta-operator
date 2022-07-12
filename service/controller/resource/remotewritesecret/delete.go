@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
@@ -35,9 +36,26 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			 * Cleanup deleted secrets from RemoteWrite CR
 			 *  Once RemoteWrite.spec.secrets changed
 			 */
-			err := r.deleteSecrets(ctx, remoteWrite, current.GetNamespace())
+
+			l := labels.SelectorFromSet(labels.Set(map[string]string{
+				labelName:      remoteWrite.GetName(),
+				labelNamespace: remoteWrite.GetNamespace(),
+			}))
+			options := metav1.ListOptions{
+				LabelSelector: l.String(),
+			}
+			err := r.k8sClient.K8sClient().CoreV1().Secrets(current.GetNamespace()).DeleteCollection(ctx, metav1.DeleteOptions{}, options)
 			if err != nil {
 				return microerror.Mask(err)
+			}
+
+			for _, sRef := range remoteWrite.Status.SyncedSecrets {
+				if sRef.Namespace == current.GetNamespace() {
+					err = r.ensureStatusDeleted(ctx, remoteWrite, sRef)
+					if err != nil {
+						return microerror.Mask(err)
+					}
+				}
 			}
 
 		}
@@ -57,15 +75,29 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	return nil
 }
 
-func (r *Resource) deleteSecrets(ctx context.Context, remoteWrite *v1alpha1.RemoteWrite, ns string) error {
-	l := labels.SelectorFromSet(labels.Set(map[string]string{
-		labelName:      remoteWrite.GetName(),
-		labelNamespace: remoteWrite.GetNamespace(),
-	}))
-	listOptions := metav1.ListOptions{
-		LabelSelector: l.String(),
+func (r *Resource) ensureStatusDeleted(ctx context.Context, remoteWrite *v1alpha1.RemoteWrite, objRef corev1.ObjectReference) error {
+	for index, ref := range remoteWrite.Status.SyncedSecrets {
+		if ref.Name == objRef.Name && ref.Namespace == objRef.Namespace {
+			remoteWrite.Status.SyncedSecrets = append(remoteWrite.Status.SyncedSecrets[:index], remoteWrite.Status.SyncedSecrets[index+1:]...)
+			err := r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
+			if err != nil {
+				return microerror.Mask(err)
+			}
+		}
 	}
-	err := r.k8sClient.K8sClient().CoreV1().Secrets(ns).DeleteCollection(ctx, metav1.DeleteOptions{}, listOptions)
+
+	return nil
+}
+
+func (r *Resource) deleteSecret(ctx context.Context, remoteWrite *v1alpha1.RemoteWrite, ref corev1.ObjectReference) error {
+	err := r.k8sClient.K8sClient().CoreV1().Secrets(ref.Namespace).Delete(ctx, ref.Name, metav1.DeleteOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	err = r.ensureStatusDeleted(ctx, remoteWrite, ref)
+	if err != nil {
+		return microerror.Mask(err)
+	}
 
 	return err
 }

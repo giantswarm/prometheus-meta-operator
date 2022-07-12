@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	"github.com/google/go-cmp/cmp"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -32,8 +31,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 		if len(prometheusList.Items) == 0 {
 			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
-			resourcecanceledcontext.SetCanceled(ctx)
-			return nil
 		}
 
 		for _, current := range prometheusList.Items {
@@ -86,6 +83,13 @@ func (r *Resource) syncSecret(ctx context.Context, remoteWrite *pmov1alpha1.Remo
 		r.logger.Debugf(ctx, fmt.Sprintf("updating Secret %#q in namespace %#q", desired.Name, desired.Namespace))
 		secret, err = r.k8sClient.K8sClient().CoreV1().Secrets(ns).Update(ctx, &desired, metav1.UpdateOptions{})
 	}
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	err = r.ensureStatusCreated(ctx, remoteWrite, secret)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	return secret, err
 }
@@ -103,6 +107,27 @@ func (r *Resource) retrieveSecrets(ctx context.Context, remoteWrite *pmov1alpha1
 	return secrets, err
 }
 
+func (r *Resource) ensureStatusCreated(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, sc *corev1.Secret) error {
+	for _, ref := range remoteWrite.Status.SyncedSecrets {
+		if ref.Name == sc.GetName() && ref.Namespace == sc.GetNamespace() {
+			return nil
+		}
+	}
+
+	newStatus := corev1.ObjectReference{
+		Name:      sc.GetName(),
+		Namespace: sc.GetNamespace(),
+	}
+	remoteWrite.Status.SyncedSecrets = append(remoteWrite.Status.SyncedSecrets, newStatus)
+
+	err := r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	return nil
+}
+
 func (r *Resource) ensureCleanupSecrets(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, ns string, installedSecrets []corev1.Secret) error {
 	secrets, err := r.retrieveSecrets(ctx, remoteWrite, ns)
 	if err != nil {
@@ -111,7 +136,10 @@ func (r *Resource) ensureCleanupSecrets(ctx context.Context, remoteWrite *pmov1a
 	for _, secret := range secrets.Items {
 		// delete secret if it doesn't exist in the remotewrite secrets field
 		if !secretInstalled(secret, installedSecrets) {
-			err := r.k8sClient.K8sClient().CoreV1().Secrets(secret.GetNamespace()).Delete(ctx, secret.GetName(), metav1.DeleteOptions{})
+			err = r.deleteSecret(ctx, remoteWrite, corev1.ObjectReference{
+				Namespace: secret.GetNamespace(),
+				Name:      secret.GetName(),
+			})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -123,22 +151,14 @@ func (r *Resource) ensureCleanupSecrets(ctx context.Context, remoteWrite *pmov1a
 
 func (r *Resource) ensureCleanUp(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheuses []*promv1.Prometheus) error {
 	// Copy the statuses, because it will be overwritten later on.
-	statuses := remoteWrite.Status.ConfiguredPrometheuses
+	statuses := remoteWrite.Status.SyncedSecrets
 
 	for _, statusRef := range statuses {
 		if !inList(statusRef, prometheuses) {
-			p, err := r.prometheusClient.MonitoringV1().
-				Prometheuses(statusRef.Namespace).
-				Get(ctx, statusRef.Name, metav1.GetOptions{})
+			err := r.deleteSecret(ctx, remoteWrite, statusRef)
 			if err != nil {
 				return microerror.Mask(err)
 			}
-
-			err = r.deleteSecrets(ctx, remoteWrite, p.GetNamespace())
-			if err != nil {
-				return microerror.Mask(err)
-			}
-
 		}
 	}
 
@@ -147,7 +167,7 @@ func (r *Resource) ensureCleanUp(ctx context.Context, remoteWrite *pmov1alpha1.R
 
 func inList(o corev1.ObjectReference, list []*promv1.Prometheus) bool {
 	for _, item := range list {
-		if o.Name == item.GetName() && o.Namespace == item.GetNamespace() {
+		if o.Namespace == item.GetNamespace() {
 			return true
 		}
 	}

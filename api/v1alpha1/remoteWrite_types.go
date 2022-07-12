@@ -37,7 +37,8 @@ type RemoteWriteSecretSpec struct {
 }
 
 type RemoteWriteStatus struct {
-	ConfiguredPrometheuses []corev1.ObjectReference `json:"configuredPrometheuses"`
+	ConfiguredPrometheuses []corev1.ObjectReference `json:"configuredPrometheuses,omitempty"`
+	SyncedSecrets          []corev1.ObjectReference `json:"syncedSecrets,omitempty"`
 }
 
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
