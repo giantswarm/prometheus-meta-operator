@@ -90,6 +90,21 @@ func toClusterRole(v interface{}) (*v1.ClusterRole, error) {
 					"get",
 				},
 			},
+			{
+				APIGroups: []string{
+					"policy",
+					"extensions",
+				},
+				Resources: []string{
+					"podsecuritypolicies",
+				},
+				Verbs: []string{
+					"use",
+				},
+				ResourceNames: []string{
+					"prometheus",
+				},
+			},
 		},
 	}
 

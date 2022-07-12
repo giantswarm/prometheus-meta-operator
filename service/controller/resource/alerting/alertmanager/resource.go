@@ -124,11 +124,12 @@ func toAlertmanager(ctx context.Context, v interface{}, config Config) (metav1.O
 			AlertmanagerConfigSelector: &metav1.LabelSelector{
 				MatchLabels: key.AlertmanagerLabels(),
 			},
-			ConfigSecret: key.AlertManagerSecretName(),
-			Version:      config.Version,
-			LogLevel:     config.LogLevel,
-			ExternalURL:  address.String(),
-			Replicas:     &replicas,
+			ServiceAccountName: "alertmanager",
+			ConfigSecret:       key.AlertManagerSecretName(),
+			Version:            config.Version,
+			LogLevel:           config.LogLevel,
+			ExternalURL:        address.String(),
+			Replicas:           &replicas,
 			Resources: corev1.ResourceRequirements{
 				Requests: corev1.ResourceList{
 					// cpu: 100m
