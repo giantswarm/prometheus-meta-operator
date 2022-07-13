@@ -60,6 +60,7 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - dependencies updates
 - fix build by ignoring CVEs we can't fix for the moment
+- Upgrade docker image from Alpine 3.15.1 to Alpine 3.16.0
 
 ### Added
 
