@@ -156,6 +156,14 @@ rules:
       - list
       - patch
       - watch
+  - apiGroups:
+      - monitoring.giantswarm.io
+    resources:
+      - remotewrites/status
+    verbs:
+      - get
+      - patch
+      - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
