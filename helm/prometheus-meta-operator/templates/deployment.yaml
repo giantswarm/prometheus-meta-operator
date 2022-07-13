@@ -53,6 +53,9 @@ spec:
         - daemon
         - --config.dirs=/var/run/{{ include "name" . }}/configmap/,/var/run/{{ include "name" . }}/secret/
         - --config.files=config,secret
+        ports:
+        - name: http
+          containerPort: 8000
         volumeMounts:
         - name: {{ include "name" . }}-configmap
           mountPath: /var/run/{{ include "name" . }}/configmap/
