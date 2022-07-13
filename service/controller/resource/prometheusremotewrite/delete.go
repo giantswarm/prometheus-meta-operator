@@ -9,8 +9,8 @@ import (
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
+	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewriteutils"
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {

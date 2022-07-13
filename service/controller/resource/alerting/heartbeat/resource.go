@@ -12,8 +12,8 @@ import (
 	"github.com/opsgenie/opsgenie-go-sdk-v2/og"
 	"github.com/sirupsen/logrus"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (

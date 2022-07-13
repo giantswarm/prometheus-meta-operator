@@ -1,4 +1,4 @@
-module github.com/giantswarm/prometheus-meta-operator
+module github.com/giantswarm/prometheus-meta-operator/v2
 
 go 1.17
 

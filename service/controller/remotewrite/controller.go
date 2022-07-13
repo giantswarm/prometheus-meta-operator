@@ -10,8 +10,8 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
+	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
 type ControllerConfig struct {

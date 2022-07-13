@@ -21,13 +21,13 @@ import (
 	"k8s.io/client-go/rest"
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 
-	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/flag"
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/clusterapi"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/legacy"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/managementcluster"
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/remotewrite"
+	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/clusterapi"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/legacy"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/managementcluster"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/remotewrite"
 )
 
 // Config represents the configuration used to create a new service.

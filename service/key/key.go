@@ -12,7 +12,7 @@ import (
 	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
 	capiv1beta1 "sigs.k8s.io/cluster-api/api/v1beta1"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
 const (

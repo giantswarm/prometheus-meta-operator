@@ -12,8 +12,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (

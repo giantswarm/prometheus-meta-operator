@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
 var update = flag.Bool("update", false, "update the ouput file")
