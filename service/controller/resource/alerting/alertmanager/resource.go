@@ -13,8 +13,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 var replicas int32 = 1

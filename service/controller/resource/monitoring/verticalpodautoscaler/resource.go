@@ -15,7 +15,7 @@ import (
 	vpa_types "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/apis/autoscaling.k8s.io/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (

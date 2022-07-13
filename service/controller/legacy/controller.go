@@ -11,8 +11,8 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
+	controllerresource "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource"
 )
 
 type ControllerConfig struct {

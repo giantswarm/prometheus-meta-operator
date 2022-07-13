@@ -11,8 +11,8 @@ import (
 	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/project"
-	controllerresource "github.com/giantswarm/prometheus-meta-operator/service/controller/resource"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
+	controllerresource "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource"
 )
 
 type ControllerConfig struct {

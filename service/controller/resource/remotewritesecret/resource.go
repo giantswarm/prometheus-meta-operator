@@ -7,8 +7,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
+	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewriteutils"
 )
 
 const (

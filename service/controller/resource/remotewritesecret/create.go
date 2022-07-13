@@ -12,8 +12,8 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
-	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/pkg/remotewriteutils"
+	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewriteutils"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {

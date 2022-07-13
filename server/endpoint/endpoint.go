@@ -6,7 +6,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 
-	"github.com/giantswarm/prometheus-meta-operator/service"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service"
 )
 
 type Config struct {

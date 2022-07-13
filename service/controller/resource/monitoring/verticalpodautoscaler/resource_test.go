@@ -15,7 +15,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	vpa_clientsetfake "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned/fake"
 
-	"github.com/giantswarm/prometheus-meta-operator/pkg/unittest"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
 var update = flag.Bool("update", false, "update the output file")

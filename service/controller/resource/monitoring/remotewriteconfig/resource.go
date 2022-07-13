@@ -10,8 +10,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/service/controller/resource/generic"
-	"github.com/giantswarm/prometheus-meta-operator/service/key"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
