@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix creation of new prometheus instance once a cluster has been created
+
 ## [4.0.0] - 2022-07-13
 
 ### Added
