@@ -12,6 +12,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"golang.org/x/net/context"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -379,6 +380,9 @@ func hasChanged(current, desired metav1.Object) bool {
 // Fetch current Prometheus CR and update RemoteWrite field
 func currentRemoteWrite(ctx context.Context, config Config, p *promv1.Prometheus) error {
 	current, err := config.PrometheusClient.MonitoringV1().Prometheuses(p.GetNamespace()).Get(ctx, p.GetName(), metav1.GetOptions{})
+	if apierrors.IsNotFound(err) {
+		return nil
+	}
 	if err != nil {
 		return microerror.Mask(err)
 	}
