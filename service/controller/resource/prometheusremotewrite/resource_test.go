@@ -21,7 +21,7 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 
 	r := NewResource()
 	rw := remoteWrite(name, namespace, clusterSelector)
-	prom := buildPrometheus()
+	prom := prometheus()
 	expectedEmptyPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
 
 	rwAppend := remoteWrite("remotewrite-append", namespace, clusterSelector)
@@ -100,7 +100,7 @@ func TestEnsurePrometheusRemoteWriteWithPoxy(t *testing.T) {
 
 	r := NewResourceWithProxy()
 	rw := remoteWrite(name, namespace, clusterSelector)
-	prom := buildPrometheus()
+	prom := prometheus()
 	expectedEmptyPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
 
 	rwAppend := remoteWrite("remotewrite-append", namespace, clusterSelector)
@@ -147,7 +147,7 @@ func TestEnsurePrometheusRemoteWriteWithPoxy(t *testing.T) {
 func TestRemovePrometheusRemoteWrite(t *testing.T) {
 
 	rw := remoteWrite(name, namespace, clusterSelector)
-	prom := buildPrometheus()
+	prom := prometheus()
 	expectedPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
 	expectedRemoved := expectedRemoveRemoteWrite(*expectedPrometheus.p.DeepCopy(), 0)
 
@@ -233,7 +233,7 @@ func remoteWrite(name, namespace, clusterSelector string) pmov1alpha1.RemoteWrit
 	}
 }
 
-func buildPrometheus() promv1.Prometheus {
+func prometheus() promv1.Prometheus {
 	var replicas int32 = 1
 	return promv1.Prometheus{
 		ObjectMeta: metav1.ObjectMeta{

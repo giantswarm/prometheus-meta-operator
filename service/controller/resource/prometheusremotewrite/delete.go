@@ -7,6 +7,7 @@ import (
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
@@ -18,25 +19,22 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	{
 		remoteWrite, err := remotewriteutils.ToRemoteWrite(obj)
 		if err != nil {
-			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
 		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
 		if err != nil {
-			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 		if prometheusList == nil && len(prometheusList.Items) == 0 {
 			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
-			reconcileErrors.WithLabelValues(r.Name()).Add(0)
 			resourcecanceledcontext.SetCanceled(ctx)
 			return nil
 		}
 
 		for _, current := range prometheusList.Items {
-			err = r.unsetRemoteWrite(ctx, remoteWrite, current)
+			err = r.unsetRemoteWrite(ctx, remoteWrite, current, corev1.ObjectReference{Name: current.GetName(), Namespace: current.GetNamespace()})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -53,33 +51,40 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	return nil
 }
 
-func (r *Resource) unsetRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus) error {
+func (r *Resource) unsetRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus, statusRef corev1.ObjectReference) error {
 	// remove remotewrite config from Prometheus once RemoteWrite CR is deleted
-	if desired, ok := removePrometheusRemoteWrite(*remoteWrite, *prometheus); ok {
-		if !ok {
-			r.logger.Debugf(ctx, fmt.Sprintf("no update required for Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
-			return nil
+	// Check if prometheus pointer is not nil
+	// at some cases the cluster is deleted, and prometheus as well.
+	if prometheus != nil {
+		if desired, ok := removePrometheusRemoteWrite(*remoteWrite, *prometheus); ok {
+			if !ok {
+				r.logger.Debugf(ctx, fmt.Sprintf("no update required for Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
+				return nil
+			}
+			r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
+			updateMeta(prometheus, desired)
+			_, err := r.prometheusClient.MonitoringV1().
+				Prometheuses(prometheus.GetNamespace()).
+				Update(ctx, desired, metav1.UpdateOptions{})
+			if err != nil {
+				return microerror.Mask(err)
+			}
 		}
-		r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
-		updateMeta(prometheus, desired)
-		_, err := r.prometheusClient.MonitoringV1().
-			Prometheuses(prometheus.GetNamespace()).
-			Update(ctx, desired, metav1.UpdateOptions{})
-		if err != nil {
-			return microerror.Mask(err)
-		}
-		err = r.ensureStatusDeleted(ctx, remoteWrite, prometheus)
-		if err != nil {
-			return microerror.Mask(err)
-		}
+	}
+	// Delete the status ref from remotewrite
+	err := r.ensureStatusDeleted(ctx, remoteWrite, corev1.ObjectReference{
+		Name:      statusRef.Name,
+		Namespace: statusRef.Namespace})
+	if err != nil {
+		return microerror.Mask(err)
 	}
 
 	return nil
 }
 
-func (r *Resource) ensureStatusDeleted(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus) error {
+func (r *Resource) ensureStatusDeleted(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, objRef corev1.ObjectReference) error {
 	for index, ref := range remoteWrite.Status.ConfiguredPrometheuses {
-		if ref.Name == prometheus.GetName() && ref.Namespace == prometheus.GetNamespace() {
+		if ref.Name == objRef.Name && ref.Namespace == objRef.Namespace {
 			remoteWrite.Status.ConfiguredPrometheuses = append(remoteWrite.Status.ConfiguredPrometheuses[:index], remoteWrite.Status.ConfiguredPrometheuses[index+1:]...)
 			err := r.k8sClient.CtrlClient().Status().Update(ctx, remoteWrite)
 			if err != nil {

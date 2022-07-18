@@ -9,13 +9,12 @@ require (
 	github.com/giantswarm/microerror v0.4.0
 	github.com/giantswarm/microkit v1.0.0
 	github.com/giantswarm/micrologger v0.6.0
-	github.com/giantswarm/operatorkit/v7 v7.0.1
+	github.com/giantswarm/operatorkit/v7 v7.1.0
 	github.com/giantswarm/versionbundle v1.0.0
 	github.com/google/go-cmp v0.5.8
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.13
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.52.1
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.52.1
-	github.com/prometheus/client_golang v1.12.1
 	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/viper v1.11.0
 	golang.org/x/net v0.0.0-20220524220425-1d687d428aca
@@ -37,6 +36,7 @@ require (
 	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/prometheus/client_golang v1.12.1 // indirect
 	github.com/prometheus/common v0.32.1 // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

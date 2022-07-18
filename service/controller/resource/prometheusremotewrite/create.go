@@ -7,6 +7,7 @@ import (
 	"github.com/giantswarm/microerror"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
@@ -18,21 +19,18 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	{
 		remoteWrite, err := remotewriteutils.ToRemoteWrite(obj)
 		if err != nil {
-			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
 		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
 		if err != nil {
-			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 
 		for _, current := range prometheusList.Items {
 			err = r.setRemoteWrite(ctx, remoteWrite, current)
 			if err != nil {
-				reconcileErrors.WithLabelValues(r.Name()).Inc()
 				return microerror.Mask(err)
 			}
 		}
@@ -114,11 +112,11 @@ func (r *Resource) ensureCleanUp(ctx context.Context, remoteWrite *pmov1alpha1.R
 			p, err := r.prometheusClient.MonitoringV1().
 				Prometheuses(statusRef.Namespace).
 				Get(ctx, statusRef.Name, metav1.GetOptions{})
-			if err != nil {
+			if err != nil && !apierrors.IsNotFound(err) {
 				return microerror.Mask(err)
 			}
 
-			err = r.unsetRemoteWrite(ctx, remoteWrite, p)
+			err = r.unsetRemoteWrite(ctx, remoteWrite, p, statusRef)
 			if err != nil {
 				return microerror.Mask(err)
 			}
