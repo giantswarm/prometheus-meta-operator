@@ -18,16 +18,19 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	{
 		remoteWrite, err := remotewriteutils.ToRemoteWrite(obj)
 		if err != nil {
+			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
 		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
 		if err != nil {
+			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 		if prometheusList == nil && len(prometheusList.Items) == 0 {
 			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
+			reconcileErrors.WithLabelValues(r.Name()).Add(0)
 			resourcecanceledcontext.SetCanceled(ctx)
 			return nil
 		}

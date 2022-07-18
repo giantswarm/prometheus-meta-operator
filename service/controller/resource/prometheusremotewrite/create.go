@@ -18,18 +18,21 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	{
 		remoteWrite, err := remotewriteutils.ToRemoteWrite(obj)
 		if err != nil {
+			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
 		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
 		if err != nil {
+			reconcileErrors.WithLabelValues(r.Name()).Inc()
 			return microerror.Mask(err)
 		}
 
 		for _, current := range prometheusList.Items {
 			err = r.setRemoteWrite(ctx, remoteWrite, current)
 			if err != nil {
+				reconcileErrors.WithLabelValues(r.Name()).Inc()
 				return microerror.Mask(err)
 			}
 		}
