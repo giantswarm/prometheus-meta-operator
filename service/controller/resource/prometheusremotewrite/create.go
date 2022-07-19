@@ -21,6 +21,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
+		if true {
+			return fmt.Errorf("Fake error!! %v", remoteWrite)
+		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
 		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
