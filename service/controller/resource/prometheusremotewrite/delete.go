@@ -33,7 +33,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		}
 
 		for _, current := range prometheusList.Items {
-			err = r.unsetRemoteWrite(ctx, remoteWrite, prometheusParam{
+			err = r.unsetRemoteWrite(ctx, remoteWrite, prometheusAndMetadata{
 				prometheus: current,
 				name:       current.GetName(),
 				namespace:  current.GetNamespace(),
@@ -54,7 +54,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	return nil
 }
 
-func (r *Resource) unsetRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, p prometheusParam) error {
+func (r *Resource) unsetRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, p prometheusAndMetadata) error {
 	// remove remotewrite config from Prometheus once RemoteWrite CR is deleted
 	// Check if prometheus pointer is not nil
 	// at some cases the cluster is deleted, and prometheus as well.

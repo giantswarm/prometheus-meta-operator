@@ -37,7 +37,7 @@ type Resource struct {
 	NoProxy    string
 }
 
-type prometheusParam struct {
+type prometheusAndMetadata struct {
 	prometheus *promv1.Prometheus
 	name       string
 	namespace  string

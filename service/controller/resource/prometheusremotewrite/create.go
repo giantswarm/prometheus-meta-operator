@@ -116,7 +116,7 @@ func (r *Resource) ensureCleanUp(ctx context.Context, remoteWrite *pmov1alpha1.R
 				return microerror.Mask(err)
 			}
 
-			err = r.unsetRemoteWrite(ctx, remoteWrite, prometheusParam{
+			err = r.unsetRemoteWrite(ctx, remoteWrite, prometheusAndMetadata{
 				prometheus: p,
 				name:       statusRef.Name,
 				namespace:  statusRef.Namespace,
