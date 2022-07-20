@@ -6,7 +6,6 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/operatorkit/v7/pkg/controller/context/resourcecanceledcontext"
-	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -34,7 +33,11 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		}
 
 		for _, current := range prometheusList.Items {
-			err = r.unsetRemoteWrite(ctx, remoteWrite, current, corev1.ObjectReference{Name: current.GetName(), Namespace: current.GetNamespace()})
+			err = r.unsetRemoteWrite(ctx, remoteWrite, prometheusParam{
+				prometheus: current,
+				name:       current.GetName(),
+				namespace:  current.GetNamespace(),
+			})
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -51,20 +54,20 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 	return nil
 }
 
-func (r *Resource) unsetRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus, statusRef corev1.ObjectReference) error {
+func (r *Resource) unsetRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, p prometheusParam) error {
 	// remove remotewrite config from Prometheus once RemoteWrite CR is deleted
 	// Check if prometheus pointer is not nil
 	// at some cases the cluster is deleted, and prometheus as well.
-	if prometheus != nil {
-		if desired, ok := removePrometheusRemoteWrite(*remoteWrite, *prometheus); ok {
+	if p.prometheus != nil {
+		if desired, ok := removePrometheusRemoteWrite(*remoteWrite, *p.prometheus); ok {
 			if !ok {
 				r.logger.Debugf(ctx, fmt.Sprintf("no update required for Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
 				return nil
 			}
 			r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
-			updateMeta(prometheus, desired)
+			updateMeta(p.prometheus, desired)
 			_, err := r.prometheusClient.MonitoringV1().
-				Prometheuses(prometheus.GetNamespace()).
+				Prometheuses(p.namespace).
 				Update(ctx, desired, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
@@ -73,8 +76,8 @@ func (r *Resource) unsetRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha
 	}
 	// Delete the status ref from remotewrite
 	err := r.ensureStatusDeleted(ctx, remoteWrite, corev1.ObjectReference{
-		Name:      statusRef.Name,
-		Namespace: statusRef.Namespace})
+		Name:      p.name,
+		Namespace: p.namespace})
 	if err != nil {
 		return microerror.Mask(err)
 	}

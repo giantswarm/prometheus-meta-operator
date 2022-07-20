@@ -21,9 +21,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		if true {
-			return fmt.Errorf("Fake error!! %v", remoteWrite)
-		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
 		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
@@ -119,7 +116,11 @@ func (r *Resource) ensureCleanUp(ctx context.Context, remoteWrite *pmov1alpha1.R
 				return microerror.Mask(err)
 			}
 
-			err = r.unsetRemoteWrite(ctx, remoteWrite, p, statusRef)
+			err = r.unsetRemoteWrite(ctx, remoteWrite, prometheusParam{
+				prometheus: p,
+				name:       statusRef.Name,
+				namespace:  statusRef.Namespace,
+			})
 			if err != nil {
 				return microerror.Mask(err)
 			}
