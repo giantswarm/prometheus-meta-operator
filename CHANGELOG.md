@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade operatorkit from v7.0.1 to v7.1.0.
+
+### Added
+
+- errors_total metric for each controller (comes with operatorkit upgrade).
+
+### Fixed
+
+- Cleanup of RemoteWrite Status (configuredPrometheuses, syncedSecrets) in case a cluster gets deleted.
+
 ## [4.0.1] - 2022-07-14
 
 ### Fixed

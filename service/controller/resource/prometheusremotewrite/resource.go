@@ -37,6 +37,12 @@ type Resource struct {
 	NoProxy    string
 }
 
+type prometheusAndMetadata struct {
+	prometheus *promv1.Prometheus
+	name       string
+	namespace  string
+}
+
 func New(config Config) (*Resource, error) {
 	r := &Resource{
 		k8sClient:        config.K8sClient,

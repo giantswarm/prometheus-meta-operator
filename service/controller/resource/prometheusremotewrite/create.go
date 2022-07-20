@@ -7,6 +7,7 @@ import (
 	"github.com/giantswarm/microerror"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
@@ -111,11 +112,15 @@ func (r *Resource) ensureCleanUp(ctx context.Context, remoteWrite *pmov1alpha1.R
 			p, err := r.prometheusClient.MonitoringV1().
 				Prometheuses(statusRef.Namespace).
 				Get(ctx, statusRef.Name, metav1.GetOptions{})
-			if err != nil {
+			if err != nil && !apierrors.IsNotFound(err) {
 				return microerror.Mask(err)
 			}
 
-			err = r.unsetRemoteWrite(ctx, remoteWrite, p)
+			err = r.unsetRemoteWrite(ctx, remoteWrite, prometheusAndMetadata{
+				prometheus: p,
+				name:       statusRef.Name,
+				namespace:  statusRef.Namespace,
+			})
 			if err != nil {
 				return microerror.Mask(err)
 			}

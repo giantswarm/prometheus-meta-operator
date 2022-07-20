@@ -5,6 +5,7 @@ import (
 
 	"github.com/giantswarm/microerror"
 	corev1 "k8s.io/api/core/v1"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
@@ -91,7 +92,7 @@ func (r *Resource) ensureStatusDeleted(ctx context.Context, remoteWrite *v1alpha
 
 func (r *Resource) deleteSecret(ctx context.Context, remoteWrite *v1alpha1.RemoteWrite, ref corev1.ObjectReference) error {
 	err := r.k8sClient.K8sClient().CoreV1().Secrets(ref.Namespace).Delete(ctx, ref.Name, metav1.DeleteOptions{})
-	if err != nil {
+	if err != nil && !apierrors.IsNotFound(err) {
 		return microerror.Mask(err)
 	}
 	err = r.ensureStatusDeleted(ctx, remoteWrite, ref)
