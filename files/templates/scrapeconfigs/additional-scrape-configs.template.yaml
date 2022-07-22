@@ -180,7 +180,7 @@
     regex: (etcd)
     action: keep
   - target_label: __address__
-    replacement: [[ .APIServerURL ]]
+    replacement: __meta_kubernetes_pod_ip
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
     replacement: /api/v1/namespaces/kube-system/pods/${1}:2381/proxy/metrics
