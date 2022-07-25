@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Set node-exporter namespace to `kube-system` for CAPI MCs and all WC, and to `monitoring` for vintage MCs.
+- Set cert-exporter namespace to `kube-system` for CAPI MCs and all WC, and to `monitoring` for vintage MCs.
+
 ### Fixed
 
 - Added `pod_name` as a label to distinguish between multiple etcd pods when running in-cluster (e.g. CAPI).
