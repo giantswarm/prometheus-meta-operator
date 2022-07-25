@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Push to `gcp-app-collection`.
 
+### Changed
+
+- Bump alpine from 3.16.0 to 3.16.1
+
 ## [4.1.0] - 2022-07-20
 
 ### Changed
