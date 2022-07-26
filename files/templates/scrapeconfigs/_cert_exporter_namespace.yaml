@@ -1,7 +1,7 @@
 [[- define "_cert_exporter_namespace" -]]
-[[- if or (and (eq .ClusterType "management_cluster") (.CAPIManagementCluster)) (eq .ClusterType "workload_cluster") -]]
-kube-system
-[[- else -]]
+[[- if and (eq .ClusterType "management_cluster") (.VintageManagementCluster) -]]
 monitoring
+[[- else -]]
+kube-system
 [[- end -]]
 [[- end -]]

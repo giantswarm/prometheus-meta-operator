@@ -57,6 +57,7 @@ type TemplateData struct {
 	WorkloadClusterETCDDomain string
 	CAPICluster               bool
 	CAPIManagementCluster     bool
+	VintageManagementCluster  bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -189,6 +190,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
 		CAPICluster:               key.IsCAPICluster(cluster),
 		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
+		VintageManagementCluster:  !key.IsCAPIManagementCluster(config.Provider),
 	}
 
 	return d, nil
