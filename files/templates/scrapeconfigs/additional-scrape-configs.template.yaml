@@ -253,12 +253,8 @@
 [[ include "_apiserver" . ]]
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - source_labels: [__address__]
-[[- if .CAPICluster ]]
+  - source_labels: [__meta_kubernetes_pod_node_name]
     replacement: $1:10257
-[[- else ]]
-    replacement: $1:10252
-[[- end ]]
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-controller-manager|kube-controller-manager)
@@ -267,11 +263,7 @@
     replacement: [[ .APIServerURL ]]
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
-[[- if .CAPICluster ]]
     replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10257/proxy/metrics
-[[- else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10252/proxy/metrics
-[[- end ]]
   - target_label: app
     replacement: kube-controller-manager
 [[ include "_common" . | indent 2 ]]
