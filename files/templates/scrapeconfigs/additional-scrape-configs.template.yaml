@@ -253,7 +253,7 @@
 [[ include "_apiserver" . ]]
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - source_labels: [__meta_kubernetes_pod_node_name]
+  - source_labels: [__address__]
     replacement: $1:10257
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
@@ -281,11 +281,7 @@
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__address__]
-[[- if .CAPICluster ]]
     replacement: $1:10259
-[[- else ]]
-    replacement: $1:10251
-[[- end ]]
     target_label: instance
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-scheduler|kube-scheduler)
@@ -294,11 +290,7 @@
     replacement: [[ .APIServerURL ]]
   - source_labels: [__meta_kubernetes_pod_name]
     target_label: __metrics_path__
-[[- if .CAPICluster ]]
     replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10259/proxy/metrics
-[[- else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
-[[- end ]]
   - target_label: app
     replacement: kube-scheduler
 [[ include "_common" . | indent 2 ]]

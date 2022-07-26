@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `pod_name` as a label to distinguish between multiple etcd pods when running in-cluster (e.g. CAPI).
 - Fix controller manager's port for scraping.
+- Fix scheduler's port for scraping.
 
 ### Added
 
