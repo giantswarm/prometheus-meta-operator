@@ -659,9 +659,7 @@
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (cert-exporter.*)
     target_label: __metrics_path__
-
-    replacement: /api/v1/namespaces/monitoring/pods/${1}:9005/proxy/metrics
-
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:9005/proxy/metrics
   - source_labels: [__meta_kubernetes_service_label_app]
     target_label: app
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
@@ -720,9 +718,9 @@
   - source_labels: [__meta_kubernetes_pod_name]
     regex: (node-exporter.*)
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/monitoring/pods/${1}:10300/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:10300/proxy/metrics
   - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
-    regex: monitoring;node-exporter.*
+    regex: kube-system;node-exporter.*
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app

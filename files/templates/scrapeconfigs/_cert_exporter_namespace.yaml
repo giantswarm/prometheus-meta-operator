@@ -1,4 +1,4 @@
-[[- define "_node_exporter_namespace" -]]
+[[- define "_cert_exporter_namespace" -]]
 [[- if and (eq .ClusterType "management_cluster") (.VintageManagementCluster) -]]
 monitoring
 [[- else -]]
