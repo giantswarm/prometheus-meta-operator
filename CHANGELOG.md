@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2022-07-28
+
 ### Changed
 
 - Set node-exporter namespace to `kube-system` for CAPI MCs and all WC, and to `monitoring` for vintage MCs.
@@ -1545,7 +1547,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.1.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.2.0...HEAD
+[4.2.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.0.1...v4.1.0
 [4.0.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v3.8.0...v4.0.0
