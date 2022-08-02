@@ -24,6 +24,11 @@
     action: keep
   - target_label: app
     replacement: kubernetes
+  - source_labels: [__address__]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}/proxy/metrics
+  - target_label: __address__
+    replacement: master.alice:443
   # Add cluster_id label.
   - target_label: cluster_id
     replacement: alice
