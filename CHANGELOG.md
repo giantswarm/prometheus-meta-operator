@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0] - 2022-08-02
+
 ### Fixed
 
 - Fix psp names for prometheus and alertmanager.
@@ -1551,7 +1553,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.3.0...HEAD
+[4.3.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.2.0...v4.3.0
 [4.2.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.0.1...v4.1.0
 [4.0.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.0.0...v4.0.1
