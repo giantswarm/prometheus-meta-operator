@@ -23,7 +23,7 @@
     replacement: kubernetes
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:6443/proxy/metrics
+    replacement: /api/v1/nodes/https:${1}:6443/proxy/metrics
   - target_label: __address__
     replacement: master.baz:443
   # Add cluster_id label.
