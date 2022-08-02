@@ -4,7 +4,7 @@
   kubernetes_sd_configs:
   - role: node
 [[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[ include "_tlsconfig" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__meta_kubernetes_node_label_kubernetes_io_role]
     regex: master
