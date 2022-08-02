@@ -28,6 +28,7 @@ spec:
     rule: MustRunAs
   privileged: false
   volumes:
+    - 'emptyDir'
     - 'secret'
     - 'configMap'
     - 'persistentVolumeClaim'

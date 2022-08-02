@@ -102,7 +102,7 @@ func toClusterRole(v interface{}) (*v1.ClusterRole, error) {
 					"use",
 				},
 				ResourceNames: []string{
-					"prometheus",
+					"prometheus-psp",
 				},
 			},
 		},
