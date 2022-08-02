@@ -6,7 +6,7 @@
 [[ include "_apiserver" . ]]
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
-  - source_labels: [__meta_kubernetes_node_label_role]
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_role]
     regex: master
     action: keep
   - target_label: app

@@ -16,7 +16,7 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_node_label_role]
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_role]
     regex: master
     action: keep
   - target_label: app
