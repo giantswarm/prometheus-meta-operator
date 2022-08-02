@@ -1,7 +1,7 @@
 - job_name: alice-prometheus/kubernetes-apiserver-alice/0
   honor_labels: true
   scheme: https
-  kuernetes_sd_configs:
+  kubernetes_sd_configs:
   - role: node
 
     api_server: https://master.alice:443
@@ -16,8 +16,8 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
   relabel_configs:
-  - source_labels: [__meta_kubernetes_node_labelpresent_node_role_kubernetes_io_master]
-    regex: true
+  - source_labels: [__meta_kubernetes_node_label_kubernetes_io_role]
+    regex: master
     action: keep
   - target_label: app
     replacement: kubernetes
