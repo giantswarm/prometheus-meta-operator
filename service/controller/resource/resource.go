@@ -21,6 +21,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -136,6 +137,19 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		remoteWriteConfigResource, err = remotewriteconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var rbacResource resource.Interface
+	{
+		c := rbac.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		rbacResource, err = rbac.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -262,6 +276,7 @@ func New(config Config) ([]resource.Interface, error) {
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
+		rbacResource,
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,
