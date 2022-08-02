@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix apiserver job address.
+
 ## [4.2.0] - 2022-07-28
 
 ### Changed

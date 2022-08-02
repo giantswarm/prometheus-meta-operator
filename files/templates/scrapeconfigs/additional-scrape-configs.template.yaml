@@ -14,6 +14,11 @@
     action: keep
   - target_label: app
     replacement: kubernetes
+  - source_labels: [__address__]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}/proxy/metrics
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
 [[- if not .CAPICluster ]]
