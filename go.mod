@@ -97,7 +97,7 @@ require (
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	golang.org/x/time v0.0.0-20210723032227-1f47c861a9ac // indirect
+	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
@@ -116,6 +116,8 @@ replace (
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
+	// See https://github.com/go-kit/kit/issues/1236
+	github.com/go-kit/kit v0.12.0 => github.com/denopink/kit v0.12.1-0.20220627203124-bf7670fb98e5
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
 	// NOTE: we need to stay on k8s v1.19 as some installations still run v1.18.
 	k8s.io/api => k8s.io/api v0.19.16

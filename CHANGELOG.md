@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add service priority as a tag in opsgenie alerts.
 
+### Fixed
+
+- Upgrade go-kit/kit to fix CVE-2022-24450 and CVE-2022-29946.
+
 ## [4.3.0] - 2022-08-02
 
 ### Fixed
