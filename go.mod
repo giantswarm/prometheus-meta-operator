@@ -36,6 +36,7 @@ require (
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect
+	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/getsentry/sentry-go v0.12.0 // indirect
 	github.com/giantswarm/backoff v1.0.0 // indirect
 	github.com/giantswarm/exporterkit v1.0.0 // indirect
@@ -78,8 +79,9 @@ require (
 	github.com/spf13/cobra v1.3.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/stretchr/testify v1.7.5 // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20220411224347-583f2d630306 // indirect
@@ -87,8 +89,10 @@ require (
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
+	gopkg.in/ini.v1 v1.66.6 // indirect
 	gopkg.in/resty.v1 v1.12.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/klog/v2 v2.10.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20211110013926-83f114cd0513 // indirect
 	k8s.io/utils v0.0.0-20210930125809-cb0fa318a74b // indirect
@@ -98,7 +102,6 @@ require (
 require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/giantswarm/k8sclient/v7 v7.0.1
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
@@ -109,8 +112,6 @@ require (
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
-	gopkg.in/ini.v1 v1.66.6 // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/component-base v0.22.3 // indirect
 )
 
@@ -118,7 +119,7 @@ replace (
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
-	github.com/getsentry/sentry-go v0.12.0 => github.com/zendesk/sentry-go v0.13.1-0.20220512001143-3815f1b02e27
+	github.com/getsentry/sentry-go v0.12.0 => github.com/TheoBrigitte/sentry-go v0.0.0-20220808140748-011d8f311d4d
 	// See https://github.com/go-kit/kit/issues/1236
 	github.com/go-kit/kit v0.12.0 => github.com/denopink/kit v0.12.1-0.20220627203124-bf7670fb98e5
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
