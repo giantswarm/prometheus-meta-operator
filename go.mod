@@ -41,7 +41,7 @@ require (
 	github.com/giantswarm/backoff v1.0.0 // indirect
 	github.com/giantswarm/exporterkit v1.0.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
-	github.com/go-kit/kit v0.12.0 // indirect
+	github.com/go-kit/kit v0.12.1-0.20220808180842-62c81a0f3047 // indirect
 	github.com/go-kit/log v0.2.0 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-logr/logr v0.4.0 // indirect
@@ -121,8 +121,6 @@ replace (
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
 	// See https://github.com/getsentry/sentry-go/issues/465
 	github.com/getsentry/sentry-go v0.12.0 => github.com/TheoBrigitte/sentry-go v0.0.0-20220808140748-011d8f311d4d
-	// See https://github.com/go-kit/kit/issues/1236
-	github.com/go-kit/kit v0.12.0 => github.com/denopink/kit v0.12.1-0.20220627203124-bf7670fb98e5
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
 	// NOTE: we need to stay on k8s v1.19 as some installations still run v1.18.
 	k8s.io/api => k8s.io/api v0.19.16
