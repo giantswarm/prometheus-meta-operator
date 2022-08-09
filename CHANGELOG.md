@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade operatorkit from v7.0.1 to v7.1.0.
+- Upgrade github.com/sirupsen/logrus from 1.8.1 to 1.9.0.
 
 ### Added
 
