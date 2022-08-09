@@ -119,6 +119,7 @@ replace (
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
+	// See https://github.com/getsentry/sentry-go/issues/465
 	github.com/getsentry/sentry-go v0.12.0 => github.com/TheoBrigitte/sentry-go v0.0.0-20220808140748-011d8f311d4d
 	// See https://github.com/go-kit/kit/issues/1236
 	github.com/go-kit/kit v0.12.0 => github.com/denopink/kit v0.12.1-0.20220627203124-bf7670fb98e5
