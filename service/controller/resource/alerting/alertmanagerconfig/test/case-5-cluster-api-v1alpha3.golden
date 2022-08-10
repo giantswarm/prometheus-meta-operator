@@ -59,6 +59,13 @@ route:
     - team="phoenix"
     continue: false
 
+  # Team Hydra Slack
+  - receiver: team_hydra_slack
+    matchers:
+    - severity=~"page|notify"
+    - team="hydra"
+    continue: false
+
   # Team Rocket Slack (team)
   - receiver: team_rocket_slack
     matchers:
@@ -126,6 +133,29 @@ receivers:
   - channel: '#alert-phoenix-test'
     send_resolved: true
     actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
+- name: team_hydra_slack
+  slack_configs:
+  - channel: '#alert-hydra-test'
+  send_resolved: true
+  actions:
     - type: button
       text: ':green_book: OpsRecipe'
       url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
