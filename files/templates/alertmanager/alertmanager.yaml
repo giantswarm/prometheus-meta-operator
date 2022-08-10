@@ -32,7 +32,7 @@ route:
   # Service Level slack -- chooses the slack channel based on the provider
   [[- if or (eq .Provider "aws") (eq .Provider "azure") ]]
   - receiver: team_phoenix_slack
-  [[- else if or (eq .Provider "capg") (eq .Provider "capa") (eq .Provider "capz") ]]
+  [[- else if or (eq .Provider "gcp") (eq .Provider "capa") (eq .Provider "capz") ]]
   - receiver: team_hydra_slack
   [[- else ]]
   - receiver: team_rocket_slack
