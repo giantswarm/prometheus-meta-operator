@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add service priority as a tag in opsgenie alerts.
+- Allow `cadvisor` to scrape customer workloads using `giantswarm.io/scrape-customer-workloads` annotation on the Cluster CR.
 
 ## [4.3.0] - 2022-08-02
 

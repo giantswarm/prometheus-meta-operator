@@ -58,6 +58,7 @@ type TemplateData struct {
 	CAPICluster               bool
 	CAPIManagementCluster     bool
 	VintageManagementCluster  bool
+	ScrapeCustomerNamespaces  bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -172,6 +173,8 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		servicePriority = priority
 	}
 
+	_, scrapeCustomerNamespaces := cluster.GetAnnotations()["giantswarm.io/scrape-customer-workloads"]
+
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
@@ -191,6 +194,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		CAPICluster:               key.IsCAPICluster(cluster),
 		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
 		VintageManagementCluster:  !key.IsCAPIManagementCluster(config.Provider),
+		ScrapeCustomerNamespaces:  scrapeCustomerNamespaces,
 	}
 
 	return d, nil

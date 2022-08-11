@@ -93,9 +93,11 @@
     regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman)
     action: keep
 [[- else ]]
+[[- if not .ScrapeCustomerNamespaces ]]
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|kong.*)
     action: keep
+[[- end ]]
 [[- end ]]
 # calico-node
 - job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
