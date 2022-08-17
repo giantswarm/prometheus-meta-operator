@@ -18,6 +18,8 @@ import (
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
+	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
+	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
@@ -122,6 +124,31 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		heartbeatWebhookConfigResource, err = heartbeatwebhookconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var remoteWriteIngressResource resource.Interface
+	if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
+		c := remotewriteingressv1beta1.Config{
+			K8sClient:  config.K8sClient,
+			Logger:     config.Logger,
+			BaseDomain: config.PrometheusBaseDomain,
+		}
+
+		remoteWriteIngressResource, err = remotewriteingressv1beta1.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	} else {
+		c := remotewriteingressv1.Config{
+			K8sClient:  config.K8sClient,
+			Logger:     config.Logger,
+			BaseDomain: config.PrometheusBaseDomain,
+		}
+
+		remoteWriteIngressResource, err = remotewriteingressv1.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -279,6 +306,7 @@ func New(config Config) ([]resource.Interface, error) {
 		rbacResource,
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
+		remoteWriteIngressResource,
 		remoteWriteConfigResource,
 		alertmanagerWiringResource,
 		prometheusResource,

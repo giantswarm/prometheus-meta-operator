@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Ingress
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: bar
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: bar
+  name: prometheus-bar-remote-write
+  namespace: bar-prometheus
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: https://prometheus
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus-operated
+            port:
+              number: 9090
+        path: /bar/api/v1/write
+        pathType: ImplementationSpecific
+status:
+  loadBalancer: {}

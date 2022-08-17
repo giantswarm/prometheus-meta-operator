@@ -202,7 +202,9 @@ func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
 	case *v1.Service:
 		return "kubernetes.default:443"
-	case *capiv1alpha3.Cluster: // Support CAPI Clusters
+	case *capiv1alpha3.Cluster: // Support CAPI Clusters v1alpha3
+	case *capiv1alpha4.Cluster: // Support CAPI Clusters v1alpha4
+	case *capiv1beta1.Cluster: // Support CAPI Clusters v1beta1
 		return fmt.Sprintf("%s:%d", v.Spec.ControlPlaneEndpoint.Host, v.Spec.ControlPlaneEndpoint.Port)
 	case metav1.Object:
 		return fmt.Sprintf("master.%s:443", v.GetName())

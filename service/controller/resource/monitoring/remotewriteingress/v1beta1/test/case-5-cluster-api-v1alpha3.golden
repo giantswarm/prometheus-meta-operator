@@ -1,0 +1,22 @@
+apiVersion: v1beta1
+kind: Ingress
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: baz
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: baz
+  name: prometheus-baz-remote-write
+  namespace: baz-prometheus
+spec:
+  rules:
+  - host: https://prometheus
+    http:
+      paths:
+      - backend:
+          serviceName: prometheus-operated
+          servicePort: 9090
+        path: /baz/api/v1/write
+status:
+  loadBalancer: {}
