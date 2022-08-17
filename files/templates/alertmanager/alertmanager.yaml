@@ -32,6 +32,8 @@ route:
   # Service Level slack -- chooses the slack channel based on the provider
   [[- if or (eq .Provider "aws") (eq .Provider "azure") ]]
   - receiver: team_phoenix_slack
+  [[- else if or (eq .Provider "gcp") (eq .Provider "capa") (eq .Provider "capz") ]]
+  - receiver: team_hydra_slack
   [[- else ]]
   - receiver: team_rocket_slack
   [[- end ]]
@@ -65,6 +67,13 @@ route:
     matchers:
     - severity=~"page|notify"
     - team="phoenix"
+    continue: false
+
+  # Team Hydra Slack
+  - receiver: team_hydra_slack
+    matchers:
+    - severity=~"page|notify"
+    - team="hydra"
     continue: false
 
   # Team Rocket Slack (team)
@@ -138,6 +147,33 @@ receivers:
   [[- end ]]
     send_resolved: true
     actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
+- name: team_hydra_slack
+  slack_configs:
+  [[- if eq .Pipeline "stable" ]]
+  - channel: '#alert-hydra'
+  [[- else ]]
+  - channel: '#alert-hydra-test'
+  [[- end ]]
+  send_resolved: true
+  actions:
     - type: button
       text: ':green_book: OpsRecipe'
       url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
