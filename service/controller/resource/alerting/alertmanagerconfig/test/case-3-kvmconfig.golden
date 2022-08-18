@@ -154,8 +154,8 @@ receivers:
 - name: team_hydra_slack
   slack_configs:
   - channel: '#alert-hydra-test'
-  send_resolved: true
-  actions:
+    send_resolved: true
+    actions:
     - type: button
       text: ':green_book: OpsRecipe'
       url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
