@@ -7,9 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.1] - 2022-08-19
+
+### Fixed
+
+- Fix Team hydra config.
+
+## [4.4.0] - 2022-08-17
+
 ### Added
 
 - Add service priority as a tag in opsgenie alerts.
+- Add Team Hydra receiver and route.
 
 ### Changed
 
@@ -1562,7 +1571,9 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.3.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.1...HEAD
+[4.4.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.0...v4.4.1
+[4.4.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.3.0...v4.4.0
 [4.3.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.2.0...v4.3.0
 [4.2.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.0.1...v4.1.0
