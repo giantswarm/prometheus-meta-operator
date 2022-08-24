@@ -97,10 +97,10 @@ func New(config Config) ([]resource.Interface, error) {
 				},
 				{
 					NameFunc:      key.CAPICertificateName,
-					NamespaceFunc: key.CAPICertificateNamespace,
+					NamespaceFunc: key.OrganizationNamespace,
 				},
 			},
-			Target: key.SecretAPICertificates,
+			Target: key.Secret,
 		}
 
 		apiCertificatesResource, err = certificates.New(c)

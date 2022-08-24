@@ -31,9 +31,7 @@ require (
 require (
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/go-kit/log v0.2.0 // indirect
-	github.com/gobuffalo/flect v0.2.3 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/onsi/gomega v1.16.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.12.1 // indirect
