@@ -23,6 +23,7 @@ import (
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/clusterapi"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/legacy"
@@ -124,18 +125,21 @@ func New(config Config) (*Service, error) {
 
 	var provider = config.Viper.GetString(config.Flag.Service.Provider.Kind)
 
+	var proxyConfiguration = domain.ProxyConfiguration{
+		HTTPProxy:  os.Getenv("HTTP_PROXY"),
+		HTTPSProxy: os.Getenv("HTTPS_PROXY"),
+		NoProxy:    os.Getenv("NO_PROXY"),
+	}
+
 	var clusterapiController *clusterapi.Controller
 	{
 		if shouldCreateCAPIController(provider) {
 			c := clusterapi.ControllerConfig{
-				K8sClient:        k8sClient,
-				Logger:           config.Logger,
-				PrometheusClient: prometheusClient,
-				VpaClient:        vpaClient,
-
-				HTTPProxy:  os.Getenv("HTTP_PROXY"),
-				HTTPSProxy: os.Getenv("HTTPS_PROXY"),
-				NoProxy:    os.Getenv("NO_PROXY"),
+				K8sClient:          k8sClient,
+				Logger:             config.Logger,
+				PrometheusClient:   prometheusClient,
+				VpaClient:          vpaClient,
+				ProxyConfiguration: proxyConfiguration,
 
 				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
 				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
@@ -173,15 +177,11 @@ func New(config Config) (*Service, error) {
 	{
 		if shouldCreateLegacyController(provider) {
 			c := legacy.ControllerConfig{
-				K8sClient:        k8sClient,
-				Logger:           config.Logger,
-				PrometheusClient: prometheusClient,
-				VpaClient:        vpaClient,
-
-				HTTPProxy:  os.Getenv("HTTP_PROXY"),
-				HTTPSProxy: os.Getenv("HTTPS_PROXY"),
-				NoProxy:    os.Getenv("NO_PROXY"),
-
+				K8sClient:               k8sClient,
+				Logger:                  config.Logger,
+				PrometheusClient:        prometheusClient,
+				VpaClient:               vpaClient,
+				ProxyConfiguration:      proxyConfiguration,
 				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
 				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
@@ -221,9 +221,7 @@ func New(config Config) (*Service, error) {
 			PrometheusClient: prometheusClient,
 			VpaClient:        vpaClient,
 
-			HTTPProxy:  os.Getenv("HTTP_PROXY"),
-			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
-			NoProxy:    os.Getenv("NO_PROXY"),
+			ProxyConfiguration: proxyConfiguration,
 
 			AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
 			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
@@ -287,13 +285,10 @@ func New(config Config) (*Service, error) {
 	var remotewriteController *remotewrite.Controller
 	{
 		c := remotewrite.ControllerConfig{
-			K8sClient:        k8sClient,
-			Logger:           config.Logger,
-			PrometheusClient: prometheusClient,
-
-			HTTPProxy:  os.Getenv("HTTP_PROXY"),
-			HTTPSProxy: os.Getenv("HTTPS_PROXY"),
-			NoProxy:    os.Getenv("NO_PROXY"),
+			K8sClient:          k8sClient,
+			Logger:             config.Logger,
+			PrometheusClient:   prometheusClient,
+			ProxyConfiguration: proxyConfiguration,
 		}
 		remotewriteController, err = remotewrite.NewController(c)
 		if err != nil {

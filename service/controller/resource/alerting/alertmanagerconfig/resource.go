@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"path"
 	"reflect"
-	"strings"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -13,6 +12,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -29,16 +29,14 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	Installation     string
-	Provider         string
-	HTTPProxy        string
-	HTTPSProxy       string
-	NoProxy          string
-	OpsgenieKey      string
-	GrafanaAddress   string
-	SlackApiURL      string
-	SlackProjectName string
-	Pipeline         string
+	Installation       string
+	Provider           string
+	ProxyConfiguration domain.ProxyConfiguration
+	OpsgenieKey        string
+	GrafanaAddress     string
+	SlackApiURL        string
+	SlackProjectName   string
+	Pipeline           string
 
 	TemplatePath string
 }
@@ -46,7 +44,7 @@ type Config struct {
 type TemplateData struct {
 	Provider         string
 	Installation     string
-	ProxyURL         *string
+	ProxyURL         string
 	OpsgenieKey      string
 	GrafanaAddress   string
 	SlackApiURL      string
@@ -141,18 +139,10 @@ func toData(v interface{}, config Config) ([]byte, error) {
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-	var proxyURL *string = nil
-	if !strings.Contains(config.NoProxy, "api.opsgenie.com") {
-		if len(config.HTTPSProxy) > 0 {
-			proxyURL = &config.HTTPSProxy
-		} else if len(config.HTTPProxy) > 0 {
-			proxyURL = &config.HTTPProxy
-		}
-	}
 	d := &TemplateData{
 		Provider:         config.Provider,
 		Installation:     config.Installation,
-		ProxyURL:         proxyURL,
+		ProxyURL:         config.ProxyConfiguration.GetURLForEndpoint("api.opsgenie.com"),
 		OpsgenieKey:      config.OpsgenieKey,
 		GrafanaAddress:   config.GrafanaAddress,
 		SlackApiURL:      config.SlackApiURL,

@@ -1,8 +1,6 @@
 package prometheusremotewrite
 
 import (
-	"strings"
-
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/micrologger"
 	"github.com/google/go-cmp/cmp"
@@ -10,6 +8,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewriteutils"
 )
 
@@ -18,13 +17,10 @@ const (
 )
 
 type Config struct {
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
-
-	HTTPProxy  string
-	HTTPSProxy string
-	NoProxy    string
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	PrometheusClient   promclient.Interface
+	ProxyConfiguration domain.ProxyConfiguration
 }
 
 type Resource struct {
@@ -32,9 +28,7 @@ type Resource struct {
 	logger           micrologger.Logger
 	prometheusClient promclient.Interface
 
-	HTTPProxy  string
-	HTTPSProxy string
-	NoProxy    string
+	ProxyConfiguration domain.ProxyConfiguration
 }
 
 type prometheusAndMetadata struct {
@@ -49,9 +43,7 @@ func New(config Config) (*Resource, error) {
 		logger:           config.Logger,
 		prometheusClient: config.PrometheusClient,
 
-		HTTPProxy:  config.HTTPProxy,
-		HTTPSProxy: config.HTTPSProxy,
-		NoProxy:    config.NoProxy,
+		ProxyConfiguration: config.ProxyConfiguration,
 	}
 
 	return r, nil
@@ -64,13 +56,7 @@ func (r *Resource) Name() string {
 func (r *Resource) ensurePrometheusRemoteWrite(rw pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
 	rw.Spec.RemoteWrite.Name = rw.GetName()
 
-	if !strings.Contains(r.NoProxy, rw.Spec.RemoteWrite.URL) {
-		if len(r.HTTPSProxy) > 0 {
-			rw.Spec.RemoteWrite.ProxyURL = r.HTTPSProxy
-		} else if len(r.HTTPProxy) > 0 {
-			rw.Spec.RemoteWrite.ProxyURL = r.HTTPProxy
-		}
-	}
+	rw.Spec.RemoteWrite.ProxyURL = r.ProxyConfiguration.GetURLForEndpoint(rw.Spec.RemoteWrite.URL)
 
 	if p.Spec.RemoteWrite != nil {
 		if rwIndex, ok := remoteWriteExists(rw.GetName(), p.Spec.RemoteWrite); !ok { // item not found
