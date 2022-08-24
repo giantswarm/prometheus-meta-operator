@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.5.1] - 2022-08-24
+
 ### Fixed
 
 - Fix CAPI MCs being seen as workload cluster.
@@ -1577,7 +1579,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...HEAD
+[4.5.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.0...v4.5.1
 [4.5.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.1...v4.5.0
 [4.4.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.0...v4.4.1
 [4.4.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.3.0...v4.4.0
