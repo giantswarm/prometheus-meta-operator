@@ -15,7 +15,7 @@ import (
 	pkgruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/serializer"
 	"k8s.io/client-go/kubernetes/scheme"
-	"sigs.k8s.io/cluster-api/api/v1alpha3"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/yaml"
 )
 
@@ -164,7 +164,7 @@ func inputValue(inputFile string) (pkgruntime.Object, error) {
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	err = v1alpha3.AddToScheme(s)
+	err = capi.AddToScheme(s)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
