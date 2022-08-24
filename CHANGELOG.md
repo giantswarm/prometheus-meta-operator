@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change CAPI version from v1alpha3 to v1beta1.
+
 ## [4.4.1] - 2022-08-19
 
 ### Fixed
@@ -19,10 +23,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add service priority as a tag in opsgenie alerts.
 - Add Team Hydra receiver and route.
-
-### Changed
-
-- Change CAPI version from v1alpha3 to v1beta1.
 
 ## [4.3.0] - 2022-08-02
 
