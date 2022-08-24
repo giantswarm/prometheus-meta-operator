@@ -13,19 +13,17 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 type ControllerConfig struct {
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
-	VpaClient        vpa_clientset.Interface
-
-	HTTPProxy  string
-	HTTPSProxy string
-	NoProxy    string
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	PrometheusClient   promclient.Interface
+	VpaClient          vpa_clientset.Interface
+	ProxyConfiguration domain.ProxyConfiguration
 
 	AdditionalScrapeConfigs string
 	Bastions                []string

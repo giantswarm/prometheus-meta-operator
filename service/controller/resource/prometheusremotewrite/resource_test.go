@@ -9,6 +9,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 )
 
 const (
@@ -96,8 +97,7 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 	}
 }
 
-func TestEnsurePrometheusRemoteWriteWithPoxy(t *testing.T) {
-
+func TestEnsurePrometheusRemoteWriteWithProxy(t *testing.T) {
 	r := NewResourceWithProxy()
 	rw := remoteWrite(name, namespace, clusterSelector)
 	prom := prometheus()
@@ -269,11 +269,7 @@ func expectedPrometheusAppend(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus
 	rw.Spec.RemoteWrite.Name = rw.GetName()
 	if proxy {
 		r := NewResourceWithProxy()
-		if len(r.HTTPSProxy) > 0 {
-			rw.Spec.RemoteWrite.ProxyURL = r.HTTPSProxy
-		} else if len(r.HTTPProxy) > 0 {
-			rw.Spec.RemoteWrite.ProxyURL = r.HTTPProxy
-		}
+		rw.Spec.RemoteWrite.ProxyURL = r.ProxyConfiguration.GetURLForEndpoint("https://random-endpoint")
 	}
 
 	prom.Spec.RemoteWrite = append(prom.Spec.RemoteWrite, rw.Spec.RemoteWrite)
@@ -337,9 +333,11 @@ func NewResource() *Resource {
 
 func NewResourceWithProxy() *Resource {
 	config := Config{
-		HTTPProxy:  "http://proxy-url",
-		HTTPSProxy: "",
-		NoProxy:    "http://no-proxy",
+		ProxyConfiguration: domain.ProxyConfiguration{
+			HTTPProxy:  "http://proxy-url",
+			HTTPSProxy: "",
+			NoProxy:    "http://no-proxy",
+		},
 	}
 	r, _ := New(config)
 	return r

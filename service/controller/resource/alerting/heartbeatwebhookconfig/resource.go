@@ -3,7 +3,6 @@ package heartbeatwebhookconfig
 import (
 	"net/url"
 	"reflect"
-	"strings"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -14,6 +13,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -23,13 +23,10 @@ const (
 )
 
 type Config struct {
-	Client monitoringclient.Interface
-	Logger micrologger.Logger
-
-	Installation string
-	HTTPProxy    string
-	HTTPSProxy   string
-	NoProxy      string
+	Client             monitoringclient.Interface
+	Logger             micrologger.Logger
+	Installation       string
+	ProxyConfiguration domain.ProxyConfiguration
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -98,22 +95,13 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	}
 	address := urlAddress.String()
 
-	var proxyURL string = ""
-	if !strings.Contains(config.NoProxy, "api.opsgenie.com") {
-		if len(config.HTTPSProxy) > 0 {
-			proxyURL = config.HTTPSProxy
-		} else if len(config.HTTPProxy) > 0 {
-			proxyURL = config.HTTPProxy
-		}
-	}
-
 	receiver := monitoringv1alpha1.Receiver{
 		Name: key.HeartbeatReceiverName(cluster, config.Installation),
 		WebhookConfigs: []monitoringv1alpha1.WebhookConfig{
 			{
 				URL: &address,
 				HTTPConfig: &monitoringv1alpha1.HTTPConfig{
-					ProxyURL: proxyURL,
+					ProxyURL: config.ProxyConfiguration.GetURLForEndpoint("api.opsgenie.com"),
 					Authorization: &monitoringv1.SafeAuthorization{
 						Type: "GenieKey",
 						Credentials: &corev1.SecretKeySelector{

@@ -42,10 +42,6 @@ type Config struct {
 	RetentionDuration string
 	RetentionSize     string
 	Version           string
-
-	HTTPProxy  string
-	HTTPSProxy string
-	NoProxy    string
 }
 
 func New(config Config) (*generic.Resource, error) {
