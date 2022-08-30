@@ -32,6 +32,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add service priority as a tag in opsgenie alerts.
 - Add Team Hydra receiver and route.
 
+### Fixed
+
+- Upgrade go-kit/kit to fix CVE-2022-24450 and CVE-2022-29946.
+- Upgrade getsentry/sentry-go to fix CVE-2021-23772, CVE-2021-42576, CVE-2020-26892, and CVE-2021-3127.
+
 ## [4.3.0] - 2022-08-02
 
 ### Fixed
