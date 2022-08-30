@@ -8,9 +8,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
-	capiv1alpha4 "sigs.k8s.io/cluster-api/api/v1alpha4"
-	capiv1beta1 "sigs.k8s.io/cluster-api/api/v1beta1"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
@@ -47,19 +45,11 @@ func NamespaceMonitoring() string {
 }
 
 func Secret() string {
-	return SecretAPICertificates(nil)
-}
-
-func SecretAPICertificates(cluster metav1.Object) string {
 	return "cluster-certificates"
 }
 
 func CAPICertificateName(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-kubeconfig", ClusterID(cluster))
-}
-
-func CAPICertificateNamespace(cluster metav1.Object) string {
-	return cluster.GetNamespace()
 }
 
 func IsMonitoringDisabled(cluster metav1.Object) bool {
@@ -189,9 +179,8 @@ func PrometheusSTSName(cluster metav1.Object) string {
 	return fmt.Sprintf("prometheus-%s", ClusterID(cluster))
 }
 
-// TODO rename once g8s-prometheus is gone
 func AlertManagerSecretName() string {
-	return "new-alertmanager-config"
+	return "alertmanager-config"
 }
 
 func AlertManagerKey() string {
@@ -202,7 +191,7 @@ func APIUrl(obj interface{}) string {
 	switch v := obj.(type) {
 	case *v1.Service:
 		return "kubernetes.default:443"
-	case *capiv1alpha3.Cluster: // Support CAPI Clusters
+	case *capi.Cluster:
 		return fmt.Sprintf("%s:%d", v.Spec.ControlPlaneEndpoint.Host, v.Spec.ControlPlaneEndpoint.Port)
 	case metav1.Object:
 		return fmt.Sprintf("master.%s:443", v.GetName())
@@ -215,7 +204,7 @@ func IsInCluster(installation string, obj interface{}) bool {
 	switch v := obj.(type) {
 	case *v1.Service:
 		return true
-	case *capiv1alpha3.Cluster:
+	case *capi.Cluster:
 		if val, ok := v.Labels["cluster.x-k8s.io/cluster-name"]; ok && val == installation {
 			return true
 		}
@@ -280,11 +269,7 @@ func IsCAPICluster(obj metav1.Object) bool {
 	}
 
 	switch v := obj.(type) {
-	case *capiv1alpha3.Cluster:
-		return checker(v.Labels)
-	case *capiv1alpha4.Cluster:
-		return checker(v.Labels)
-	case *capiv1beta1.Cluster:
+	case *capi.Cluster:
 		return checker(v.Labels)
 	case *v1.Service:
 		// Legacy Management Clusters.
