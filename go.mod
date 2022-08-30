@@ -37,7 +37,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/evanphx/json-patch v4.11.0+incompatible // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
-	github.com/getsentry/sentry-go v0.12.0 // indirect
+	github.com/getsentry/sentry-go v0.13.1-0.20220829145521-33f7b6930327 // indirect
 	github.com/giantswarm/backoff v1.0.0 // indirect
 	github.com/giantswarm/exporterkit v1.0.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
@@ -110,7 +110,7 @@ require (
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/subosito/gotenv v1.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
-	golang.org/x/sys v0.0.0-20220804214406-8e32c043e418 // indirect
+	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	k8s.io/component-base v0.22.3 // indirect
 )
@@ -119,8 +119,6 @@ replace (
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
-	// See https://github.com/getsentry/sentry-go/issues/465
-	github.com/getsentry/sentry-go v0.12.0 => github.com/TheoBrigitte/sentry-go v0.0.0-20220808140748-011d8f311d4d
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
 	// NOTE: we need to stay on k8s v1.19 as some installations still run v1.18.
 	k8s.io/api => k8s.io/api v0.19.16
