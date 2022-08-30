@@ -16,7 +16,7 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.52.1
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.52.1
 	github.com/sirupsen/logrus v1.9.0
-	github.com/spf13/viper v1.11.0
+	github.com/spf13/viper v1.12.0
 	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48
 	k8s.io/api v0.22.3
 	k8s.io/apiextensions-apiserver v0.22.3
