@@ -300,22 +300,32 @@
   relabel_configs:
   - source_labels: [__address__]
 [[- if .CAPICluster ]]
-    replacement: $1:10259
+    replacement: 10259
 [[- else ]]
-    replacement: $1:10251
+    replacement: 10251
 [[- end ]]
+    target_label: __port
+  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_port,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_port]
+    action: replace
+    regex: true;(\d+)
+    replacement: $1
+    target_label: __port
+  - source_labels: [__address__, __port]
     target_label: instance
+    regex: (.+);(.+)
+    replacement: $1:$2
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-scheduler|kube-scheduler)
     action: keep
   - target_label: __address__
     replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_pod_name]
+  - source_labels: [__meta_kubernetes_pod_name, __port]
     target_label: __metrics_path__
+    regex: (.+);(\d+)
 [[- if .CAPICluster ]]
-    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10259/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
 [[- else ]]
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:10251/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
 [[- end ]]
   - target_label: app
     replacement: kube-scheduler

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix controller manager port to be dynamic.
+- Fix scheduler port to be dynamic.
 
 ## [4.5.1] - 2022-08-24
 
