@@ -265,6 +265,10 @@
     regex: true;(\d+)
     replacement: $1
     target_label: __port
+  - source_labels: [__address__, __port]
+    target_label: instance
+    regex: (.+);(.+)
+    replacement: $1:$2
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-controller-manager|kube-controller-manager)
     action: keep
