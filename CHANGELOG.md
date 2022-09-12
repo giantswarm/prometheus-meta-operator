@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Drop original `label_topology_kubernetes_io_region` & `label_topology_kubernetes_io_zone` labels.
+
 ## [4.6.0] - 2022-09-12
 
 ### Added
