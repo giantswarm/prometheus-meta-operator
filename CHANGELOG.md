@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.0] - 2022-09-12
+
 ### Added
 
 - Relabeling for labels `label_topology_kubernetes_io_region` & `label_topology_kubernetes_io_zone` to `region` & `zone`.
@@ -1588,7 +1590,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.0...HEAD
+[4.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...v4.6.0
 [4.5.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.0...v4.5.1
 [4.5.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.1...v4.5.0
 [4.4.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.0...v4.4.1
