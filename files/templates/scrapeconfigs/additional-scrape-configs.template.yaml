@@ -539,6 +539,8 @@
     target_label: zone
     replacement: ${1}
     action: replace
+  - action: labeldrop
+    regex: "label_topology_kubernetes_io_region|label_topology_kubernetes_io_zone"
   # Override with label for AWS clusters if exists.
   - source_labels: [app,label_giantswarm_io_machine_deployment]
     regex: kube-state-metrics;(.+)
