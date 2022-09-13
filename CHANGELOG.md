@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix controller manager port to use default or a value from annotation.
 - Fix scheduler port to use default or a value from annotation.
+- Bump github.com/labstack/echo to v4.9.0 to fix sonatype-2022-5436 CVE.
 
 ## [4.6.1] - 2022-09-12
 
