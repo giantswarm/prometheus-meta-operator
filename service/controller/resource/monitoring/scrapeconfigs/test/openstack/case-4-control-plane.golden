@@ -389,13 +389,13 @@
   relabel_configs:
   - source_labels: [__address__]
     replacement: 10252
-    target_label: __port
+    target_label: __tmp_port
   - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_port,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_port]
     action: replace
     regex: true;(\d+)
     replacement: $1
-    target_label: __port
-  - source_labels: [__address__, __port]
+    target_label: __tmp_port
+  - source_labels: [__address__, __tmp_port]
     target_label: instance
     regex: (.+);(.+)
     replacement: $1:$2
@@ -404,7 +404,7 @@
     action: keep
   - target_label: __address__
     replacement: kubernetes.default:443
-  - source_labels: [__meta_kubernetes_pod_name, __port]
+  - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
     regex: (.+);(\d+)
     replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
@@ -463,13 +463,13 @@
   relabel_configs:
   - source_labels: [__address__]
     replacement: 10251
-    target_label: __port
+    target_label: __tmp_port
   - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_port,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_port]
     action: replace
     regex: true;(\d+)
     replacement: $1
-    target_label: __port
-  - source_labels: [__address__, __port]
+    target_label: __tmp_port
+  - source_labels: [__address__, __tmp_port]
     target_label: instance
     regex: (.+);(.+)
     replacement: $1:$2
@@ -478,7 +478,7 @@
     action: keep
   - target_label: __address__
     replacement: kubernetes.default:443
-  - source_labels: [__meta_kubernetes_pod_name, __port]
+  - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
     regex: (.+);(\d+)
     replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
