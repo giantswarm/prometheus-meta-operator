@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix controller manager port to be dynamic.
-- Fix scheduler port to be dynamic.
+- Fix controller manager port to use default or a value from annotation.
+- Fix scheduler port to use default or a value from annotation.
 
 ## [4.5.1] - 2022-08-24
 
