@@ -319,16 +319,26 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
-    replacement: $1:10257
+    replacement: 10257
+    target_label: __tmp_port
+  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_port,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_port]
+    action: replace
+    regex: true;(\d+)
+    replacement: $1
+    target_label: __tmp_port
+  - source_labels: [__address__, __tmp_port]
     target_label: instance
+    regex: (.+);(.+)
+    replacement: $1:$2
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-controller-manager|kube-controller-manager)
     action: keep
   - target_label: __address__
     replacement: master.foo:443
-  - source_labels: [__meta_kubernetes_pod_name]
+  - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10257/proxy/metrics
+    regex: (.+);(\d+)
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
   # Add namespace label.
@@ -390,16 +400,26 @@
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
-    replacement: $1:10259
+    replacement: 10259
+    target_label: __tmp_port
+  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_port,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_port]
+    action: replace
+    regex: true;(\d+)
+    replacement: $1
+    target_label: __tmp_port
+  - source_labels: [__address__, __tmp_port]
     target_label: instance
+    regex: (.+);(.+)
+    replacement: $1:$2
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (k8s-scheduler|kube-scheduler)
     action: keep
   - target_label: __address__
     replacement: master.foo:443
-  - source_labels: [__meta_kubernetes_pod_name]
+  - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:10259/proxy/metrics
+    regex: (.+);(\d+)
+    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
   - target_label: app
     replacement: kube-scheduler
   # Add namespace label.
