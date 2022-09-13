@@ -118,6 +118,12 @@ replace (
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
+
+	// NOTE: latest(64b90ef9) getsentry/sentry-go dependes on github.com/labstack/echo v4.5.0
+	// overriding this dependency to fix a security issue.
+	// see https://ossindex.sonatype.org/vulnerability/sonatype-2022-5436
+	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.9.0
+
 	// NOTE: we need to stay on k8s v1.19 as some installations still run v1.18.
 	k8s.io/api => k8s.io/api v0.19.16
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.19.16
