@@ -11,6 +11,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Enable remote write receiver.
 
+## [4.6.2] - 2022-09-13
+
+### Fixed
+
+- Fix controller manager port to use default or a value from annotation.
+- Fix scheduler port to use default or a value from annotation.
+- Bump github.com/labstack/echo to v4.9.0 to fix sonatype-2022-5436 CVE.
+
+## [4.6.1] - 2022-09-12
+
+### Fixed
+
+- Drop original `label_topology_kubernetes_io_region` & `label_topology_kubernetes_io_zone` labels.
+
+## [4.6.0] - 2022-09-12
+
+### Added
+
+- Relabeling for labels `label_topology_kubernetes_io_region` & `label_topology_kubernetes_io_zone` to `region` & `zone`.
+
 ## [4.5.1] - 2022-08-24
 
 ### Fixed
@@ -35,6 +55,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add service priority as a tag in opsgenie alerts.
 - Add Team Hydra receiver and route.
+
+### Fixed
+
+- Upgrade go-kit/kit to fix CVE-2022-24450 and CVE-2022-29946.
+- Upgrade getsentry/sentry-go to fix CVE-2021-23772, CVE-2021-42576, CVE-2020-26892, and CVE-2021-3127.
 
 ## [4.3.0] - 2022-08-02
 
@@ -1583,7 +1608,10 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.2...HEAD
+[4.6.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.1...v4.6.2
+[4.6.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.0...v4.6.1
+[4.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...v4.6.0
 [4.5.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.0...v4.5.1
 [4.5.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.1...v4.5.0
 [4.4.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.0...v4.4.1
