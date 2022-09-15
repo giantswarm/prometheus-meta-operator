@@ -246,6 +246,10 @@ func RemoteWriteSecretName() string {
 	return "remote-write"
 }
 
+func RemoteWriteAgentSecretName() string {
+	return "agent-remote-write"
+}
+
 func RemoteWriteUsernameKey() string {
 	return "username"
 }
