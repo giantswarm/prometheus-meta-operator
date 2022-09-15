@@ -1,0 +1,5 @@
+metadata:
+  creationTimestamp: null
+  name: agent-remote-write
+  namespace: foo-prometheus
+type: Opaque
