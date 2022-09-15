@@ -177,8 +177,11 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			PodMetadata: &promv1.EmbeddedObjectMetadata{
 				Labels: labels,
 			},
-			LogLevel: config.LogLevel,
-			Image:    &image,
+			// TODO will have to migrate to EnableRemoteWriteReceiver: true but need CRD changes
+			// https://github.com/prometheus-operator/prometheus-operator/pull/4633/files
+			EnableFeatures: []string{"remote-write-receiver"},
+			LogLevel:       config.LogLevel,
+			Image:          &image,
 			Web: &promv1.WebSpec{
 				PageTitle: &pageTitle,
 			},
