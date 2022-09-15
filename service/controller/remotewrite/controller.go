@@ -11,17 +11,15 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
 type ControllerConfig struct {
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
-
-	HTTPProxy  string
-	HTTPSProxy string
-	NoProxy    string
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	PrometheusClient   promclient.Interface
+	ProxyConfiguration domain.ProxyConfiguration
 }
 
 type Controller struct {

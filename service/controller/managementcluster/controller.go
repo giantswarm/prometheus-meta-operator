@@ -10,22 +10,20 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/labels"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
-	capiv1alpha3 "sigs.k8s.io/cluster-api/api/v1alpha3"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 type ControllerConfig struct {
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
-	VpaClient        vpa_clientset.Interface
-
-	HTTPProxy  string
-	HTTPSProxy string
-	NoProxy    string
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	PrometheusClient   promclient.Interface
+	VpaClient          vpa_clientset.Interface
+	ProxyConfiguration domain.ProxyConfiguration
 
 	AdditionalScrapeConfigs string
 	Bastions                []string
@@ -97,7 +95,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 			Name:      project.Name() + "-management-cluster-controller",
 			NewRuntimeObjectFunc: func() client.Object {
 				if key.IsCAPIManagementCluster(config.Provider) {
-					return new(capiv1alpha3.Cluster)
+					return new(capi.Cluster)
 				}
 				return new(v1.Service)
 			},

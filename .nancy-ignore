@@ -3,13 +3,13 @@ CVE-2019-3826
 
 # pkg:golang/github.com/gin-gonic/gin@v1.4.0
 # imported from: github.com/giantswarm/operatorkit/v7@v7.0.1
-sonatype-2020-0921 until=2022-08-01
-CVE-2020-28483 until=2022-08-01
+sonatype-2020-0921 until=2022-11-01
+CVE-2020-28483 until=2022-11-01
 
 # pkg:golang/github.com/hashicorp/consul/api@v1.12.0
 # imported from: github.com/spf13/viper@v1.11.0 (current latest)
-CVE-2022-29153 until=2022-08-01
-CVE-2022-24687 until=2022-08-01
+CVE-2022-29153 until=2022-11-01
+CVE-2022-24687 until=2022-11-01
 
 # pkg:golang/github.com/hashicorp/consul/sdk@v0.8.0
 # imported from:
@@ -18,44 +18,12 @@ CVE-2022-24687 until=2022-08-01
 #  - github.com/giantswarm/microendpoint@v1.0.0
 #  - github.com/giantswarm/microkit@v1.0.0
 #  - sigs.k8s.io/cluster-api@v1.0.5
-CVE-2022-29153 until=2022-08-01
-CVE-2022-24687 until=2022-08-01
-
-# pkg:golang/github.com/kataras/iris/v12@v12.1.8
-# imported from: github.com/giantswarm/operatorkit/v7@v7.0.1
-CVE-2021-23772 until=2022-08-01
-
-# pkg:golang/github.com/microcosm-cc/bluemonday@v1.0.2
-# imported from: github.com/giantswarm/operatorkit/v7@v7.0.1
-CVE-2021-42576 until=2022-08-01
-
-# pkg:golang/github.com/nats-io/jwt@v0.3.0
-# imported from:
-# - github.com/giantswarm/operatorkit/v7@v7.0.1
-# - github.com/giantswarm/exporterkit@v1.0.0
-# - github.com/giantswarm/microendpoint@v1.0.0
-# - github.com/giantswarm/microkit@v1.0.0
-CVE-2020-26892 until=2022-08-01
-CVE-2021-3127 until=2022-08-01
-
-# pkg:golang/github.com/nats-io/nats-server/v2@v2.5.0
-# imported from:
-# - github.com/giantswarm/operatorkit/v7@v7.0.1
-# - github.com/giantswarm/exporterkit@v1.0.0
-# - github.com/giantswarm/microendpoint@v1.0.0
-# - github.com/giantswarm/microkit@v1.0.0
-CVE-2022-24450 until=2022-08-01
-CVE-2022-29946 until=2022-08-01
-CVE-2022-26652 until=2022-08-01
-CVE-2022-28357 until=2022-08-01
+CVE-2022-29153 until=2022-11-01
+CVE-2022-24687 until=2022-11-01
 
 # pkg:golang/github.com/urfave/negroni@v1.0.0
 # imported from: github.com/giantswarm/operatorkit/v7@v7.0.1
-sonatype-2021-1485 until=2022-08-01
-
-# pkg:golang/github.com/valyala/fasthttp@v1.6.0
-# imported from: github.com/giantswarm/operatorkit/v7@v7.0.1
-CVE-2022-21221 until=2022-08-01
+sonatype-2021-1485 until=2022-11-01
 
 # pkg:golang/go.mongodb.org/mongo-driver@v1.1.2
 # imported from:
@@ -64,4 +32,4 @@ CVE-2022-21221 until=2022-08-01
 # - k8s.io/apiextensions-apiserver@v0.22.3
 # - sigs.k8s.io/cluster-api@v1.0.5
 # - sigs.k8s.io/controller-runtime@v0.10.3
-CVE-2021-20329 until=2022-08-01
+CVE-2021-20329 until=2022-11-01

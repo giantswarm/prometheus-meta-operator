@@ -7,6 +7,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.2] - 2022-09-13
+
+### Fixed
+
+- Fix controller manager port to use default or a value from annotation.
+- Fix scheduler port to use default or a value from annotation.
+- Bump github.com/labstack/echo to v4.9.0 to fix sonatype-2022-5436 CVE.
+
+## [4.6.1] - 2022-09-12
+
+### Fixed
+
+- Drop original `label_topology_kubernetes_io_region` & `label_topology_kubernetes_io_zone` labels.
+
+## [4.6.0] - 2022-09-12
+
+### Added
+
+- Relabeling for labels `label_topology_kubernetes_io_region` & `label_topology_kubernetes_io_zone` to `region` & `zone`.
+
+## [4.5.1] - 2022-08-24
+
+### Fixed
+
+- Fix CAPI MCs being seen as workload cluster.
+
+## [4.5.0] - 2022-08-24
+
+### Changed
+
+- Change CAPI version from v1alpha3 to v1beta1.
+
+## [4.4.1] - 2022-08-19
+
+### Fixed
+
+- Fix Team hydra config.
+
+## [4.4.0] - 2022-08-17
+
+### Added
+
+- Add service priority as a tag in opsgenie alerts.
+- Add Team Hydra receiver and route.
+
+### Fixed
+
+- Upgrade go-kit/kit to fix CVE-2022-24450 and CVE-2022-29946.
+- Upgrade getsentry/sentry-go to fix CVE-2021-23772, CVE-2021-42576, CVE-2020-26892, and CVE-2021-3127.
+
+## [4.3.0] - 2022-08-02
+
+### Fixed
+
+- Fix psp names for prometheus and alertmanager.
+
 ## [4.2.0] - 2022-07-28
 
 ### Changed
@@ -31,6 +87,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgrade operatorkit from v7.0.1 to v7.1.0.
+- Upgrade github.com/sirupsen/logrus from 1.8.1 to 1.9.0.
 
 ### Added
 
@@ -1548,7 +1605,15 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.2.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.2...HEAD
+[4.6.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.1...v4.6.2
+[4.6.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.0...v4.6.1
+[4.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...v4.6.0
+[4.5.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.0...v4.5.1
+[4.5.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.1...v4.5.0
+[4.4.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.4.0...v4.4.1
+[4.4.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.3.0...v4.4.0
+[4.3.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.2.0...v4.3.0
 [4.2.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.1.0...v4.2.0
 [4.1.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.0.1...v4.1.0
 [4.0.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.0.0...v4.0.1

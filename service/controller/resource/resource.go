@@ -10,6 +10,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -21,19 +22,17 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 type Config struct {
-	K8sClient        k8sclient.Interface
-	Logger           micrologger.Logger
-	PrometheusClient promclient.Interface
-	VpaClient        vpa_clientset.Interface
-
-	HTTPProxy  string
-	HTTPSProxy string
-	NoProxy    string
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	PrometheusClient   promclient.Interface
+	VpaClient          vpa_clientset.Interface
+	ProxyConfiguration domain.ProxyConfiguration
 
 	AdditionalScrapeConfigs string
 	Bastions                []string
@@ -96,10 +95,10 @@ func New(config Config) ([]resource.Interface, error) {
 				},
 				{
 					NameFunc:      key.CAPICertificateName,
-					NamespaceFunc: key.CAPICertificateNamespace,
+					NamespaceFunc: key.OrganizationNamespace,
 				},
 			},
-			Target: key.SecretAPICertificates,
+			Target: key.Secret,
 		}
 
 		apiCertificatesResource, err = certificates.New(c)
@@ -114,10 +113,8 @@ func New(config Config) ([]resource.Interface, error) {
 			Client: config.PrometheusClient,
 			Logger: config.Logger,
 
-			Installation: config.Installation,
-			HTTPProxy:    config.HTTPProxy,
-			HTTPSProxy:   config.HTTPSProxy,
-			NoProxy:      config.NoProxy,
+			Installation:       config.Installation,
+			ProxyConfiguration: config.ProxyConfiguration,
 		}
 
 		heartbeatWebhookConfigResource, err = heartbeatwebhookconfig.New(c)
@@ -141,6 +138,19 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
+	var rbacResource resource.Interface
+	{
+		c := rbac.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		rbacResource, err = rbac.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
@@ -159,9 +169,6 @@ func New(config Config) ([]resource.Interface, error) {
 			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
 			RetentionSize:     config.PrometheusRetentionSize,
-			HTTPProxy:         config.HTTPProxy,
-			HTTPSProxy:        config.HTTPSProxy,
-			NoProxy:           config.NoProxy,
 		}
 
 		prometheusResource, err = prometheus.New(c)
@@ -262,6 +269,7 @@ func New(config Config) ([]resource.Interface, error) {
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
+		rbacResource,
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
 		remoteWriteConfigResource,

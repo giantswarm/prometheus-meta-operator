@@ -11,30 +11,6 @@ import (
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	r.logger.Debugf(ctx, "creating")
 	{
-		desired, err := toClusterRole(obj)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-
-		current, err := r.k8sClient.K8sClient().RbacV1().ClusterRoles().Get(ctx, desired.GetName(), metav1.GetOptions{})
-		if apierrors.IsNotFound(err) {
-			current, err = r.k8sClient.K8sClient().RbacV1().ClusterRoles().Create(ctx, desired, metav1.CreateOptions{})
-		}
-		if err != nil {
-			return microerror.Mask(err)
-		}
-
-		if hasClusterRoleChanged(current, desired) {
-			updateMeta(current, desired)
-			_, err = r.k8sClient.K8sClient().RbacV1().ClusterRoles().Update(ctx, desired, metav1.UpdateOptions{})
-			if err != nil {
-				return microerror.Mask(err)
-			}
-		}
-	}
-
-	{
-
 		desired, err := toClusterRoleBinding(obj)
 		if err != nil {
 			return microerror.Mask(err)

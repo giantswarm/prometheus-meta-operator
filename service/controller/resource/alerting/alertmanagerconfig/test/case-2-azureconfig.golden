@@ -59,6 +59,13 @@ route:
     - team="phoenix"
     continue: false
 
+  # Team Hydra Slack
+  - receiver: team_hydra_slack
+    matchers:
+    - severity=~"page|notify"
+    - team="hydra"
+    continue: false
+
   # Team Rocket Slack (team)
   - receiver: team_rocket_slack
     matchers:
@@ -144,6 +151,29 @@ receivers:
       url: '{{ template "__alert_silence_link" . }}'
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
+- name: team_hydra_slack
+  slack_configs:
+  - channel: '#alert-hydra-test'
+    send_resolved: true
+    actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
 - name: team_rocket_slack
   slack_configs:
   - channel: '#alert-rocket-test'
@@ -170,7 +200,7 @@ receivers:
 - name: opsgenie_router
   opsgenie_configs:
   - api_key: opsgenie-key
-    tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},aws,test-installation,testing"
+    tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},aws,test-installation,testing"
 
 - name: team_ops_slack
   slack_configs:

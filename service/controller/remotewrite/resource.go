@@ -18,9 +18,7 @@ func newResources(config ControllerConfig) ([]resource.Interface, error) {
 			Logger:           config.Logger,
 			PrometheusClient: config.PrometheusClient,
 
-			HTTPProxy:  config.HTTPProxy,
-			HTTPSProxy: config.HTTPSProxy,
-			NoProxy:    config.NoProxy,
+			ProxyConfiguration: config.ProxyConfiguration,
 		}
 
 		prometheusRemoteWrite, err = prometheusremotewrite.New(c)

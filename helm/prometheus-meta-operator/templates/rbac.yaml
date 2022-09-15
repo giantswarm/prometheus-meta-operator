@@ -197,8 +197,8 @@ rules:
     resourceNames:
       - {{ include "resource.psp.name" . }}
       ### PMO needs those permissions to be able to set them for alertmanager and prometheus
-      - alertmanager
-      - prometheus
+      - alertmanager-psp
+      - prometheus-psp
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding

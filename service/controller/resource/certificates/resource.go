@@ -9,7 +9,6 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -21,10 +20,12 @@ import (
 type Config struct {
 	Name      string
 	Sources   []CertificateSource
-	Target    NameFunc
+	Target    NameFuncWithoutParam
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 }
+
+type NameFuncWithoutParam func() string
 
 type NameFunc func(metav1.Object) string
 
@@ -36,7 +37,7 @@ type CertificateSource struct {
 type Resource struct {
 	name      string
 	sources   []CertificateSource
-	target    NameFunc
+	target    NameFuncWithoutParam
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 }
@@ -80,12 +81,12 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:      r.target(cluster),
+		Name:      r.target(),
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
 
-func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
+func (r *Resource) getDesiredObject(v interface{}) (*v1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -121,7 +122,7 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 		}
 	}
 
-	secret := &corev1.Secret{
+	secret := &v1.Secret{
 		ObjectMeta: objectMeta,
 		Data:       secretData,
 		Type:       sourceSecret.Type,
@@ -131,7 +132,7 @@ func (r *Resource) getDesiredObject(v interface{}) (*corev1.Secret, error) {
 }
 
 // getSource returns the Secret to be copied, i.e. default/$CLUSTER_ID-prometheus
-func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret, error) {
+func (r *Resource) getSource(ctx context.Context, v interface{}) (*v1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -168,6 +169,6 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*corev1.Secret
 	return secret, nil
 }
 
-func (r *Resource) hasChanged(current, desired *corev1.Secret) bool {
+func (r *Resource) hasChanged(current, desired *v1.Secret) bool {
 	return !reflect.DeepEqual(current.Data, desired.Data)
 }
