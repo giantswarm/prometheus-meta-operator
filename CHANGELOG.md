@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Enable remote write receiver.
+
 ## [4.6.2] - 2022-09-13
 
 ### Fixed
