@@ -525,6 +525,7 @@ github.com/googleapis/gax-go/v2 v2.2.0/go.mod h1:as02EH8zWkzwUoLbBaFeQ+arQaj/Oth
 github.com/googleapis/gax-go/v2 v2.3.0/go.mod h1:b8LNqSzNabLiUpXKkY7HAR5jr6bIT99EXz9pXxye9YM=
 github.com/googleapis/gax-go/v2 v2.4.0/go.mod h1:XOTVJ59hdnfJLIP/dh8n5CGryZR2LxK9wbMD5+iXC6c=
 github.com/googleapis/gnostic v0.0.0-20170729233727-0c5108395e2d/go.mod h1:sJBsCZ4ayReDTBIg8b9dl28c5xFWyhBTVRp3pOg5EKY=
+github.com/googleapis/gnostic v0.1.0/go.mod h1:sJBsCZ4ayReDTBIg8b9dl28c5xFWyhBTVRp3pOg5EKY=
 github.com/googleapis/gnostic v0.3.1/go.mod h1:on+2t9HRStVgn95RSsFWFz+6Q0Snyqv1awfrALZdbtU=
 github.com/googleapis/gnostic v0.4.1/go.mod h1:LRhVm6pbyptWbWbuZ38d1eyptfvIytN3ir6b65WBswg=
 github.com/googleapis/gnostic v0.5.1/go.mod h1:6U4PtQXGIEt/Z3h5MAT7FNofLnw9vXk2cUuW7uA/OeU=
@@ -1349,6 +1350,7 @@ golang.org/x/sys v0.0.0-20191001151750-bb3f8db39f24/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20191002063906-3421d5a6bb1c/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20191005200804-aed5e4c7ecf9/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20191008105621-543471e840be/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20191022100944-742c48ecaeb7/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20191026070338-33540a1f6037/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20191120155948-bd437916bb0e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20191204072324-ce4227a45e2e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
@@ -1795,8 +1797,8 @@ k8s.io/apimachinery v0.20.14/go.mod h1:4KFiDSxCoGviCiRk9kTXIROsIf4VSGkVYjVJjJln3
 k8s.io/apiserver v0.17.9/go.mod h1:Qaxd3EbeoPRBHVMtFyuKNAObqP6VAkzIMyWYz8KuE2k=
 k8s.io/apiserver v0.19.16/go.mod h1:9NCHA3a+/b2rLeRkVOOaTBfmfu1Z9vWuH6usDK7EKWw=
 k8s.io/apiserver v0.22.2/go.mod h1:vrpMmbyjWrgdyOvZTSpsusQq5iigKNWv9o9KlDAbBHI=
-k8s.io/autoscaler/vertical-pod-autoscaler v0.9.2 h1:fMFkbjo6ElaL3POE3ctxLuX3aR+bEzpo2q1R5Aq2JhE=
-k8s.io/autoscaler/vertical-pod-autoscaler v0.9.2/go.mod h1:PwWTGRRCxefhAezrDbG/tRYSAW7etHjjMPAr8fXKVAA=
+k8s.io/autoscaler/vertical-pod-autoscaler v0.11.0 h1:vh6cHU/sZBjdfYlKZOhXkMI5CTCgK12TauHGoQOue+4=
+k8s.io/autoscaler/vertical-pod-autoscaler v0.11.0/go.mod h1:CviXA+byKc3EV10oxt8S+YYVipks1+onIqLGNPV52xM=
 k8s.io/cli-runtime v0.22.2/go.mod h1:tkm2YeORFpbgQHEK/igqttvPTRIHFRz5kATlw53zlMI=
 k8s.io/client-go v0.19.16 h1:DM3Rb3vdhgKAQeZ9U5hU467wt9qPX8ogqMCu2qYC/Wc=
 k8s.io/client-go v0.19.16/go.mod h1:aEi/M7URDBWUIzdFt/l/WkngaqCTYtDo0cIMIQgvXmI=
@@ -1866,6 +1868,7 @@ sigs.k8s.io/kustomize/kustomize/v4 v4.2.0/go.mod h1:MOkR6fmhwG7hEDRXBYELTi5GSFcL
 sigs.k8s.io/kustomize/kyaml v0.11.0/go.mod h1:GNMwjim4Ypgp/MueD3zXHLRJEjz7RvtPae0AwlvEMFM=
 sigs.k8s.io/structured-merge-diff/v2 v2.0.1/go.mod h1:Wb7vfKAodbKgf6tn1Kl0VvGj7mRH6DGaRcixXEJXTsE=
 sigs.k8s.io/structured-merge-diff/v3 v3.0.0-20200116222232-67a7b8c61874/go.mod h1:PlARxl6Hbt/+BC80dRLi1qAmnMqwqDg62YvvVkZjemw=
+sigs.k8s.io/structured-merge-diff/v3 v3.0.0/go.mod h1:PlARxl6Hbt/+BC80dRLi1qAmnMqwqDg62YvvVkZjemw=
 sigs.k8s.io/structured-merge-diff/v3 v3.0.1/go.mod h1:PlARxl6Hbt/+BC80dRLi1qAmnMqwqDg62YvvVkZjemw=
 sigs.k8s.io/structured-merge-diff/v4 v4.0.1/go.mod h1:bJZC9H9iH24zzfZ/41RGcq60oK1F7G282QMXDPYydCw=
 sigs.k8s.io/structured-merge-diff/v4 v4.0.2/go.mod h1:bJZC9H9iH24zzfZ/41RGcq60oK1F7G282QMXDPYydCw=
