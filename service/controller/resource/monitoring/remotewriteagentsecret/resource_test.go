@@ -1,4 +1,4 @@
-package remotewritesecret
+package remotewriteagentsecret
 
 import (
 	"context"

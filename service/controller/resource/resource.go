@@ -18,6 +18,8 @@ import (
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteagentconfigsecret"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteagentsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
 	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
@@ -146,6 +148,32 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		remoteWriteIngressResource, err = remotewriteingressv1.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var remoteWriteAgentSecretResource resource.Interface
+	{
+		c := remotewriteagentsecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		remoteWriteAgentSecretResource, err = remotewriteagentsecret.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var remoteWriteAgentConfigSecretResource resource.Interface
+	{
+		c := remotewriteagentconfigsecret.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		remoteWriteAgentConfigSecretResource, err = remotewriteagentconfigsecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -314,6 +342,8 @@ func New(config Config) ([]resource.Interface, error) {
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
 		remoteWriteIngressResource,
+		remoteWriteAgentSecretResource,
+		remoteWriteAgentConfigSecretResource,
 		remoteWriteSecretResource,
 		remoteWriteConfigResource,
 		alertmanagerWiringResource,

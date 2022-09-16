@@ -1,12 +1,15 @@
-package remotewritesecret
+package remotewriteagentconfigsecret
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	pov1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -15,12 +18,13 @@ import (
 )
 
 const (
-	Name = "remotewritesecret"
+	Name = "remotewriteagentconfigsecret"
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	K8sClient  k8sclient.Interface
+	Logger     micrologger.Logger
+	BaseDomain string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -54,7 +58,7 @@ func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error
 	}
 
 	return metav1.ObjectMeta{
-		Name:      key.RemoteWriteAgentSecretName(),
+		Name:      key.RemoteWriteAgentConfigSecretName(),
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
@@ -65,10 +69,42 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
+	cluster, err := key.ToCluster(v)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	remoteWrites := []pov1.RemoteWriteSpec{
+		{
+			URL: fmt.Sprintf("https://prometheus.g8s.%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
+			BasicAuth: &pov1.BasicAuth{
+				Username: corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: key.RemoteWriteAgentSecretName(),
+					},
+					Key: "username",
+				},
+				Password: corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: key.RemoteWriteAgentSecretName(),
+					},
+					Key: "password",
+				},
+			},
+		},
+	}
+
+	yamlValues, err := yaml.Marshal(remoteWrites)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
-		Data:       map[string][]byte{},
-		Type:       "Opaque",
+		Data: map[string][]byte{
+			"values": []byte(yamlValues),
+		},
+		Type: "Opaque",
 	}
 	return secret, nil
 }
