@@ -76,7 +76,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 
 	remoteWrites := []pov1.RemoteWriteSpec{
 		{
-			URL: fmt.Sprintf("%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
+			URL: fmt.Sprintf("https://%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
 			BasicAuth: &pov1.BasicAuth{
 				Username: corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{
