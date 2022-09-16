@@ -21,7 +21,7 @@ func TestRemoteWriteAgentConfigSecret(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toSecret(context.TODO(), v, Config{})
+			return toSecret(context.TODO(), v, Config{BaseDomain: "https://prometheus"})
 		},
 		Update: *update,
 	}

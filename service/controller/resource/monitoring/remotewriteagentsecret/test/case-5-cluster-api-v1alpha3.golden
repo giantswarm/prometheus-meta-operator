@@ -1,3 +1,7 @@
+data:
+  auth: YmF6OmVuY3J5cHRlZA==
+  password: cGFzc3dvcmQ=
+  username: YmF6
 metadata:
   creationTimestamp: null
   name: agent-remote-write

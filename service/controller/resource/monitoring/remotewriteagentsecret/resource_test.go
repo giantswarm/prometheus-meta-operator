@@ -21,7 +21,9 @@ func TestRemoteWriteSecret(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toSecret(context.TODO(), v, Config{})
+			return toSecret(context.TODO(), v, Config{
+				PasswordManager: TestPasswordManager{},
+			})
 		},
 		Update: *update,
 	}
@@ -34,4 +36,15 @@ func TestRemoteWriteSecret(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+}
+
+type TestPasswordManager struct {
+}
+
+func (m TestPasswordManager) GeneratePassword(length int) (string, error) {
+	return "password", nil
+}
+
+func (m TestPasswordManager) Hash(plaintext string) (string, error) {
+	return "encrypted", nil
 }

@@ -1,3 +1,7 @@
+data:
+  auth: Zm9vOmVuY3J5cHRlZA==
+  password: cGFzc3dvcmQ=
+  username: Zm9v
 metadata:
   creationTimestamp: null
   name: agent-remote-write

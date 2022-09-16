@@ -1,3 +1,7 @@
+data:
+  auth: YWxpY2U6ZW5jcnlwdGVk
+  password: cGFzc3dvcmQ=
+  username: YWxpY2U=
 metadata:
   creationTimestamp: null
   name: agent-remote-write

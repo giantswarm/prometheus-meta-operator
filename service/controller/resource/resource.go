@@ -11,6 +11,7 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -156,8 +157,9 @@ func New(config Config) ([]resource.Interface, error) {
 	var remoteWriteAgentSecretResource resource.Interface
 	{
 		c := remotewriteagentsecret.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			K8sClient:       config.K8sClient,
+			Logger:          config.Logger,
+			PasswordManager: password.SimpleManager{},
 		}
 
 		remoteWriteAgentSecretResource, err = remotewriteagentsecret.New(c)
@@ -169,8 +171,9 @@ func New(config Config) ([]resource.Interface, error) {
 	var remoteWriteAgentConfigSecretResource resource.Interface
 	{
 		c := remotewriteagentconfigsecret.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			K8sClient:  config.K8sClient,
+			Logger:     config.Logger,
+			BaseDomain: config.PrometheusBaseDomain,
 		}
 
 		remoteWriteAgentConfigSecretResource, err = remotewriteagentconfigsecret.New(c)

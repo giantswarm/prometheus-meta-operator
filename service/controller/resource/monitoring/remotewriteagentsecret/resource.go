@@ -2,7 +2,7 @@ package remotewriteagentsecret
 
 import (
 	"context"
-	"reflect"
+	"fmt"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -10,6 +10,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -19,9 +20,9 @@ const (
 )
 
 type Config struct {
-	K8sClient  k8sclient.Interface
-	Logger     micrologger.Logger
-	BaseDomain string
+	K8sClient       k8sclient.Interface
+	Logger          micrologger.Logger
+	PasswordManager password.Manager
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -70,14 +71,25 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
+	username := key.ClusterID(cluster)
 
-	generatedPassword := []byte("admin")
+	password, err := config.PasswordManager.GeneratePassword(32)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	hashedPassword, err := config.PasswordManager.Hash(password)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			"username": []byte(key.ClusterID(cluster)),
-			"password": []byte("admin"),
+			// To be used by the ingress basic auth
+			"auth":     []byte(fmt.Sprintf("%s:%s", username, hashedPassword)),
+			"password": []byte(password),
+			"username": []byte(username),
 		},
 		Type: "Opaque",
 	}
@@ -85,8 +97,5 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*corev1.Secret)
-	d := desired.(*corev1.Secret)
-
-	return !reflect.DeepEqual(c.Data, d.Data)
+	return false
 }
