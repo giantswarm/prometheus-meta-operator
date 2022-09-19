@@ -94,7 +94,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		},
 	}
 
-	yamlValues, err := yaml.Marshal(remoteWrites)
+	marshalledRemoteWrites, err := yaml.Marshal(remoteWrites)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -102,7 +102,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			"values": []byte(yamlValues),
+			"values": []byte(marshalledRemoteWrites),
 		},
 		Type: "Opaque",
 	}

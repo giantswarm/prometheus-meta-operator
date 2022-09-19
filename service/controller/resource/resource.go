@@ -28,7 +28,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/rbac"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/remotewritesecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -177,19 +176,6 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		remoteWriteAgentConfigSecretResource, err = remotewriteagentconfigsecret.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var remoteWriteSecretResource resource.Interface
-	{
-		c := remotewritesecret.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		remoteWriteSecretResource, err = remotewritesecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -347,7 +333,6 @@ func New(config Config) ([]resource.Interface, error) {
 		remoteWriteIngressResource,
 		remoteWriteAgentSecretResource,
 		remoteWriteAgentConfigSecretResource,
-		remoteWriteSecretResource,
 		remoteWriteConfigResource,
 		alertmanagerWiringResource,
 		prometheusResource,
