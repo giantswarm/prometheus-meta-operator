@@ -58,14 +58,10 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:      fmt.Sprintf("prometheus-%s-remote-write", key.ClusterID(cluster)),
-		Namespace: key.Namespace(cluster),
-		Labels:    key.PrometheusLabels(cluster),
-		Annotations: map[string]string{
-			"nginx.ingress.kubernetes.io/auth-type":   "basic",
-			"nginx.ingress.kubernetes.io/auth-secret": key.RemoteWriteAgentSecretName,
-			"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
-		},
+		Name:        fmt.Sprintf("prometheus-%s-remote-write", key.ClusterID(cluster)),
+		Namespace:   key.Namespace(cluster),
+		Labels:      key.PrometheusLabels(cluster),
+		Annotations: key.RemoteWriteAuthenticationLabels(),
 	}, nil
 }
 

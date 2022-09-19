@@ -97,6 +97,14 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 	}
 }
 
+func RemoteWriteAuthenticationLabels() map[string]string {
+	return map[string]string{
+		"nginx.ingress.kubernetes.io/auth-type":   "basic",
+		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteAgentSecretName,
+		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
+	}
+}
+
 func AlertmanagerDefaultCPU() *resource.Quantity {
 	return resource.NewMilliQuantity(100, resource.DecimalSI)
 }
