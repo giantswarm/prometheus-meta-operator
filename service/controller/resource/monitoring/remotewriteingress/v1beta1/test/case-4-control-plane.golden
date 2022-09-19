@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 apiVersion: v1beta1
 kind: Ingress
 metadata:
@@ -22,5 +23,10 @@ spec:
           serviceName: prometheus-operated
           servicePort: 9090
         path: /kubernetes/api/v1/write
+=======
+metadata:
+  creationTimestamp: null
+spec: {}
+>>>>>>> 4c0e2cd (Add remote write ingress boilerplate (#999))
 status:
   loadBalancer: {}
