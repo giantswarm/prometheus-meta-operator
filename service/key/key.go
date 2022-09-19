@@ -17,6 +17,7 @@ const (
 	monitoring = "monitoring"
 
 	PrometheusMemoryLimitCoefficient float64 = 1.2
+	RemoteWriteAgentConfigSecretName string  = "agent-remote-write-config"
 	RemoteWriteAgentSecretName       string  = "agent-remote-write"
 )
 
@@ -245,10 +246,6 @@ func AlertmanagerConfigMapKey() string {
 
 func RemoteWriteSecretName() string {
 	return "remote-write"
-}
-
-func RemoteWriteAgentConfigSecretName() string {
-	return "agent-remote-config-write"
 }
 
 func RemoteWriteUsernameKey() string {
