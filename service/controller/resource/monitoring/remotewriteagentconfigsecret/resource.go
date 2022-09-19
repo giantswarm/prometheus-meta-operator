@@ -80,13 +80,13 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 			BasicAuth: &pov1.BasicAuth{
 				Username: corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteAgentSecretName(),
+						Name: key.RemoteWriteAgentSecretName,
 					},
 					Key: "username",
 				},
 				Password: corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteAgentSecretName(),
+						Name: key.RemoteWriteAgentSecretName,
 					},
 					Key: "password",
 				},

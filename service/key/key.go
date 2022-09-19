@@ -17,6 +17,7 @@ const (
 	monitoring = "monitoring"
 
 	PrometheusMemoryLimitCoefficient float64 = 1.2
+	RemoteWriteAgentSecretName       string  = "agent-remote-write"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -244,10 +245,6 @@ func AlertmanagerConfigMapKey() string {
 
 func RemoteWriteSecretName() string {
 	return "remote-write"
-}
-
-func RemoteWriteAgentSecretName() string {
-	return "agent-remote-write"
 }
 
 func RemoteWriteAgentConfigSecretName() string {
