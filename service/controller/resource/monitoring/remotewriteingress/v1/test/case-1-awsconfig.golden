@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 apiVersion: v1
 kind: Ingress
 metadata:
@@ -27,10 +26,5 @@ spec:
               number: 9090
         path: /alice/api/v1/write
         pathType: ImplementationSpecific
-=======
-metadata:
-  creationTimestamp: null
-spec: {}
->>>>>>> 4c0e2cd (Add remote write ingress boilerplate (#999))
 status:
   loadBalancer: {}

@@ -63,7 +63,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 		Labels:    key.PrometheusLabels(cluster),
 		Annotations: map[string]string{
 			"nginx.ingress.kubernetes.io/auth-type":   "basic",
-			"nginx.ingress.kubernetes.io/auth-secret": key.RemoteWriteAgentSecretName(),
+			"nginx.ingress.kubernetes.io/auth-secret": key.RemoteWriteAgentSecretName,
 			"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
 		},
 	}, nil
@@ -119,7 +119,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 									Path: fmt.Sprintf("/%s/api/v1/write", key.ClusterID(cluster)),
 									Backend: networkingv1.IngressBackend{
 										Service: &networkingv1.IngressServiceBackend{
-											Name: "prometheus-operated",
+											Name: key.PrometheusServiceName,
 											Port: networkingv1.ServiceBackendPort{
 												Number: key.PrometheusPort(),
 											},

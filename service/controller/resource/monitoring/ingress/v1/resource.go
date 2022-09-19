@@ -126,7 +126,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 									Path: fmt.Sprintf("/%s", key.ClusterID(cluster)),
 									Backend: networkingv1.IngressBackend{
 										Service: &networkingv1.IngressServiceBackend{
-											Name: "prometheus-operated",
+											Name: key.PrometheusServiceName,
 											Port: networkingv1.ServiceBackendPort{
 												Number: key.PrometheusPort(),
 											},

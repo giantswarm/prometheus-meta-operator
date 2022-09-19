@@ -17,6 +17,7 @@ const (
 	monitoring = "monitoring"
 
 	PrometheusMemoryLimitCoefficient float64 = 1.2
+	PrometheusServiceName                    = "prometheus-operated"
 	RemoteWriteAgentConfigSecretName string  = "agent-remote-write-config"
 	RemoteWriteAgentSecretName       string  = "agent-remote-write"
 )
