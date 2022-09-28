@@ -97,7 +97,7 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 	}
 }
 
-func RemoteWriteAuthenticationLabels() map[string]string {
+func RemoteWriteAuthenticationAnnotations() map[string]string {
 	return map[string]string{
 		"nginx.ingress.kubernetes.io/auth-type":   "basic",
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteAgentSecretName,

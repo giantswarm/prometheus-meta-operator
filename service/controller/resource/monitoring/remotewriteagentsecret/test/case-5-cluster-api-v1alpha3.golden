@@ -4,6 +4,11 @@ data:
   username: YmF6
 metadata:
   creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: baz
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: baz
   name: agent-remote-write
   namespace: baz-prometheus
 type: Opaque

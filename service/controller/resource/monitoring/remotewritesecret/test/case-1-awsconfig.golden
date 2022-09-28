@@ -1,5 +1,0 @@
-metadata:
-  creationTimestamp: null
-  name: agent-remote-write
-  namespace: alice-prometheus
-type: Opaque
