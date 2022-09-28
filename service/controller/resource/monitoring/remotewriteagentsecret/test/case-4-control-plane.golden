@@ -4,6 +4,11 @@ data:
   username: a3ViZXJuZXRlcw==
 metadata:
   creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: kubernetes
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: kubernetes
   name: agent-remote-write
   namespace: kubernetes-prometheus
 type: Opaque

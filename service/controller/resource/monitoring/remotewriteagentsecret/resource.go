@@ -58,6 +58,7 @@ func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error
 	return metav1.ObjectMeta{
 		Name:      key.RemoteWriteAgentSecretName,
 		Namespace: key.Namespace(cluster),
+		Labels:    key.PrometheusLabels(cluster),
 	}, nil
 }
 
@@ -73,15 +74,19 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	}
 	username := key.ClusterID(cluster)
 
+	config.Logger.Debugf(ctx, "generating password for the prometheus agent")
 	password, err := config.PasswordManager.GeneratePassword(32)
 	if err != nil {
+		config.Logger.Errorf(ctx, err, "failed to generate the prometheus agent password")
 		return nil, microerror.Mask(err)
 	}
 
 	hashedPassword, err := config.PasswordManager.Hash(password)
 	if err != nil {
+		config.Logger.Errorf(ctx, err, "failed to hash the prometheus agent password")
 		return nil, microerror.Mask(err)
 	}
+	config.Logger.Debugf(ctx, "generate password for the prometheus agent")
 
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
