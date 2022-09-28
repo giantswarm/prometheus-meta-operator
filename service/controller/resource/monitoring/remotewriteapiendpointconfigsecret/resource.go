@@ -1,4 +1,4 @@
-package remotewriteapiendpointsecret
+package remotewriteapiendpointconfigsecret
 
 import (
 	"context"
@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	Name = "remotewriteapiendpointsecret"
+	Name = "remotewriteapiendpointconfigsecret"
 )
 
 type Config struct {

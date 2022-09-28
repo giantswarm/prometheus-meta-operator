@@ -19,6 +19,7 @@ import (
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
@@ -168,13 +169,13 @@ func New(config Config) ([]resource.Interface, error) {
 
 	var remoteWriteAgentConfigSecretResource resource.Interface
 	{
-		c := remotewriteapiendpointsecret.Config{
+		c := remotewriteapiendpointconfigsecret.Config{
 			K8sClient:  config.K8sClient,
 			Logger:     config.Logger,
 			BaseDomain: config.PrometheusBaseDomain,
 		}
 
-		remoteWriteAgentConfigSecretResource, err = remotewriteapiendpointsecret.New(c)
+		remoteWriteAgentConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
