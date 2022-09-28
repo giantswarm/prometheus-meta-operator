@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/giantswarm/micrologger"
+
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
@@ -21,7 +23,9 @@ func TestRemoteWriteSecret(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
+			logger, _ := micrologger.New(micrologger.Config{})
 			return toSecret(context.TODO(), v, Config{
+				Logger:          logger,
 				PasswordManager: TestPasswordManager{},
 			})
 		},
