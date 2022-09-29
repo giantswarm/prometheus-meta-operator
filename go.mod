@@ -14,8 +14,8 @@ require (
 	github.com/giantswarm/versionbundle v1.0.0
 	github.com/google/go-cmp v0.5.9
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.13
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.52.1
-	github.com/prometheus-operator/prometheus-operator/pkg/client v0.52.1
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.54.0
+	github.com/prometheus-operator/prometheus-operator/pkg/client v0.54.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.13.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
