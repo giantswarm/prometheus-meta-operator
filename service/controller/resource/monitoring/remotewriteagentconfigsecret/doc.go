@@ -1,4 +1,4 @@
 package remotewriteagentconfigsecret
 
-// This packages creates the remote write agent secret config
-// to be used as values by the prometheus agent app to configure the remote write feature.
+// This packages wraps the remote write config in a secret.
+// This is to be used by prometheus operator to configure prometheus.
