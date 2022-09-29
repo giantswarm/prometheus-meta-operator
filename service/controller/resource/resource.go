@@ -19,8 +19,7 @@ import (
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteagentconfigsecret"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteagentsecret"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
 	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
@@ -155,13 +154,13 @@ func New(config Config) ([]resource.Interface, error) {
 
 	var remoteWriteAgentSecretResource resource.Interface
 	{
-		c := remotewriteagentsecret.Config{
+		c := remotewriteapiendpointsecret.Config{
 			K8sClient:       config.K8sClient,
 			Logger:          config.Logger,
 			PasswordManager: password.SimpleManager{},
 		}
 
-		remoteWriteAgentSecretResource, err = remotewriteagentsecret.New(c)
+		remoteWriteAgentSecretResource, err = remotewriteapiendpointsecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -169,13 +168,13 @@ func New(config Config) ([]resource.Interface, error) {
 
 	var remoteWriteAgentConfigSecretResource resource.Interface
 	{
-		c := remotewriteagentconfigsecret.Config{
+		c := remotewriteapiendpointsecret.Config{
 			K8sClient:  config.K8sClient,
 			Logger:     config.Logger,
 			BaseDomain: config.PrometheusBaseDomain,
 		}
 
-		remoteWriteAgentConfigSecretResource, err = remotewriteagentconfigsecret.New(c)
+		remoteWriteAgentConfigSecretResource, err = remotewriteapiendpointsecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

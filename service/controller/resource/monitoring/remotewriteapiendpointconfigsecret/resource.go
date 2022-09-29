@@ -1,28 +1,30 @@
-package remotewriteagentsecret
+package remotewriteapiendpointsecret
 
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	pov1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
+	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
-	Name = "remotewriteagentsecret"
+	Name = "remotewriteapiendpointsecret"
 )
 
 type Config struct {
-	K8sClient       k8sclient.Interface
-	Logger          micrologger.Logger
-	PasswordManager password.Manager
+	K8sClient  k8sclient.Interface
+	Logger     micrologger.Logger
+	BaseDomain string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -56,7 +58,7 @@ func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error
 	}
 
 	return metav1.ObjectMeta{
-		Name:      key.RemoteWriteAgentSecretName,
+		Name:      key.RemoteWriteAgentConfigSecretName,
 		Namespace: key.Namespace(cluster),
 		Labels:    key.PrometheusLabels(cluster),
 	}, nil
@@ -72,29 +74,36 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	username := key.ClusterID(cluster)
 
-	config.Logger.Debugf(ctx, "generating password for the prometheus agent")
-	password, err := config.PasswordManager.GeneratePassword(32)
-	if err != nil {
-		config.Logger.Errorf(ctx, err, "failed to generate the prometheus agent password")
-		return nil, microerror.Mask(err)
+	remoteWrites := []pov1.RemoteWriteSpec{
+		{
+			URL: fmt.Sprintf("%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
+			BasicAuth: &pov1.BasicAuth{
+				Username: corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: key.RemoteWriteAgentSecretName,
+					},
+					Key: "username",
+				},
+				Password: corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: key.RemoteWriteAgentSecretName,
+					},
+					Key: "password",
+				},
+			},
+		},
 	}
 
-	hashedPassword, err := config.PasswordManager.Hash(password)
+	marshalledRemoteWrites, err := yaml.Marshal(remoteWrites)
 	if err != nil {
-		config.Logger.Errorf(ctx, err, "failed to hash the prometheus agent password")
 		return nil, microerror.Mask(err)
 	}
-	config.Logger.Debugf(ctx, "generate password for the prometheus agent")
 
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			// To be used by the ingress basic auth
-			"auth":     []byte(fmt.Sprintf("%s:%s", username, hashedPassword)),
-			"password": []byte(password),
-			"username": []byte(username),
+			"values": []byte(marshalledRemoteWrites),
 		},
 		Type: "Opaque",
 	}
@@ -102,5 +111,8 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	return false
+	c := current.(*corev1.Secret)
+	d := desired.(*corev1.Secret)
+
+	return !reflect.DeepEqual(c.Data, d.Data)
 }
