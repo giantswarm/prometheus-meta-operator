@@ -17,6 +17,9 @@ const (
 	monitoring = "monitoring"
 
 	PrometheusMemoryLimitCoefficient float64 = 1.2
+	PrometheusServiceName                    = "prometheus-operated"
+	RemoteWriteAgentConfigSecretName string  = "agent-remote-write-config"
+	RemoteWriteAgentSecretName       string  = "agent-remote-write"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -91,6 +94,14 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 		"app.kubernetes.io/managed-by": project.Name(),
 		"app.kubernetes.io/instance":   ClusterID(cluster),
 		"giantswarm.io/cluster":        ClusterID(cluster),
+	}
+}
+
+func RemoteWriteAuthenticationAnnotations() map[string]string {
+	return map[string]string{
+		"nginx.ingress.kubernetes.io/auth-type":   "basic",
+		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteAgentSecretName,
+		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
 	}
 }
 

@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Enable remote write receiver.
-- Add prometheus remote write ingress boilerplate.
+- Generate prometheus remote write agent secret and config.
+- Configure prometheus remote write agent ingress.
 
 ## [4.6.2] - 2022-09-13
 
