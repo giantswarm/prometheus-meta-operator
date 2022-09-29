@@ -49,6 +49,5 @@ func updateMeta(c, d metav1.Object) {
 	d.SetAnnotations(c.GetAnnotations())
 	d.SetFinalizers(c.GetFinalizers())
 	d.SetOwnerReferences(c.GetOwnerReferences())
-	d.SetClusterName(c.GetClusterName())
 	d.SetManagedFields(c.GetManagedFields())
 }
