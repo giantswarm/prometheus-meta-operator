@@ -7,7 +7,7 @@ import (
 	"os"
 	"sync"
 
-	providerv1alpha1 "github.com/giantswarm/apiextensions/v3/pkg/apis/provider/v1alpha1"
+	providerv1alpha1 "github.com/giantswarm/apiextensions/v6/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8srestconfig"
 	"github.com/giantswarm/microendpoint/service/version"
