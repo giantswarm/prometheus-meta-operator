@@ -112,7 +112,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	var walCompression bool = true
 
 	var storage promv1.StorageSpec
-	storageSize := resource.MustParse(config.StorageSize)
+	diskSizeAnnotationValue := cluster.GetAnnotations()[key.PrometheusDiskSizeAnnotation]
+	diskSize := key.PrometheusDiskSize(diskSizeAnnotationValue, config.StorageSize)
+	storageSize := resource.MustParse(diskSize)
 
 	if config.CreatePVC {
 		storage = promv1.StorageSpec{

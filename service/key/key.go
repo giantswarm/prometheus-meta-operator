@@ -20,6 +20,7 @@ const (
 	PrometheusServiceName                    = "prometheus-operated"
 	RemoteWriteAgentConfigSecretName string  = "agent-remote-write-config"
 	RemoteWriteAgentSecretName       string  = "agent-remote-write"
+	PrometheusDiskSizeAnnotation     string  = "monitoring.giantswarm.io/prometheus-disk-size"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -297,4 +298,19 @@ func IngressClassName() string {
 
 func OpsgenieKey() string {
 	return "opsgenie.key"
+}
+
+// PrometheusDiskSize returns the desired disk size based on the
+// value of annotation monitoring.giantswarm.io/prometheus-disk-size
+func PrometheusDiskSize(value, defaulVal string) string {
+	switch value {
+	case "small":
+		return "30Gi"
+	case "medium":
+		return defaulVal
+	case "large":
+		return "200Gi"
+	default:
+		return defaulVal
+	}
 }
