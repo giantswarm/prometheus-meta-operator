@@ -299,18 +299,3 @@ func IngressClassName() string {
 func OpsgenieKey() string {
 	return "opsgenie.key"
 }
-
-// PrometheusDiskSize returns the desired disk size based on the
-// value of annotation monitoring.giantswarm.io/prometheus-disk-size
-func PrometheusDiskSize(value, defaulVal string) string {
-	switch value {
-	case "small":
-		return "30Gi"
-	case "medium":
-		return defaulVal
-	case "large":
-		return "200Gi"
-	default:
-		return defaulVal
-	}
-}

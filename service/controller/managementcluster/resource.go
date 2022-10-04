@@ -60,7 +60,6 @@ type resourcesConfig struct {
 	PrometheusAddress           string
 	PrometheusBaseDomain        string
 	PrometheusCreatePVC         bool
-	PrometheusStorageSize       string
 	PrometheusLogLevel          string
 	PrometheusRetentionDuration string
 	PrometheusRetentionSize     string
@@ -198,7 +197,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
-			StorageSize:       config.PrometheusStorageSize,
 			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
 			RetentionSize:     config.PrometheusRetentionSize,
