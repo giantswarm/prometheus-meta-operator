@@ -8,5 +8,5 @@ metadata:
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: bar
   name: agent-remote-write-config
-  namespace: bar-prometheus
+  namespace: bar
 type: Opaque

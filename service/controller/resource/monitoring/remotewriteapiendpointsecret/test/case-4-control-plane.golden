@@ -10,5 +10,5 @@ metadata:
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: kubernetes
   name: agent-remote-write
-  namespace: kubernetes-prometheus
+  namespace: kubernetes
 type: Opaque

@@ -10,5 +10,5 @@ metadata:
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: baz
   name: agent-remote-write
-  namespace: baz-prometheus
+  namespace: baz
 type: Opaque

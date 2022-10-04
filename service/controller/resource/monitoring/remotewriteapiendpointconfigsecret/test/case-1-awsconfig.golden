@@ -8,5 +8,5 @@ metadata:
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: alice
   name: agent-remote-write-config
-  namespace: alice-prometheus
+  namespace: alice
 type: Opaque
