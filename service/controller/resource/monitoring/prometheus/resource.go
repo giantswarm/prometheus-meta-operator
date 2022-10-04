@@ -16,19 +16,14 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/pvresizing"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
 	Name = "prometheus"
-
-	prometheusStorageSizeSmall  prometheusStorageSizeType = "small"
-	prometheusStorageSizeMedium                           = "medium"
-	prometheusStorageSizeLarge                            = "large"
 )
-
-type prometheusStorageSizeType string
 
 type Config struct {
 	PrometheusClient promclient.Interface
@@ -118,7 +113,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 	var storage promv1.StorageSpec
 	diskSizeAnnotationValue := cluster.GetAnnotations()[key.PrometheusDiskSizeAnnotation]
-	diskSize := prometheusDiskSize(prometheusStorageSizeType(diskSizeAnnotationValue))
+	diskSize := pvresizing.PrometheusDiskSize(diskSizeAnnotationValue)
 	storageSize := resource.MustParse(diskSize)
 
 	if config.CreatePVC {
@@ -394,19 +389,4 @@ func currentRemoteWrite(ctx context.Context, config Config, p *promv1.Prometheus
 	}
 	p.Spec.RemoteWrite = current.Spec.RemoteWrite
 	return nil
-}
-
-// prometheusDiskSize returns the desired disk size based on the
-// value of annotation monitoring.giantswarm.io/prometheus-disk-size
-func prometheusDiskSize(value prometheusStorageSizeType) string {
-	switch value {
-	case prometheusStorageSizeSmall:
-		return "30Gi"
-	case prometheusStorageSizeMedium:
-		return "100Gi"
-	case prometheusStorageSizeLarge:
-		return "200Gi"
-	default:
-		return "100Gi"
-	}
 }
