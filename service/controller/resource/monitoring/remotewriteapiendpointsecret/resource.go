@@ -57,7 +57,7 @@ func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error
 
 	return metav1.ObjectMeta{
 		Name:      key.RemoteWriteAgentSecretName,
-		Namespace: key.Namespace(cluster),
+		Namespace: key.ClusterID(cluster),
 		Labels:    key.PrometheusLabels(cluster),
 	}, nil
 }
