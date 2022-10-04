@@ -27,6 +27,10 @@ type Config struct {
 	BaseDomain string
 }
 
+type remoteWriteValues struct {
+	RemoteWrite []pov1.RemoteWriteSpec `json:"remoteWrite"`
+}
+
 func New(config Config) (*generic.Resource, error) {
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
@@ -95,7 +99,8 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		},
 	}
 
-	marshalledRemoteWrites, err := yaml.Marshal(remoteWrites)
+	values := remoteWriteValues{RemoteWrite: remoteWrites}
+	marshalledValues, err := yaml.Marshal(values)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -103,7 +108,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			"values": []byte(marshalledRemoteWrites),
+			"values": []byte(marshalledValues),
 		},
 		Type: "Opaque",
 	}
