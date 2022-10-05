@@ -16,7 +16,7 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	r.logger.Debugf(ctx, "ensuring pv resizing")
+	r.logger.Debugf(ctx, "ensuring pvc resizing")
 	{
 		cluster, err := key.ToCluster(obj)
 		if err != nil {
@@ -30,16 +30,21 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		for _, pvc := range pvcList {
-			currentPVSize := pvc.Spec.Resources.Requests.Storage().String()
-			desiredPVSize := cluster.GetAnnotations()[key.PrometheusDiskSizeAnnotation]
-			desiredVolumeSize := pvcresizing.PrometheusVolumeSize(desiredPVSize)
+			fmt.Println("PVC Name", pvc.GetName())
+			currentPVCSize := pvc.Spec.Resources.Requests.Storage().String()
+			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusDiskSizeAnnotation]
+			desiredVolumeSize := pvcresizing.PrometheusVolumeSize(desiredPVCSize)
 
+			fmt.Println("currentPVCSize", currentPVCSize)
+			fmt.Println("desiredPVCSize", desiredPVCSize)
+			fmt.Println("desiredVolumeSize", desiredVolumeSize)
 			// Check the value of annotation with the current value in PVC.
-			if currentPVSize != desiredVolumeSize {
+			if currentPVCSize != desiredVolumeSize {
 				// Resizing requested. Following the procedure described here:
 				// https://github.com/prometheus-operator/prometheus-operator/issues/4079#issuecomment-1211989005
 				// until stateful set resizing made it into kubernetes:
 				// https://github.com/kubernetes/enhancements/issues/661
+				fmt.Println("resize..........", pvc.GetName())
 				err = r.resize(ctx, desiredVolumeSize, pvc)
 				if err != nil {
 					return microerror.Mask(err)
@@ -48,7 +53,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 	}
-	r.logger.Debugf(ctx, "ensured pv resizing")
+	r.logger.Debugf(ctx, "ensured pvc resizing")
 
 	return nil
 }
@@ -92,6 +97,7 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize string, pvc cor
 	if err != nil {
 		return microerror.Mask(err)
 	}
+	fmt.Println("PVC patched.....")
 
 	// Delete the sts without the PVC (using orphan)
 	orphan := metav1.DeletePropagationOrphan
@@ -100,6 +106,7 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize string, pvc cor
 	if err != nil {
 		return microerror.Mask(err)
 	}
+	fmt.Println("Sts deleted.....")
 
 	return nil
 }
