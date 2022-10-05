@@ -20,7 +20,7 @@ const (
 	PrometheusServiceName                    = "prometheus-operated"
 	RemoteWriteAgentConfigSecretName string  = "agent-remote-write-config"
 	RemoteWriteAgentSecretName       string  = "agent-remote-write"
-	PrometheusDiskSizeAnnotation     string  = "monitoring.giantswarm.io/prometheus-disk-size"
+	PrometheusDiskSizeAnnotation     string  = "monitoring.giantswarm.io/prometheus-volume-size"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
