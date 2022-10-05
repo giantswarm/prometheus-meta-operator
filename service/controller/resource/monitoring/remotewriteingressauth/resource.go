@@ -1,7 +1,8 @@
-package remotewriteapiendpointsecret
+package remotewriteingressauth
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -15,7 +16,7 @@ import (
 )
 
 const (
-	Name = "remotewriteapiendpointsecret"
+	Name = "remotewriteingressauth"
 )
 
 type Config struct {
@@ -32,12 +33,10 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
-		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(ctx, v, config.Provider)
-		},
+		ClientFunc:    clientFunc,
+		Logger:        config.Logger,
+		Name:          Name,
+		GetObjectMeta: getObjectMeta,
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toSecret(ctx, v, config)
 		},
@@ -51,29 +50,21 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(ctx context.Context, v interface{}, provider string) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
-	name := key.RemoteWriteAPIEndpointSecretName
-	namespace := key.ClusterID(cluster)
-
-	if key.IsCAPIManagementCluster(provider) {
-		name = key.ClusterID(cluster) + "-" + name
-		namespace = cluster.GetNamespace()
-	}
-
 	return metav1.ObjectMeta{
-		Name:      name,
-		Namespace: namespace,
+		Name:      key.RemoteWriteIngressAuthSecretName,
+		Namespace: key.Namespace(cluster),
 		Labels:    key.PrometheusLabels(cluster),
 	}, nil
 }
 
 func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta(ctx, v, config.Provider)
+	objectMeta, err := getObjectMeta(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -82,22 +73,37 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	username := key.ClusterID(cluster)
 
-	config.Logger.Debugf(ctx, "generating password for the prometheus agent")
-	password, err := config.PasswordManager.GeneratePassword(32)
+	secretName := key.RemoteWriteAPIEndpointSecretName
+	secretNamespace := key.ClusterID(cluster)
+
+	if key.IsCAPIManagementCluster(config.Provider) {
+		secretName = key.ClusterID(cluster) + "-" + secretName
+		secretNamespace = cluster.GetNamespace()
+	}
+
+	apiEndpointSecret, err := config.K8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 	if err != nil {
-		config.Logger.Errorf(ctx, err, "failed to generate the prometheus agent password")
+		config.Logger.Errorf(ctx, err, "failed to get api endpoint secret")
 		return nil, microerror.Mask(err)
 	}
 
-	config.Logger.Debugf(ctx, "generate password for the prometheus agent")
+	username := apiEndpointSecret.Data["username"]
+	password := apiEndpointSecret.Data["password"]
+
+	config.Logger.Debugf(ctx, "hashing password for the prometheus agent")
+	hashedPassword, err := config.PasswordManager.Hash(password)
+	if err != nil {
+		config.Logger.Errorf(ctx, err, "failed to hash the prometheus agent password")
+		return nil, microerror.Mask(err)
+	}
+
+	config.Logger.Debugf(ctx, "hashed password for the prometheus agent")
 
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			"password": []byte(password),
-			"username": []byte(username),
+			"auth": []byte(fmt.Sprintf("%s:%s", username, hashedPassword)),
 		},
 		Type: "Opaque",
 	}

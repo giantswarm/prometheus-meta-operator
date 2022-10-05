@@ -1,5 +1,4 @@
 data:
-  auth: Zm9vOmVuY3J5cHRlZA==
   password: cGFzc3dvcmQ=
   username: Zm9v
 metadata:
@@ -9,6 +8,6 @@ metadata:
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: foo
-  name: agent-remote-write
+  name: remote-write-api-endpoint
   namespace: foo
 type: Opaque

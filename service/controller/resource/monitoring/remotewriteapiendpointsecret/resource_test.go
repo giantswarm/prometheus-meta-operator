@@ -49,6 +49,6 @@ func (m TestPasswordManager) GeneratePassword(length int) (string, error) {
 	return "password", nil
 }
 
-func (m TestPasswordManager) Hash(plaintext string) (string, error) {
-	return "encrypted", nil
+func (m TestPasswordManager) Hash(plaintext []byte) ([]byte, error) {
+	return nil, nil
 }

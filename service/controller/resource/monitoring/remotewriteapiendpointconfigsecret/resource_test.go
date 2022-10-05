@@ -11,7 +11,7 @@ import (
 
 var update = flag.Bool("update", false, "update the ouput file")
 
-func TestRemoteWriteAgentConfigSecret(t *testing.T) {
+func TestRemoteWriteAPIEndpointConfigSecret(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
 	if err != nil {
 		t.Fatal(err)
@@ -21,7 +21,7 @@ func TestRemoteWriteAgentConfigSecret(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toSecret(context.TODO(), v, Config{BaseDomain: "https://prometheus"})
+			return toSecret(context.TODO(), v, Config{BaseDomain: "https://prometheus", Provider: "aws"})
 		},
 		Update: *update,
 	}

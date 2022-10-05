@@ -1,5 +1,4 @@
 data:
-  auth: YWxpY2U6ZW5jcnlwdGVk
   password: cGFzc3dvcmQ=
   username: YWxpY2U=
 metadata:
@@ -9,6 +8,6 @@ metadata:
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: alice
-  name: agent-remote-write
+  name: remote-write-api-endpoint
   namespace: alice
 type: Opaque

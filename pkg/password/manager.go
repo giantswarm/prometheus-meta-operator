@@ -10,7 +10,7 @@ import (
 
 type Manager interface {
 	GeneratePassword(length int) (string, error)
-	Hash(plaintext string) (string, error)
+	Hash(password []byte) ([]byte, error)
 }
 
 type SimpleManager struct {
@@ -24,10 +24,10 @@ func (m SimpleManager) GeneratePassword(length int) (string, error) {
 	return hex.EncodeToString(bytes), nil
 }
 
-func (m SimpleManager) Hash(plaintext string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(plaintext), 14)
+func (m SimpleManager) Hash(password []byte) ([]byte, error) {
+	hash, err := bcrypt.GenerateFromPassword(password, 14)
 	if err != nil {
-		return "", microerror.Mask(err)
+		return nil, microerror.Mask(err)
 	}
-	return string(bytes), nil
+	return hash, nil
 }

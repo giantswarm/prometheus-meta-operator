@@ -1,5 +1,4 @@
 data:
-  auth: YmF6OmVuY3J5cHRlZA==
   password: cGFzc3dvcmQ=
   username: YmF6
 metadata:
@@ -9,6 +8,6 @@ metadata:
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: baz
-  name: agent-remote-write
+  name: remote-write-api-endpoint
   namespace: baz
 type: Opaque

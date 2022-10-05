@@ -1,5 +1,4 @@
 data:
-  auth: YmFyOmVuY3J5cHRlZA==
   password: cGFzc3dvcmQ=
   username: YmFy
 metadata:
@@ -9,6 +8,6 @@ metadata:
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: bar
-  name: agent-remote-write
+  name: remote-write-api-endpoint
   namespace: bar
 type: Opaque

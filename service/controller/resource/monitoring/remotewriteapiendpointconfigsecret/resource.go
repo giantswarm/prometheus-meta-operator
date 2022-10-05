@@ -25,6 +25,7 @@ type Config struct {
 	K8sClient  k8sclient.Interface
 	Logger     micrologger.Logger
 	BaseDomain string
+	Provider   string
 }
 
 type remoteWriteValues struct {
@@ -38,10 +39,12 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc:    clientFunc,
-		Logger:        config.Logger,
-		Name:          Name,
-		GetObjectMeta: getObjectMeta,
+		ClientFunc: clientFunc,
+		Logger:     config.Logger,
+		Name:       Name,
+		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
+			return getObjectMeta(ctx, v, config.Provider)
+		},
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toSecret(ctx, v, config)
 		},
@@ -55,21 +58,29 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}, provider string) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
+	name := key.RemoteWriteAPIEndpointConfigSecretName
+	namespace := key.ClusterID(cluster)
+
+	if key.IsCAPIManagementCluster(provider) {
+		name = key.ClusterID(cluster) + "-" + name
+		namespace = cluster.GetNamespace()
+	}
+
 	return metav1.ObjectMeta{
-		Name:      key.RemoteWriteAgentConfigSecretName,
-		Namespace: key.ClusterID(cluster),
+		Name:      name,
+		Namespace: namespace,
 		Labels:    key.PrometheusLabels(cluster),
 	}, nil
 }
 
 func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta(ctx, v)
+	objectMeta, err := getObjectMeta(ctx, v, config.Provider)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -85,13 +96,13 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 			BasicAuth: &pov1.BasicAuth{
 				Username: corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteAgentSecretName,
+						Name: key.RemoteWriteAPIEndpointSecretName,
 					},
 					Key: "username",
 				},
 				Password: corev1.SecretKeySelector{
 					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteAgentSecretName,
+						Name: key.RemoteWriteAPIEndpointSecretName,
 					},
 					Key: "password",
 				},

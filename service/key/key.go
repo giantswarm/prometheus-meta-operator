@@ -16,10 +16,11 @@ import (
 const (
 	monitoring = "monitoring"
 
-	PrometheusMemoryLimitCoefficient float64 = 1.2
-	PrometheusServiceName                    = "prometheus-operated"
-	RemoteWriteAgentConfigSecretName string  = "agent-remote-write-config"
-	RemoteWriteAgentSecretName       string  = "agent-remote-write"
+	PrometheusMemoryLimitCoefficient       float64 = 1.2
+	PrometheusServiceName                          = "prometheus-operated"
+	RemoteWriteAPIEndpointConfigSecretName string  = "remote-write-api-endpoint-config"
+	RemoteWriteAPIEndpointSecretName       string  = "remote-write-api-endpoint"
+	RemoteWriteIngressAuthSecretName       string  = "remote-write-ingress-auth"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -69,7 +70,7 @@ func EtcdSecret(installation string, obj interface{}) string {
 }
 
 func IsCAPIManagementCluster(provider string) bool {
-	return provider == "cloud-director" || provider == "gcp" || provider == "openstack" || provider == "vsphere"
+	return provider == "capa" || provider == "cloud-director" || provider == "gcp" || provider == "openstack" || provider == "vsphere"
 }
 
 func EtcdSecretSourceName() string {
@@ -100,7 +101,7 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 func RemoteWriteAuthenticationAnnotations() map[string]string {
 	return map[string]string{
 		"nginx.ingress.kubernetes.io/auth-type":   "basic",
-		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteAgentSecretName,
+		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
 		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
 	}
 }
