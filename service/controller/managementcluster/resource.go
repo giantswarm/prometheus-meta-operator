@@ -20,6 +20,7 @@ import (
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
@@ -287,6 +288,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var pvcResizeResource resource.Interface
+	{
+		c := pvcresizingresource.Config{
+			Logger:    config.Logger,
+			K8sClient: config.K8sClient,
+		}
+
+		pvcResizeResource, err = pvcresizingresource.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		etcdCertificatesResource,
@@ -300,6 +314,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		verticalPodAutoScalerResource,
 		monitoringIngressResource,
 		heartbeatResource,
+		pvcResizeResource,
 	}
 
 	{
