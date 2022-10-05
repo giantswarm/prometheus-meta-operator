@@ -91,7 +91,7 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize string, pvc cor
 
 	// Patch PVC with the new size
 	pvc.Spec.Resources.Requests["Storage"] = newVolumeSize
-	patch := []byte(fmt.Sprintf(`{"spec": { "resources": { "requests": { "storage": "%v" } } } }`, newVolumeSize))
+	patch := []byte(fmt.Sprintf(`{"spec": { "resources": { "requests": { "storage": "%v" } } } }`, newVolumeSize.String()))
 	_, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).
 		Patch(ctx, pvc.GetName(), types.StrategicMergePatchType, patch, metav1.PatchOptions{})
 	if err != nil {
