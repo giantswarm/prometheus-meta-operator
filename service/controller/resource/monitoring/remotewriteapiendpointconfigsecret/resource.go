@@ -8,11 +8,11 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	pov1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
-	"gopkg.in/yaml.v2"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -22,14 +22,26 @@ const (
 )
 
 type Config struct {
-	K8sClient  k8sclient.Interface
-	Logger     micrologger.Logger
-	BaseDomain string
-	Provider   string
+	K8sClient       k8sclient.Interface
+	Logger          micrologger.Logger
+	PasswordManager password.Manager
+	BaseDomain      string
+	Provider        string
 }
 
-type remoteWriteValues struct {
-	RemoteWrite []pov1.RemoteWriteSpec `json:"remoteWrite"`
+type RemoteWrite struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Username string `json:"username"`
+	URL      string `json:"url"`
+}
+
+type GlobalRemoteWriteValues struct {
+	Global RemoteWriteValues `json:"global"`
+}
+
+type RemoteWriteValues struct {
+	RemoteWrite []RemoteWrite `json:"remoteWrite"`
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -90,28 +102,27 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	remoteWrites := []pov1.RemoteWriteSpec{
+	config.Logger.Debugf(ctx, "generating password for the prometheus agent")
+	password, err := config.PasswordManager.GeneratePassword(32)
+	if err != nil {
+		config.Logger.Errorf(ctx, err, "failed to generate the prometheus agent password")
+		return nil, microerror.Mask(err)
+	}
+
+	config.Logger.Debugf(ctx, "generate password for the prometheus agent")
+
+	remoteWrites := []RemoteWrite{
 		{
-			URL: fmt.Sprintf("https://%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
-			BasicAuth: &pov1.BasicAuth{
-				Username: corev1.SecretKeySelector{
-					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteAPIEndpointSecretName,
-					},
-					Key: "username",
-				},
-				Password: corev1.SecretKeySelector{
-					LocalObjectReference: corev1.LocalObjectReference{
-						Name: key.RemoteWriteAPIEndpointSecretName,
-					},
-					Key: "password",
-				},
-			},
+			Name:     "prometheus",
+			URL:      fmt.Sprintf("https://%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
+			Username: key.ClusterID(cluster),
+			Password: password,
 		},
 	}
 
-	values := remoteWriteValues{RemoteWrite: remoteWrites}
-	marshalledValues, err := yaml.Marshal(values)
+	values := RemoteWriteValues{RemoteWrite: remoteWrites}
+	marshalledValues, err := yaml.Marshal(GlobalRemoteWriteValues{values})
+
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

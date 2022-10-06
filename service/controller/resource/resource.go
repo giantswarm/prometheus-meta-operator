@@ -20,7 +20,6 @@ import (
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
 	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
@@ -171,27 +170,14 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var remoteWriteAPIEndpointSecretResource resource.Interface
-	{
-		c := remotewriteapiendpointsecret.Config{
-			K8sClient:       config.K8sClient,
-			Logger:          config.Logger,
-			PasswordManager: passwordManager,
-			Provider:        config.Provider,
-		}
-
-		remoteWriteAPIEndpointSecretResource, err = remotewriteapiendpointsecret.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
 	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
 	{
 		c := remotewriteapiendpointconfigsecret.Config{
-			K8sClient:  config.K8sClient,
-			Logger:     config.Logger,
-			BaseDomain: config.PrometheusBaseDomain,
-			Provider:   config.Provider,
+			K8sClient:       config.K8sClient,
+			Logger:          config.Logger,
+			PasswordManager: passwordManager,
+			BaseDomain:      config.PrometheusBaseDomain,
+			Provider:        config.Provider,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
@@ -349,7 +335,6 @@ func New(config Config) ([]resource.Interface, error) {
 		rbacResource,
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
-		remoteWriteAPIEndpointSecretResource,
 		remoteWriteAPIEndpointConfigSecretResource,
 		remoteWriteIngressAuthResource,
 		remoteWriteIngressResource,

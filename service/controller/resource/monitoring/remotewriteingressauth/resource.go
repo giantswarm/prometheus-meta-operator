@@ -9,9 +9,11 @@ import (
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/util/yaml"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -74,7 +76,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	secretName := key.RemoteWriteAPIEndpointSecretName
+	secretName := key.RemoteWriteAPIEndpointConfigSecretName
 	secretNamespace := key.ClusterID(cluster)
 
 	if key.IsCAPIManagementCluster(config.Provider) {
@@ -88,11 +90,20 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	username := apiEndpointSecret.Data["username"]
-	password := apiEndpointSecret.Data["password"]
+	remoteWriteValues := remotewriteapiendpointconfigsecret.RemoteWriteValues{}
+	err = yaml.Unmarshal(apiEndpointSecret.Data["values"], &remoteWriteValues)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if len(remoteWriteValues.RemoteWrite) == 0 {
+		return nil, nil
+	}
+
+	username := remoteWriteValues.RemoteWrite[0].Username
+	password := remoteWriteValues.RemoteWrite[0].Password
 
 	config.Logger.Debugf(ctx, "hashing password for the prometheus agent")
-	hashedPassword, err := config.PasswordManager.Hash(password)
+	hashedPassword, err := config.PasswordManager.Hash([]byte(password))
 	if err != nil {
 		config.Logger.Errorf(ctx, err, "failed to hash the prometheus agent password")
 		return nil, microerror.Mask(err)

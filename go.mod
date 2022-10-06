@@ -20,7 +20,7 @@ require (
 	github.com/spf13/viper v1.13.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 
 	// NOTE: we need to stay on k8s v1.24 as installations run v1.23 apart from the deprecated kvm.
 	k8s.io/api v0.24.6
