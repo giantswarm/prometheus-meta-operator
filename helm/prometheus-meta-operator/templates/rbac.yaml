@@ -171,6 +171,7 @@ rules:
     verbs:
       - list
       - patch
+      - delete
   - apiGroups:
       - apps
     resources:

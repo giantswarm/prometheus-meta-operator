@@ -39,7 +39,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			fmt.Println("desiredPVCSize", desiredPVCSize)
 			fmt.Println("desiredVolumeSize", desiredVolumeSize)
 			// Check the value of annotation with the current value in PVC.
-			if currentPVCSize != desiredVolumeSize {
+			if currentPVCSize < desiredVolumeSize {
 				// Resizing requested. Following the procedure described here:
 				// https://github.com/prometheus-operator/prometheus-operator/issues/4079#issuecomment-1211989005
 				// until stateful set resizing made it into kubernetes:
@@ -49,9 +49,17 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				if err != nil {
 					return microerror.Mask(err)
 				}
+			} else if currentPVCSize > desiredPVCSize {
+				// Since Resizing to lower storage is forbidden
+				// Therefore, we replace the PVC and STS
+				// But this will cause data loss
+				fmt.Println("replacePVC..........", pvc.GetName())
+				err = r.replacePVC(ctx, pvc)
+				if err != nil {
+					return microerror.Mask(err)
+				}
 			}
 		}
-
 	}
 	r.logger.Debugf(ctx, "ensured pvc resizing")
 
@@ -98,6 +106,36 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize string, pvc cor
 		return microerror.Mask(err)
 	}
 	fmt.Println("PVC patched.....")
+
+	// Delete the sts without the PVC (using orphan)
+	orphan := metav1.DeletePropagationOrphan
+	err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).
+		Delete(ctx, fmt.Sprintf("prometheus-%v", clusterID), metav1.DeleteOptions{PropagationPolicy: &orphan})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	fmt.Println("Sts deleted.....")
+
+	return nil
+}
+
+func (r *Resource) replacePVC(ctx context.Context, pvc corev1.PersistentVolumeClaim) error {
+
+	namespace := pvc.GetNamespace()
+	clusterID := pvc.GetLabels()["prometheus"]
+
+	patch := []byte(`{"metadata":{"finalizers":null}}`)
+	_, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).
+		Patch(ctx, pvc.GetName(), types.StrategicMergePatchType, patch, metav1.PatchOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	err = r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).
+		Delete(ctx, pvc.GetName(), metav1.DeleteOptions{})
+	if err != nil {
+		return microerror.Mask(err)
+	}
+	fmt.Println("PVC deleted.....")
 
 	// Delete the sts without the PVC (using orphan)
 	orphan := metav1.DeletePropagationOrphan
