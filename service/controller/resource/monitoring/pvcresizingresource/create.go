@@ -24,7 +24,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		namespace := key.Namespace(cluster)
-		pvcList, err := r.listPVC(ctx, cluster.GetName(), namespace)
+		pvcList, err := r.listPVCs(ctx, cluster.GetName(), namespace)
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -32,7 +32,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		for _, pvc := range pvcList {
 			fmt.Println("PVC Name", pvc.GetName())
 			currentPVCSize := pvc.Spec.Resources.Requests.Storage().String()
-			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusDiskSizeAnnotation]
+			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
 			desiredVolumeSize := pvcresizing.PrometheusVolumeSize(desiredPVCSize)
 
 			fmt.Println("currentPVCSize", currentPVCSize)
@@ -50,7 +50,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					return microerror.Mask(err)
 				}
 			} else if currentPVCSize > desiredPVCSize {
-				// Since Resizing to lower storage is forbidden
+				// Since downsizing a volume is forbidden, we have to replace the PVC and the STS, causing a data loss
 				// Therefore, we replace the PVC and STS
 				// But this will cause data loss
 				fmt.Println("replacePVC..........", pvc.GetName())
@@ -76,7 +76,7 @@ func pvcSelector(clusterID string) labels.Selector {
 	}))
 }
 
-func (r *Resource) listPVC(ctx context.Context, clusterID, namespace string) ([]corev1.PersistentVolumeClaim, error) {
+func (r *Resource) listPVCs(ctx context.Context, clusterID, namespace string) ([]corev1.PersistentVolumeClaim, error) {
 	options := metav1.ListOptions{
 		LabelSelector: pvcSelector(clusterID).String(),
 	}
