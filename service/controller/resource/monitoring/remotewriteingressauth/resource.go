@@ -9,7 +9,7 @@ import (
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/yaml"
+	"sigs.k8s.io/yaml"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
@@ -76,13 +76,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	secretName := key.RemoteWriteAPIEndpointConfigSecretName
-	secretNamespace := key.ClusterID(cluster)
-
-	if key.IsCAPIManagementCluster(config.Provider) {
-		secretName = key.ClusterID(cluster) + "-" + secretName
-		secretNamespace = cluster.GetNamespace()
-	}
+	secretName, secretNamespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, config.Provider)
 
 	apiEndpointSecret, err := config.K8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 	if err != nil {
@@ -90,17 +84,10 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	remoteWriteValues := remotewriteapiendpointconfigsecret.RemoteWriteValues{}
-	err = yaml.Unmarshal(apiEndpointSecret.Data["values"], &remoteWriteValues)
+	username, password, err := extractUsernameAndPasswordFromSecret(apiEndpointSecret)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	if len(remoteWriteValues.RemoteWrite) == 0 {
-		return nil, nil
-	}
-
-	username := remoteWriteValues.RemoteWrite[0].Username
-	password := remoteWriteValues.RemoteWrite[0].Password
 
 	config.Logger.Debugf(ctx, "hashing password for the prometheus agent")
 	hashedPassword, err := config.PasswordManager.Hash([]byte(password))
@@ -119,6 +106,24 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		Type: "Opaque",
 	}
 	return secret, nil
+}
+
+func extractUsernameAndPasswordFromSecret(secret *corev1.Secret) (string, string, error) {
+	data := secret.Data["values"]
+	remoteWriteValues := remotewriteapiendpointconfigsecret.GlobalRemoteWriteValues{}
+	err := yaml.Unmarshal(data, &remoteWriteValues)
+	if err != nil {
+		return "", "", microerror.Mask(err)
+	}
+	if len(remoteWriteValues.Global.RemoteWrite) == 0 {
+		// skipping
+		return "", "", secretNotFound
+	}
+
+	username := remoteWriteValues.Global.RemoteWrite[0].Username
+	password := remoteWriteValues.Global.RemoteWrite[0].Password
+
+	return username, password, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {

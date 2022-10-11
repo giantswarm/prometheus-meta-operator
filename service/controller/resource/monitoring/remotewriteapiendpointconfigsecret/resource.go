@@ -76,13 +76,7 @@ func getObjectMeta(ctx context.Context, v interface{}, provider string) (metav1.
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
-	name := key.RemoteWriteAPIEndpointConfigSecretName
-	namespace := key.ClusterID(cluster)
-
-	if key.IsCAPIManagementCluster(provider) {
-		name = key.ClusterID(cluster) + "-" + name
-		namespace = cluster.GetNamespace()
-	}
+	name, namespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, provider)
 
 	return metav1.ObjectMeta{
 		Name:      name,

@@ -13,13 +13,14 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
+var capiProviders = []string{"capa", "cloud-director", "gcp", "openstack", "vsphere"}
+
 const (
 	monitoring = "monitoring"
 
 	PrometheusMemoryLimitCoefficient       float64 = 1.2
 	PrometheusServiceName                          = "prometheus-operated"
 	RemoteWriteAPIEndpointConfigSecretName string  = "remote-write-api-endpoint-config"
-	RemoteWriteAPIEndpointSecretName       string  = "remote-write-api-endpoint"
 	RemoteWriteIngressAuthSecretName       string  = "remote-write-ingress-auth"
 )
 
@@ -70,7 +71,13 @@ func EtcdSecret(installation string, obj interface{}) string {
 }
 
 func IsCAPIManagementCluster(provider string) bool {
-	return provider == "capa" || provider == "cloud-director" || provider == "gcp" || provider == "openstack" || provider == "vsphere"
+	for _, v := range capiProviders {
+		if v == provider {
+			return true
+		}
+	}
+
+	return false
 }
 
 func EtcdSecretSourceName() string {
@@ -104,6 +111,17 @@ func RemoteWriteAuthenticationAnnotations() map[string]string {
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
 		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
 	}
+}
+
+func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, provider string) (string, string) {
+	name := RemoteWriteAPIEndpointConfigSecretName
+	namespace := ClusterID(cluster)
+
+	if IsCAPIManagementCluster(provider) {
+		name = ClusterID(cluster) + "-" + name
+		namespace = cluster.GetNamespace()
+	}
+	return name, namespace
 }
 
 func AlertmanagerDefaultCPU() *resource.Quantity {
