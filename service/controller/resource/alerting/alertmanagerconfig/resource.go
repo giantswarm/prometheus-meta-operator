@@ -2,7 +2,7 @@ package alertmanagerconfig
 
 import (
 	"context"
-	"io/ioutil"
+	"os"
 	"path"
 	"reflect"
 
@@ -96,7 +96,7 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	notificationTemplate, err := ioutil.ReadFile(path.Join(templateDirectory, notificationTemplatePath))
+	notificationTemplate, err := os.ReadFile(path.Join(templateDirectory, notificationTemplatePath))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
