@@ -2,7 +2,7 @@ package etcdcertificates
 
 import (
 	"context"
-	"io/ioutil"
+	"os"
 
 	"github.com/giantswarm/microerror"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -56,17 +56,17 @@ func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace
 
 // getSourceFromDisk retrieves etcd certificates from the filesystem.
 func (sc *secretCopier) getSourceFromDisk() (map[string]string, error) {
-	ca, err := ioutil.ReadFile("/etcd-client-certs/ca.pem")
+	ca, err := os.ReadFile("/etcd-client-certs/ca.pem")
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	crt, err := ioutil.ReadFile("/etcd-client-certs/crt.pem")
+	crt, err := os.ReadFile("/etcd-client-certs/crt.pem")
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	key, err := ioutil.ReadFile("/etcd-client-certs/key.pem")
+	key, err := os.ReadFile("/etcd-client-certs/key.pem")
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

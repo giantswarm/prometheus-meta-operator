@@ -2,7 +2,6 @@ package unittest
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -53,7 +52,7 @@ type Runner struct {
 	TestFuncReturnsBytes bool
 	Update               bool
 
-	files    []os.FileInfo
+	files    []os.DirEntry
 	inputDir string
 }
 
@@ -79,7 +78,7 @@ func NewRunner(config Config) (*Runner, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	files, err := ioutil.ReadDir(inputDir)
+	files, err := os.ReadDir(inputDir)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -129,13 +128,13 @@ func (r *Runner) Run() error {
 
 			outputFile := filepath.Join(r.OutputDir, file.Name())
 			if r.Update {
-				err := ioutil.WriteFile(outputFile, testResult, 0644) // #nosec
+				err := os.WriteFile(outputFile, testResult, 0644) // #nosec
 				if err != nil {
 					t.Fatal(err)
 				}
 			}
 
-			output, err := ioutil.ReadFile(outputFile)
+			output, err := os.ReadFile(outputFile)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -152,7 +151,7 @@ func (r *Runner) Run() error {
 // inputValue decode the input file as a kubernetes object and returns it.
 func inputValue(inputFile string) (pkgruntime.Object, error) {
 	// Read the file.
-	inputData, err := ioutil.ReadFile(inputFile)
+	inputData, err := os.ReadFile(inputFile)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
