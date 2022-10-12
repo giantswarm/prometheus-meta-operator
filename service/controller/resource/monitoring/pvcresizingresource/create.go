@@ -35,9 +35,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
 			desiredVolumeSize := resource.MustParse(pvcresizing.PrometheusVolumeSize(desiredPVCSize))
 
-			fmt.Println("currentPVCSize", currentPVCSize)
+			fmt.Println("currentPVCSize", currentPVCSize.String())
 			fmt.Println("desiredPVCSize", desiredPVCSize)
-			fmt.Println("desiredVolumeSize", desiredVolumeSize)
+			fmt.Println("desiredVolumeSize", desiredVolumeSize.String())
 			// Check the value of annotation with the current value in PVC.
 			if currentPVCSize.Value() < desiredVolumeSize.Value() {
 				// Resizing requested. Following the procedure described here:
