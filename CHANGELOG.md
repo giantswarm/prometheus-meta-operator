@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade to go 1.19
 - Bump prometheus-operator to v0.54.0
 
 ### Added
