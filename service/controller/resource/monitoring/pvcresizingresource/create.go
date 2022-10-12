@@ -31,15 +31,15 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		for _, pvc := range pvcList {
 			fmt.Println("PVC Name", pvc.GetName())
-			currentPVCSize := pvc.Spec.Resources.Requests.Storage().String()
+			currentPVCSize := resource.MustParse(pvc.Spec.Resources.Requests.Storage().String())
 			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
-			desiredVolumeSize := pvcresizing.PrometheusVolumeSize(desiredPVCSize)
+			desiredVolumeSize := resource.MustParse(pvcresizing.PrometheusVolumeSize(desiredPVCSize))
 
 			fmt.Println("currentPVCSize", currentPVCSize)
 			fmt.Println("desiredPVCSize", desiredPVCSize)
 			fmt.Println("desiredVolumeSize", desiredVolumeSize)
 			// Check the value of annotation with the current value in PVC.
-			if currentPVCSize < desiredVolumeSize {
+			if currentPVCSize.Value() < desiredVolumeSize.Value() {
 				// Resizing requested. Following the procedure described here:
 				// https://github.com/prometheus-operator/prometheus-operator/issues/4079#issuecomment-1211989005
 				// until stateful set resizing made it into kubernetes:
@@ -49,7 +49,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				if err != nil {
 					return microerror.Mask(err)
 				}
-			} else if currentPVCSize > desiredPVCSize {
+			} else if currentPVCSize.Value() > desiredVolumeSize.Value() {
 				// Since downsizing a volume is forbidden, we have to replace the PVC and the STS, causing a data loss
 				// Therefore, we replace the PVC and STS
 				// But this will cause data loss
@@ -90,16 +90,13 @@ func (r *Resource) listPVCs(ctx context.Context, clusterID, namespace string) ([
 	return list.Items, err
 }
 
-func (r *Resource) resize(ctx context.Context, desiredVolumeSize string, pvc corev1.PersistentVolumeClaim) error {
+func (r *Resource) resize(ctx context.Context, desiredVolumeSize resource.Quantity, pvc corev1.PersistentVolumeClaim) error {
 
 	namespace := pvc.GetNamespace()
 	clusterID := pvc.GetLabels()["prometheus"]
 
-	newVolumeSize := resource.MustParse(desiredVolumeSize)
-
 	// Patch PVC with the new size
-	pvc.Spec.Resources.Requests["Storage"] = newVolumeSize
-	patch := []byte(fmt.Sprintf(`{"spec": { "resources": { "requests": { "storage": "%v" } } } }`, newVolumeSize.String()))
+	patch := []byte(fmt.Sprintf(`{"spec": { "resources": { "requests": { "storage": "%v" } } } }`, desiredVolumeSize.String()))
 	_, err := r.k8sClient.K8sClient().CoreV1().PersistentVolumeClaims(namespace).
 		Patch(ctx, pvc.GetName(), types.StrategicMergePatchType, patch, metav1.PatchOptions{})
 	if err != nil {
