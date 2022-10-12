@@ -85,7 +85,7 @@ func (r *Resource) listPVCs(ctx context.Context, clusterID, namespace string) ([
 		return nil, microerror.Mask(err)
 	}
 	if len(list.Items) == 0 {
-		return nil, fmt.Errorf("could not find PVCs")
+		return nil, fmt.Errorf("could not find PVCs for %v", clusterID)
 	}
 	return list.Items, err
 }
