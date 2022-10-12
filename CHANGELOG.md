@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Customize Prometheus volume size based via the `monitoring.giantswarm.io/prometheus-volume-size` annotation
+- Upgrade to go 1.19
 - Bump prometheus-operator to v0.54.0
 
 ### Added
