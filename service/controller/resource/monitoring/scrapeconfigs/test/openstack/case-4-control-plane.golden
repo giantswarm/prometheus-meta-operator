@@ -1945,3 +1945,60 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+# cilium agent and cilium operator
+- job_name: kubernetes-prometheus/cilium-kubernetes/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: pod
+    namespaces:
+      names:
+      - kube-system
+
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (cilium-agent|cilium-operator)
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: app
+    replacement: kube-scheduler
+  # Add namespace label.
+  - source_labels: [__meta_kubernetes_namespace]
+    target_label: namespace
+  # Add pod label.
+  - source_labels: [__meta_kubernetes_pod_name]
+    target_label: pod
+  # Add container label.
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    target_label: container
+  # Add node label.
+  - source_labels: [__meta_kubernetes_pod_node_name]
+    target_label: node
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: management_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: openstack
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: giantswarm 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
