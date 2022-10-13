@@ -8,6 +8,7 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
@@ -30,10 +31,11 @@ type Config struct {
 }
 
 type RemoteWrite struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
-	Username string `json:"username"`
-	URL      string `json:"url"`
+	Name        string             `json:"name"`
+	Password    string             `json:"password"`
+	Username    string             `json:"username"`
+	URL         string             `json:"url"`
+	QueueConfig promv1.QueueConfig `json:"queueConfig"`
 }
 
 type GlobalRemoteWriteValues struct {
@@ -107,10 +109,11 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 
 	remoteWrites := []RemoteWrite{
 		{
-			Name:     key.PrometheusMetaOperatorRemoteWriteName,
-			URL:      fmt.Sprintf("https://%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
-			Username: key.ClusterID(cluster),
-			Password: password,
+			Name:        key.PrometheusMetaOperatorRemoteWriteName,
+			URL:         fmt.Sprintf("https://%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
+			Username:    key.ClusterID(cluster),
+			Password:    password,
+			QueueConfig: defaultQueueConfig(),
 		},
 	}
 
@@ -129,6 +132,14 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		Type: "Opaque",
 	}
 	return secret, nil
+}
+
+func defaultQueueConfig() promv1.QueueConfig {
+	return promv1.QueueConfig{
+		Capacity:          10000,
+		MaxSamplesPerSend: 1000,
+		MaxShards:         10,
+	}
 }
 
 func hasChanged(current, desired metav1.Object) bool {

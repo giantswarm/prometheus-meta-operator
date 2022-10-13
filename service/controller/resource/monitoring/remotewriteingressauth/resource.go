@@ -3,6 +3,7 @@ package remotewriteingressauth
 import (
 	"context"
 	"fmt"
+	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -78,6 +79,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 
 	secretName, secretNamespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, config.Provider)
 
+	config.Logger.Debugf(ctx, fmt.Sprintf("looking for secret %s in namespace %s", secretName, secretNamespace))
 	apiEndpointSecret, err := config.K8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 	if err != nil {
 		config.Logger.Errorf(ctx, err, "failed to get api endpoint secret")
@@ -121,11 +123,9 @@ func extractUsernameAndPasswordFromSecret(secret *corev1.Secret) (string, string
 	}
 
 	var remoteWrite *remotewriteapiendpointconfigsecret.RemoteWrite = nil
-	for _, rw := range remoteWriteValues.Global.RemoteWrite {
+	for i, rw := range remoteWriteValues.Global.RemoteWrite {
 		if rw.Name == key.PrometheusMetaOperatorRemoteWriteName {
-			// reassigning because &rw would be the address of the loop variable and not of the actual remote write instance
-			rw := rw
-			remoteWrite = &rw
+			remoteWrite = &remoteWriteValues.Global.RemoteWrite[i]
 		}
 	}
 
@@ -137,5 +137,8 @@ func extractUsernameAndPasswordFromSecret(secret *corev1.Secret) (string, string
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	return false
+	c := current.(*corev1.Secret)
+	d := desired.(*corev1.Secret)
+
+	return !reflect.DeepEqual(c.Data, d.Data)
 }
