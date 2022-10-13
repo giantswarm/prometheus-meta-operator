@@ -19,6 +19,7 @@ const (
 	monitoring = "monitoring"
 
 	PrometheusMemoryLimitCoefficient       float64 = 1.2
+	PrometheusMetaOperatorRemoteWriteName  string  = "prometheus-meta-operator"
 	PrometheusServiceName                          = "prometheus-operated"
 	RemoteWriteAPIEndpointConfigSecretName string  = "remote-write-api-endpoint-config"
 	RemoteWriteIngressAuthSecretName       string  = "remote-write-ingress-auth"

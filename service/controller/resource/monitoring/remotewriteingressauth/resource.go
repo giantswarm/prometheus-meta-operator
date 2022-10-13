@@ -120,10 +120,20 @@ func extractUsernameAndPasswordFromSecret(secret *corev1.Secret) (string, string
 		return "", "", secretNotFound
 	}
 
-	username := remoteWriteValues.Global.RemoteWrite[0].Username
-	password := remoteWriteValues.Global.RemoteWrite[0].Password
+	var remoteWrite *remotewriteapiendpointconfigsecret.RemoteWrite = nil
+	for _, rw := range remoteWriteValues.Global.RemoteWrite {
+		if rw.Name == key.PrometheusMetaOperatorRemoteWriteName {
+			// reassigning because &rw would be the address of the loop variable and not of the actual remote write instance
+			rw := rw
+			remoteWrite = &rw
+		}
+	}
 
-	return username, password, nil
+	if remoteWrite == nil {
+		return "", "", remoteWriteNotFound
+	}
+
+	return remoteWrite.Username, remoteWrite.Password, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
