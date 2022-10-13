@@ -1218,11 +1218,17 @@
 [[ include "_apiserver" . ]]
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
+  - replacement: http
+    target_label: __scheme__
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (cilium-agent|cilium-operator)
     action: keep
+  - source_labels: [__meta_kubernetes_pod_container_port_number]
+    regex: (9090|6942)
+    action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (.*)
     target_label: app
-    replacement: kube-scheduler
+    replacement: $1
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]

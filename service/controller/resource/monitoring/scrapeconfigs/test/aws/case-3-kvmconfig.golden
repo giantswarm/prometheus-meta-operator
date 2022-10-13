@@ -1025,12 +1025,18 @@
     key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
+  - replacement: http
+    target_label: __scheme__
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (cilium-agent|cilium-operator)
     action: keep
+  - source_labels: [__meta_kubernetes_pod_container_port_number]
+    regex: (9090|6942)
+    action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (.*)
     target_label: app
-    replacement: kube-scheduler
+    replacement: $1
   # Add namespace label.
   - source_labels: [__meta_kubernetes_namespace]
     target_label: namespace
