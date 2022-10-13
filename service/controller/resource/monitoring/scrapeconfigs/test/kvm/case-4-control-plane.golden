@@ -404,10 +404,18 @@
     action: keep
   - target_label: __address__
     replacement: kubernetes.default:443
-  - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
+  - source_labels: [__address__]
+    replacement: ""
+    target_label: __tmp_protocol
+  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_protocol,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_protocol]
+    action: replace
+    regex: true;(\s+)
+    replacement: $1
+    target_label: __tmp_protocol
+  - source_labels: [__tmp_protocol, __meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
     regex: (.+);(\d+)
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
+    replacement: /api/v1/namespaces/kube-system/pods/${1}${2}:${3}/proxy/metrics
   - target_label: app
     replacement: kube-controller-manager
   # Add namespace label.
