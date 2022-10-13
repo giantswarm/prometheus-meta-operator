@@ -30,21 +30,16 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		for _, pvc := range pvcList {
-			fmt.Println("PVC Name", pvc.GetName())
 			currentPVCSize := resource.MustParse(pvc.Spec.Resources.Requests.Storage().String())
 			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
 			desiredVolumeSize := resource.MustParse(pvcresizing.PrometheusVolumeSize(desiredPVCSize))
 
-			fmt.Println("currentPVCSize", currentPVCSize.String())
-			fmt.Println("desiredPVCSize", desiredPVCSize)
-			fmt.Println("desiredVolumeSize", desiredVolumeSize.String())
 			// Check the value of annotation with the current value in PVC.
 			if currentPVCSize.Value() < desiredVolumeSize.Value() {
 				// Resizing requested. Following the procedure described here:
 				// https://github.com/prometheus-operator/prometheus-operator/issues/4079#issuecomment-1211989005
 				// until stateful set resizing made it into kubernetes:
 				// https://github.com/kubernetes/enhancements/issues/661
-				fmt.Println("resize..........", pvc.GetName())
 				err = r.resize(ctx, desiredVolumeSize, pvc)
 				if err != nil {
 					return microerror.Mask(err)
@@ -53,7 +48,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				// Since downsizing a volume is forbidden, we have to replace the PVC and the STS, causing a data loss
 				// Therefore, we replace the PVC and STS
 				// But this will cause data loss
-				fmt.Println("replacePVC..........", pvc.GetName())
 				err = r.replacePVC(ctx, pvc)
 				if err != nil {
 					return microerror.Mask(err)
@@ -102,7 +96,6 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize resource.Quanti
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	fmt.Println("PVC patched.....")
 
 	// Delete the sts without the PVC (using orphan)
 	orphan := metav1.DeletePropagationOrphan
@@ -111,7 +104,6 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize resource.Quanti
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	fmt.Println("Sts deleted.....")
 
 	return nil
 }
@@ -132,16 +124,13 @@ func (r *Resource) replacePVC(ctx context.Context, pvc corev1.PersistentVolumeCl
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	fmt.Println("PVC deleted.....")
 
-	// Delete the sts without the PVC (using orphan)
-	orphan := metav1.DeletePropagationOrphan
+	// Delete the sts
 	err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).
-		Delete(ctx, fmt.Sprintf("prometheus-%v", clusterID), metav1.DeleteOptions{PropagationPolicy: &orphan})
+		Delete(ctx, fmt.Sprintf("prometheus-%v", clusterID), metav1.DeleteOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
-	fmt.Println("Sts deleted.....")
 
 	return nil
 }
