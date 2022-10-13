@@ -129,6 +129,8 @@ replace (
 	github.com/nats-io/nats-server/v2 v2.8.4 => github.com/nats-io/nats-server/v2 v2.9.3
 	golang.org/x/text v0.3.7 => golang.org/x/text v0.3.8
 
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.3
+
 	// Taken from apiextensions
 	sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v1.0.4
 )
