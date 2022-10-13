@@ -1206,6 +1206,7 @@
   - replacement: prometheus
     target_label: app
 [[ include "_labelingschema" . | indent 2 ]]
+[[- if eq .ClusterType "management_cluster" ]]
 # cilium agent and cilium operator
 - job_name: [[ .ClusterID ]]-prometheus/cilium-[[ .ClusterID ]]/0
   honor_labels: true
@@ -1232,3 +1233,4 @@
     replacement: $1
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+[[ end ]]
