@@ -340,7 +340,7 @@
     target_label: __tmp_protocol
   - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_protocol,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_protocol]
     action: replace
-    regex: true;(\s+)
+    regex: true;(.+)
     replacement: $1
     target_label: __tmp_protocol
   - source_labels: [__tmp_protocol, __meta_kubernetes_pod_name, __tmp_port]
