@@ -96,7 +96,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.1 // indirect
 	golang.org/x/oauth2 v0.0.0-20220608161450-d0670ef3b1eb // indirect
-	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f // indirect
+	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4 // indirect
 	golang.org/x/sys v0.0.0-20220829200755-d48e67d00261 // indirect
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467 // indirect
 	golang.org/x/text v0.3.7 // indirect
@@ -126,6 +126,8 @@ replace (
 	// overriding this dependency to fix a security issue.
 	// see https://ossindex.sonatype.org/vulnerability/sonatype-2022-5436
 	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.9.0
+	github.com/nats-io/nats-server/v2 v2.8.4 => github.com/nats-io/nats-server/v2 v2.9.3
+	golang.org/x/text v0.3.7 => golang.org/x/text v0.3.8
 
 	// Taken from apiextensions
 	sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v1.0.4

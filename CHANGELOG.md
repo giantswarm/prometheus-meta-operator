@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
 - Add `.svc` suffix to the alertmanager target to make PMO work behind a corporate proxy.
 - Upgrade to go 1.19
 - Bump prometheus-operator to v0.54.0
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enable remote write receiver.
 - Generate prometheus remote write agent secret and config.
 - Configure prometheus remote write agent ingress.
+- Add Slack channel for Team Shield.
 
 ## [4.6.2] - 2022-09-13
 
