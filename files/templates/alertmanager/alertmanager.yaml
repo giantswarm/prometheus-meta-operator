@@ -88,7 +88,7 @@ route:
     matchers:
     - severity=~"page|notify"
     - team="shield"
-    continue: false   
+    continue: false
 
   # Team Ops Slack
   - receiver: team_ops_slack

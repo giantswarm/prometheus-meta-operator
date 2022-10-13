@@ -78,7 +78,7 @@ route:
     matchers:
     - severity=~"page|notify"
     - team="shield"
-    continue: false  
+    continue: false
 
   # Team Ops Slack
   - receiver: team_ops_slack
@@ -221,7 +221,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
