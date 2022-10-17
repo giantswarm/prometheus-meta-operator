@@ -18,6 +18,7 @@ var capiProviders = []string{"capa", "cloud-director", "gcp", "openstack", "vsph
 const (
 	monitoring = "monitoring"
 
+	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
 	PrometheusMemoryLimitCoefficient       float64 = 1.2
 	PrometheusMetaOperatorRemoteWriteName  string  = "prometheus-meta-operator"
 	PrometheusServiceName                          = "prometheus-operated"
