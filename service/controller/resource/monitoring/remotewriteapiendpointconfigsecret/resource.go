@@ -18,7 +18,8 @@ import (
 )
 
 const (
-	Name = "remotewriteapiendpointconfigsecret"
+	Name                           = "remotewriteapiendpointconfigsecret"
+	remoteWriteEndpointTemplateURL = "https://%s/%s/api/v1/write"
 )
 
 type Config struct {
@@ -109,7 +110,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	remoteWrites := []RemoteWrite{
 		{
 			Name:        key.PrometheusMetaOperatorRemoteWriteName,
-			URL:         fmt.Sprintf("https://%s/%s/api/v1/write", config.BaseDomain, key.ClusterID(cluster)),
+			URL:         fmt.Sprintf(remoteWriteEndpointTemplateURL, config.BaseDomain, key.ClusterID(cluster)),
 			Username:    key.ClusterID(cluster),
 			Password:    password,
 			QueueConfig: defaultQueueConfig(),
