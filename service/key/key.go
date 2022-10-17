@@ -21,7 +21,8 @@ const (
 	PrometheusMemoryLimitCoefficient       float64 = 1.2
 	PrometheusMetaOperatorRemoteWriteName  string  = "prometheus-meta-operator"
 	PrometheusServiceName                          = "prometheus-operated"
-	RemoteWriteAPIEndpointConfigSecretName string  = "remote-write-api-endpoint-config"
+        // RemoteWriteAPIEndpointConfigSecretName is the secret name used by a Prometheus client to access the Prometheus remote write endpoint. It is used at https://github.com/giantswarm/observability-bundle/blob/main/helm/observability-bundle/templates/apps.yaml
+        	RemoteWriteAPIEndpointConfigSecretName string  = "remote-write-api-endpoint-config"
         // RemoteWriteIngressAuthSecretName is the secret name referenced in the ingress to enable authentication against the Prometheus remote write endpoint.
 	RemoteWriteIngressAuthSecretName       string  = "remote-write-ingress-auth"
 )
