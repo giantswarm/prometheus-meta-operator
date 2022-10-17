@@ -1,4 +1,4 @@
-package remotewriteapiendpointsecret
+package remotewriteingressauth
 
 import (
 	"context"

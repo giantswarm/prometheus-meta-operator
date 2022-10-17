@@ -86,7 +86,7 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func (r *Resource) getDesiredObject(v interface{}) (*v1.Secret, error) {
+func (r *Resource) getDesiredObject(ctx context.Context, v interface{}) (*v1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -97,13 +97,12 @@ func (r *Resource) getDesiredObject(v interface{}) (*v1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	sourceSecret, err := r.getSource(context.TODO(), v)
+	sourceSecret, err := r.getSource(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	secretData := sourceSecret.Data
-
 	if key.IsCAPICluster(cluster) {
 		// CAPI Secret is a kubeconfig so we need to extract the certs from it
 		if kubeconfig, ok := secretData["value"]; ok {
@@ -162,7 +161,7 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*v1.Secret, er
 	}
 
 	if secret == nil {
-		err := fmt.Errorf("No certificates found for %s", key.ClusterID(cluster))
+		err := fmt.Errorf("no certificates found for %s", key.ClusterID(cluster))
 		return nil, microerror.Mask(err)
 	}
 
