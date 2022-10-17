@@ -22,6 +22,7 @@ const (
 	PrometheusMetaOperatorRemoteWriteName  string  = "prometheus-meta-operator"
 	PrometheusServiceName                          = "prometheus-operated"
 	RemoteWriteAPIEndpointConfigSecretName string  = "remote-write-api-endpoint-config"
+        // RemoteWriteIngressAuthSecretName is the secret name referenced in the ingress to enable authentication against the Prometheus remote write endpoint.
 	RemoteWriteIngressAuthSecretName       string  = "remote-write-ingress-auth"
 )
 
