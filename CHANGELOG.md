@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move shield route so alerts for shield don't go to opsgenie at all, only to their slack.
+
 ## [4.6.3] - 2022-10-17
 
 ### Changed
