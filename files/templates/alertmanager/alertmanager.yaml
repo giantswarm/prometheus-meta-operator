@@ -23,6 +23,16 @@ route:
     - alertname=~"Falco.*"
     continue: false
 
+  # Team Shield Slack
+  # Shield doesn't have a proper support and on-call rotation yet, we're only forwarding
+  # alerts to the slack channel. Once the proper rotation is in place, we have to move it below
+  # the default opsgenie route
+  - receiver: team_shield_slack
+    matchers:
+    - severity=~"page|notify"
+    - team="shield"
+    continue: false
+
   # Team Ops Opsgenie
   - receiver: opsgenie_router
     matchers:
@@ -81,13 +91,6 @@ route:
     matchers:
     - severity=~"page|notify"
     - team="rocket"
-    continue: false
-
-  # Team Shield Slack
-  - receiver: team_shield_slack
-    matchers:
-    - severity=~"page|notify"
-    - team="shield"
     continue: false
 
   # Team Ops Slack
