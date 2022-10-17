@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-realm: Authentication Required
-    nginx.ingress.kubernetes.io/auth-secret: agent-remote-write
+    nginx.ingress.kubernetes.io/auth-secret: remote-write-ingress-auth
     nginx.ingress.kubernetes.io/auth-type: basic
   creationTimestamp: null
   labels:

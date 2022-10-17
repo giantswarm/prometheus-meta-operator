@@ -20,10 +20,10 @@ import (
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
 	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingressauth"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
@@ -69,6 +69,8 @@ type Config struct {
 
 func New(config Config) ([]resource.Interface, error) {
 	var err error
+
+	passwordManager := password.SimpleManager{}
 
 	var namespaceResource resource.Interface
 	{
@@ -128,6 +130,21 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
+	var remoteWriteIngressAuthResource resource.Interface
+	{
+		c := remotewriteingressauth.Config{
+			K8sClient:       config.K8sClient,
+			Logger:          config.Logger,
+			PasswordManager: passwordManager,
+			Provider:        config.Provider,
+		}
+
+		remoteWriteIngressAuthResource, err = remotewriteingressauth.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var remoteWriteIngressResource resource.Interface
 	if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
 		c := remotewriteingressv1beta1.Config{
@@ -153,29 +170,17 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	var remoteWriteAgentSecretResource resource.Interface
-	{
-		c := remotewriteapiendpointsecret.Config{
-			K8sClient:       config.K8sClient,
-			Logger:          config.Logger,
-			PasswordManager: password.SimpleManager{},
-		}
-
-		remoteWriteAgentSecretResource, err = remotewriteapiendpointsecret.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var remoteWriteAgentConfigSecretResource resource.Interface
+	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
 	{
 		c := remotewriteapiendpointconfigsecret.Config{
-			K8sClient:  config.K8sClient,
-			Logger:     config.Logger,
-			BaseDomain: config.PrometheusBaseDomain,
+			K8sClient:       config.K8sClient,
+			Logger:          config.Logger,
+			PasswordManager: passwordManager,
+			BaseDomain:      config.PrometheusBaseDomain,
+			Provider:        config.Provider,
 		}
 
-		remoteWriteAgentConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
+		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -330,9 +335,9 @@ func New(config Config) ([]resource.Interface, error) {
 		rbacResource,
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,
+		remoteWriteAPIEndpointConfigSecretResource,
+		remoteWriteIngressAuthResource,
 		remoteWriteIngressResource,
-		remoteWriteAgentSecretResource,
-		remoteWriteAgentConfigSecretResource,
 		remoteWriteConfigResource,
 		alertmanagerWiringResource,
 		prometheusResource,

@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Change remotewrite endpoint secrets namespace to clusterID ns.
 - Add `.svc` suffix to the alertmanager target to make PMO work behind a corporate proxy.
 - Upgrade to go 1.19
 - Bump prometheus-operator to v0.54.0
