@@ -103,6 +103,8 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
+			// create authentication string to configure basic auth in nginx
+			// see https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md#authentication
 			"auth": []byte(fmt.Sprintf("%s:%s", username, hashedPassword)),
 		},
 		Type: "Opaque",
