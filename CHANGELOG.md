@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.6.4] - 2022-10-17
+
+### Changed
+
+- Move shield route so alerts for shield don't go to opsgenie at all, only to their slack.
+
+## [4.6.3] - 2022-10-17
+
 ### Changed
 
 - Change remotewrite endpoint secrets namespace to clusterID ns.
@@ -1619,7 +1627,9 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.4...HEAD
+[4.6.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.3...v4.6.4
+[4.6.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.2...v4.6.3
 [4.6.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.1...v4.6.2
 [4.6.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.0...v4.6.1
 [4.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...v4.6.0
