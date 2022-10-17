@@ -3,7 +3,6 @@ package remotewriteapiendpointconfigsecret
 import (
 	"context"
 	"fmt"
-	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -124,12 +123,14 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
+	var immutable bool = true
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
 			"values": []byte(marshalledValues),
 		},
-		Type: "Opaque",
+		Type:      "Opaque",
+		Immutable: &immutable,
 	}
 	return secret, nil
 }
@@ -138,13 +139,10 @@ func defaultQueueConfig() promv1.QueueConfig {
 	return promv1.QueueConfig{
 		Capacity:          10000,
 		MaxSamplesPerSend: 1000,
-		MaxShards:         10,
+		MaxShards:         50,
 	}
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*corev1.Secret)
-	d := desired.(*corev1.Secret)
-
-	return !reflect.DeepEqual(c.Data, d.Data)
+	return false
 }
