@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix remote write endpoint ingress buffer size to avoid the use of temporary buffer file in the ingress controller.
+- Fix alertmanager scraping configuration.
 
 ## [4.6.4] - 2022-10-17
 
