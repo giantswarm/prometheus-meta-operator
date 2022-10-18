@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add scraping of Cilium on Management Clusters.
+
 ## [4.6.4] - 2022-10-17
 
 ### Changed
@@ -28,7 +32,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Generate prometheus remote write agent secret and config.
 - Configure prometheus remote write agent ingress.
 - Add Slack channel for Team Shield.
-- Add scraping of Cilium on Management Clusters.
 
 ## [4.6.2] - 2022-09-13
 
