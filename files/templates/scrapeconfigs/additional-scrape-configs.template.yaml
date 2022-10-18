@@ -1206,3 +1206,31 @@
   - replacement: prometheus
     target_label: app
 [[ include "_labelingschema" . | indent 2 ]]
+[[- if eq .ClusterType "management_cluster" ]]
+# cilium agent and cilium operator
+- job_name: [[ .ClusterID ]]-prometheus/cilium-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: pod
+    namespaces:
+      names:
+      - kube-system
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig_skip" . | indent 2 ]]
+  relabel_configs:
+  - replacement: http
+    target_label: __scheme__
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (cilium-agent|cilium-operator)
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_port_number]
+    regex: (9090|6942)
+    action: keep
+  - source_labels: [__meta_kubernetes_pod_container_name]
+    regex: (.*)
+    target_label: app
+    replacement: $1
+[[ include "_common" . | indent 2 ]]
+[[ include "_labelingschema" . | indent 2 ]]
+[[ end ]]

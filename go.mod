@@ -20,7 +20,7 @@ require (
 	github.com/spf13/viper v1.13.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 	golang.org/x/net v0.0.0-20220805013720-a33c5aa5df48
-	gopkg.in/yaml.v2 v2.4.0
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 
 	// NOTE: we need to stay on k8s v1.24 as installations run v1.23 apart from the deprecated kvm.
 	k8s.io/api v0.24.6
@@ -126,8 +126,10 @@ replace (
 	// overriding this dependency to fix a security issue.
 	// see https://ossindex.sonatype.org/vulnerability/sonatype-2022-5436
 	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.9.0
-	github.com/nats-io/nats-server/v2 v2.8.4 => github.com/nats-io/nats-server/v2 v2.9.3
-	golang.org/x/text v0.3.7 => golang.org/x/text v0.3.8
+
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.3
+
+	golang.org/x/text => golang.org/x/text v0.3.8
 
 	// Taken from apiextensions
 	sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v1.0.4
