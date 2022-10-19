@@ -123,8 +123,8 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 			Route: &monitoringv1alpha1.Route{
 				Receiver: key.HeartbeatReceiverName(cluster, config.Installation),
 				Matchers: []monitoringv1alpha1.Matcher{
-					{Name: key.ClusterIDKey(), Value: key.ClusterID(cluster)},
-					{Name: key.InstallationKey(), Value: config.Installation},
+					{Name: key.ClusterIDKey, Value: key.ClusterID(cluster)},
+					{Name: key.InstallationKey, Value: config.Installation},
 					{Name: key.TypeKey(), Value: key.Heartbeat()},
 				},
 				Continue: false,

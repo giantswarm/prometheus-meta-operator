@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add scraping of Cilium on Management Clusters.
+- Add externalLabels for the remote write endpoint configuration.
 
 ### Changed
 

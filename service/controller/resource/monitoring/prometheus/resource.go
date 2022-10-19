@@ -153,13 +153,13 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
 			ExternalLabels: map[string]string{
-				key.ClusterIDKey():    key.ClusterID(cluster),
-				"cluster_type":        key.ClusterType(config.Installation, cluster),
-				"customer":            config.Customer,
-				key.InstallationKey(): config.Installation,
-				"pipeline":            config.Pipeline,
-				"provider":            config.Provider,
-				"region":              config.Region,
+				key.ClusterIDKey:    key.ClusterID(cluster),
+				key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
+				key.CustomerKey:     config.Customer,
+				key.InstallationKey: config.Installation,
+				key.PipelineKey:     config.Pipeline,
+				key.ProviderKey:     config.Provider,
+				key.RegionKey:       config.Region,
 			},
 			// We need to use this to connect each WC prometheus with the central alertmanager instead of the alerting section of the Prometheus CR
 			// because the alerting section tries to find the alertmanager service in the workload cluster and not in the management cluster
@@ -287,7 +287,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{
 				{
-					Key:      "cluster_type",
+					Key:      key.ClusterTypeKey,
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"management_cluster"},
 				},
@@ -331,7 +331,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{
 				{
-					Key:      "cluster_type",
+					Key:      key.ClusterTypeKey,
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"workload_cluster"},
 				},

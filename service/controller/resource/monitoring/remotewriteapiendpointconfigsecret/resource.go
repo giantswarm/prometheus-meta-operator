@@ -27,7 +27,11 @@ type Config struct {
 	Logger          micrologger.Logger
 	PasswordManager password.Manager
 	BaseDomain      string
+	Customer        string
+	Installation    string
+	Pipeline        string
 	Provider        string
+	Region          string
 }
 
 type RemoteWrite struct {
@@ -43,7 +47,8 @@ type GlobalRemoteWriteValues struct {
 }
 
 type RemoteWriteValues struct {
-	RemoteWrite []RemoteWrite `json:"remoteWrite"`
+	RemoteWrite    []RemoteWrite     `json:"remoteWrite"`
+	ExternalLabels map[string]string `json:"externalLabels"`
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -117,7 +122,20 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		},
 	}
 
-	values := RemoteWriteValues{RemoteWrite: remoteWrites}
+	externalLabels := map[string]string{
+		key.ClusterIDKey:    key.ClusterID(cluster),
+		key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
+		key.CustomerKey:     config.Customer,
+		key.InstallationKey: config.Installation,
+		key.PipelineKey:     config.Pipeline,
+		key.ProviderKey:     config.Provider,
+		key.RegionKey:       config.Region,
+	}
+
+	values := RemoteWriteValues{
+		RemoteWrite:    remoteWrites,
+		ExternalLabels: externalLabels,
+	}
 	marshalledValues, err := yaml.Marshal(GlobalRemoteWriteValues{values})
 
 	if err != nil {
