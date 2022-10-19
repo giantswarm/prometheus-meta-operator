@@ -26,6 +26,14 @@ const (
 	RemoteWriteAPIEndpointConfigSecretName string = "remote-write-api-endpoint-config"
 	// RemoteWriteIngressAuthSecretName is the secret name referenced in the ingress to enable authentication against the Prometheus remote write endpoint.
 	RemoteWriteIngressAuthSecretName string = "remote-write-ingress-auth"
+
+	ClusterIDKey    string = "cluster_id"
+	ClusterTypeKey  string = "cluster_type"
+	CustomerKey     string = "customer"
+	InstallationKey string = "installation"
+	PipelineKey     string = "pipeline"
+	ProviderKey     string = "provider"
+	RegionKey       string = "region"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -167,16 +175,8 @@ func PrometheusPort() int32 {
 	return 9090
 }
 
-func ClusterIDKey() string {
-	return "cluster_id"
-}
-
 func ClusterID(cluster metav1.Object) string {
 	return cluster.GetName()
-}
-
-func InstallationKey() string {
-	return "installation"
 }
 
 func TypeKey() string {

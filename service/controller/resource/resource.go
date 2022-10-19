@@ -177,7 +177,11 @@ func New(config Config) ([]resource.Interface, error) {
 			Logger:          config.Logger,
 			PasswordManager: passwordManager,
 			BaseDomain:      config.PrometheusBaseDomain,
+			Customer:        config.Customer,
+			Installation:    config.Installation,
+			Pipeline:        config.Pipeline,
 			Provider:        config.Provider,
+			Region:          config.Region,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
