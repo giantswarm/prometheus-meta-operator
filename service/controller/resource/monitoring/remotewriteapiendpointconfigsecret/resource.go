@@ -127,9 +127,11 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
 		key.CustomerKey:     config.Customer,
 		key.InstallationKey: config.Installation,
+		"organization":      key.GetOrganization(cluster),
 		key.PipelineKey:     config.Pipeline,
 		key.ProviderKey:     config.Provider,
 		key.RegionKey:       config.Region,
+		"service_priority":  key.GetServicePriority(cluster),
 	}
 
 	values := RemoteWriteValues{

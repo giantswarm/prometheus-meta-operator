@@ -164,23 +164,15 @@ func toData(v interface{}, config Config) ([]byte, error) {
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-	clusterID := key.ClusterID(cluster)
-	organization := cluster.GetLabels()["giantswarm.io/organization"]
-
-	var servicePriority string = "highest"
-	if priority, ok := cluster.GetLabels()["giantswarm.io/service-priority"]; ok {
-		servicePriority = priority
-	}
-
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
 		Bastions:                  config.Bastions,
-		ClusterID:                 clusterID,
+		ClusterID:                 key.ClusterID(cluster),
 		ClusterType:               key.ClusterType(config.Installation, cluster),
-		ServicePriority:           servicePriority,
+		ServicePriority:           key.GetServicePriority(cluster),
 		Customer:                  config.Customer,
-		Organization:              organization,
+		Organization:              key.GetOrganization(cluster),
 		Provider:                  config.Provider,
 		Installation:              config.Installation,
 		SecretName:                key.Secret(),
