@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add scraping of Cilium on Management Clusters.
 
+### Changed
+
+- Configure working queue config for the remote write receiver (reducing max number of shards but increasing sample capacity).
+
+### Fixed
+
+- Fix remote write endpoint ingress buffer size to avoid the use of temporary buffer file in the ingress controller.
+
 ## [4.6.4] - 2022-10-17
 
 ### Changed
