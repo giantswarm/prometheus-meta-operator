@@ -100,7 +100,7 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize resource.Quanti
 	// Delete the sts without the PVC (using orphan)
 	orphan := metav1.DeletePropagationOrphan
 	err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).
-		Delete(ctx, fmt.Sprintf("prometheus-%v", clusterID), metav1.DeleteOptions{PropagationPolicy: &orphan})
+		Delete(ctx, resourceName(clusterID), metav1.DeleteOptions{PropagationPolicy: &orphan})
 	if err != nil {
 		return microerror.Mask(err)
 	}
@@ -127,7 +127,7 @@ func (r *Resource) replacePVC(ctx context.Context, pvc corev1.PersistentVolumeCl
 
 	// Delete the sts
 	err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).
-		Delete(ctx, fmt.Sprintf("prometheus-%v", clusterID), metav1.DeleteOptions{})
+		Delete(ctx, resourceName(clusterID), metav1.DeleteOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}

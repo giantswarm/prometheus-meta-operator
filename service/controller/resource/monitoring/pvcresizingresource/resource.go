@@ -1,6 +1,8 @@
 package pvcresizingresource
 
 import (
+	"fmt"
+
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/micrologger"
 )
@@ -30,4 +32,8 @@ func New(config Config) (*Resource, error) {
 
 func (r *Resource) Name() string {
 	return Name
+}
+
+func resourceName(clusterID string) string {
+	return fmt.Sprintf("prometheus-%v", clusterID)
 }
