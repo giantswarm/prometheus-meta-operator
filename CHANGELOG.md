@@ -7,9 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add scraping of Cilium on Management Clusters.
+- Add externalLabels for the remote write endpoint configuration.
+
+### Changed
+
+- Configure working queue config for the remote write receiver (reducing max number of shards but increasing sample capacity).
+
+### Fixed
+
+- Fix remote write endpoint ingress buffer size to avoid the use of temporary buffer file in the ingress controller.
+
+## [4.6.4] - 2022-10-17
+
+### Changed
+
+- Move shield route so alerts for shield don't go to opsgenie at all, only to their slack.
+
+## [4.6.3] - 2022-10-17
+
 ### Changed
 
 - Customize Prometheus volume size based via the `monitoring.giantswarm.io/prometheus-volume-size` annotation
+- Change remotewrite endpoint secrets namespace to clusterID ns.
 - Add `.svc` suffix to the alertmanager target to make PMO work behind a corporate proxy.
 - Upgrade to go 1.19
 - Bump prometheus-operator to v0.54.0
@@ -1619,7 +1641,9 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.4...HEAD
+[4.6.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.3...v4.6.4
+[4.6.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.2...v4.6.3
 [4.6.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.1...v4.6.2
 [4.6.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.6.0...v4.6.1
 [4.6.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.5.1...v4.6.0

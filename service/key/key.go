@@ -13,14 +13,27 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
+var capiProviders = []string{"capa", "cloud-director", "gcp", "openstack", "vsphere"}
+
 const (
 	monitoring = "monitoring"
 
-	PrometheusMemoryLimitCoefficient float64 = 1.2
-	PrometheusServiceName                    = "prometheus-operated"
-	RemoteWriteAgentConfigSecretName string  = "agent-remote-write-config"
-	RemoteWriteAgentSecretName       string  = "agent-remote-write"
-	PrometheusVolumeSizeAnnotation   string  = "monitoring.giantswarm.io/prometheus-volume-size"
+	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
+	PrometheusMemoryLimitCoefficient      float64 = 1.2
+	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"
+	PrometheusServiceName                         = "prometheus-operated"
+	// RemoteWriteAPIEndpointConfigSecretName is the secret name used by a Prometheus client to access the Prometheus remote write endpoint. It is used at https://github.com/giantswarm/observability-bundle/blob/main/helm/observability-bundle/templates/apps.yaml
+	RemoteWriteAPIEndpointConfigSecretName string = "remote-write-api-endpoint-config"
+	// RemoteWriteIngressAuthSecretName is the secret name referenced in the ingress to enable authentication against the Prometheus remote write endpoint.
+	RemoteWriteIngressAuthSecretName string = "remote-write-ingress-auth"
+
+	ClusterIDKey    string = "cluster_id"
+	ClusterTypeKey  string = "cluster_type"
+	CustomerKey     string = "customer"
+	InstallationKey string = "installation"
+	PipelineKey     string = "pipeline"
+	ProviderKey     string = "provider"
+	RegionKey       string = "region"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -70,7 +83,13 @@ func EtcdSecret(installation string, obj interface{}) string {
 }
 
 func IsCAPIManagementCluster(provider string) bool {
-	return provider == "cloud-director" || provider == "gcp" || provider == "openstack" || provider == "vsphere"
+	for _, v := range capiProviders {
+		if v == provider {
+			return true
+		}
+	}
+
+	return false
 }
 
 func EtcdSecretSourceName() string {
@@ -101,9 +120,22 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 func RemoteWriteAuthenticationAnnotations() map[string]string {
 	return map[string]string{
 		"nginx.ingress.kubernetes.io/auth-type":   "basic",
-		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteAgentSecretName,
+		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
 		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
+		// Set this annotation to avoid using a temporary buffer file for remote write requests
+		"nginx.ingress.kubernetes.io/client-body-buffer-size": "1M",
 	}
+}
+
+func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, provider string) (string, string) {
+	name := RemoteWriteAPIEndpointConfigSecretName
+	namespace := ClusterID(cluster)
+
+	if IsCAPIManagementCluster(provider) {
+		name = ClusterID(cluster) + "-" + name
+		namespace = cluster.GetNamespace()
+	}
+	return name, namespace
 }
 
 func AlertmanagerDefaultCPU() *resource.Quantity {
@@ -143,16 +175,8 @@ func PrometheusPort() int32 {
 	return 9090
 }
 
-func ClusterIDKey() string {
-	return "cluster_id"
-}
-
 func ClusterID(cluster metav1.Object) string {
 	return cluster.GetName()
-}
-
-func InstallationKey() string {
-	return "installation"
 }
 
 func TypeKey() string {

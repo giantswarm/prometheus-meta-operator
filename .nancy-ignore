@@ -41,7 +41,6 @@ sonatype-2022-5436
 # pkg:golang/github.com/hashicorp/consul/sdk@v0.8.0
 CVE-2021-41803 until=2022-11-01
 
-
 # pkg:golang/github.com/nats-io/nats-server/v2@v2.8.4
-CVE-2022-42709 until=2023-01-01
-CVE-2022-42708 until=2023-01-01
+CVE-2022-42708 until=2022-11-01
+CVE-2022-42709 until=2022-11-01
