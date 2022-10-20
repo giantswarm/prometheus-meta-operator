@@ -145,7 +145,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		labels[k] = v
 	}
 
-	labels["giantswarm.io/monitoring"] = "true"
+	labels[key.MonitoringLabel] = "true"
 
 	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))

@@ -123,13 +123,15 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	}
 
 	externalLabels := map[string]string{
-		key.ClusterIDKey:    key.ClusterID(cluster),
-		key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
-		key.CustomerKey:     config.Customer,
-		key.InstallationKey: config.Installation,
-		key.PipelineKey:     config.Pipeline,
-		key.ProviderKey:     config.Provider,
-		key.RegionKey:       config.Region,
+		key.ClusterIDKey:       key.ClusterID(cluster),
+		key.ClusterTypeKey:     key.ClusterType(config.Installation, cluster),
+		key.CustomerKey:        config.Customer,
+		key.InstallationKey:    config.Installation,
+		key.OrganizationKey:    key.GetOrganization(cluster),
+		key.PipelineKey:        config.Pipeline,
+		key.ProviderKey:        config.Provider,
+		key.RegionKey:          config.Region,
+		key.ServicePriorityKey: key.GetServicePriority(cluster),
 	}
 
 	values := RemoteWriteValues{
