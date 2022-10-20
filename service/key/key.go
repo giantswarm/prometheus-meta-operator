@@ -18,6 +18,13 @@ var capiProviders = []string{"capa", "cloud-director", "gcp", "openstack", "vsph
 const (
 	monitoring = "monitoring"
 
+	DefaultServicePriority string = "highest"
+	DefaultOrganization    string = "giantswarm"
+
+	MonitoringLabel      string = "giantswarm.io/monitoring"
+	OrganizationLabel    string = "giantswarm.io/organization"
+	ServicePriorityLabel string = "giantswarm.io/service-priority"
+
 	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
 	PrometheusMemoryLimitCoefficient      float64 = 1.2
 	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"
@@ -29,13 +36,15 @@ const (
 	// PrometheusVolumeSizeAnnotation is the annotation referenced in the Cluster CR to define the size of Prometheus Volume.
 	PrometheusVolumeSizeAnnotation string = "monitoring.giantswarm.io/prometheus-volume-size"
 
-	ClusterIDKey    string = "cluster_id"
-	ClusterTypeKey  string = "cluster_type"
-	CustomerKey     string = "customer"
-	InstallationKey string = "installation"
-	PipelineKey     string = "pipeline"
-	ProviderKey     string = "provider"
-	RegionKey       string = "region"
+	ClusterIDKey       string = "cluster_id"
+	ClusterTypeKey     string = "cluster_type"
+	CustomerKey        string = "customer"
+	InstallationKey    string = "installation"
+	OrganizationKey    string = "organization"
+	PipelineKey        string = "pipeline"
+	ProviderKey        string = "provider"
+	RegionKey          string = "region"
+	ServicePriorityKey string = "service_priority"
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -71,8 +80,22 @@ func CAPICertificateName(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-kubeconfig", ClusterID(cluster))
 }
 
+func GetServicePriority(cluster metav1.Object) string {
+	if servicePriority, ok := cluster.GetLabels()[ServicePriorityLabel]; ok && servicePriority != "" {
+		return servicePriority
+	}
+	return DefaultServicePriority
+}
+
+func GetOrganization(cluster metav1.Object) string {
+	if organization, ok := cluster.GetLabels()[OrganizationLabel]; ok && organization != "" {
+		return organization
+	}
+	return DefaultOrganization
+}
+
 func IsMonitoringDisabled(cluster metav1.Object) bool {
-	ignored, ok := cluster.GetLabels()["giantswarm.io/monitoring"]
+	ignored, ok := cluster.GetLabels()[MonitoringLabel]
 	return ok && ignored == "false"
 }
 
