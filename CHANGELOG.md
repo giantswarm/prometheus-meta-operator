@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix alertmanager psp (add projected and downardAPI)
+
 ## [4.7.0] - 2022-10-20
 
 ### Added
