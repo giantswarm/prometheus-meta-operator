@@ -101,10 +101,12 @@ func (r *Resource) resize(ctx context.Context, desiredVolumeSize resource.Quanti
 		return microerror.Mask(err)
 	}
 
-	// Delete the sts without the PVC (using orphan)
-	orphan := metav1.DeletePropagationOrphan
+	// Delete the sts
+	// We don't use orphan deletion mode as suggested here:
+	// https://github.com/prometheus-operator/prometheus-operator/issues/4079#issuecomment-1211989005
+	// because our tests on each provider were not satisfying
 	err = r.k8sClient.K8sClient().AppsV1().StatefulSets(namespace).
-		Delete(ctx, resourceName(clusterID), metav1.DeleteOptions{PropagationPolicy: &orphan})
+		Delete(ctx, resourceName(clusterID), metav1.DeleteOptions{})
 	if err != nil {
 		return microerror.Mask(err)
 	}
