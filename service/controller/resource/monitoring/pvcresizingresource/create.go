@@ -36,26 +36,26 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 			// Check the value of annotation with the current value in PVC.
 			if currentPVCSize.Value() < desiredVolumeSize.Value() {
-				r.logger.Debugf(ctx, "resizing PVC %v", pvc.GetName())
 				// Resizing requested. Following the procedure described here:
 				// https://github.com/prometheus-operator/prometheus-operator/issues/4079#issuecomment-1211989005
 				// until stateful set resizing made it into kubernetes:
 				// https://github.com/kubernetes/enhancements/issues/661
 				err = r.resize(ctx, desiredVolumeSize, pvc)
 				if err != nil {
+					r.logger.Errorf(ctx, err, "could not resize PVC %v", pvc.GetName())
 					return microerror.Mask(err)
 				}
-				r.logger.Debugf(ctx, "resizing PVC %v succeeded", pvc.GetName())
+				r.logger.Debugf(ctx, "resized PVC %v", pvc.GetName())
 			} else if currentPVCSize.Value() > desiredVolumeSize.Value() {
-				r.logger.Debugf(ctx, "replacing PVC %v", pvc.GetName())
 				// Since downsizing a volume is forbidden, we have to replace the PVC and the STS, causing a data loss
 				// Therefore, we replace the PVC and STS
 				// But this will cause data loss
 				err = r.replacePVC(ctx, pvc)
 				if err != nil {
+					r.logger.Errorf(ctx, err, "could not replace PVC %v", pvc.GetName())
 					return microerror.Mask(err)
 				}
-				r.logger.Debugf(ctx, "replacing PVC %v succeeded", pvc.GetName())
+				r.logger.Debugf(ctx, "replaced PVC %v", pvc.GetName())
 			}
 		}
 	}
