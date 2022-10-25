@@ -28,7 +28,9 @@ spec:
     rule: MustRunAs
   privileged: false
   volumes:
-    - 'emptyDir'
-    - 'secret'
     - 'configMap'
+    - 'emptyDir'
+    - 'projected'
+    - 'secret'
+    - 'downwardAPI'
     - 'persistentVolumeClaim'
