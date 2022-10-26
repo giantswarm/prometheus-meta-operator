@@ -16,6 +16,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/pvcresizing"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -37,7 +38,6 @@ type Config struct {
 	Provider          string
 	Region            string
 	Registry          string
-	StorageSize       string
 	LogLevel          string
 	RetentionDuration string
 	RetentionSize     string
@@ -112,7 +112,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	var walCompression bool = true
 
 	var storage promv1.StorageSpec
-	storageSize := resource.MustParse(config.StorageSize)
+	annotationValue := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
+	volumeSize := pvcresizing.PrometheusVolumeSize(annotationValue)
+	storageSize := resource.MustParse(volumeSize)
 
 	if config.CreatePVC {
 		storage = promv1.StorageSpec{

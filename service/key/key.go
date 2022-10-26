@@ -33,6 +33,8 @@ const (
 	RemoteWriteAPIEndpointConfigSecretName string = "remote-write-api-endpoint-config"
 	// RemoteWriteIngressAuthSecretName is the secret name referenced in the ingress to enable authentication against the Prometheus remote write endpoint.
 	RemoteWriteIngressAuthSecretName string = "remote-write-ingress-auth"
+	// PrometheusVolumeSizeAnnotation is the annotation referenced in the Cluster CR to define the size of Prometheus Volume.
+	PrometheusVolumeSizeAnnotation string = "monitoring.giantswarm.io/prometheus-volume-size"
 
 	ClusterIDKey       string = "cluster_id"
 	ClusterTypeKey     string = "cluster_type"
