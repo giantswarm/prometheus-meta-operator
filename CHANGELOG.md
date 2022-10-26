@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Reduce label selector to find Prometheus PVC
+
 ## [4.8.0] - 2022-10-26
 
 ## [4.7.1] - 2022-10-21
