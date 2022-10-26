@@ -66,11 +66,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 func pvcSelector(clusterID string) labels.Selector {
 	return labels.SelectorFromSet(labels.Set(map[string]string{
-		"app.kubernetes.io/instance":   clusterID,
-		"app.kubernetes.io/managed-by": "prometheus-operator",
-		"app.kubernetes.io/name":       "prometheus",
-		"operator.prometheus.io/name":  clusterID,
-		"prometheus":                   clusterID,
+		"prometheus": clusterID,
 	}))
 }
 
