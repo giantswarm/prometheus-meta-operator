@@ -49,7 +49,6 @@ type ControllerConfig struct {
 	PrometheusAddress           string
 	PrometheusBaseDomain        string
 	PrometheusCreatePVC         bool
-	PrometheusStorageSize       string
 	PrometheusLogLevel          string
 	PrometheusRetentionDuration string
 	PrometheusRetentionSize     string

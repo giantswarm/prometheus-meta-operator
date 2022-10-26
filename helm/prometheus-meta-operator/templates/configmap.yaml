@@ -48,7 +48,6 @@ data:
           size: 90GB
         storage:
           createPVC: {{ and .Values.prometheus.storage.enabled .Values.prometheus.storage.createPVC }}
-          size: 100Gi
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
         {{- if .Values.slack }}

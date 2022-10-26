@@ -38,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Customize Prometheus volume size based via the `monitoring.giantswarm.io/prometheus-volume-size` annotation
 - Change remotewrite endpoint secrets namespace to clusterID ns.
 - Add `.svc` suffix to the alertmanager target to make PMO work behind a corporate proxy.
 - Upgrade to go 1.19

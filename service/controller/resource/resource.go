@@ -19,6 +19,7 @@ import (
 	ingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1"
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
@@ -54,7 +55,6 @@ type Config struct {
 	PrometheusAddress             string
 	PrometheusBaseDomain          string
 	PrometheusCreatePVC           bool
-	PrometheusStorageSize         string
 	PrometheusLogLevel            string
 	PrometheusRemoteWriteURL      string
 	PrometheusRemoteWriteUsername string
@@ -232,7 +232,6 @@ func New(config Config) ([]resource.Interface, error) {
 			Provider:          config.Provider,
 			Region:            config.Region,
 			Registry:          config.Registry,
-			StorageSize:       config.PrometheusStorageSize,
 			LogLevel:          config.PrometheusLogLevel,
 			RetentionDuration: config.PrometheusRetentionDuration,
 			RetentionSize:     config.PrometheusRetentionSize,
@@ -333,6 +332,19 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
+	var pvcResizeResource resource.Interface
+	{
+		c := pvcresizingresource.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		pvcResizeResource, err = pvcresizingresource.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
@@ -348,6 +360,7 @@ func New(config Config) ([]resource.Interface, error) {
 		verticalPodAutoScalerResource,
 		ingressResource,
 		heartbeatResource,
+		pvcResizeResource,
 	}
 
 	{

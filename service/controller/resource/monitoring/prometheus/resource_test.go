@@ -27,7 +27,6 @@ func TestPrometheus(t *testing.T) {
 		Region:            "onprem",
 		LogLevel:          "debug",
 		Registry:          "quay.io",
-		StorageSize:       "50Gi",
 		RetentionDuration: "2w",
 		RetentionSize:     "45Gi",
 		Version:           "v2.28.1",
