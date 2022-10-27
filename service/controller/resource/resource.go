@@ -21,7 +21,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
 	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingressauth"
@@ -29,7 +28,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/rbac"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/cleanup"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -53,16 +51,14 @@ type Config struct {
 
 	OpsgenieKey string
 
-	PrometheusAddress             string
-	PrometheusBaseDomain          string
-	PrometheusCreatePVC           bool
-	PrometheusLogLevel            string
-	PrometheusRemoteWriteURL      string
-	PrometheusRemoteWriteUsername string
-	PrometheusRemoteWritePassword string
-	PrometheusRetentionDuration   string
-	PrometheusRetentionSize       string
-	PrometheusVersion             string
+	PrometheusAddress           string
+	PrometheusBaseDomain        string
+	PrometheusCreatePVC         bool
+	PrometheusLogLevel          string
+	PrometheusRemoteWriteURL    string
+	PrometheusRetentionDuration string
+	PrometheusRetentionSize     string
+	PrometheusVersion           string
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
@@ -186,29 +182,6 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var remoteWriteConfigResource resource.Interface
-	{
-		c := remotewriteconfig.Config{
-			K8sClient:           config.K8sClient,
-			Logger:              config.Logger,
-			RemoteWriteUsername: config.PrometheusRemoteWriteUsername,
-			RemoteWritePassword: config.PrometheusRemoteWritePassword,
-		}
-
-		remoteWriteConfig, err := remotewriteconfig.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		cleanupConfig := cleanup.Config{
-			Resource: remoteWriteConfig,
-		}
-		remoteWriteConfigResource, err = cleanup.New(cleanupConfig)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -363,7 +336,6 @@ func New(config Config) ([]resource.Interface, error) {
 		remoteWriteAPIEndpointConfigSecretResource,
 		remoteWriteIngressAuthResource,
 		remoteWriteIngressResource,
-		remoteWriteConfigResource,
 		alertmanagerWiringResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
