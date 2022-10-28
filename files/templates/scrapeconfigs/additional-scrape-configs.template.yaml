@@ -90,7 +90,7 @@
   metric_relabel_configs:
 [[- if eq .ClusterType "management_cluster" ]]
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman|flux-*)
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman|flux-.*)
     action: keep
 [[- else ]]
   - source_labels: [namespace]

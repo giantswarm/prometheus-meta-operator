@@ -198,7 +198,7 @@
     target_label: role
   metric_relabel_configs:
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman|flux-*)
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman|flux-.*)
     action: keep
 # calico-node
 - job_name: kubernetes-prometheus/calico-node-kubernetes/0
