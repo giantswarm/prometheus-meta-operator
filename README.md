@@ -86,3 +86,19 @@ The remoteWrite CRD is located under the chart's templates directory as a symbol
 
 [operatorkit]: https://github.com/giantswarm/operatorkit
 [prometheus-operator]: https://github.com/prometheus-operator/prometheus-operator
+
+# Custom Prometheus volume size
+
+Prometheus-meta-operator provides a way of setting custom Prometheus volume size.
+
+The Prometheus volume size can be set on the cluster CR using the dedicated annotation `monitoring.giantswarm.io/prometheus-volume-size`
+
+Three values are possible:
+
+* `small` = 30 Gi
+* `medium` = 100 Gi
+* `large` = 200 Gi
+
+while `medium` is the default value.
+
+Check [Prometheus Volume Sizing](https://docs.giantswarm.io/ui-api/observability/prometheus/volume-size/) for more details.
