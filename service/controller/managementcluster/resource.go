@@ -21,12 +21,10 @@ import (
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/rbac"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/cleanup"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -303,28 +301,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	// Clean this code after the secret is deleted
-	var remoteWriteConfigResource resource.Interface
-	{
-		c := remotewriteconfig.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
-		}
-
-		remoteWriteConfig, err := remotewriteconfig.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-
-		cleanupConfig := cleanup.Config{
-			Resource: remoteWriteConfig,
-		}
-		remoteWriteConfigResource, err = cleanup.New(cleanupConfig)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	resources := []resource.Interface{
 		namespaceResource,
 		etcdCertificatesResource,
@@ -339,7 +315,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		monitoringIngressResource,
 		heartbeatResource,
 		pvcResizeResource,
-		remoteWriteConfigResource,
 	}
 
 	{
