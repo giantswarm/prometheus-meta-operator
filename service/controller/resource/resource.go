@@ -29,6 +29,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/rbac"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/cleanup"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -199,7 +200,16 @@ func New(config Config) ([]resource.Interface, error) {
 			RemoteWritePassword: config.PrometheusRemoteWritePassword,
 		}
 
-		remoteWriteConfigResource, err = remotewriteconfig.New(c)
+		remoteWriteConfig, err := remotewriteconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+
+		cleanupConfig := cleanup.Config{
+			Resource: remoteWriteConfig,
+			Logger:   config.Logger,
+		}
+		remoteWriteConfigResource, err = cleanup.New(cleanupConfig)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
