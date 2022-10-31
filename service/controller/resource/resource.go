@@ -207,7 +207,6 @@ func New(config Config) ([]resource.Interface, error) {
 
 		cleanupConfig := cleanup.Config{
 			Resource: remoteWriteConfig,
-			Logger:   config.Logger,
 		}
 		remoteWriteConfigResource, err = cleanup.New(cleanupConfig)
 		if err != nil {
