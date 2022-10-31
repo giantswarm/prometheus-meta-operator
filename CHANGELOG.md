@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change `remotewritesecret` to always delete the secret, as it's not needed anymore in favor of `RemoteWrite.spec.secrets`.
+
 ## [4.9.0] - 2022-10-28
 
 ### Added
