@@ -303,18 +303,6 @@ func AlertmanagerConfigMapKey() string {
 	return "config.yml"
 }
 
-func RemoteWriteSecretName() string {
-	return "remote-write"
-}
-
-func RemoteWriteUsernameKey() string {
-	return "username"
-}
-
-func RemoteWritePasswordKey() string {
-	return "password"
-}
-
 // IsCAPICluster returns false if the cluster has any of the legacy labels such as azure-operator.giantswarm.io/version.
 func IsCAPICluster(obj metav1.Object) bool {
 	// TODO once we have migrated all clusters to CAPI, we can remove this

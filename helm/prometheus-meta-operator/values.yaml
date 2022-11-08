@@ -50,8 +50,6 @@ prometheus:
   additionalScrapeConfigs: ""
   address: "https://prometheus:9090"
   bastions: []
-  cortex:
-    apiKey: ""
   etcdClientCertificates:
     ca: "ca"
     crt: "crt"
