@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix scraping of controller-manager and kube-scheduler for vintage MCs.
+
 ### Removed
 
 - Old remotewrite secret

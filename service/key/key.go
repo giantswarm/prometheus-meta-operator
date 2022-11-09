@@ -323,10 +323,10 @@ func IsCAPICluster(obj metav1.Object) bool {
 	case *v1.Service:
 		// Legacy Management Clusters.
 		return false
+	default:
+		// We didn't recognize the type, we assume CAPI
+		return true
 	}
-
-	// We didn't recognize the type, we assume CAPI
-	return true
 }
 
 func IngressClassName() string {
