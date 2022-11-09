@@ -5,6 +5,7 @@ import (
 	"path"
 	"reflect"
 
+	"github.com/blang/semver"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -51,7 +52,7 @@ type TemplateData struct {
 	SecretName                string
 	EtcdSecretName            string
 	Installation              string
-	IsInCluster               bool
+	IsRunningAgent            bool
 	Mayu                      string
 	Vault                     string
 	WorkloadClusterETCDDomain string
@@ -164,6 +165,11 @@ func toData(v interface{}, config Config) ([]byte, error) {
 }
 
 func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
+	isRunningAgent, err := HasPrometheusAgent(cluster, config.Provider, config.Installation)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
@@ -179,6 +185,7 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
 		Vault:                     config.Vault,
 		Mayu:                      config.Mayu,
+		IsRunningAgent:            isRunningAgent,
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
 		CAPICluster:               key.IsCAPICluster(cluster),
 		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
@@ -186,6 +193,21 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 	}
 
 	return d, nil
+}
+
+// HasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics. The prometheus agent will be added in v19, so any release >= v19.0.0
+func HasPrometheusAgent(cluster metav1.Object, provider string, installation string) (bool, error) {
+	if key.IsCAPIManagementCluster(provider) || key.IsInCluster(installation, cluster) {
+		// Bundle is currently not deployed in CAPI and for Vintage CAPI MC
+		return false, nil
+	}
+
+	release := cluster.GetLabels()["release.giantswarm.io/version"]
+	version, err := semver.Parse(release)
+	if err != nil {
+		return false, microerror.Mask(err)
+	}
+	return version.Major >= 19, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {

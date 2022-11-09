@@ -3,4 +3,5 @@ kind: AWSConfig
 metadata:
   labels:
     "giantswarm.io/service-priority": "highest"
+    "release.giantswarm.io/version": 18.0.0
   name: alice

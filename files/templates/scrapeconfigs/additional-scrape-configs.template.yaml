@@ -1,3 +1,4 @@
+[[- if not .IsRunningAgent ]]
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-apiserver-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -16,6 +17,7 @@
     replacement: kubernetes
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
+[[ end ]]
 [[- if not .CAPICluster ]]
 # Add scrape configuration for docker
 - job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
@@ -241,6 +243,7 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
+[[- if not .IsRunningAgent ]]
 # kube-controller-manager
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
   honor_labels: true
@@ -331,6 +334,7 @@
     replacement: kube-scheduler
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+[[ end ]]
 # kube-proxy
 - job_name: [[ .ClusterID ]]-prometheus/kube-proxy-[[ .ClusterID ]]/0
   honor_labels: true
