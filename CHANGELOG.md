@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix a reconciliation bug on CAPI MC that were reconciled twice.
+- Ensure the remote write endpoint configuration is enabled for MCs as well
+
 ### Removed
 
 - Old remotewrite secret
