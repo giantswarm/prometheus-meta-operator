@@ -66,7 +66,8 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		}
 	}
 
-	// We ensure the cluster-api controller is not checking reconciling the MC cluster CR to avoid conflicts.
+	// Ensure cluster-api controller is not reconciling the MC cluster CR to avoid duplicate reconciliation with the management-cluster controller.
+	// This due to CAPI installation providing a cluster CR for the MC.
 	selector, err := labels.Parse("cluster.x-k8s.io/cluster-name!=" + config.Installation)
 	if err != nil {
 		return nil, microerror.Mask(err)
