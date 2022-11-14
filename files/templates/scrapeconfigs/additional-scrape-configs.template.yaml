@@ -257,7 +257,7 @@
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__address__]
-[[- if .CAPICluster ]]
+[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
     replacement: 10257
 [[- else ]]
     replacement: 10252
@@ -280,7 +280,7 @@
   - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
     regex: (.+);(\d+)
-[[- if .CAPICluster ]]
+[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
     replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
 [[- else ]]
     replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
@@ -302,7 +302,7 @@
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__address__]
-[[- if .CAPICluster ]]
+[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
     replacement: 10259
 [[- else ]]
     replacement: 10251
@@ -325,7 +325,7 @@
   - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
     regex: (.+);(\d+)
-[[- if .CAPICluster ]]
+[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
     replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
 [[- else ]]
     replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
