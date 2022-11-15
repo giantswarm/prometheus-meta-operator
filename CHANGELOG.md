@@ -7,11 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix a reconciliation bug on CAPI MC that were reconciled twice.
+
 ## [4.10.0] - 2022-11-15
 
 ### Fixed
 
-- Fix a reconciliation bug on CAPI MC that were reconciled twice.
 - Fix scraping of controller-manager and kube-scheduler for vintage MCs.
 
 ### Removed
