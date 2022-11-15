@@ -1,3 +1,4 @@
+
 - job_name: baz-prometheus/kubernetes-apiserver-baz/0
   honor_labels: true
   scheme: https
@@ -48,6 +49,7 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+
 # Add scrape configuration for cadvisor
 - job_name: baz-prometheus/cadvisor-baz/0
   honor_labels: true
@@ -458,6 +460,7 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+
 # kube-proxy
 - job_name: baz-prometheus/kube-proxy-baz/0
   honor_labels: true

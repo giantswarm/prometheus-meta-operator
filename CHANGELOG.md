@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Old remotewrite secret
+- Removed targets for clusters using the prometheus agent.
 
 ## [4.9.2] - 2022-11-03
 

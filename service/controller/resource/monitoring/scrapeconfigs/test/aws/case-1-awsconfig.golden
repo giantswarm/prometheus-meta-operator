@@ -1,3 +1,4 @@
+
 - job_name: alice-prometheus/kubernetes-apiserver-alice/0
   honor_labels: true
   scheme: https
@@ -48,6 +49,7 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+
 # Add scrape configuration for cadvisor
 - job_name: alice-prometheus/cadvisor-alice/0
   honor_labels: true
@@ -523,6 +525,7 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+
 # kube-proxy
 - job_name: alice-prometheus/kube-proxy-alice/0
   honor_labels: true
