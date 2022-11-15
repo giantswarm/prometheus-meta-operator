@@ -11,7 +11,6 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
@@ -22,10 +21,6 @@ import (
 	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
-	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
-	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingressauth"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
@@ -80,8 +75,6 @@ type resourcesConfig struct {
 
 func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var err error
-
-	passwordManager := password.SimpleManager{}
 
 	var namespaceResource resource.Interface
 	{
@@ -308,66 +301,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var remoteWriteIngressAuthResource resource.Interface
-	{
-		c := remotewriteingressauth.Config{
-			K8sClient:       config.K8sClient,
-			Logger:          config.Logger,
-			PasswordManager: passwordManager,
-			Provider:        config.Provider,
-		}
-
-		remoteWriteIngressAuthResource, err = remotewriteingressauth.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var remoteWriteIngressResource resource.Interface
-	if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
-		c := remotewriteingressv1beta1.Config{
-			K8sClient:  config.K8sClient,
-			Logger:     config.Logger,
-			BaseDomain: config.PrometheusBaseDomain,
-		}
-
-		remoteWriteIngressResource, err = remotewriteingressv1beta1.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	} else {
-		c := remotewriteingressv1.Config{
-			K8sClient:  config.K8sClient,
-			Logger:     config.Logger,
-			BaseDomain: config.PrometheusBaseDomain,
-		}
-
-		remoteWriteIngressResource, err = remotewriteingressv1.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
-	{
-		c := remotewriteapiendpointconfigsecret.Config{
-			K8sClient:       config.K8sClient,
-			Logger:          config.Logger,
-			PasswordManager: passwordManager,
-			BaseDomain:      config.PrometheusBaseDomain,
-			Customer:        config.Customer,
-			Installation:    config.Installation,
-			Pipeline:        config.Pipeline,
-			Provider:        config.Provider,
-			Region:          config.Region,
-		}
-
-		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
 	resources := []resource.Interface{
 		namespaceResource,
 		etcdCertificatesResource,
@@ -376,9 +309,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
-		remoteWriteAPIEndpointConfigSecretResource,
-		remoteWriteIngressAuthResource,
-		remoteWriteIngressResource,
 		scrapeConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
