@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.10.0] - 2022-11-15
+
 ### Fixed
 
 - Fix a reconciliation bug on CAPI MC that were reconciled twice.
@@ -15,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Old remotewrite secret
+- Removed targets for clusters using the prometheus agent.
 
 ## [4.9.2] - 2022-11-03
 
@@ -1684,7 +1687,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.9.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.10.0...HEAD
+[4.10.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.9.2...v4.10.0
 [4.9.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.9.1...v4.9.2
 [4.9.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.9.0...v4.9.1
 [4.9.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.8.1...v4.9.0
