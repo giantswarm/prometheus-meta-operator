@@ -7,6 +7,7 @@ import (
 	"github.com/giantswarm/operatorkit/v7/pkg/controller"
 	"github.com/giantswarm/operatorkit/v7/pkg/resource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
+	"k8s.io/apimachinery/pkg/labels"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
@@ -65,6 +66,13 @@ func NewController(config ControllerConfig) (*Controller, error) {
 		}
 	}
 
+	// Ensure cluster-api controller is not reconciling the MC cluster CR to avoid duplicate reconciliation with the management-cluster controller.
+	// This due to CAPI installation providing a cluster CR for the MC.
+	selector, err := labels.Parse("cluster.x-k8s.io/cluster-name!=" + config.Installation)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	var operatorkitController *controller.Controller
 	{
 		c := controller.Config{
@@ -75,6 +83,7 @@ func NewController(config ControllerConfig) (*Controller, error) {
 				return new(capi.Cluster)
 			},
 			Resources: resources,
+			Selector:  selector,
 		}
 
 		operatorkitController, err = controller.New(c)
