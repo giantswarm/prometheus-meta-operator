@@ -429,5 +429,5 @@ inhibit_rules:
 - source_matchers:
     - release_before_v19=false
   target_matchers:
-    - cancel_if_cluster_release_before_v19=true
+    - cancel_if_vintage_cluster_release_before_v19=true
   equal: [cluster_id]
