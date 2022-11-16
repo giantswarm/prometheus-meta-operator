@@ -127,7 +127,11 @@ receivers:
 
 - name: team_atlas_slack
   slack_configs:
+  [[- if eq .Pipeline "stable" ]]
   - channel: '#alert-atlas'
+  [[- else ]]
+  - channel: '#alert-atlas-test'
+  [[- end ]]
     send_resolved: true
     actions:
     - type: button
