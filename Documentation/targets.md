@@ -2,7 +2,6 @@
 
 - alertmanager
 - api
-- app-exporter
 - app-operator
 - cadvisor
 - calico
