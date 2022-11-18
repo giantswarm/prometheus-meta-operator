@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove the `CLUSTER-prometheus/app-exporter-CLUSTER/0` job in favor of Service Monitor provided by the app.
+
 ### Added
 
 - Ensure the remote write endpoint configuration is enabled for MCs
