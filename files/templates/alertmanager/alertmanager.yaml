@@ -427,13 +427,7 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
-    - vintage_cluster_release_before_v19=true
-  target_matchers:
-    - cancel_if_cluster_is_not_running_prometheus_agent=true
-  equal: [cluster_id]
-
-- source_matchers:
-    - capi_cluster_not_running_prometheus_agent=true
+    - cluster_not_running_prometheus_agent=true
   target_matchers:
     - cancel_if_cluster_is_not_running_prometheus_agent=true
   equal: [cluster_id]

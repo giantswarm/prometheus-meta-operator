@@ -14,8 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Ensure the remote write endpoint configuration is enabled for MCs
-- Add Inhibition rule for prometheus-agent before release v19
-- Add Inhibition rule for CAPI clusters that runs prometheus-agent
+- Add Inhibition rule for prometheus-agent to ignore clusters that doesn't deploy the agent.
 
 ### Fixed
 
