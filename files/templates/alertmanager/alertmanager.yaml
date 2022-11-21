@@ -433,7 +433,7 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
-    - capi_cluster_prometheus_agent=true
+    - capi_cluster_not_running_prometheus_agent=true
   target_matchers:
     - cancel_if_cluster_is_not_running_prometheus_agent=true
   equal: [cluster_id]
