@@ -399,3 +399,9 @@ inhibit_rules:
   target_matchers:
   - cancel_if_cluster_has_no_workers=true
   equal: [cluster_id]
+
+- source_matchers:
+    - vintage_cluster_release_before_v19=true
+  target_matchers:
+    - cancel_if_vintage_cluster_release_before_v19=true
+  equal: [cluster_id]
