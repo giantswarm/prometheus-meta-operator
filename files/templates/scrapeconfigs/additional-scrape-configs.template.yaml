@@ -1110,6 +1110,7 @@
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
 [[ end ]]
+[[ if not .CAPICluster ]]
 - job_name: [[ .ClusterID ]]-prometheus/vault-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
@@ -1124,6 +1125,7 @@
       app: cert-exporter
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
+[[ end ]]
 # nginx-ingress-controller
 - job_name: [[ .ClusterID ]]-prometheus/nginx-ingress-controller-[[ .ClusterID ]]/0
   honor_labels: true

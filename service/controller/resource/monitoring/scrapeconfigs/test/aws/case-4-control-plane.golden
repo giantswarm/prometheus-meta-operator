@@ -1792,6 +1792,7 @@
     replacement: pmo
 
 
+
 - job_name: kubernetes-prometheus/vault-kubernetes/0
   honor_labels: true
   scheme: http
@@ -1826,6 +1827,7 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+
 # nginx-ingress-controller
 - job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0
   honor_labels: true
