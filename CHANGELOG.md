@@ -30,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ensure the remote write endpoint configuration is enabled for MCs
 - Add Inhibition rule for prometheus-agent to ignore clusters that doesn't deploy the agent.
 
+### Changed
+
+- Send non-paging alert to Atlas slack channels.
+
 ### Fixed
 
 - Fix a reconciliation bug on CAPI MC that were reconciled twice.

@@ -44,7 +44,6 @@ route:
   # Team Atlas Slack (team)
   - receiver: team_atlas_slack
     matchers:
-    - severity="page"
     - team="atlas"
     continue: false
 
@@ -117,7 +116,7 @@ receivers:
 
 - name: team_atlas_slack
   slack_configs:
-  - channel: '#alert-atlas'
+  - channel: '#alert-atlas-test'
     send_resolved: true
     actions:
     - type: button
