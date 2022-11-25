@@ -44,7 +44,6 @@ route:
   # Team Atlas Slack (team)
   - receiver: team_atlas_slack
     matchers:
-    - severity!="page"
     - team="atlas"
     continue: false
 

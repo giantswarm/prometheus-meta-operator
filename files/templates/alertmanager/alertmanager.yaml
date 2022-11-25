@@ -54,7 +54,9 @@ route:
   # Team Atlas Slack (team)
   - receiver: team_atlas_slack
     matchers:
+    [[- if eq .Pipeline "stable" ]]
     - severity!="page"
+    [[- end ]]
     - team="atlas"
     continue: false
 
