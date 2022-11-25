@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improve opsgenie notification template.
+
 ## [4.11.2] - 2022-11-24
 
 ### Fixed
