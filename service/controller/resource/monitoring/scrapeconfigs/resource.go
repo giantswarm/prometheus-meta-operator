@@ -197,6 +197,9 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 
 // HasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics. The prometheus agent will be added in v19, so any release >= v19.0.0
 func HasPrometheusAgent(cluster metav1.Object, provider string, installation string) (bool, error) {
+	if provider == "openstack" {
+		return true, nil
+	}
 	if key.IsInCluster(installation, cluster) && provider != "openstack" {
 		// Bundle is currently not deployed in CAPI and for Vintage CAPI MC
 		return false, nil
