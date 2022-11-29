@@ -2,7 +2,8 @@ apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
   labels:
-    "release.giantswarm.io/version": 18.0.0
+    release.giantswarm.io/version: 18.0.0
+    giantswarm.io/organization: my-organization
   name: baz
 spec:
   controlPlaneEndpoint:

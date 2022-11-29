@@ -34,6 +34,8 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
+require github.com/giantswarm/apiextensions-application v0.6.0
+
 require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
@@ -48,6 +50,7 @@ require (
 	github.com/getsentry/sentry-go v0.13.1-0.20220829145521-33f7b6930327 // indirect
 	github.com/giantswarm/backoff v1.0.0 // indirect
 	github.com/giantswarm/exporterkit v1.0.0 // indirect
+	github.com/giantswarm/k8smetadata v0.6.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
 	github.com/go-kit/kit v0.12.1-0.20220808180842-62c81a0f3047 // indirect
 	github.com/go-kit/log v0.2.0 // indirect
