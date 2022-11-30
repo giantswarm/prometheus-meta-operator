@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/giantswarm/apiextensions-application v0.6.0
 	github.com/giantswarm/apiextensions/v6 v6.4.1
 	github.com/giantswarm/k8sclient/v7 v7.0.1
 	github.com/giantswarm/microendpoint v1.0.0
@@ -48,6 +49,7 @@ require (
 	github.com/getsentry/sentry-go v0.13.1-0.20220829145521-33f7b6930327 // indirect
 	github.com/giantswarm/backoff v1.0.0 // indirect
 	github.com/giantswarm/exporterkit v1.0.0 // indirect
+	github.com/giantswarm/k8smetadata v0.6.0 // indirect
 	github.com/giantswarm/to v0.4.0 // indirect
 	github.com/go-kit/kit v0.12.1-0.20220808180842-62c81a0f3047 // indirect
 	github.com/go-kit/log v0.2.0 // indirect

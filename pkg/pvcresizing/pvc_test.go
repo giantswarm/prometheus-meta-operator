@@ -1,10 +1,13 @@
 package pvcresizing
 
 import (
+	"flag"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
 )
+
+var _ = flag.Bool("update", false, "doing nothing")
 
 func TestPrometheusVolumeSize(t *testing.T) {
 
