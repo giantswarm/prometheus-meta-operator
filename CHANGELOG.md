@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.13.0] - 2022-11-30
+
 ### Changed
 
 - Improve HasPrometheusAgent function to ignore prometheus-agent scraping targets.
@@ -1733,7 +1735,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.12.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.13.0...HEAD
+[4.13.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.12.0...v4.13.0
 [4.12.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.2...v4.12.0
 [4.11.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.1...v4.11.2
 [4.11.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.0...v4.11.1
