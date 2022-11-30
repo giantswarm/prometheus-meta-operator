@@ -32,7 +32,6 @@ type ControllerConfig struct {
 	Provider                string
 	Region                  string
 	Registry                string
-	IngressAPIVersion       string
 
 	OpsgenieKey string
 
