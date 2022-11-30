@@ -115,7 +115,6 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Region, "", "Region where the installation is located.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Customer, "", "Customer the installation belongs to.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Registry, "", "Container image registry.")
-	daemonCommand.PersistentFlags().String(f.Service.Installation.IngressAPIVersion, "networking.k8s.io/v1", "Installation supported ingress API version")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")

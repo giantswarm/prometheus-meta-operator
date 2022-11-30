@@ -1,4 +1,4 @@
-package v1beta1
+package remotewriteingress
 
 import (
 	"context"
@@ -8,29 +8,26 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	networkingv1beta1 "k8s.io/api/networking/v1beta1"
+	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/util/intstr"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
-	Name = "monitoringingress"
+	Name = "monitoringremotewriteingress"
 )
 
 type Config struct {
-	K8sClient               k8sclient.Interface
-	Logger                  micrologger.Logger
-	BaseDomain              string
-	RestrictedAccessEnabled bool
-	WhitelistedSubnets      string
+	K8sClient  k8sclient.Interface
+	Logger     micrologger.Logger
+	BaseDomain string
 }
 
 func New(config Config) (*generic.Resource, error) {
 	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().NetworkingV1beta1().Ingresses(namespace)
+		c := config.K8sClient.K8sClient().NetworkingV1().Ingresses(namespace)
 		return wrappedClient{client: c}
 	}
 
@@ -60,21 +57,11 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
-	annotations := map[string]string{
-		"kubernetes.io/ingress.class":             key.IngressClassName(),
-		"nginx.ingress.kubernetes.io/auth-signin": "https://$host/oauth2/start?rd=$escaped_request_uri",
-		"nginx.ingress.kubernetes.io/auth-url":    "https://$host/oauth2/auth",
-	}
-
-	if config.RestrictedAccessEnabled {
-		annotations["nginx.ingress.kubernetes.io/whitelist-source-range"] = config.WhitelistedSubnets
-	}
-
 	return metav1.ObjectMeta{
-		Name:        fmt.Sprintf("prometheus-%s", key.ClusterID(cluster)),
+		Name:        fmt.Sprintf("prometheus-%s-remote-write", key.ClusterID(cluster)),
 		Namespace:   key.Namespace(cluster),
 		Labels:      key.PrometheusLabels(cluster),
-		Annotations: annotations,
+		Annotations: key.RemoteWriteAuthenticationAnnotations(),
 	}, nil
 }
 
@@ -108,25 +95,33 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 	// resource that also defines the source of the certificates (i.e. the
 	// Let's Encrypt annotation or the static source for the installation)
 	// so we know as soon as it's updated IC will be using it.
-	ingress := &networkingv1beta1.Ingress{
+	pathType := networkingv1.PathTypeImplementationSpecific
+	ingressClassName := key.IngressClassName()
+	ingress := &networkingv1.Ingress{
 		TypeMeta: metav1.TypeMeta{
-			APIVersion: networkingv1beta1.SchemeGroupVersion.Version,
+			APIVersion: networkingv1.SchemeGroupVersion.Version,
 			Kind:       "Ingress",
 		},
 		ObjectMeta: objectMeta,
-		Spec: networkingv1beta1.IngressSpec{
-			Rules: []networkingv1beta1.IngressRule{
+		Spec: networkingv1.IngressSpec{
+			IngressClassName: &ingressClassName,
+			Rules: []networkingv1.IngressRule{
 				{
 					Host: config.BaseDomain,
-					IngressRuleValue: networkingv1beta1.IngressRuleValue{
-						HTTP: &networkingv1beta1.HTTPIngressRuleValue{
-							Paths: []networkingv1beta1.HTTPIngressPath{
+					IngressRuleValue: networkingv1.IngressRuleValue{
+						HTTP: &networkingv1.HTTPIngressRuleValue{
+							Paths: []networkingv1.HTTPIngressPath{
 								{
-									Path: fmt.Sprintf("/%s", key.ClusterID(cluster)),
-									Backend: networkingv1beta1.IngressBackend{
-										ServiceName: key.PrometheusServiceName,
-										ServicePort: intstr.FromInt(int(key.PrometheusPort())),
+									Path: fmt.Sprintf("/%s/api/v1/write", key.ClusterID(cluster)),
+									Backend: networkingv1.IngressBackend{
+										Service: &networkingv1.IngressServiceBackend{
+											Name: key.PrometheusServiceName,
+											Port: networkingv1.ServiceBackendPort{
+												Number: key.PrometheusPort(),
+											},
+										},
 									},
+									PathType: &pathType,
 								},
 							},
 						},
@@ -140,8 +135,8 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 }
 
 func hasChanged(current, desired metav1.Object) bool {
-	c := current.(*networkingv1beta1.Ingress)
-	d := desired.(*networkingv1beta1.Ingress)
+	c := current.(*networkingv1.Ingress)
+	d := desired.(*networkingv1.Ingress)
 
 	return !reflect.DeepEqual(c.Spec, d.Spec) || !reflect.DeepEqual(c.GetAnnotations(), d.GetAnnotations())
 }
