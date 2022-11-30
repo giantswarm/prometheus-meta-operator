@@ -33,7 +33,6 @@ type ControllerConfig struct {
 	Provider                string
 	Region                  string
 	Registry                string
-	IngressAPIVersion       string
 
 	AlertmanagerAddress     string
 	AlertmanagerBaseDomain  string

@@ -1,8 +1,4 @@
-{{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" -}}
 apiVersion: networking.k8s.io/v1
-{{- else -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- end }}
 kind: Ingress
 metadata:
   name: {{ include "resource.default.name" . }}-alertmanager
@@ -25,12 +21,7 @@ spec:
       - path: /
         pathType: ImplementationSpecific
         backend:
-{{ if .Capabilities.APIVersions.Has "networking.k8s.io/v1/Ingress" }}
           service:
             name: alertmanager-operated
             port:
               number: 9093
-{{ else }}
-          serviceName: alertmanager-operated
-          servicePort: 9093
-{{ end }}

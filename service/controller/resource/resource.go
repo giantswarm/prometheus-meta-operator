@@ -16,13 +16,11 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/certificates"
-	ingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1"
-	ingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress/v1beta1"
+	ingress "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
-	remotewriteingressv1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1"
-	remotewriteingressv1beta1 "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress/v1beta1"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingressauth"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
@@ -47,7 +45,6 @@ type Config struct {
 	Provider                string
 	Region                  string
 	Registry                string
-	IngressAPIVersion       string
 
 	OpsgenieKey string
 
@@ -142,25 +139,14 @@ func New(config Config) ([]resource.Interface, error) {
 	}
 
 	var remoteWriteIngressResource resource.Interface
-	if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
-		c := remotewriteingressv1beta1.Config{
+	{
+		c := remotewriteingress.Config{
 			K8sClient:  config.K8sClient,
 			Logger:     config.Logger,
 			BaseDomain: config.PrometheusBaseDomain,
 		}
 
-		remoteWriteIngressResource, err = remotewriteingressv1beta1.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	} else {
-		c := remotewriteingressv1.Config{
-			K8sClient:  config.K8sClient,
-			Logger:     config.Logger,
-			BaseDomain: config.PrometheusBaseDomain,
-		}
-
-		remoteWriteIngressResource, err = remotewriteingressv1.New(c)
+		remoteWriteIngressResource, err = remotewriteingress.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -256,8 +242,8 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 	var ingressResource resource.Interface
-	if config.IngressAPIVersion == "networking.k8s.io/v1beta1" {
-		c := ingressv1beta1.Config{
+	{
+		c := ingress.Config{
 			K8sClient:               config.K8sClient,
 			Logger:                  config.Logger,
 			BaseDomain:              config.PrometheusBaseDomain,
@@ -265,20 +251,7 @@ func New(config Config) ([]resource.Interface, error) {
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 		}
 
-		ingressResource, err = ingressv1beta1.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	} else {
-		c := ingressv1.Config{
-			K8sClient:               config.K8sClient,
-			Logger:                  config.Logger,
-			BaseDomain:              config.PrometheusBaseDomain,
-			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
-			WhitelistedSubnets:      config.WhitelistedSubnets,
-		}
-
-		ingressResource, err = ingressv1.New(c)
+		ingressResource, err = ingress.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

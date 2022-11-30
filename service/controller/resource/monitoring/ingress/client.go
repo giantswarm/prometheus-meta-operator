@@ -1,23 +1,23 @@
-package v1beta1
+package ingress
 
 import (
 	"context"
 
-	networkingv1beta1 "k8s.io/api/networking/v1beta1"
+	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/client-go/kubernetes/typed/networking/v1beta1"
+	v1 "k8s.io/client-go/kubernetes/typed/networking/v1"
 )
 
 type wrappedClient struct {
-	client v1beta1.IngressInterface
+	client v1.IngressInterface
 }
 
 func (c wrappedClient) Create(ctx context.Context, o metav1.Object, options metav1.CreateOptions) (metav1.Object, error) {
-	return c.client.Create(ctx, o.(*networkingv1beta1.Ingress), options)
+	return c.client.Create(ctx, o.(*networkingv1.Ingress), options)
 }
 
 func (c wrappedClient) Update(ctx context.Context, o metav1.Object, options metav1.UpdateOptions) (metav1.Object, error) {
-	return c.client.Update(ctx, o.(*networkingv1beta1.Ingress), options)
+	return c.client.Update(ctx, o.(*networkingv1.Ingress), options)
 }
 
 func (c wrappedClient) Get(ctx context.Context, name string, options metav1.GetOptions) (metav1.Object, error) {

@@ -149,7 +149,6 @@ func New(config Config) (*Service, error) {
 				Provider:                provider,
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
-				IngressAPIVersion:       config.Viper.GetString(config.Flag.Service.Installation.IngressAPIVersion),
 
 				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
@@ -188,7 +187,6 @@ func New(config Config) (*Service, error) {
 				Provider:                provider,
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
-				IngressAPIVersion:       config.Viper.GetString(config.Flag.Service.Installation.IngressAPIVersion),
 
 				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
@@ -227,7 +225,6 @@ func New(config Config) (*Service, error) {
 			Provider:                provider,
 			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
-			IngressAPIVersion:       config.Viper.GetString(config.Flag.Service.Installation.IngressAPIVersion),
 
 			AlertmanagerAddress:     config.Viper.GetString(config.Flag.Service.Alertmanager.Address),
 			AlertmanagerBaseDomain:  config.Viper.GetString(config.Flag.Service.Alertmanager.BaseDomain),

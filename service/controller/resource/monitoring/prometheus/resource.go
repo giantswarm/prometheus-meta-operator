@@ -335,9 +335,19 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 
+		namespaceSelector := []metav1.LabelSelectorRequirement{}
+
+		if config.Provider == "openstack" {
+			namespaceSelector = append(namespaceSelector, metav1.LabelSelectorRequirement{
+				Key:      "kubernetes.io/metadata.name",
+				Operator: metav1.LabelSelectorOpNotIn,
+				Values:   []string{"kube-system"},
+			})
+		}
+
 		// An empty label selector matches all objects.
 		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{},
+			MatchExpressions: namespaceSelector,
 		}
 
 		// An empty label selector matches all objects.
@@ -347,7 +357,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 		// An empty label selector matches all objects.
 		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{},
+			MatchExpressions: namespaceSelector,
 		}
 	}
 
