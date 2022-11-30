@@ -25,6 +25,8 @@ data:
         address: {{ .Values.alertmanager.address }}
         baseDomain: {{ .Values.alertmanager.host }}
         logLevel: {{ .Values.alertmanager.logLevel }}
+        storage:
+          size: {{ .Values.alertmanager.storage.pvcSize }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-
