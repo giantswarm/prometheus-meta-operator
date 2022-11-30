@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Bump alpine from 3.16.3 to 3.17.0
 - Do not reconcile service monitors in CAPO MCs.
 
 ### Removed
