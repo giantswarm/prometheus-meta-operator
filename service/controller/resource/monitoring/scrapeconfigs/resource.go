@@ -212,6 +212,7 @@ func getDefaultAppVersion(ctx context.Context, ctrlClient client.Client, cluster
 	return app.Status.Version, nil
 }
 
+// hasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics.
 func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (bool, error) {
 	// For CAPI clusters, this is a case to case basis. We need to check the default app version for now.
 	if key.IsCAPIManagementCluster(config.Provider) {

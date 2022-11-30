@@ -98,7 +98,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -174,7 +174,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -239,7 +239,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -291,7 +291,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -375,7 +375,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -456,7 +456,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -529,7 +529,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -603,7 +603,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -679,7 +679,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -735,7 +735,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -836,7 +836,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -937,7 +937,7 @@
     replacement: medium
   # Add organization label.
   - target_label: organization
-    replacement: my-organization
+    replacement: giantswarm 
   # Add customer label.
   - target_label: customer
     replacement: pmo
