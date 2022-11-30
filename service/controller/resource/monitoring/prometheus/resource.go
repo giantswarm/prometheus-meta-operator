@@ -347,7 +347,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 		namespaceSelector := []metav1.LabelSelectorRequirement{}
 
-		if config.Provider == "openstack" {
+		if config.Provider == "openstack" || config.Provider == "gcp" {
 			namespaceSelector = append(namespaceSelector, metav1.LabelSelectorRequirement{
 				Key:      "kubernetes.io/metadata.name",
 				Operator: metav1.LabelSelectorOpNotIn,
