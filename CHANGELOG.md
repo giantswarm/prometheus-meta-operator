@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change HasPrometheusAgent function to ignore prometheus-agent scraping targets on capa.
+- Do not reconcile service monitors in kube-system for capa MCs .
+
 ## [4.14.0] - 2022-11-30
 
 ### Changed

@@ -374,3 +374,112 @@ func TestGCPScrapeconfigs(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestCAPAScrapeconfigs(t *testing.T) {
+	var err error
+
+	var apps = []runtime.Object{
+		&appsv1alpha1.App{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "alice-default-apps",
+				Namespace: "org-my-organization",
+			},
+			Status: appsv1alpha1.AppStatus{
+				Version: "0.11.0",
+			},
+		},
+		&appsv1alpha1.App{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "foo-default-apps",
+				Namespace: "org-my-organization",
+			},
+			Status: appsv1alpha1.AppStatus{
+				Version: "0.9.0",
+			},
+		},
+		&appsv1alpha1.App{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "bar-default-apps",
+				Namespace: "org-my-organization",
+			},
+			Status: appsv1alpha1.AppStatus{
+				Version: "0.10.0",
+			},
+		},
+		&appsv1alpha1.App{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "baz-default-apps",
+				Namespace: "org-my-organization",
+			},
+			Status: appsv1alpha1.AppStatus{
+				Version: "0.12.0",
+			},
+		},
+		&appsv1alpha1.App{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "kubernetes-default-apps",
+				Namespace: "org-my-organization",
+			},
+			Status: appsv1alpha1.AppStatus{
+				Version: "1.0.0",
+			},
+		},
+	}
+
+	var client client.Client
+	{
+		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+			apiextensionsv1.AddToScheme,
+			appsv1alpha1.AddToScheme,
+		})
+
+		err = schemeBuilder.AddToScheme(scheme.Scheme)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		client = fake.NewClientBuilder().
+			WithScheme(scheme.Scheme).
+			WithRuntimeObjects(apps...).
+			Build()
+	}
+
+	var testFunc unittest.TestFunc
+	{
+		path := path.Join(unittest.ProjectRoot(), templatePath)
+
+		config := Config{
+			AdditionalScrapeConfigs: additionalScrapeConfigs,
+			TemplatePath:            path,
+			Provider:                "capa",
+			Customer:                "pmo",
+			Vault:                   "vault1.some-installation.test",
+			Installation:            "test-installation",
+		}
+		testFunc = func(v interface{}) (interface{}, error) {
+			return toData(context.Background(), client, v, config)
+		}
+	}
+
+	outputDir, err := filepath.Abs("./test/capa")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	c := unittest.Config{
+		OutputDir:            outputDir,
+		T:                    t,
+		TestFunc:             testFunc,
+		Update:               *update,
+		TestFuncReturnsBytes: true,
+	}
+	runner, err := unittest.NewRunner(c)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	err = runner.Run()
+	if err != nil {
+		t.Fatal(err)
+	}
+}

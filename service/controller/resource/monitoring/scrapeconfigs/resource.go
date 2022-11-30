@@ -237,6 +237,12 @@ func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster m
 				return false, microerror.Mask(err)
 			}
 			return version.GTE(gcpAgentVersion), nil
+		case "capa":
+			gcpAgentVersion, err := semver.Parse("0.11.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(gcpAgentVersion), nil
 		default:
 			return false, nil
 		}
