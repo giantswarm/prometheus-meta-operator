@@ -1,6 +1,7 @@
 package prometheusremotewrite
 
 import (
+	"flag"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -17,6 +18,8 @@ const (
 	namespace       = "default"
 	clusterSelector = "giant-cluster"
 )
+
+var _ = flag.Bool("update", false, "doing nothing")
 
 func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 

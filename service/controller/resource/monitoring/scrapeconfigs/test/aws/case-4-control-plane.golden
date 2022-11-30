@@ -35,7 +35,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -82,7 +82,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -146,7 +146,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -191,7 +191,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -260,7 +260,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -319,7 +319,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -380,7 +380,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -425,7 +425,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -502,7 +502,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -576,7 +576,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -642,7 +642,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -709,7 +709,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -778,7 +778,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -827,7 +827,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -921,7 +921,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1061,7 +1061,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1136,7 +1136,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1209,7 +1209,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1282,7 +1282,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1354,7 +1354,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1426,7 +1426,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1498,7 +1498,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1570,7 +1570,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1642,7 +1642,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1714,7 +1714,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1786,7 +1786,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1823,7 +1823,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1879,7 +1879,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1914,7 +1914,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1977,7 +1977,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
