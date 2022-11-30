@@ -155,7 +155,6 @@ func New(config Config) (*Service, error) {
 
 				PrometheusAddress:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 				PrometheusBaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				PrometheusCreatePVC:         config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
 				PrometheusLogLevel:          config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 				PrometheusRetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
@@ -195,7 +194,6 @@ func New(config Config) (*Service, error) {
 
 				PrometheusAddress:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 				PrometheusBaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				PrometheusCreatePVC:         config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
 				PrometheusLogLevel:          config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 				PrometheusRetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
@@ -233,7 +231,6 @@ func New(config Config) (*Service, error) {
 
 			AlertmanagerAddress:     config.Viper.GetString(config.Flag.Service.Alertmanager.Address),
 			AlertmanagerBaseDomain:  config.Viper.GetString(config.Flag.Service.Alertmanager.BaseDomain),
-			AlertmanagerCreatePVC:   config.Viper.GetBool(config.Flag.Service.Alertmanager.Storage.CreatePVC),
 			AlertmanagerLogLevel:    config.Viper.GetString(config.Flag.Service.Alertmanager.LogLevel),
 			AlertmanagerStorageSize: config.Viper.GetString(config.Flag.Service.Alertmanager.Storage.Size),
 			AlertmanagerVersion:     config.Viper.GetString(config.Flag.Service.Alertmanager.Version),
@@ -244,7 +241,6 @@ func New(config Config) (*Service, error) {
 
 			PrometheusAddress:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-			PrometheusCreatePVC:         config.Viper.GetBool(config.Flag.Service.Prometheus.Storage.CreatePVC),
 			PrometheusLogLevel:          config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 			PrometheusRetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			PrometheusRetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),

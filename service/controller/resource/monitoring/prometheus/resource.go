@@ -31,7 +31,6 @@ type Config struct {
 
 	Address           string
 	Bastions          []string
-	CreatePVC         bool
 	Customer          string
 	Installation      string
 	Pipeline          string
@@ -111,30 +110,21 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	var gid int64 = 65534
 	var walCompression bool = true
 
-	var storage promv1.StorageSpec
 	annotationValue := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
 	volumeSize := pvcresizing.PrometheusVolumeSize(annotationValue)
 	storageSize := resource.MustParse(volumeSize)
 
-	if config.CreatePVC {
-		storage = promv1.StorageSpec{
-			VolumeClaimTemplate: promv1.EmbeddedPersistentVolumeClaim{
-				Spec: corev1.PersistentVolumeClaimSpec{
-					AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
-					Resources: corev1.ResourceRequirements{
-						Requests: corev1.ResourceList{
-							corev1.ResourceStorage: storageSize,
-						},
+	storage := promv1.StorageSpec{
+		VolumeClaimTemplate: promv1.EmbeddedPersistentVolumeClaim{
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						corev1.ResourceStorage: storageSize,
 					},
 				},
 			},
-		}
-	} else {
-		storage = promv1.StorageSpec{
-			EmptyDir: &corev1.EmptyDirVolumeSource{
-				SizeLimit: &storageSize,
-			},
-		}
+		},
 	}
 
 	externalURL, err := address.Parse("/" + key.ClusterID(cluster))

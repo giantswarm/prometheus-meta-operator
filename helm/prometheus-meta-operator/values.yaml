@@ -24,8 +24,6 @@ alertmanager:
   slack:
     apiURL: ""
   storage:
-    enabled: true
-    createPVC: true
     size: 1Gi
 
 certificate:
@@ -60,9 +58,6 @@ prometheus:
   logLevel: info
   letsencrypt: false
   mayu: ""
-  storage:
-    createPVC: true
-    enabled: true
 
 security:
   restrictAccess:

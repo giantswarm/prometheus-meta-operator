@@ -25,9 +25,6 @@ data:
         address: {{ .Values.alertmanager.address }}
         baseDomain: {{ .Values.alertmanager.host }}
         logLevel: {{ .Values.alertmanager.logLevel }}
-        storage:
-          createPVC: {{ and .Values.alertmanager.storage.enabled .Values.alertmanager.storage.createPVC }}
-          size: {{ .Values.alertmanager.storage.pvcSize }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-
@@ -46,8 +43,6 @@ data:
         retention:
           duration: 2w
           size: 90GB
-        storage:
-          createPVC: {{ and .Values.prometheus.storage.enabled .Values.prometheus.storage.createPVC }}
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
         {{- if .Values.slack }}

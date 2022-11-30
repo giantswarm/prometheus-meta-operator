@@ -13,8 +13,7 @@ type Prometheus struct {
 }
 
 type PrometheusStorage struct {
-	CreatePVC string
-	Size      string
+	Size string
 }
 
 type PrometheusRetention struct {

@@ -54,7 +54,6 @@ type resourcesConfig struct {
 
 	AlertmanagerAddress     string
 	AlertmanagerBaseDomain  string
-	AlertmanagerCreatePVC   bool
 	AlertmanagerLogLevel    string
 	AlertmanagerStorageSize string
 	AlertmanagerVersion     string
@@ -65,7 +64,6 @@ type resourcesConfig struct {
 
 	PrometheusAddress           string
 	PrometheusBaseDomain        string
-	PrometheusCreatePVC         bool
 	PrometheusLogLevel          string
 	PrometheusRetentionDuration string
 	PrometheusRetentionSize     string
@@ -129,7 +127,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Address:     config.AlertmanagerAddress,
 			Client:      config.PrometheusClient,
 			Logger:      config.Logger,
-			CreatePVC:   config.AlertmanagerCreatePVC,
 			LogLevel:    config.AlertmanagerLogLevel,
 			StorageSize: config.AlertmanagerStorageSize,
 			Version:     config.AlertmanagerVersion,
@@ -197,7 +194,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Address:           config.PrometheusAddress,
 			PrometheusClient:  config.PrometheusClient,
 			Logger:            config.Logger,
-			CreatePVC:         config.PrometheusCreatePVC,
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,

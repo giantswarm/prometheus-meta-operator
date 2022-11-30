@@ -19,7 +19,6 @@ func TestPrometheus(t *testing.T) {
 
 	config := Config{
 		Address:           "http://prometheus/cluster",
-		CreatePVC:         true,
 		Customer:          "Giant Swarm",
 		Installation:      "test-installation",
 		Pipeline:          "testing",

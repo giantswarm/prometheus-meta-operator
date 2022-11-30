@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove option to disable PVC creations only used on KVM installations.
+
 ## [4.12.0] - 2022-11-25
 
 ### Changed

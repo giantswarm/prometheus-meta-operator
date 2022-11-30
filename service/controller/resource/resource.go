@@ -53,7 +53,6 @@ type Config struct {
 
 	PrometheusAddress           string
 	PrometheusBaseDomain        string
-	PrometheusCreatePVC         bool
 	PrometheusLogLevel          string
 	PrometheusRemoteWriteURL    string
 	PrometheusRetentionDuration string
@@ -206,7 +205,6 @@ func New(config Config) ([]resource.Interface, error) {
 			Address:           config.PrometheusAddress,
 			PrometheusClient:  config.PrometheusClient,
 			Logger:            config.Logger,
-			CreatePVC:         config.PrometheusCreatePVC,
 			Customer:          config.Customer,
 			Installation:      config.Installation,
 			Pipeline:          config.Pipeline,
