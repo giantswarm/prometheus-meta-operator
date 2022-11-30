@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Do not reconcile service monitors in CAPO MCs.
 
+### Removed
+
+- Remove deprecated ingress v1beta1 (only used on kvm).
+
 ## [4.12.0] - 2022-11-25
 
 ### Changed
@@ -34,7 +38,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Remove the `CLUSTER-prometheus/app-exporter-CLUSTER/0` job in favor of Service Monitor provided by the app.
-- Remove deprecated ingress v1beta1 (only used on kvm).
 
 ### Added
 
