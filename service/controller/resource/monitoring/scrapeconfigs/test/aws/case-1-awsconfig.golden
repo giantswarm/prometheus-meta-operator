@@ -42,11 +42,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -102,11 +98,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -182,11 +174,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -252,11 +240,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -320,11 +304,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -376,11 +356,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -464,11 +440,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -549,11 +521,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -626,11 +594,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -704,11 +668,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -784,11 +744,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -844,11 +800,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -949,11 +901,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1054,11 +1002,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-<<<<<<< HEAD
-    replacement: my-organization
-=======
     replacement: my-organization 
->>>>>>> f3e28d6dcf14cf9a9cdfd417a6fc2615fe344af7
   # Add customer label.
   - target_label: customer
     replacement: pmo
