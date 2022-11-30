@@ -178,6 +178,12 @@ rules:
       - statefulsets
     verbs:
       - delete
+  - apiGroups:
+      - application.giantswarm.io
+    resources:
+      - apps
+    verbs:
+      - get
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
