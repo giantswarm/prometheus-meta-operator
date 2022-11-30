@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/blang/semver v3.5.1+incompatible
+	github.com/giantswarm/apiextensions-application v0.6.0
 	github.com/giantswarm/apiextensions/v6 v6.4.1
 	github.com/giantswarm/k8sclient/v7 v7.0.1
 	github.com/giantswarm/microendpoint v1.0.0
@@ -33,8 +34,6 @@ require (
 	sigs.k8s.io/controller-runtime v0.12.3
 	sigs.k8s.io/yaml v1.3.0
 )
-
-require github.com/giantswarm/apiextensions-application v0.6.0
 
 require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
