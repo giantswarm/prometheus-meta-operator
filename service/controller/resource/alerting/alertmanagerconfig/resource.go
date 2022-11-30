@@ -2,7 +2,6 @@ package alertmanagerconfig
 
 import (
 	"context"
-	"os"
 	"path"
 	"reflect"
 
@@ -21,7 +20,7 @@ import (
 const (
 	Name                     = "alertmanagerconfig"
 	templateDirectory        = "/opt/prometheus-meta-operator"
-	templatePath             = "files/templates/alertmanager/alertmanager.yaml"
+	alertmanagerTemplatePath = "files/templates/alertmanager/alertmanager.yaml"
 	notificationTemplatePath = "files/templates/alertmanager/notification-template.tmpl"
 )
 
@@ -37,11 +36,13 @@ type Config struct {
 	SlackApiURL        string
 	SlackProjectName   string
 	Pipeline           string
-
-	TemplatePath string
 }
 
-type TemplateData struct {
+type NotificationTemplateData struct {
+	GrafanaAddress string
+}
+
+type AlertmanagerTemplateData struct {
 	Provider         string
 	Installation     string
 	ProxyURL         string
@@ -56,10 +57,6 @@ func New(config Config) (*generic.Resource, error) {
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
 		return wrappedClient{client: c}
-	}
-
-	if config.TemplatePath == "" {
-		config.TemplatePath = path.Join(templateDirectory, templatePath)
 	}
 
 	c := generic.Config{
@@ -96,12 +93,12 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	notificationTemplate, err := os.ReadFile(path.Join(templateDirectory, notificationTemplatePath))
+	notificationTemplate, err := renderNotificationTemplate(templateDirectory, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	alertmanagerConfigSecret, err := toData(v, config)
+	alertmanagerConfigSecret, err := renderAlertmanagerConfig(templateDirectory, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -119,18 +116,10 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	return secret, nil
 }
 
-func toData(v interface{}, config Config) ([]byte, error) {
-	cluster, err := key.ToCluster(v)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+func renderNotificationTemplate(templateDirectory string, config Config) ([]byte, error) {
+	templateData := NotificationTemplateData{config.GrafanaAddress}
 
-	templateData, err := getTemplateData(cluster, config)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	data, err := template.RenderTemplate(templateData, config.TemplatePath)
+	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, notificationTemplatePath))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -138,8 +127,22 @@ func toData(v interface{}, config Config) ([]byte, error) {
 	return data, nil
 }
 
-func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-	d := &TemplateData{
+func renderAlertmanagerConfig(templateDirectory string, config Config) ([]byte, error) {
+	templateData, err := getTemplateData(config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, alertmanagerTemplatePath))
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return data, nil
+}
+
+func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
+	d := &AlertmanagerTemplateData{
 		Provider:         config.Provider,
 		Installation:     config.Installation,
 		ProxyURL:         config.ProxyConfiguration.GetURLForEndpoint("api.opsgenie.com"),

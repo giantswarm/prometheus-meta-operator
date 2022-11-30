@@ -349,15 +349,17 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
-		remoteWriteAPIEndpointConfigSecretResource,
-		remoteWriteIngressAuthResource,
-		remoteWriteIngressResource,
 		scrapeConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
 		monitoringIngressResource,
 		heartbeatResource,
 		pvcResizeResource,
+	}
+
+	// We enable those resources on CAPI clusters only as the agent is not running there and vintage clusters do not have MC namespaces.
+	if key.IsCAPIManagementCluster(config.Provider) {
+		resources = append(resources, remoteWriteAPIEndpointConfigSecretResource, remoteWriteIngressAuthResource, remoteWriteIngressResource)
 	}
 
 	{

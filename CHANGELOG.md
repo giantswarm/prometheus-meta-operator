@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Do not reconcile service monitors in CAPO MCs.
+
+## [4.12.0] - 2022-11-25
+
+### Changed
+
+- Improve opsgenie notification template.
+
+## [4.11.2] - 2022-11-24
+
+### Fixed
+
+- Remove `vault` targets for CAPI clusters.
+
+## [4.11.1] - 2022-11-22
+
+### Fixed
+
+- Fix reconciliation issues on vintage MCs.
+
+## [4.11.0] - 2022-11-18
+
 ### Removed
 
 - Remove the `CLUSTER-prometheus/app-exporter-CLUSTER/0` job in favor of Service Monitor provided by the app.
@@ -15,7 +39,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Ensure the remote write endpoint configuration is enabled for MCs
-- Add Inhibition rule for prometheus-agent before release v19
+- Add Inhibition rule for prometheus-agent to ignore clusters that doesn't deploy the agent.
+
+### Changed
+
+- Send non-paging alert to Atlas slack channels.
 
 ### Fixed
 
@@ -1700,7 +1728,11 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.10.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.12.0...HEAD
+[4.12.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.2...v4.12.0
+[4.11.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.1...v4.11.2
+[4.11.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.0...v4.11.1
+[4.11.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.10.0...v4.11.0
 [4.10.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.9.2...v4.10.0
 [4.9.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.9.1...v4.9.2
 [4.9.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.9.0...v4.9.1
