@@ -41,27 +41,27 @@ route:
     - alertname="ServiceLevelBurnRateTooHigh"
     continue: false
 
-  # Team Atlas Slack (team)
+  # Team Atlas Slack
   - receiver: team_atlas_slack
     matchers:
     - team="atlas"
     continue: false
 
-  # Team Celestial Slack (team)
+  # Team Celestial Slack
   - receiver: team_phoenix_slack
     matchers:
     - severity=~"page|notify"
     - team="celestial"
     continue: false
 
-  # Team Firecracker Slack (team)
+  # Team Firecracker Slack
   - receiver: team_phoenix_slack
     matchers:
     - severity=~"page|notify"
     - team="firecracker"
     continue: false
 
-  # Team Phoenix Slack (team)
+  # Team Phoenix Slack
   - receiver: team_phoenix_slack
     matchers:
     - severity=~"page|notify"
@@ -75,7 +75,14 @@ route:
     - team="hydra"
     continue: false
 
-  # Team Rocket Slack (team)
+  # Team Clippy Slack
+  - receiver: team_clippy_slack
+    matchers:
+    - severity=~"page|notify"
+    - team="clippy"
+    continue: false
+
+  # Team Rocket Slack
   - receiver: team_rocket_slack
     matchers:
     - severity=~"page|notify"
@@ -163,6 +170,29 @@ receivers:
 - name: team_hydra_slack
   slack_configs:
   - channel: '#alert-hydra-test'
+    send_resolved: true
+    actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
+- name: team_clippy_slack
+  slack_configs:
+  - channel: '#alert-clippy-test'
     send_resolved: true
     actions:
     - type: button

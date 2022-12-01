@@ -128,6 +128,70 @@ workflows:
               only: /^v.*/
 
       - architect/push-to-app-collection:
+          context: architect
+          name: push-to-capa-app-collection
+          app_name: "prometheus-meta-operator"
+          app_namespace: "monitoring"
+          app_collection_repo: "capa-app-collection"
+          requires:
+            - push-to-quay
+            - push-to-aliyun
+            - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-to-capz-app-collection
+          app_name: "prometheus-meta-operator"
+          app_namespace: "monitoring"
+          app_collection_repo: "capz-app-collection"
+          requires:
+            - push-to-quay
+            - push-to-aliyun
+            - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-to-cloud-director-app-collection
+          app_name: "prometheus-meta-operator"
+          app_namespace: "monitoring"
+          app_collection_repo: "cloud-director-app-collection"
+          requires:
+            - push-to-quay
+            - push-to-aliyun
+            - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
+          context: architect
+          name: push-to-gcp-app-collection
+          app_name: "prometheus-meta-operator"
+          app_namespace: "monitoring"
+          app_collection_repo: "gcp-app-collection"
+          requires:
+            - push-to-quay
+            - push-to-aliyun
+            - app-catalog
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*/
+
+      - architect/push-to-app-collection:
           name: openstack-app-collection
           context: "architect"
           app_name: "prometheus-meta-operator"
@@ -148,57 +212,6 @@ workflows:
           app_name: "prometheus-meta-operator"
           app_namespace: "monitoring"
           app_collection_repo: "vsphere-app-collection"
-          requires:
-            - push-to-quay
-            - push-to-aliyun
-            - app-catalog
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-
-
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-to-cloud-director-app-collection
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "cloud-director-app-collection"
-          requires:
-            - push-to-quay
-            - push-to-aliyun
-            - app-catalog
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-
-
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-to-capa-app-collection
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "capa-app-collection"
-          requires:
-            - push-to-quay
-            - push-to-aliyun
-            - app-catalog
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
-
-
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-to-gcp-app-collection
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "gcp-app-collection"
           requires:
             - push-to-quay
             - push-to-aliyun
