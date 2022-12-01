@@ -44,7 +44,7 @@ route:
   - receiver: team_phoenix_slack
   [[- else if or (eq .Provider "gcp") (eq .Provider "capa")]]
   - receiver: team_hydra_slack
-  [[ - else if eq .Provider "capz" ]]
+  [[- else if eq .Provider "capz" ]]
   - receiver: team_clippy_slack
   [[- else ]]
   - receiver: team_rocket_slack
