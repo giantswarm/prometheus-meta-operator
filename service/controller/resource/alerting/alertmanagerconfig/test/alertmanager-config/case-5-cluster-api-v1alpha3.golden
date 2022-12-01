@@ -45,6 +45,8 @@ route:
   - receiver: team_atlas_slack
     matchers:
     - team="atlas"
+    - type!="heartbeat"
+    - alertname!~"Inhibition.*"
     continue: false
 
   # Team Celestial Slack (team)
