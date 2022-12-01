@@ -58,6 +58,7 @@ route:
     - severity!="page"
     [[- end ]]
     - team="atlas"
+    - type!="heartbeat"
     continue: false
 
   # Team Celestial Slack (team)
