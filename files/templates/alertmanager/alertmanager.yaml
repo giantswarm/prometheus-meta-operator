@@ -59,6 +59,7 @@ route:
     [[- end ]]
     - team="atlas"
     - type!="heartbeat"
+    - alertname!~"Inhibition.*"
     continue: false
 
   # Team Celestial Slack (team)
