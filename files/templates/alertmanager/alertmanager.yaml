@@ -60,6 +60,8 @@ route:
     - severity!="page"
     [[- end ]]
     - team="atlas"
+    - type!="heartbeat"
+    - alertname!~"Inhibition.*"
     continue: false
 
   # Team Celestial Slack
