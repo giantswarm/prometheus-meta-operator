@@ -25,17 +25,23 @@
 
 {{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
 {{ define "opsgenie.default.source" }}{{ template "__alertmanager" . }}{{ end }}
-{{ define "opsgenie.default.description" }}<b>Team:</b> {{ (index .Alerts 0).Labels.team }}
-<b>Area:</b> {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
-<b>Instances:</b>
-<ul>{{ range .Alerts.Firing }}<li>{{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}</li>{{ end }}</ul>
-<br />
+{{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
+* Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
 
-{{- if (index .Alerts 0).Annotations.opsrecipe }}<a href='{{ template "__runbookurl" . }}'>📗 Runbook</a> | {{- end }}<a href='{{ template "__alertmanagerurl" . }}'>🔔 Alertmanager</a> | {{- if (index .Alerts 0).Annotations.dashboard }}<a href='{{ template "__dashboardurl" . }}'>📈 Dashboard</a> | {{- end }}<a href="{{ (index .Alerts 0).GeneratorURL }}">👀 Prometheus</a>
+* Instances:
+   * {{ range .Alerts.Firing }}{{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
 
-<br />
-{{- if not (index .Alerts 0).Annotations.opsrecipe }}⚠️ There is no <b>runbook</b> for this alert, time to get your pen.{{- end }}
-{{- if not (index .Alerts 0).Annotations.dashboard }}⚠️ There is no <b>dashboard</b> for this alert, time to sketch.{{- end }}
+---
+
+{{ if (index .Alerts 0).Annotations.opsrecipe }}* 📗 Runbook: {{ template "__runbookurl" . }}{{- end }}
+* 🔔 Alertmanager {{ template "__alertmanagerurl" . }}
+{{- if (index .Alerts 0).Annotations.dashboard }}* 📈 Dashboard: {{ template "__dashboardurl" . }}{{- end }}
+* 👀 Prometheus: {{ (index .Alerts 0).GeneratorURL }}
+
+---
+
+{{ if not (index .Alerts 0).Annotations.opsrecipe }}⚠️ There is no **runbook** for this alert, time to get your pen.{{- end }}
+{{ if not (index .Alerts 0).Annotations.dashboard }}⚠️ There is no **dashboard** for this alert, time to sketch.{{- end }}
 {{- end }}
 
 # This builds the silence URL.  We exclude the alertname in the range

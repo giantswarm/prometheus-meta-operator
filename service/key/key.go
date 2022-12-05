@@ -13,7 +13,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
-var capiProviders = []string{"capa", "cloud-director", "gcp", "openstack", "vsphere"}
+var capiProviders = []string{"capa", "capz", "cloud-director", "gcp", "openstack", "vsphere"}
 
 const (
 	monitoring = "monitoring"
