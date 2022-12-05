@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.15.0] - 2022-12-05
+
 ### Changed
 
 - Send less alerts into Atlas alert slack channels (filtering out heartbeats and inhibitions)
@@ -1751,7 +1753,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.14.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.15.0...HEAD
+[4.15.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.14.0...v4.15.0
 [4.14.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.13.0...v4.14.0
 [4.13.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.12.0...v4.13.0
 [4.12.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.2...v4.12.0
