@@ -340,34 +340,33 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			},
 		}
 
-		// An empty label selector matches all objects.
-		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{},
-		}
-
-		namespaceSelector := []metav1.LabelSelectorRequirement{}
-
+		allMonitorSelector := []metav1.LabelSelectorRequirement{}
 		if config.Provider == "openstack" || config.Provider == "gcp" || config.Provider == "capa" {
-			namespaceSelector = append(namespaceSelector, metav1.LabelSelectorRequirement{
-				Key:      "kubernetes.io/metadata.name",
-				Operator: metav1.LabelSelectorOpNotIn,
-				Values:   []string{"kube-system"},
+			// We do not discover the service monitors discovered by the agent running on the management cluster
+			allMonitorSelector = append(allMonitorSelector, metav1.LabelSelectorRequirement{
+				Key:      "application.giantswarm.io/team",
+				Operator: metav1.LabelSelectorOpDoesNotExist,
 			})
 		}
 
 		// An empty label selector matches all objects.
-		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: namespaceSelector,
+		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: allMonitorSelector,
 		}
 
 		// An empty label selector matches all objects.
-		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
+		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 
 		// An empty label selector matches all objects.
+		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: allMonitorSelector,
+		}
+
+		// An empty label selector matches all objects.
 		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: namespaceSelector,
+			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 	}
 
