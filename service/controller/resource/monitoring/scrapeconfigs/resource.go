@@ -225,24 +225,30 @@ func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster m
 			return false, microerror.Mask(err)
 		}
 		switch config.Provider {
-		case "openstack":
-			openstackAgentVersion, err := semver.Parse("0.8.0")
-			if err != nil {
-				return false, microerror.Mask(err)
-			}
-			return version.GTE(openstackAgentVersion), nil
-		case "gcp":
-			gcpAgentVersion, err := semver.Parse("0.16.0")
-			if err != nil {
-				return false, microerror.Mask(err)
-			}
-			return version.GTE(gcpAgentVersion), nil
 		case "capa":
 			capaAgentVersion, err := semver.Parse("0.11.0")
 			if err != nil {
 				return false, microerror.Mask(err)
 			}
 			return version.GTE(capaAgentVersion), nil
+		case "cloud-directory":
+			cloudDirectorAgentVersion, err := semver.Parse("0.3.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(cloudDirectorAgentVersion), nil
+		case "gcp":
+			gcpAgentVersion, err := semver.Parse("0.16.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(gcpAgentVersion), nil
+		case "openstack":
+			openstackAgentVersion, err := semver.Parse("0.8.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(openstackAgentVersion), nil
 		default:
 			return false, nil
 		}
