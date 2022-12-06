@@ -4,7 +4,7 @@ metadata:
   name: {{ include "resource.default.name" . }}
   namespace: {{ include "resource.default.namespace" . }}
   labels:
-    name: {{ include "resource.default.name" . }}
+    {{- include "labels.common" . | nindent 4 }}
 spec:
   namespaceSelector:
     matchNames:

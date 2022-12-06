@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change HasPrometheusAgent function to ignore prometheus-agent scraping targets on CAPA and CAPVCD.
 - Do not reconcile service monitors in kube-system for CAPA and CAPVCD MCs.
+- Change label selector used to discover `PodMonitors` and `ServiceMonitors` 
+  to avoid a duplicate scrape introduced in https://github.com/giantswarm/observability-bundle/pull/18.
 - README: how to generate test
 
 ## [4.15.0] - 2022-12-05
