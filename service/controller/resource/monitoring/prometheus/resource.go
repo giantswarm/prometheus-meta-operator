@@ -341,7 +341,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		}
 
 		allMonitorSelector := []metav1.LabelSelectorRequirement{}
-		if config.Provider == "openstack" || config.Provider == "gcp" || config.Provider == "capa" {
+		if key.IsCAPIManagementCluster(config.Provider) {
 			// We do not discover the service monitors discovered by the agent running on the management cluster
 			allMonitorSelector = append(allMonitorSelector, metav1.LabelSelectorRequirement{
 				Key:      "application.giantswarm.io/team",
