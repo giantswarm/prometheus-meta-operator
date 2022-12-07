@@ -252,7 +252,7 @@ func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster m
 		default:
 			return false, nil
 		}
-	} else if key.IsInCluster(config.Installation, cluster) {
+	} else if key.IsManagementCluster(config.Installation, cluster) {
 		// Bundle is currently not deployed in Vintage MCs
 		return false, nil
 	}

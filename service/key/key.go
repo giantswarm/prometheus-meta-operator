@@ -100,7 +100,7 @@ func IsMonitoringDisabled(cluster metav1.Object) bool {
 }
 
 func EtcdSecret(installation string, obj interface{}) string {
-	if IsInCluster(installation, obj) {
+	if IsManagementCluster(installation, obj) {
 		return "etcd-certificates"
 	}
 
@@ -152,13 +152,15 @@ func RemoteWriteAuthenticationAnnotations() map[string]string {
 	}
 }
 
-func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, provider string) (string, string) {
+func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, installation string, provider string) (string, string) {
 	name := RemoteWriteAPIEndpointConfigSecretName
 	namespace := ClusterID(cluster)
 
 	if IsCAPIManagementCluster(provider) {
 		name = ClusterID(cluster) + "-" + name
 		namespace = cluster.GetNamespace()
+	} else if IsManagementCluster(installation, cluster) {
+		namespace = NamespaceMonitoring()
 	}
 	return name, namespace
 }
@@ -261,7 +263,7 @@ func APIUrl(obj interface{}) string {
 	return ""
 }
 
-func IsInCluster(installation string, obj interface{}) bool {
+func IsManagementCluster(installation string, obj interface{}) bool {
 	switch v := obj.(type) {
 	case *v1.Service:
 		return true
@@ -276,7 +278,7 @@ func IsInCluster(installation string, obj interface{}) bool {
 }
 
 func ClusterType(installation string, obj interface{}) string {
-	if IsInCluster(installation, obj) {
+	if IsManagementCluster(installation, obj) {
 		return "management_cluster"
 	}
 

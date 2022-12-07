@@ -271,7 +271,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		},
 	}
 
-	if !key.IsInCluster(config.Installation, cluster) {
+	if !key.IsManagementCluster(config.Installation, cluster) {
 		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
