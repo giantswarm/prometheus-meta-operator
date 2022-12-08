@@ -1,0 +1,32 @@
+{{- if .Values.observabilityBundle.enabled }}
+apiVersion: application.giantswarm.io/v1alpha1
+kind: App
+metadata:
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: {{ .Values.observabilityBundle.clusterID}}-observability-bundle
+  namespace: giantswarm
+spec:
+  catalog: default
+  config:
+    configMap:
+      name: {{ .Values.observabilityBundle.clusterID }}-cluster-values
+      namespace: giantswarm
+  kubeConfig:
+    inCluster: true
+  name: observability-bundle
+  namespace: giantswarm
+  version: 0.1.4
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: {{ .Values.observabilityBundle.clusterID }}-cluster-values
+  namespace: giantswarm
+data:
+  values: |
+    clusterID: {{ .Values.observabilityBundle.clusterID }}
+    organization: {{ .Values.observabilityBundle.organization }}
+{{- end }}

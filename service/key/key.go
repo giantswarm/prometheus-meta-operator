@@ -160,7 +160,7 @@ func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, i
 		name = ClusterID(cluster) + "-" + name
 		namespace = cluster.GetNamespace()
 	} else if IsManagementCluster(installation, cluster) {
-		namespace = NamespaceMonitoring()
+		namespace = "giantswarm"
 	}
 	return name, namespace
 }
