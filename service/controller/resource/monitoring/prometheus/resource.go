@@ -340,13 +340,12 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			},
 		}
 
-		allMonitorSelector := []metav1.LabelSelectorRequirement{}
-		if key.IsCAPIManagementCluster(config.Provider) {
-			// We do not discover the service monitors discovered by the agent running on the management cluster
-			allMonitorSelector = append(allMonitorSelector, metav1.LabelSelectorRequirement{
+		// We do not discover the service monitors discovered by the agent running on the management cluster
+		allMonitorSelector := []metav1.LabelSelectorRequirement{
+			{
 				Key:      "application.giantswarm.io/team",
 				Operator: metav1.LabelSelectorOpDoesNotExist,
-			})
+			},
 		}
 
 		// An empty label selector matches all objects.

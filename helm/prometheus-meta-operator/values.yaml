@@ -70,8 +70,3 @@ slack:
   projectName: ""
 
 vaultHost: ""
-
-observability-bundle:
-  enabled: true
-  clusterID: "ginger"
-  organization: "giantswarm"
