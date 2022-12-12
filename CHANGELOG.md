@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+* alert templating: list of firing instances
+
 ## [4.16.0] - 2022-12-07
 
 ### Changed
