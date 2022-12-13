@@ -15,9 +15,11 @@
 {{- if (index .Alerts 0).Annotations.description }}
 *Instances*
 {{ if eq .Status "firing" }}
-{{ range .Alerts.Firing }}:fire: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
+{{ range .Alerts.Firing }}
+:fire: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{- end }}
 {{ else }}
-{{ range .Alerts.Resolved }}:success: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
+{{ range .Alerts.Resolved }}
+:success: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{- end }}
 {{ end }}
 {{- end }}
 {{ end }}
