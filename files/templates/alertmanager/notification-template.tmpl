@@ -15,9 +15,11 @@
 {{- if (index .Alerts 0).Annotations.description }}
 *Instances*
 {{ if eq .Status "firing" }}
-{{ range .Alerts.Firing }}:fire: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
+{{ range .Alerts.Firing }}
+:fire: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{- end }}
 {{ else }}
-{{ range .Alerts.Resolved }}:success: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
+{{ range .Alerts.Resolved }}
+:success: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{- end }}
 {{ end }}
 {{- end }}
 {{ end }}
@@ -28,15 +30,15 @@
 {{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
 * Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
 
-* Instances:
-   * {{ range .Alerts.Firing }}{{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
+* Instances:{{ range .Alerts.Firing }}
+🔥 {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
 
 ---
 
-{{ if (index .Alerts 0).Annotations.opsrecipe }}* 📗 Runbook: {{ template "__runbookurl" . }}{{- end }}
-* 🔔 Alertmanager {{ template "__alertmanagerurl" . }}
-{{- if (index .Alerts 0).Annotations.dashboard }}* 📈 Dashboard: {{ template "__dashboardurl" . }}{{- end }}
-* 👀 Prometheus: {{ (index .Alerts 0).GeneratorURL }}
+{{ if (index .Alerts 0).Annotations.opsrecipe }}📗 Runbook: {{ template "__runbookurl" . }}{{- end }}
+🔔 Alertmanager {{ template "__alertmanagerurl" . }}
+{{- if (index .Alerts 0).Annotations.dashboard }}📈 Dashboard: {{ template "__dashboardurl" . }}{{- end }}
+👀 Prometheus: {{ (index .Alerts 0).GeneratorURL }}
 
 ---
 
