@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.17.0] - 2022-12-14
+
 ### Changed
 
 - Deploy needed resources for the agent to run on Vintage MCs.
@@ -1773,7 +1775,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.16.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.17.0...HEAD
+[4.17.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.16.0...v4.17.0
 [4.16.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.15.0...v4.16.0
 [4.15.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.14.0...v4.15.0
 [4.14.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.13.0...v4.14.0
