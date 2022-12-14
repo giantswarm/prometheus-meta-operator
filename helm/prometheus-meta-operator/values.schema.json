@@ -1,0 +1,235 @@
+{
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "alertmanager": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                },
+                "host": {
+                    "type": "string"
+                },
+                "logLevel": {
+                    "type": "string"
+                },
+                "slack": {
+                    "type": "object",
+                    "properties": {
+                        "apiURL": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "storage": {
+                    "type": "object",
+                    "properties": {
+                        "createPVC": {
+                            "type": "boolean"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "size": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "certificate": {
+            "type": "object",
+            "properties": {
+                "monitoring": {
+                    "type": "object",
+                    "properties": {
+                        "crtPem": {
+                            "type": "string"
+                        },
+                        "keyPem": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "grafana": {
+            "type": "object",
+            "properties": {
+                "address": {
+                    "type": "string"
+                }
+            }
+        },
+        "grafanaCloud": {
+            "type": "object",
+            "properties": {
+                "remoteWriteURL": {
+                    "type": "string"
+                }
+            }
+        },
+        "image": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        },
+        "managementCluster": {
+            "type": "object",
+            "properties": {
+                "customer": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "pipeline": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "object",
+                    "properties": {
+                        "kind": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "pod": {
+            "type": "object",
+            "properties": {
+                "group": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        }
+                    }
+                },
+                "user": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        },
+        "prometheus": {
+            "type": "object",
+            "properties": {
+                "additionalScrapeConfigs": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "bastions": {
+                    "type": "array"
+                },
+                "etcdClientCertificates": {
+                    "type": "object",
+                    "properties": {
+                        "ca": {
+                            "type": "string"
+                        },
+                        "crt": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "heartbeat": {
+                    "type": "object",
+                    "properties": {
+                        "opsgenieKey": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "host": {
+                    "type": "string"
+                },
+                "letsencrypt": {
+                    "type": "boolean"
+                },
+                "logLevel": {
+                    "type": "string"
+                },
+                "mayu": {
+                    "type": "string"
+                },
+                "storage": {
+                    "type": "object",
+                    "properties": {
+                        "createPVC": {
+                            "type": "boolean"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "registry": {
+            "type": "object",
+            "properties": {
+                "domain": {
+                    "type": "string"
+                },
+                "pullSecret": {
+                    "type": "object",
+                    "properties": {
+                        "dockerConfigJSON": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "security": {
+            "type": "object",
+            "properties": {
+                "restrictAccess": {
+                    "type": "object",
+                    "properties": {
+                        "enabled": {
+                            "type": "boolean"
+                        }
+                    }
+                },
+                "subnet": {
+                    "type": "object",
+                    "properties": {
+                        "vpn": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "slack": {
+            "type": "object",
+            "properties": {
+                "projectName": {
+                    "type": "string"
+                }
+            }
+        },
+        "vaultHost": {
+            "type": "string"
+        }
+    }
+}

@@ -62,7 +62,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:     config.Logger,
 		Name:       Name,
 		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(ctx, v, config.Provider)
+			return getObjectMeta(ctx, v, config.Installation, config.Provider)
 		},
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toSecret(ctx, v, config)
@@ -77,13 +77,13 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(ctx context.Context, v interface{}, provider string) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}, installation string, provider string) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
-	name, namespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, provider)
+	name, namespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, installation, provider)
 
 	return metav1.ObjectMeta{
 		Name:      name,
@@ -93,7 +93,7 @@ func getObjectMeta(ctx context.Context, v interface{}, provider string) (metav1.
 }
 
 func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta(ctx, v, config.Provider)
+	objectMeta, err := getObjectMeta(ctx, v, config.Installation, config.Provider)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

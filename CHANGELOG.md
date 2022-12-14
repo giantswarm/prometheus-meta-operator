@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Deploy needed resources for the agent to run on Vintage MCs.
+
 ### Fixed
 
 * opsgenie alert templating: list of firing instances

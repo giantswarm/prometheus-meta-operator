@@ -13,10 +13,6 @@ pod:
   group:
     id: 1000
 
-project:
-  branch: "[[ .Branch ]]"
-  commit: "[[ .SHA ]]"
-
 alertmanager:
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"

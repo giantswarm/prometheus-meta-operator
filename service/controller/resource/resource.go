@@ -130,6 +130,7 @@ func New(config Config) ([]resource.Interface, error) {
 			K8sClient:       config.K8sClient,
 			Logger:          config.Logger,
 			PasswordManager: passwordManager,
+			Installation:    config.Installation,
 			Provider:        config.Provider,
 		}
 
