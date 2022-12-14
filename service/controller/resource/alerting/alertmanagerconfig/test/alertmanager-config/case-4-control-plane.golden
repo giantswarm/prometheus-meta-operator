@@ -117,7 +117,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -140,7 +140,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -163,7 +163,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -186,7 +186,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -209,7 +209,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -232,7 +232,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -255,7 +255,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -283,7 +283,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'

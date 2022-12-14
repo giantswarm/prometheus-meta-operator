@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * opsgenie alert templating: list of firing instances
 * slack alert templating: list of firing instances
+* fix dashboard url
 
 ## [4.16.0] - 2022-12-07
 
