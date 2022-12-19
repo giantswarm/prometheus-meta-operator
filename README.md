@@ -106,4 +106,4 @@ Three values are possible:
 
 while `medium` is the default value.
 
-Check [Prometheus Volume Sizing](https://docs.giantswarm.io/ui-api/observability/prometheus/volume-size/) for more details.
+Check [Prometheus Volume Sizing](https://docs.giantswarm.io/getting-started/observability/prometheus/volume-size/) for more details.
