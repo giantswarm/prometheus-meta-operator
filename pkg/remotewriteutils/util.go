@@ -29,7 +29,16 @@ func ToRemoteWrite(obj interface{}) (*pmov1alpha1.RemoteWrite, error) {
 }
 
 func FetchPrometheusList(ctx context.Context, r *ResourceWrapper, rw *pmov1alpha1.RemoteWrite) (*promv1.PrometheusList, error) {
-	selector, err := metav1.LabelSelectorAsSelector(&rw.Spec.ClusterSelector)
+	specSelector := &rw.Spec.ClusterSelector
+	// Adding an expression to ignore selecting prometheus-agent
+	ignoreAgentExp := metav1.LabelSelectorRequirement{
+		Key:      "app.kubernetes.io/name",
+		Operator: metav1.LabelSelectorOpNotIn,
+		Values:   []string{"prometheus-agent"},
+	}
+	specSelector.MatchExpressions = append(specSelector.MatchExpressions, ignoreAgentExp)
+	selector, err := metav1.LabelSelectorAsSelector(specSelector)
+
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -39,13 +48,6 @@ func FetchPrometheusList(ctx context.Context, r *ResourceWrapper, rw *pmov1alpha
 		List(ctx, metav1.ListOptions{LabelSelector: selector.String()})
 	if err != nil {
 		return nil, microerror.Maskf(errorFetchingPrometheus, "Could not fetch Prometheus with label selector %#q", rw.Spec.ClusterSelector.String())
-	}
-
-	for i, p := range prometheusList.Items {
-		if p.GetNamespace() == metav1.NamespaceSystem {
-			// Remove the prometheus-agent from the list.
-			prometheusList.Items = append(prometheusList.Items[:i], prometheusList.Items[i+1:]...)
-		}
 	}
 
 	return prometheusList, nil
