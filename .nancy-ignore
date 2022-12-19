@@ -20,3 +20,6 @@ sonatype-2021-1485 until=2023-02-01
 # pkg:golang/github.com/hashicorp/consul/api@v1.12.0
 # pkg:golang/github.com/hashicorp/consul/sdk@v0.8.0
 CVE-2021-41803 until=2023-02-01
+
+# pkg:golang/k8s.io/apiserver@v0.24.6
+sonatype-2022-6522 until=2023-02-01

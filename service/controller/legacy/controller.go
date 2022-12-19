@@ -27,6 +27,7 @@ type ControllerConfig struct {
 	Bastions                []string
 	Customer                string
 	Installation            string
+	InsecureCA              bool
 	Pipeline                string
 	Provider                string
 	Region                  string

@@ -41,6 +41,7 @@ managementCluster:
   pipeline: ""
   provider:
     kind: ""
+  insecureCA: false
 
 prometheus:
   additionalScrapeConfigs: ""
