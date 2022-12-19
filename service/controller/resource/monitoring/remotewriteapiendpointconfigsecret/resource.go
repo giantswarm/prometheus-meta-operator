@@ -29,6 +29,7 @@ type Config struct {
 	BaseDomain      string
 	Customer        string
 	Installation    string
+	InsecureCA      bool
 	Pipeline        string
 	Provider        string
 	Region          string
@@ -40,6 +41,7 @@ type RemoteWrite struct {
 	Username    string             `json:"username"`
 	URL         string             `json:"url"`
 	QueueConfig promv1.QueueConfig `json:"queueConfig"`
+	TLSConfig   promv1.TLSConfig   `json:"tlsConfig"`
 }
 
 type GlobalRemoteWriteValues struct {
@@ -119,6 +121,11 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 			Username:    key.ClusterID(cluster),
 			Password:    password,
 			QueueConfig: defaultQueueConfig(),
+			TLSConfig: promv1.TLSConfig{
+				SafeTLSConfig: promv1.SafeTLSConfig{
+					InsecureSkipVerify: config.InsecureCA,
+				},
+			},
 		},
 	}
 

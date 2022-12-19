@@ -41,6 +41,7 @@ type Config struct {
 	Bastions                []string
 	Customer                string
 	Installation            string
+	InsecureCA              bool
 	Pipeline                string
 	Provider                string
 	Region                  string
@@ -163,6 +164,7 @@ func New(config Config) ([]resource.Interface, error) {
 			BaseDomain:      config.PrometheusBaseDomain,
 			Customer:        config.Customer,
 			Installation:    config.Installation,
+			InsecureCA:      config.InsecureCA,
 			Pipeline:        config.Pipeline,
 			Provider:        config.Provider,
 			Region:          config.Region,
