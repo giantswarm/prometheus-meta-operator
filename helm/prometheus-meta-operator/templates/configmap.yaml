@@ -79,5 +79,6 @@ data:
         region: onprem
         {{- end }}
         registry: {{ .Values.registry.domain }}
+        insecureCA: {{ .Values.managementCluster.insecureCA }}
       vault:
         host: {{ .Values.vaultHost }}
