@@ -20,7 +20,7 @@ route:
 
   - receiver: harbor_implementation
     matchers:
-    - team="harbor"
+    - app="harbor"
     continue: false
 
   # Falco noise Slack
