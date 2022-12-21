@@ -13,6 +13,12 @@ route:
   receiver: root
 
   routes:
+
+  - receiver: harbor_implementation
+    matchers:
+    - app="harbor"
+    continue: false
+
   # Falco noise Slack
   - receiver: falco_noise_slack
     matchers:
@@ -99,6 +105,10 @@ route:
 
 receivers:
 - name: root
+
+- name: 'harbor_implementation'
+  slack_configs:
+  - channel: '#harbor-implementation'
 
 - name: falco_noise_slack
   slack_configs:
