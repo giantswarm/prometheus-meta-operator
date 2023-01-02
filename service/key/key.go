@@ -148,7 +148,9 @@ func RemoteWriteAuthenticationAnnotations() map[string]string {
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
 		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
 		// Set this annotation to avoid using a temporary buffer file for remote write requests
-		"nginx.ingress.kubernetes.io/client-body-buffer-size": "1M",
+		"nginx.ingress.kubernetes.io/client-body-buffer-size": "10m",
+		// Remote write requests can be quite big. (default max body size: 1m)
+		"nginx.ingress.kubernetes.io/proxy-body-size": "10m",
 	}
 }
 
