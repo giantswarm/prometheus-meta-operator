@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.19.0] - 2023-01-02
+
 ### Changed
 
 - remotewrite ingress allows bigger requests
@@ -1787,7 +1789,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.18.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.0...HEAD
+[4.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.18.0...v4.19.0
 [4.18.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.17.0...v4.18.0
 [4.17.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.16.0...v4.17.0
 [4.16.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.15.0...v4.16.0
