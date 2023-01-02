@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - remotewrite ingress allows bigger requests
+- prometheus-agent: increase max samples per send. ⚠️ Warning: updates an immutable secret, will require manual actions at deployment.
 
 ## [4.18.0] - 2022-12-19
 
