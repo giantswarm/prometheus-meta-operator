@@ -171,7 +171,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 func defaultQueueConfig() promv1.QueueConfig {
 	return promv1.QueueConfig{
 		Capacity:          30000,
-		MaxSamplesPerSend: 10000,
+		MaxSamplesPerSend: 50000,
 		MaxShards:         10,
 	}
 }
