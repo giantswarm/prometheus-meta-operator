@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix node-exporter discovery.
+- Fix node-exporter target discovery
 
 ## [4.19.0] - 2023-01-02
 
