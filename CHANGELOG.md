@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add proxy support to remote write endpoint consumers.
 
+### Fixed
+
+- Fix node-exporter discovery.
+
 ## [4.19.0] - 2023-01-02
 
 ### Changed
