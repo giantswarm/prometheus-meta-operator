@@ -778,7 +778,7 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_pod_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
   - source_labels: [__meta_kubernetes_pod_node_name]
