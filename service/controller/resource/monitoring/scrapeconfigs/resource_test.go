@@ -163,8 +163,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 	var apps = []runtime.Object{
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "alice-default-apps",
-				Namespace: "org-my-organization",
+				Name: "alice-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.7.0",
@@ -172,8 +171,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "foo-default-apps",
-				Namespace: "org-my-organization",
+				Name: "foo-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.7.0",
@@ -181,8 +179,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "bar-default-apps",
-				Namespace: "org-my-organization",
+				Name: "bar-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.7.0",
@@ -190,8 +187,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-default-apps",
-				Namespace: "org-my-organization",
+				Name: "baz-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.8.0",
@@ -199,8 +195,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-default-apps",
-				Namespace: "org-my-organization",
+				Name: "kubernetes-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "1.0.0",
@@ -272,8 +267,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 	var apps = []runtime.Object{
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "alice-default-apps",
-				Namespace: "org-my-organization",
+				Name: "alice-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.16.0",
@@ -281,8 +275,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "foo-default-apps",
-				Namespace: "org-my-organization",
+				Name: "foo-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.15.0",
@@ -290,8 +283,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "bar-default-apps",
-				Namespace: "org-my-organization",
+				Name: "bar-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.15.0",
@@ -299,8 +291,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-default-apps",
-				Namespace: "org-my-organization",
+				Name: "baz-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.16.0",
@@ -308,8 +299,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-default-apps",
-				Namespace: "org-my-organization",
+				Name: "kubernetes-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "1.0.0",
@@ -381,8 +371,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 	var apps = []runtime.Object{
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "alice-default-apps",
-				Namespace: "org-my-organization",
+				Name: "alice-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.11.0",
@@ -390,8 +379,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "foo-default-apps",
-				Namespace: "org-my-organization",
+				Name: "foo-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.9.0",
@@ -399,8 +387,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "bar-default-apps",
-				Namespace: "org-my-organization",
+				Name: "bar-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.10.0",
@@ -408,8 +395,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-default-apps",
-				Namespace: "org-my-organization",
+				Name: "baz-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "0.12.0",
@@ -417,8 +403,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-default-apps",
-				Namespace: "org-my-organization",
+				Name: "kubernetes-default-apps",
 			},
 			Status: appsv1alpha1.AppStatus{
 				Version: "1.0.0",
