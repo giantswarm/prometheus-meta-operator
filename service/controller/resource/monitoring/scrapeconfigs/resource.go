@@ -201,7 +201,7 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 
 func getDefaultAppVersion(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (string, error) {
 	appName := fmt.Sprintf("%s-default-apps", key.ClusterID(cluster))
-	appNamespace := fmt.Sprintf("org-%s", key.GetOrganization(cluster))
+	appNamespace := cluster.GetNamespace()
 	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
 
 	app := &appsv1alpha1.App{}
