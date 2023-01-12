@@ -5,6 +5,7 @@ metadata:
     release.giantswarm.io/version: 18.0.0
     giantswarm.io/organization: my-organization
   name: baz
+  namespace: org-my-organization
 spec:
   controlPlaneEndpoint:
     host: master.baz
