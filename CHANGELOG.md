@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.19.2] - 2023-01-12
+
 ### Fixed
 
 - Fix getDefaultAppVersion org namespace
@@ -1803,7 +1805,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.2...HEAD
+[4.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.1...v4.19.2
 [4.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.0...v4.19.1
 [4.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.18.0...v4.19.0
 [4.18.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.17.0...v4.18.0
