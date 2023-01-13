@@ -12,7 +12,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -24,17 +23,16 @@ const (
 )
 
 type Config struct {
-	K8sClient          k8sclient.Interface
-	Logger             micrologger.Logger
-	PasswordManager    password.Manager
-	ProxyConfiguration domain.ProxyConfiguration
-	BaseDomain         string
-	Customer           string
-	Installation       string
-	InsecureCA         bool
-	Pipeline           string
-	Provider           string
-	Region             string
+	K8sClient       k8sclient.Interface
+	Logger          micrologger.Logger
+	PasswordManager password.Manager
+	BaseDomain      string
+	Customer        string
+	Installation    string
+	InsecureCA      bool
+	Pipeline        string
+	Provider        string
+	Region          string
 }
 
 type RemoteWrite struct {
@@ -42,7 +40,6 @@ type RemoteWrite struct {
 	Password    string             `json:"password"`
 	Username    string             `json:"username"`
 	URL         string             `json:"url"`
-	ProxyURL    string             `json:"proxyUrl"`
 	QueueConfig promv1.QueueConfig `json:"queueConfig"`
 	TLSConfig   promv1.TLSConfig   `json:"tlsConfig"`
 }
@@ -130,7 +127,6 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 					InsecureSkipVerify: config.InsecureCA,
 				},
 			},
-			ProxyURL: config.ProxyConfiguration.GetURLForEndpoint(url),
 		},
 	}
 

@@ -326,17 +326,16 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
 	{
 		c := remotewriteapiendpointconfigsecret.Config{
-			K8sClient:          config.K8sClient,
-			Logger:             config.Logger,
-			PasswordManager:    passwordManager,
-			ProxyConfiguration: config.ProxyConfiguration,
-			BaseDomain:         config.PrometheusBaseDomain,
-			Customer:           config.Customer,
-			Installation:       config.Installation,
-			InsecureCA:         config.InsecureCA,
-			Pipeline:           config.Pipeline,
-			Provider:           config.Provider,
-			Region:             config.Region,
+			K8sClient:       config.K8sClient,
+			Logger:          config.Logger,
+			PasswordManager: passwordManager,
+			BaseDomain:      config.PrometheusBaseDomain,
+			Customer:        config.Customer,
+			Installation:    config.Installation,
+			InsecureCA:      config.InsecureCA,
+			Pipeline:        config.Pipeline,
+			Provider:        config.Provider,
+			Region:          config.Region,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
