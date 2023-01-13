@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Heartbeat notification delays: initial=0s interval=1mn
+
 ## [4.19.2] - 2023-01-12
 
 ### Fixed

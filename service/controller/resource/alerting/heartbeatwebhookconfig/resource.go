@@ -128,10 +128,10 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 					{Name: key.TypeKey(), Value: key.Heartbeat()},
 				},
 				Continue: false,
-				// We wait for 5 minutes before we start to ping Ops Genie to allow the prometheus server to start
-				GroupWait:     "5m",
-				GroupInterval: "30s",
-				// We ping OpsGenie every minute
+				// Initially do not wait, and send Heartbeat as soon as Alertmanager receives it.
+				GroupWait: "0s",
+				// Ping OpsGenie Heartbeat every minute.
+				GroupInterval:  "1m",
 				RepeatInterval: "1m",
 			},
 			Receivers: []monitoringv1alpha1.Receiver{receiver},
