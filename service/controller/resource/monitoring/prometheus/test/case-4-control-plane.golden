@@ -37,8 +37,7 @@ spec:
     readinessProbe:
       initialDelaySeconds: 300
     resources: {}
-  enableFeatures:
-  - remote-write-receiver
+  enableRemoteWriteReceiver: true
   externalLabels:
     cluster_id: kubernetes
     cluster_type: management_cluster
@@ -114,6 +113,13 @@ spec:
     maxSkew: 1
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
+  tsdb: {}
   walCompression: true
   web:
     pageTitle: test-installation/kubernetes Prometheus
+status:
+  availableReplicas: 0
+  paused: false
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0
