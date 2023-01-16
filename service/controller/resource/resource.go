@@ -41,6 +41,7 @@ type Config struct {
 	Bastions                []string
 	Customer                string
 	Installation            string
+	InsecureCA              bool
 	Pipeline                string
 	Provider                string
 	Region                  string
@@ -129,6 +130,7 @@ func New(config Config) ([]resource.Interface, error) {
 			K8sClient:       config.K8sClient,
 			Logger:          config.Logger,
 			PasswordManager: passwordManager,
+			Installation:    config.Installation,
 			Provider:        config.Provider,
 		}
 
@@ -155,15 +157,17 @@ func New(config Config) ([]resource.Interface, error) {
 	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
 	{
 		c := remotewriteapiendpointconfigsecret.Config{
-			K8sClient:       config.K8sClient,
-			Logger:          config.Logger,
-			PasswordManager: passwordManager,
-			BaseDomain:      config.PrometheusBaseDomain,
-			Customer:        config.Customer,
-			Installation:    config.Installation,
-			Pipeline:        config.Pipeline,
-			Provider:        config.Provider,
-			Region:          config.Region,
+			K8sClient:          config.K8sClient,
+			Logger:             config.Logger,
+			PasswordManager:    passwordManager,
+			ProxyConfiguration: config.ProxyConfiguration,
+			BaseDomain:         config.PrometheusBaseDomain,
+			Customer:           config.Customer,
+			Installation:       config.Installation,
+			InsecureCA:         config.InsecureCA,
+			Pipeline:           config.Pipeline,
+			Provider:           config.Provider,
+			Region:             config.Region,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)

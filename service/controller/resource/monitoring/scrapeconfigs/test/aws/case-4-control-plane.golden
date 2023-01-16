@@ -1,48 +1,4 @@
 
-- job_name: kubernetes-prometheus/kubernetes-apiserver-kubernetes/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_component]
-    regex: apiserver
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoint_port_name]
-    regex: https
-    action: keep
-  - target_label: app
-    replacement: kubernetes
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: giantswarm 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-
 # Add scrape configuration for docker
 - job_name: kubernetes-prometheus/docker-kubernetes/0
   honor_labels: true
@@ -82,7 +38,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -146,7 +102,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -191,7 +147,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -260,7 +216,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -319,7 +275,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -380,7 +336,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -425,162 +381,13 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-# kube-controller-manager
-- job_name: kubernetes-prometheus/kubernetes-controller-manager-kubernetes/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: pod
-    namespaces:
-      names:
-      - kube-system
-
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__address__]
-    replacement: 10257
-    target_label: __tmp_port
-  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_port,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_port]
-    action: replace
-    regex: true;(\d+)
-    replacement: $1
-    target_label: __tmp_port
-  - source_labels: [__address__, __tmp_port]
-    target_label: instance
-    regex: (.+);(.+)
-    replacement: $1:$2
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    regex: (k8s-controller-manager|kube-controller-manager)
-    action: keep
-  - target_label: __address__
-    replacement: kubernetes.default:443
-  - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
-    target_label: __metrics_path__
-    regex: (.+);(\d+)
-    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
-  - target_label: app
-    replacement: kube-controller-manager
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
-  - source_labels: [__meta_kubernetes_pod_node_name]
-    target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: giantswarm 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-# kube-scheduler
-- job_name: kubernetes-prometheus/kubernetes-scheduler-kubernetes/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: pod
-    namespaces:
-      names:
-      - kube-system
-
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__address__]
-    replacement: 10259
-    target_label: __tmp_port
-  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring_port,__meta_kubernetes_pod_annotation_giantswarm_io_monitoring_port]
-    action: replace
-    regex: true;(\d+)
-    replacement: $1
-    target_label: __tmp_port
-  - source_labels: [__address__, __tmp_port]
-    target_label: instance
-    regex: (.+);(.+)
-    replacement: $1:$2
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    regex: (k8s-scheduler|kube-scheduler)
-    action: keep
-  - target_label: __address__
-    replacement: kubernetes.default:443
-  - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
-    target_label: __metrics_path__
-    regex: (.+);(\d+)
-    replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
-  - target_label: app
-    replacement: kube-scheduler
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
-  - source_labels: [__meta_kubernetes_pod_node_name]
-    target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: giantswarm 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-
 # kube-proxy
 - job_name: kubernetes-prometheus/kube-proxy-kubernetes/0
   honor_labels: true
@@ -642,7 +449,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -709,7 +516,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -778,7 +585,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -805,7 +612,7 @@
     action: keep
   - source_labels: [__meta_kubernetes_pod_container_name]
     target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+  - source_labels: [__meta_kubernetes_pod_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_pod_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
   - source_labels: [__meta_kubernetes_pod_node_name]
@@ -827,7 +634,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -921,7 +728,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1061,7 +868,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1136,7 +943,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1209,7 +1016,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1282,7 +1089,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1354,7 +1161,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1426,7 +1233,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1498,7 +1305,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1570,7 +1377,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1642,7 +1449,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1714,7 +1521,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1786,7 +1593,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1823,7 +1630,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1879,7 +1686,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1914,7 +1721,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -1977,7 +1784,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: giantswarm 
+    replacement: my-organization 
   # Add customer label.
   - target_label: customer
     replacement: pmo

@@ -17,6 +17,11 @@ Build it using the standard `go build` command.
 go build github.com/giantswarm/prometheus-meta-operator
 ```
 
+You may want to regenerate the unit test files with:
+```
+go test -v ./... -update
+```
+
 ### How to update upstream code
 
 We store modified upstream code for our own usage.
@@ -101,4 +106,4 @@ Three values are possible:
 
 while `medium` is the default value.
 
-Check [Prometheus Volume Sizing](https://docs.giantswarm.io/ui-api/observability/prometheus/volume-size/) for more details.
+Check [Prometheus Volume Sizing](https://docs.giantswarm.io/getting-started/observability/prometheus/volume-size/) for more details.

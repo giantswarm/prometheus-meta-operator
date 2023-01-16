@@ -26,6 +26,7 @@ type Config struct {
 	K8sClient       k8sclient.Interface
 	Logger          micrologger.Logger
 	PasswordManager password.Manager
+	Installation    string
 	Provider        string
 }
 
@@ -77,7 +78,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 		return nil, microerror.Mask(err)
 	}
 
-	secretName, secretNamespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, config.Provider)
+	secretName, secretNamespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, config.Installation, config.Provider)
 
 	config.Logger.Debugf(ctx, fmt.Sprintf("looking for secret %s in namespace %s", secretName, secretNamespace))
 	apiEndpointSecret, err := config.K8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})

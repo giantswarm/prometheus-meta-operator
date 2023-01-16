@@ -12,6 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -23,15 +24,17 @@ const (
 )
 
 type Config struct {
-	K8sClient       k8sclient.Interface
-	Logger          micrologger.Logger
-	PasswordManager password.Manager
-	BaseDomain      string
-	Customer        string
-	Installation    string
-	Pipeline        string
-	Provider        string
-	Region          string
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	PasswordManager    password.Manager
+	ProxyConfiguration domain.ProxyConfiguration
+	BaseDomain         string
+	Customer           string
+	Installation       string
+	InsecureCA         bool
+	Pipeline           string
+	Provider           string
+	Region             string
 }
 
 type RemoteWrite struct {
@@ -39,7 +42,9 @@ type RemoteWrite struct {
 	Password    string             `json:"password"`
 	Username    string             `json:"username"`
 	URL         string             `json:"url"`
+	ProxyURL    string             `json:"proxyUrl"`
 	QueueConfig promv1.QueueConfig `json:"queueConfig"`
+	TLSConfig   promv1.TLSConfig   `json:"tlsConfig"`
 }
 
 type GlobalRemoteWriteValues struct {
@@ -62,7 +67,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:     config.Logger,
 		Name:       Name,
 		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(ctx, v, config.Provider)
+			return getObjectMeta(ctx, v, config.Installation, config.Provider)
 		},
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toSecret(ctx, v, config)
@@ -77,13 +82,13 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(ctx context.Context, v interface{}, provider string) (metav1.ObjectMeta, error) {
+func getObjectMeta(ctx context.Context, v interface{}, installation string, provider string) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
 	}
 
-	name, namespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, provider)
+	name, namespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, installation, provider)
 
 	return metav1.ObjectMeta{
 		Name:      name,
@@ -93,7 +98,7 @@ func getObjectMeta(ctx context.Context, v interface{}, provider string) (metav1.
 }
 
 func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta(ctx, v, config.Provider)
+	objectMeta, err := getObjectMeta(ctx, v, config.Installation, config.Provider)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -112,13 +117,20 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 
 	config.Logger.Debugf(ctx, "generate password for the prometheus agent")
 
+	url := fmt.Sprintf(remoteWriteEndpointTemplateURL, config.BaseDomain, key.ClusterID(cluster))
 	remoteWrites := []RemoteWrite{
 		{
 			Name:        key.PrometheusMetaOperatorRemoteWriteName,
-			URL:         fmt.Sprintf(remoteWriteEndpointTemplateURL, config.BaseDomain, key.ClusterID(cluster)),
+			URL:         url,
 			Username:    key.ClusterID(cluster),
 			Password:    password,
 			QueueConfig: defaultQueueConfig(),
+			TLSConfig: promv1.TLSConfig{
+				SafeTLSConfig: promv1.SafeTLSConfig{
+					InsecureSkipVerify: config.InsecureCA,
+				},
+			},
+			ProxyURL: config.ProxyConfiguration.GetURLForEndpoint(url),
 		},
 	}
 
@@ -159,7 +171,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 func defaultQueueConfig() promv1.QueueConfig {
 	return promv1.QueueConfig{
 		Capacity:          30000,
-		MaxSamplesPerSend: 10000,
+		MaxSamplesPerSend: 50000,
 		MaxShards:         10,
 	}
 }

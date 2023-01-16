@@ -1,6 +1,7 @@
 package remotewriteutils
 
 import (
+	"flag"
 	"testing"
 
 	"github.com/giantswarm/microerror"
@@ -16,6 +17,8 @@ const (
 	name      = "simple-remotewrite"
 	namespace = "default"
 )
+
+var _ = flag.Bool("update", false, "doing nothing")
 
 func TestToRemoteWrite(t *testing.T) {
 

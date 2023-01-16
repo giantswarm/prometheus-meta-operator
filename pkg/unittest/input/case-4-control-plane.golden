@@ -2,5 +2,8 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kubernetes
+  namespace: org-my-organization
+  labels:
+    giantswarm.io/organization: my-organization
 spec:
   clusterIP: 127.0.0.1

@@ -115,6 +115,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Region, "", "Region where the installation is located.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Customer, "", "Customer the installation belongs to.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Registry, "", "Container image registry.")
+	daemonCommand.PersistentFlags().Bool(f.Service.Installation.InsecureCA, false, "Is the management cluter CA insecure?")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")

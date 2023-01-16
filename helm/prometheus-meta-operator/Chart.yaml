@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: v2
 name: prometheus-meta-operator
 description: The prometheus-meta-operator manages Kubernetes clusters monitoring.
 home: https://github.com/giantswarm/prometheus-meta-operator

@@ -7,6 +7,7 @@ import (
 	"os"
 	"sync"
 
+	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	providerv1alpha1 "github.com/giantswarm/apiextensions/v6/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8srestconfig"
@@ -96,6 +97,7 @@ func New(config Config) (*Service, error) {
 			SchemeBuilder: k8sclient.SchemeBuilder{
 				apiextensionsv1.AddToScheme,
 				capi.AddToScheme,
+				appsv1alpha1.AddToScheme,
 				providerv1alpha1.AddToScheme,
 				pmov1alpha1.AddToScheme,
 			},
@@ -145,6 +147,7 @@ func New(config Config) (*Service, error) {
 				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
 				Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+				InsecureCA:              config.Viper.GetBool(config.Flag.Service.Installation.InsecureCA),
 				Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
 				Provider:                provider,
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
@@ -183,6 +186,7 @@ func New(config Config) (*Service, error) {
 				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
 				Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+				InsecureCA:              config.Viper.GetBool(config.Flag.Service.Installation.InsecureCA),
 				Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
 				Provider:                provider,
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
@@ -221,6 +225,7 @@ func New(config Config) (*Service, error) {
 			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
 			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+			InsecureCA:              config.Viper.GetBool(config.Flag.Service.Installation.InsecureCA),
 			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
 			Provider:                provider,
 			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),

@@ -7,8 +7,82 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.19.2] - 2023-01-12
+
+### Fixed
+
+- Fix getDefaultAppVersion org namespace
+
+## [4.19.1] - 2023-01-11
+
+### Added
+
+- Add proxy support to remote write endpoint consumers.
+
+### Fixed
+
+- Fix node-exporter target discovery
+
+## [4.19.0] - 2023-01-02
+
 ### Changed
 
+- remotewrite ingress allows bigger requests
+- prometheus-agent: increase max samples per send. ⚠️ Warning: updates an immutable secret, will require manual actions at deployment.
+
+## [4.18.0] - 2022-12-19
+
+### Changed
+
+- Allow remote write over insecure endpoint certificate.
+- Ignore remotewrite feature in kube-system namespace.
+
+## [4.17.0] - 2022-12-14
+
+### Changed
+
+- Deploy needed resources for the agent to run on Vintage MCs.
+
+### Fixed
+
+* opsgenie alert templating: list of firing instances
+* slack alert templating: list of firing instances
+* fix dashboard url
+
+## [4.16.0] - 2022-12-07
+
+### Changed
+
+- Change HasPrometheusAgent function to ignore prometheus-agent scraping targets on CAPA and CAPVCD.
+- Do not reconcile service monitors in kube-system for CAPA and CAPVCD MCs.
+- Change label selector used to discover `PodMonitors` and `ServiceMonitors` 
+  to avoid a duplicate scrape introduced in https://github.com/giantswarm/observability-bundle/pull/18.
+- README: how to generate test
+
+## [4.15.0] - 2022-12-05
+
+### Changed
+
+- Send less alerts into Atlas alert slack channels (filtering out heartbeats and inhibitions)
+- Opsgenie messages: revert to markdown
+
+### Added
+
+- Add capz provider
+
+## [4.14.0] - 2022-11-30
+
+### Changed
+
+- Change HasPrometheusAgent function to ignore prometheus-agent scraping targets on gcp.
+- Do not reconcile service monitors in kube-system for gcp MCs .
+
+## [4.13.0] - 2022-11-30
+
+### Changed
+
+- Improve HasPrometheusAgent function to ignore prometheus-agent scraping targets.
+- Bump alpine from 3.16.3 to 3.17.0
 - Do not reconcile service monitors in CAPO MCs.
 
 ### Removed
@@ -1732,7 +1806,16 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.12.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.2...HEAD
+[4.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.1...v4.19.2
+[4.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.0...v4.19.1
+[4.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.18.0...v4.19.0
+[4.18.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.17.0...v4.18.0
+[4.17.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.16.0...v4.17.0
+[4.16.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.15.0...v4.16.0
+[4.15.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.14.0...v4.15.0
+[4.14.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.13.0...v4.14.0
+[4.13.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.12.0...v4.13.0
 [4.12.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.2...v4.12.0
 [4.11.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.1...v4.11.2
 [4.11.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.11.0...v4.11.1

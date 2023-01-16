@@ -13,7 +13,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
-var capiProviders = []string{"capa", "cloud-director", "gcp", "openstack", "vsphere"}
+var capiProviders = []string{"capa", "capz", "cloud-director", "gcp", "openstack", "vsphere"}
 
 const (
 	monitoring = "monitoring"
@@ -100,7 +100,7 @@ func IsMonitoringDisabled(cluster metav1.Object) bool {
 }
 
 func EtcdSecret(installation string, obj interface{}) string {
-	if IsInCluster(installation, obj) {
+	if IsManagementCluster(installation, obj) {
 		return "etcd-certificates"
 	}
 
@@ -148,17 +148,21 @@ func RemoteWriteAuthenticationAnnotations() map[string]string {
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
 		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
 		// Set this annotation to avoid using a temporary buffer file for remote write requests
-		"nginx.ingress.kubernetes.io/client-body-buffer-size": "1M",
+		"nginx.ingress.kubernetes.io/client-body-buffer-size": "10m",
+		// Remote write requests can be quite big. (default max body size: 1m)
+		"nginx.ingress.kubernetes.io/proxy-body-size": "10m",
 	}
 }
 
-func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, provider string) (string, string) {
+func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, installation string, provider string) (string, string) {
 	name := RemoteWriteAPIEndpointConfigSecretName
 	namespace := ClusterID(cluster)
 
 	if IsCAPIManagementCluster(provider) {
 		name = ClusterID(cluster) + "-" + name
 		namespace = cluster.GetNamespace()
+	} else if IsManagementCluster(installation, cluster) {
+		namespace = "giantswarm"
 	}
 	return name, namespace
 }
@@ -261,7 +265,7 @@ func APIUrl(obj interface{}) string {
 	return ""
 }
 
-func IsInCluster(installation string, obj interface{}) bool {
+func IsManagementCluster(installation string, obj interface{}) bool {
 	switch v := obj.(type) {
 	case *v1.Service:
 		return true
@@ -276,7 +280,7 @@ func IsInCluster(installation string, obj interface{}) bool {
 }
 
 func ClusterType(installation string, obj interface{}) string {
-	if IsInCluster(installation, obj) {
+	if IsManagementCluster(installation, obj) {
 		return "management_cluster"
 	}
 

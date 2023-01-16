@@ -2,16 +2,20 @@ package scrapeconfigs
 
 import (
 	"context"
+	"fmt"
 	"path"
 	"reflect"
 
 	"github.com/blang/semver"
+	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
@@ -108,7 +112,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	}
 
 	var workloadClusterETCDDomain string = ""
-	if "workload_cluster" == key.ClusterType(config.Installation, v) {
+	if key.ClusterType(config.Installation, v) == "workload_cluster" {
 		clusterID := key.ClusterID(cluster)
 		// Try to get the etcd url from the Giant Swarm way
 		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(ctx, "master", metav1.GetOptions{})
@@ -124,7 +128,7 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	}
 	config.WorkloadClusterETCDDomain = workloadClusterETCDDomain
 
-	scrapeConfigs, err := toData(v, config)
+	scrapeConfigs, err := toData(ctx, config.K8sClient.CtrlClient(), v, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -145,13 +149,13 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	return scrapeConfigsSecret, nil
 }
 
-func toData(v interface{}, config Config) ([]byte, error) {
+func toData(ctx context.Context, ctrlClient client.Client, v interface{}, config Config) ([]byte, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	templateData, err := getTemplateData(cluster, config)
+	templateData, err := getTemplateData(ctx, ctrlClient, cluster, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -164,8 +168,8 @@ func toData(v interface{}, config Config) ([]byte, error) {
 	return scrapeConfigs, nil
 }
 
-func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error) {
-	isRunningAgent, err := HasPrometheusAgent(cluster, config.Provider, config.Installation)
+func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (*TemplateData, error) {
+	isRunningAgent, err := hasPrometheusAgent(ctx, ctrlClient, cluster, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -195,13 +199,65 @@ func getTemplateData(cluster metav1.Object, config Config) (*TemplateData, error
 	return d, nil
 }
 
-// HasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics. The prometheus agent will be added in v19, so any release >= v19.0.0
-func HasPrometheusAgent(cluster metav1.Object, provider string, installation string) (bool, error) {
-	if key.IsCAPIManagementCluster(provider) || key.IsInCluster(installation, cluster) {
-		// Bundle is currently not deployed in CAPI and for Vintage CAPI MC
-		return false, nil
+func getDefaultAppVersion(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (string, error) {
+	appName := fmt.Sprintf("%s-default-apps", key.ClusterID(cluster))
+	appNamespace := cluster.GetNamespace()
+	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
+
+	app := &appsv1alpha1.App{}
+	err := ctrlClient.Get(ctx, objectKey, app)
+	if err != nil {
+		return "", err
+	}
+	return app.Status.Version, nil
+}
+
+// hasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics.
+func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (bool, error) {
+	// For CAPI clusters, this is a case to case basis. We need to check the default app version for now.
+	if key.IsCAPIManagementCluster(config.Provider) {
+		appVersion, err := getDefaultAppVersion(ctx, ctrlClient, cluster, config)
+		if err != nil {
+			return false, microerror.Mask(err)
+		}
+		version, err := semver.Parse(appVersion)
+		if err != nil {
+			return false, microerror.Mask(err)
+		}
+		switch config.Provider {
+		case "capa":
+			capaAgentVersion, err := semver.Parse("0.11.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(capaAgentVersion), nil
+		case "cloud-directory":
+			cloudDirectorAgentVersion, err := semver.Parse("0.3.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(cloudDirectorAgentVersion), nil
+		case "gcp":
+			gcpAgentVersion, err := semver.Parse("0.16.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(gcpAgentVersion), nil
+		case "openstack":
+			openstackAgentVersion, err := semver.Parse("0.8.0")
+			if err != nil {
+				return false, microerror.Mask(err)
+			}
+			return version.GTE(openstackAgentVersion), nil
+		default:
+			return false, nil
+		}
+	} else if key.IsManagementCluster(config.Installation, cluster) {
+		// Vintage MC
+		return true, nil
 	}
 
+	// On vintage, the agent runs on any release >= v19.0.0
 	release := cluster.GetLabels()["release.giantswarm.io/version"]
 	version, err := semver.Parse(release)
 	if err != nil {

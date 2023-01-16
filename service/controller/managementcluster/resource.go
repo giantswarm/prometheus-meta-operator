@@ -44,6 +44,7 @@ type resourcesConfig struct {
 	Bastions                []string
 	Customer                string
 	Installation            string
+	InsecureCA              bool
 	Pipeline                string
 	Provider                string
 	Region                  string
@@ -294,6 +295,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient:       config.K8sClient,
 			Logger:          config.Logger,
 			PasswordManager: passwordManager,
+			Installation:    config.Installation,
 			Provider:        config.Provider,
 		}
 
@@ -320,15 +322,17 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
 	{
 		c := remotewriteapiendpointconfigsecret.Config{
-			K8sClient:       config.K8sClient,
-			Logger:          config.Logger,
-			PasswordManager: passwordManager,
-			BaseDomain:      config.PrometheusBaseDomain,
-			Customer:        config.Customer,
-			Installation:    config.Installation,
-			Pipeline:        config.Pipeline,
-			Provider:        config.Provider,
-			Region:          config.Region,
+			K8sClient:          config.K8sClient,
+			Logger:             config.Logger,
+			PasswordManager:    passwordManager,
+			ProxyConfiguration: config.ProxyConfiguration,
+			BaseDomain:         config.PrometheusBaseDomain,
+			Customer:           config.Customer,
+			Installation:       config.Installation,
+			InsecureCA:         config.InsecureCA,
+			Pipeline:           config.Pipeline,
+			Provider:           config.Provider,
+			Region:             config.Region,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
@@ -345,17 +349,15 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
+		remoteWriteAPIEndpointConfigSecretResource,
+		remoteWriteIngressAuthResource,
+		remoteWriteIngressResource,
 		scrapeConfigResource,
 		prometheusResource,
 		verticalPodAutoScalerResource,
 		monitoringIngressResource,
 		heartbeatResource,
 		pvcResizeResource,
-	}
-
-	// We enable those resources on CAPI clusters only as the agent is not running there and vintage clusters do not have MC namespaces.
-	if key.IsCAPIManagementCluster(config.Provider) {
-		resources = append(resources, remoteWriteAPIEndpointConfigSecretResource, remoteWriteIngressAuthResource, remoteWriteIngressResource)
 	}
 
 	{

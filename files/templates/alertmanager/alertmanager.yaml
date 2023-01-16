@@ -17,6 +17,12 @@ route:
   receiver: root
 
   routes:
+
+  - receiver: harbor_implementation
+    matchers:
+    - app="harbor"
+    continue: false
+
   # Falco noise Slack
   - receiver: falco_noise_slack
     matchers:
@@ -42,8 +48,10 @@ route:
   # Service Level slack -- chooses the slack channel based on the provider
   [[- if or (eq .Provider "aws") (eq .Provider "azure") ]]
   - receiver: team_phoenix_slack
-  [[- else if or (eq .Provider "gcp") (eq .Provider "capa") (eq .Provider "capz") ]]
+  [[- else if or (eq .Provider "gcp") (eq .Provider "capa")]]
   - receiver: team_hydra_slack
+  [[- else if eq .Provider "capz" ]]
+  - receiver: team_clippy_slack
   [[- else ]]
   - receiver: team_rocket_slack
   [[- end ]]
@@ -51,30 +59,32 @@ route:
     - alertname="ServiceLevelBurnRateTooHigh"
     continue: false
 
-  # Team Atlas Slack (team)
+  # Team Atlas Slack
   - receiver: team_atlas_slack
     matchers:
     [[- if eq .Pipeline "stable" ]]
     - severity!="page"
     [[- end ]]
     - team="atlas"
+    - type!="heartbeat"
+    - alertname!~"Inhibition.*"
     continue: false
 
-  # Team Celestial Slack (team)
+  # Team Celestial Slack
   - receiver: team_phoenix_slack
     matchers:
     - severity=~"page|notify"
     - team="celestial"
     continue: false
 
-  # Team Firecracker Slack (team)
+  # Team Firecracker Slack
   - receiver: team_phoenix_slack
     matchers:
     - severity=~"page|notify"
     - team="firecracker"
     continue: false
 
-  # Team Phoenix Slack (team)
+  # Team Phoenix Slack
   - receiver: team_phoenix_slack
     matchers:
     - severity=~"page|notify"
@@ -88,7 +98,14 @@ route:
     - team="hydra"
     continue: false
 
-  # Team Rocket Slack (team)
+  # Team Clippy Slack
+  - receiver: team_clippy_slack
+    matchers:
+    - severity=~"page|notify"
+    - team="clippy"
+    continue: false
+
+  # Team Rocket Slack
   - receiver: team_rocket_slack
     matchers:
     - severity=~"page|notify"
@@ -103,6 +120,10 @@ route:
 
 receivers:
 - name: root
+
+- name: 'harbor_implementation'
+  slack_configs:
+  - channel: '#harbor-implementation'
 
 - name: falco_noise_slack
   slack_configs:
@@ -121,7 +142,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -148,7 +169,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -175,7 +196,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -202,7 +223,34 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
+- name: team_clippy_slack
+  slack_configs:
+  [[- if eq .Pipeline "stable" ]]
+  - channel: '#alert-clippy'
+  [[- else ]]
+  - channel: '#alert-clippy-test'
+  [[- end ]]
+    send_resolved: true
+    actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -229,7 +277,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -252,7 +300,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -284,7 +332,7 @@ receivers:
       url: '{{ (index .Alerts 0).GeneratorURL }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'

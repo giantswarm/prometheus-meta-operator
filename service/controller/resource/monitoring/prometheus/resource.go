@@ -261,7 +261,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		},
 	}
 
-	if !key.IsInCluster(config.Installation, cluster) {
+	if !key.IsManagementCluster(config.Installation, cluster) {
 		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
@@ -330,34 +330,32 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			},
 		}
 
-		// An empty label selector matches all objects.
-		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{},
+		// We do not discover the service monitors discovered by the agent running on the management cluster
+		allMonitorSelector := []metav1.LabelSelectorRequirement{
+			{
+				Key:      "application.giantswarm.io/team",
+				Operator: metav1.LabelSelectorOpDoesNotExist,
+			},
 		}
 
-		namespaceSelector := []metav1.LabelSelectorRequirement{}
-
-		if config.Provider == "openstack" {
-			namespaceSelector = append(namespaceSelector, metav1.LabelSelectorRequirement{
-				Key:      "kubernetes.io/metadata.name",
-				Operator: metav1.LabelSelectorOpNotIn,
-				Values:   []string{"kube-system"},
-			})
+		// An empty label selector matches all objects.
+		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: allMonitorSelector,
 		}
 
 		// An empty label selector matches all objects.
 		prometheus.Spec.ServiceMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: namespaceSelector,
-		}
-
-		// An empty label selector matches all objects.
-		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 
 		// An empty label selector matches all objects.
+		prometheus.Spec.PodMonitorSelector = &metav1.LabelSelector{
+			MatchExpressions: allMonitorSelector,
+		}
+
+		// An empty label selector matches all objects.
 		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
-			MatchExpressions: namespaceSelector,
+			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
 	}
 
