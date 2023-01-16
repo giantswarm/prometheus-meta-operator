@@ -9,6 +9,5 @@ type Alertmanager struct {
 }
 
 type AlertmanagerStorage struct {
-	CreatePVC string
-	Size      string
+	Size string
 }

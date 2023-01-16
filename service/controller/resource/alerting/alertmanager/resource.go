@@ -28,7 +28,6 @@ type Config struct {
 	Logger micrologger.Logger
 
 	Address     string
-	CreatePVC   bool
 	LogLevel    string
 	StorageSize string
 	Version     string
@@ -81,27 +80,18 @@ func toAlertmanager(ctx context.Context, v interface{}, config Config) (metav1.O
 		labels[k] = v
 	}
 
-	var storage monitoringv1.StorageSpec
 	storageSize := resource.MustParse(config.StorageSize)
-	if config.CreatePVC {
-		storage = monitoringv1.StorageSpec{
-			VolumeClaimTemplate: monitoringv1.EmbeddedPersistentVolumeClaim{
-				Spec: corev1.PersistentVolumeClaimSpec{
-					AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
-					Resources: corev1.ResourceRequirements{
-						Requests: corev1.ResourceList{
-							corev1.ResourceStorage: storageSize,
-						},
+	storage := monitoringv1.StorageSpec{
+		VolumeClaimTemplate: monitoringv1.EmbeddedPersistentVolumeClaim{
+			Spec: corev1.PersistentVolumeClaimSpec{
+				AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						corev1.ResourceStorage: storageSize,
 					},
 				},
 			},
-		}
-	} else {
-		storage = monitoringv1.StorageSpec{
-			EmptyDir: &corev1.EmptyDirVolumeSource{
-				SizeLimit: &storageSize,
-			},
-		}
+		},
 	}
 
 	address, err := url.Parse(config.Address)

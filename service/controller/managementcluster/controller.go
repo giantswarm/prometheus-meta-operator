@@ -37,7 +37,6 @@ type ControllerConfig struct {
 
 	AlertmanagerAddress     string
 	AlertmanagerBaseDomain  string
-	AlertmanagerCreatePVC   bool
 	AlertmanagerLogLevel    string
 	AlertmanagerStorageSize string
 	AlertmanagerVersion     string
@@ -48,7 +47,6 @@ type ControllerConfig struct {
 
 	PrometheusAddress           string
 	PrometheusBaseDomain        string
-	PrometheusCreatePVC         bool
 	PrometheusLogLevel          string
 	PrometheusRetentionDuration string
 	PrometheusRetentionSize     string

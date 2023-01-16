@@ -19,7 +19,6 @@ func TestAlertmanager(t *testing.T) {
 
 	config := Config{
 		Address:     "http://alertmanager/cluster",
-		CreatePVC:   true,
 		StorageSize: "1Gi",
 		Version:     "v0.22.1",
 	}
