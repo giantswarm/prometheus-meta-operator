@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix getDefaultAppVersion org namespace
 
+### Changed
+
+- Bump alpine from 3.17.0 to 3.17.1
+
 ## [4.19.1] - 2023-01-11
 
 ### Added
