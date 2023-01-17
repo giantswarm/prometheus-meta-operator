@@ -3,7 +3,7 @@ global:
   slack_api_url: https://slack
 
 templates:
-- '*.tmpl'
+- '/etc/alertmanager/config/*.tmpl'
 
 route:
   group_by: [alertname, cluster_id, installation, status]

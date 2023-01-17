@@ -144,15 +144,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
-			ExternalLabels: map[string]string{
-				key.ClusterIDKey:    key.ClusterID(cluster),
-				key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
-				key.CustomerKey:     config.Customer,
-				key.InstallationKey: config.Installation,
-				key.PipelineKey:     config.Pipeline,
-				key.ProviderKey:     config.Provider,
-				key.RegionKey:       config.Region,
-			},
 			// We need to use this to connect each WC prometheus with the central alertmanager instead of the alerting section of the Prometheus CR
 			// because the alerting section tries to find the alertmanager service in the workload cluster and not in the management cluster
 			// as it is using the secrets defined under prometheus.Spec.APIServerConfig.
@@ -164,61 +155,26 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 				Key: key.AlertManagerKey(),
 			},
-			ExternalURL: externalURL.String(),
-			RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
-			PodMetadata: &promv1.EmbeddedObjectMetadata{
-				Labels: labels,
-			},
-			// TODO will have to migrate to EnableRemoteWriteReceiver: true but need CRD changes
-			// https://github.com/prometheus-operator/prometheus-operator/pull/4633/files
-			EnableFeatures: []string{"remote-write-receiver"},
-			LogLevel:       config.LogLevel,
-			Image:          &image,
-			Web: &promv1.WebSpec{
-				PageTitle: &pageTitle,
-			},
-			Replicas: &replicas,
-			Resources: corev1.ResourceRequirements{
-				Requests: corev1.ResourceList{
-					// cpu: 100m
-					corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
-					// memory: 1Gi
-					corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
+
+			CommonPrometheusFields: promv1.CommonPrometheusFields{
+				AdditionalScrapeConfigs: &corev1.SecretKeySelector{
+					LocalObjectReference: corev1.LocalObjectReference{
+						Name: key.PrometheusAdditionalScrapeConfigsSecretName(),
+					},
+					Key: key.PrometheusAdditionalScrapeConfigsName(),
 				},
-				Limits: corev1.ResourceList{
-					// cpu: 150m
-					corev1.ResourceCPU: *key.PrometheusDefaultCPULimit(),
-					// memory: 1.2Gi
-					corev1.ResourceMemory: *key.PrometheusDefaultMemoryLimit(),
-				},
-			},
-			Retention:      config.RetentionDuration,
-			RetentionSize:  config.RetentionSize,
-			WALCompression: &walCompression,
-			AdditionalScrapeConfigs: &corev1.SecretKeySelector{
-				LocalObjectReference: corev1.LocalObjectReference{
-					Name: key.PrometheusAdditionalScrapeConfigsSecretName(),
-				},
-				Key: key.PrometheusAdditionalScrapeConfigsName(),
-			},
-			SecurityContext: &corev1.PodSecurityContext{
-				RunAsUser:    &uid,
-				RunAsGroup:   &gid,
-				RunAsNonRoot: &runAsNonRoot,
-				FSGroup:      &fsGroup,
-			},
-			Storage: &storage,
-			Affinity: &corev1.Affinity{
-				NodeAffinity: &corev1.NodeAffinity{
-					RequiredDuringSchedulingIgnoredDuringExecution: &corev1.NodeSelector{
-						NodeSelectorTerms: []corev1.NodeSelectorTerm{
-							{
-								MatchExpressions: []corev1.NodeSelectorRequirement{
-									{
-										Key:      "role",
-										Operator: corev1.NodeSelectorOpNotIn,
-										Values: []string{
-											"master",
+				Affinity: &corev1.Affinity{
+					NodeAffinity: &corev1.NodeAffinity{
+						RequiredDuringSchedulingIgnoredDuringExecution: &corev1.NodeSelector{
+							NodeSelectorTerms: []corev1.NodeSelectorTerm{
+								{
+									MatchExpressions: []corev1.NodeSelectorRequirement{
+										{
+											Key:      "role",
+											Operator: corev1.NodeSelectorOpNotIn,
+											Values: []string{
+												"master",
+											},
 										},
 									},
 								},
@@ -226,37 +182,82 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						},
 					},
 				},
-			},
-			TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
-				{
-					MaxSkew:           1,
-					TopologyKey:       "kubernetes.io/hostname",
-					WhenUnsatisfiable: corev1.ScheduleAnyway,
-					LabelSelector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{
-							"app.kubernetes.io/name": "prometheus",
+				// Add 5mn initial delay to the readinessProbe to give Prometheus more
+				// time to load data and start. This fixes the current 10mn delay set
+				// by default in prometheus-operator which results in crash looping Prometheus
+				// when there are too much data to load.
+				Containers: []corev1.Container{
+					{
+						Name: "prometheus",
+						ReadinessProbe: &corev1.Probe{
+							InitialDelaySeconds: 300,
 						},
 					},
 				},
+				EnableRemoteWriteReceiver: true,
+				ExternalLabels: map[string]string{
+					key.ClusterIDKey:    key.ClusterID(cluster),
+					key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
+					key.CustomerKey:     config.Customer,
+					key.InstallationKey: config.Installation,
+					key.PipelineKey:     config.Pipeline,
+					key.ProviderKey:     config.Provider,
+					key.RegionKey:       config.Region,
+				},
+				ExternalURL: externalURL.String(),
+				Image:       &image,
+				LogLevel:    config.LogLevel,
+				PodMetadata: &promv1.EmbeddedObjectMetadata{
+					Labels: labels,
+				},
+				PriorityClassName: "prometheus",
+				Replicas:          &replicas,
+				Resources: corev1.ResourceRequirements{
+					Requests: corev1.ResourceList{
+						// cpu: 100m
+						corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
+						// memory: 1Gi
+						corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
+					},
+					Limits: corev1.ResourceList{
+						// cpu: 150m
+						corev1.ResourceCPU: *key.PrometheusDefaultCPULimit(),
+						// memory: 1.2Gi
+						corev1.ResourceMemory: *key.PrometheusDefaultMemoryLimit(),
+					},
+				},
+				RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
+				SecurityContext: &corev1.PodSecurityContext{
+					RunAsUser:    &uid,
+					RunAsGroup:   &gid,
+					RunAsNonRoot: &runAsNonRoot,
+					FSGroup:      &fsGroup,
+				},
+				Storage: &storage,
+				TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
+					{
+						MaxSkew:           1,
+						TopologyKey:       "kubernetes.io/hostname",
+						WhenUnsatisfiable: corev1.ScheduleAnyway,
+						LabelSelector: &metav1.LabelSelector{
+							MatchLabels: map[string]string{
+								"app.kubernetes.io/name": "prometheus",
+							},
+						},
+					},
+				},
+				WALCompression: &walCompression,
+				Web: &promv1.PrometheusWebSpec{
+					PageTitle: &pageTitle,
+				},
 			},
+
+			Retention:     promv1.Duration(config.RetentionDuration),
+			RetentionSize: promv1.ByteSize(config.RetentionSize),
 			RuleNamespaceSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					"name": key.NamespaceMonitoring(),
 				},
-			},
-			PriorityClassName: "prometheus",
-		},
-	}
-
-	// Add 5mn initial delay to the readinessProbe to give Prometheus more
-	// time to load data and start. This fixes the current 10mn delay set
-	// by default in prometheus-operator which results in crash looping Prometheus
-	// when there are too much data to load.
-	prometheus.Spec.Containers = []corev1.Container{
-		{
-			Name: "prometheus",
-			ReadinessProbe: &corev1.Probe{
-				InitialDelaySeconds: 300,
 			},
 		},
 	}
