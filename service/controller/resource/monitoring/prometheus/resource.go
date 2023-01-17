@@ -194,6 +194,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						},
 					},
 				},
+				EnableFeatures:            []string{"remote-write-receiver"},
 				EnableRemoteWriteReceiver: true,
 				ExternalLabels: map[string]string{
 					key.ClusterIDKey:    key.ClusterID(cluster),

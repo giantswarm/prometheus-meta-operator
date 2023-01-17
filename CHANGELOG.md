@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Enable `remote-write-receiver` via `EnableFeatures` field added in `CommonPrometheusFields` (schema 0.62.0)
+
 ## [4.20.0] - 2023-01-17
 
 ### Changed

@@ -37,6 +37,8 @@ spec:
     readinessProbe:
       initialDelaySeconds: 300
     resources: {}
+  enableFeatures:
+  - remote-write-receiver
   enableRemoteWriteReceiver: true
   externalLabels:
     cluster_id: alice
