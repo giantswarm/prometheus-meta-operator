@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.20.1] - 2023-01-17
+
 ### Fixed
 
 - Enable `remote-write-receiver` via `EnableFeatures` field added in `CommonPrometheusFields` (schema 0.62.0)
@@ -1820,7 +1822,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.1...HEAD
+[4.20.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.0...v4.20.1
 [4.20.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.2...v4.20.0
 [4.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.1...v4.19.2
 [4.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.0...v4.19.1
