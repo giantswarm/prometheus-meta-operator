@@ -39,7 +39,6 @@ spec:
     resources: {}
   enableFeatures:
   - remote-write-receiver
-  enableRemoteWriteReceiver: true
   externalLabels:
     cluster_id: foo
     cluster_type: workload_cluster

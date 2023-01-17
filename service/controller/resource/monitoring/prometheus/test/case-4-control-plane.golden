@@ -39,7 +39,6 @@ spec:
     resources: {}
   enableFeatures:
   - remote-write-receiver
-  enableRemoteWriteReceiver: true
   externalLabels:
     cluster_id: kubernetes
     cluster_type: management_cluster
