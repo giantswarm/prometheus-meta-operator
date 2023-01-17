@@ -37,7 +37,8 @@ spec:
     readinessProbe:
       initialDelaySeconds: 300
     resources: {}
-  enableRemoteWriteReceiver: true
+  enableFeatures:
+  - remote-write-receiver
   externalLabels:
     cluster_id: bar
     cluster_type: workload_cluster
