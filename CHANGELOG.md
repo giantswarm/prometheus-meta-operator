@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Upgrade `prometheus` from 2.39.1 to 2.40.1 and `alertmanager` from 0.23.0 to 0.25.0.
+- Upgrade `prometheus` from 2.39.1 to 2.41.0 and `alertmanager` from 0.23.0 to 0.25.0.
 
 ## [4.19.2] - 2023-01-12
 
