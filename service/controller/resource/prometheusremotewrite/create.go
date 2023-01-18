@@ -23,7 +23,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		// fetch current prometheus using the selector provided in remoteWrite resource.
-		prometheusList, err := remotewriteutils.FetchPrometh1eusList(ctx, toResourceWrapper(r), remoteWrite)
+		prometheusList, err := remotewriteutils.FetchPrometheusList(ctx, toResourceWrapper(r), remoteWrite)
 		if err != nil {
 			return microerror.Mask(err)
 		}
