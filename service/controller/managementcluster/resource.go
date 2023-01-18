@@ -7,6 +7,7 @@ import (
 	"github.com/giantswarm/operatorkit/v7/pkg/resource"
 	"github.com/giantswarm/operatorkit/v7/pkg/resource/wrapper/metricsresource"
 	"github.com/giantswarm/operatorkit/v7/pkg/resource/wrapper/retryresource"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerservicemonitor"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
@@ -165,6 +166,18 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var alertmanagerServiceMonitor resource.Interface
+	{
+		c := alertmanagerservicemonitor.Config{
+			Client: config.PrometheusClient,
+			Logger: config.Logger,
+		}
+		alertmanagerServiceMonitor, err = alertmanagerservicemonitor.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -349,6 +362,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
+		alertmanagerServiceMonitor,
 		remoteWriteAPIEndpointConfigSecretResource,
 		remoteWriteIngressAuthResource,
 		remoteWriteIngressResource,

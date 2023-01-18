@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- Add alertmanagerservicemonitor resource, to scrape metrics from alertmanager.
 - Added target and source matchers for stack_failed label.
 
 ## [4.20.1] - 2023-01-17
