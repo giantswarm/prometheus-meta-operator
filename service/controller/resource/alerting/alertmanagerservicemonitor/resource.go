@@ -6,11 +6,12 @@ import (
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	monitoringv1client "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
