@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove proxy support to remote write endpoint consumers.
+
 ### Added
 
 - Add alertmanagerservicemonitor resource, to scrape metrics from alertmanager.
