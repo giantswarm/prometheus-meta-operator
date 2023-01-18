@@ -487,6 +487,6 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
-    - cancel_if_stack_failed=true
-  target_matchers:
     - stack_failed=true
+  target_matchers:
+    - cancel_if_stack_failed=true
