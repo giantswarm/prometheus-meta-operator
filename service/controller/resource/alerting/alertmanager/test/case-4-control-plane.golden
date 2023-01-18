@@ -16,6 +16,7 @@ spec:
             operator: NotIn
             values:
             - master
+  alertmanagerConfigMatcherStrategy: {}
   alertmanagerConfigSelector:
     matchLabels:
       app.kubernetes.io/instance: alertmanager

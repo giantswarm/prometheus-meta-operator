@@ -244,8 +244,10 @@ func prometheus() promv1.Prometheus {
 			Namespace: "default",
 		},
 		Spec: promv1.PrometheusSpec{
-			Version:  "v1.35.0",
-			Replicas: &replicas,
+			CommonPrometheusFields: promv1.CommonPrometheusFields{
+				Version:  "v1.35.0",
+				Replicas: &replicas,
+			},
 		},
 	}
 }

@@ -112,6 +112,13 @@ spec:
     maxSkew: 1
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
+  tsdb: {}
   walCompression: true
   web:
     pageTitle: test-installation/bar Prometheus
+status:
+  availableReplicas: 0
+  paused: false
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0

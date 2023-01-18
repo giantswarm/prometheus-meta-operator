@@ -11,11 +11,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove proxy support to remote write endpoint consumers.
 
+### Added
+
+- Added target and source matchers for stack_failed label.
+
+## [4.20.1] - 2023-01-17
+
+### Fixed
+
+- Enable `remote-write-receiver` via `EnableFeatures` field added in `CommonPrometheusFields` (schema 0.62.0)
+
+## [4.20.0] - 2023-01-17
+
+### Changed
+
+- Upgrade `prometheus` from 2.39.1 to 2.41.0 and `alertmanager` from 0.23.0 to 0.25.0.
+
 ## [4.19.2] - 2023-01-12
 
 ### Fixed
 
 - Fix getDefaultAppVersion org namespace
+
+### Changed
+
+- Bump alpine from 3.17.0 to 3.17.1
 
 ## [4.19.1] - 2023-01-11
 
@@ -91,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove option to disable PVC creations only used on KVM installations.
 - Remove deprecated ingress v1beta1 (only used on kvm).
 
 ## [4.12.0] - 2022-11-25
@@ -1809,7 +1830,9 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.1...HEAD
+[4.20.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.0...v4.20.1
+[4.20.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.2...v4.20.0
 [4.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.1...v4.19.2
 [4.19.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.0...v4.19.1
 [4.19.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.18.0...v4.19.0

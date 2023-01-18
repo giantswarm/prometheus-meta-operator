@@ -3,7 +3,7 @@ global:
   slack_api_url: https://slack
 
 templates:
-- '*.tmpl'
+- '/etc/alertmanager/config/*.tmpl'
 
 route:
   group_by: [alertname, cluster_id, installation, status]
@@ -446,3 +446,8 @@ inhibit_rules:
   target_matchers:
     - cancel_if_cluster_is_not_running_prometheus_agent=true
   equal: [cluster_id]
+
+- source_matchers:
+    - stack_failed=true
+  target_matchers:
+    - cancel_if_stack_failed=true
