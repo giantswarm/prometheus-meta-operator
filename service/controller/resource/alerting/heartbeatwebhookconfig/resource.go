@@ -106,7 +106,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 						Type: "GenieKey",
 						Credentials: &corev1.SecretKeySelector{
 							LocalObjectReference: corev1.LocalObjectReference{
-								Name: key.AlertManagerSecretName(),
+								Name: "opsgenie-key",
 							},
 							Key: key.OpsgenieKey(),
 						},

@@ -12,8 +12,6 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanager"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -114,44 +112,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		rbacResource, err = rbac.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var alertmanagerResource resource.Interface
-	{
-		c := alertmanager.Config{
-			Address:     config.AlertmanagerAddress,
-			Client:      config.PrometheusClient,
-			Logger:      config.Logger,
-			LogLevel:    config.AlertmanagerLogLevel,
-			StorageSize: config.AlertmanagerStorageSize,
-			Version:     config.AlertmanagerVersion,
-		}
-
-		alertmanagerResource, err = alertmanager.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var alertmanagerConfigResource resource.Interface
-	{
-		c := alertmanagerconfig.Config{
-			K8sClient:          config.K8sClient,
-			Logger:             config.Logger,
-			Installation:       config.Installation,
-			Provider:           config.Provider,
-			ProxyConfiguration: config.ProxyConfiguration,
-			OpsgenieKey:        config.OpsgenieKey,
-			GrafanaAddress:     config.GrafanaAddress,
-			SlackApiURL:        config.SlackApiURL,
-			SlackProjectName:   config.SlackProjectName,
-			Pipeline:           config.Pipeline,
-		}
-
-		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -344,8 +304,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		namespaceResource,
 		etcdCertificatesResource,
 		rbacResource,
-		alertmanagerResource,
-		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
 		remoteWriteAPIEndpointConfigSecretResource,
