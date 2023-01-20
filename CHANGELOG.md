@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.20.2] - 2023-01-18
+
 ### Fixed
 
 - Remove proxy support to remote write endpoint consumers.
@@ -1831,7 +1833,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.2...HEAD
+[4.20.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.1...v4.20.2
 [4.20.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.0...v4.20.1
 [4.20.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.2...v4.20.0
 [4.19.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.1...v4.19.2
