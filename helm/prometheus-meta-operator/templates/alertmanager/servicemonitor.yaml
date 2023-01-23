@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: alertmanager
+  name: alertmanager
+  namespace: monitoring
+spec:
+  endpoints:
+    - port: web
+      enableHttp2: true
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - monitoring
+  selector:
+    matchLabels:
+      operated-alertmanager: "true"

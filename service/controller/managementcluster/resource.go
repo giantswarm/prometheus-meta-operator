@@ -14,7 +14,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerconfig"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerservicemonitor"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -166,18 +165,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var alertmanagerServiceMonitor resource.Interface
-	{
-		c := alertmanagerservicemonitor.Config{
-			Client: config.PrometheusClient,
-			Logger: config.Logger,
-		}
-		alertmanagerServiceMonitor, err = alertmanagerservicemonitor.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -361,7 +348,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
-		alertmanagerServiceMonitor,
 		remoteWriteAPIEndpointConfigSecretResource,
 		remoteWriteIngressAuthResource,
 		remoteWriteIngressResource,
