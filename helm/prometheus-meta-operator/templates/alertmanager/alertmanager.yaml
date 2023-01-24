@@ -1,0 +1,67 @@
+{{- if .Values.alertmanager.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
+metadata:
+  labels:
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: alertmanager
+  name: alertmanager
+  namespace: monitoring
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: role
+                operator: NotIn
+                values:
+                  - master
+  alertmanagerConfigSelector:
+    matchLabels:
+      app.kubernetes.io/instance: alertmanager
+      app.kubernetes.io/managed-by: prometheus-meta-operator
+      app.kubernetes.io/name: alertmanager
+  configSecret: alertmanager-config
+  externalUrl: {{ .Values.alertmanager.address }}
+  logLevel: info
+  podMetadata:
+    labels:
+      app.kubernetes.io/instance: alertmanager
+      app.kubernetes.io/managed-by: prometheus-meta-operator
+      app.kubernetes.io/name: alertmanager
+  priorityClassName: prometheus
+  replicas: 1
+  resources:
+    limits:
+      cpu: 100m
+      memory: "209715200"
+    requests:
+      cpu: 100m
+      memory: "209715200"
+  securityContext:
+    fsGroup: 65534
+    runAsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 65534
+  serviceAccountName: alertmanager
+  storage:
+    volumeClaimTemplate:
+      metadata: {}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+      status: {}
+  topologySpreadConstraints:
+    - labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: alertmanager
+      maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+  version: {{ .Values.alertmanager.version }}
+{{- end }}
