@@ -119,7 +119,7 @@ require (
 replace (
 	github.com/coreos/etcd v3.3.10+incompatible => github.com/coreos/etcd v3.3.25+incompatible
 	github.com/coreos/etcd v3.3.13+incompatible => github.com/coreos/etcd v3.3.25+incompatible
-	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.1+incompatible
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/gorilla/websocket => github.com/gorilla/websocket v1.4.2
 
 	// NOTE: latest(64b90ef9) getsentry/sentry-go dependes on github.com/labstack/echo v4.5.0
