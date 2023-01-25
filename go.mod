@@ -127,7 +127,7 @@ replace (
 	// see https://ossindex.sonatype.org/vulnerability/sonatype-2022-5436
 	github.com/labstack/echo/v4 => github.com/labstack/echo/v4 v4.9.0
 
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.3
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.9.11
 
 	golang.org/x/text => golang.org/x/text v0.3.8
 
