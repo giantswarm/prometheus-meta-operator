@@ -2,7 +2,7 @@ package remotewrite
 
 import (
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v7/pkg/resource"
+	"github.com/giantswarm/operatorkit/v8/pkg/resource"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/prometheusremotewrite"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/remotewritesecret"
