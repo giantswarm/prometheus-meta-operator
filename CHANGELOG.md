@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix heartbeat update mechanism to prevent leftover labels in OpsGenie.
+
 ## [4.20.2] - 2023-01-18
 
 ### Fixed
