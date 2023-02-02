@@ -112,6 +112,8 @@ func hasChanged(current, desired heartbeat.Heartbeat) bool {
 	desired.Enabled = true
 	current.Expired = true
 	desired.Expired = true
+	// We get the ID back from opsgenie so we update it in the heartbeat
+	desired.OwnerTeam.Id = current.OwnerTeam.Id
 
 	return !reflect.DeepEqual(current, desired)
 }

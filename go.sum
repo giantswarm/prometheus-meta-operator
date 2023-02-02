@@ -195,8 +195,8 @@ github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2H
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/giantswarm/apiextensions-application v0.6.0 h1:ZPIiq27zJ2VatrWH21/dK6jR9rJrr4VJUP/Fo0GvsPE=
 github.com/giantswarm/apiextensions-application v0.6.0/go.mod h1:O6mg+EdXC9CyTLgi0d3rf6QTXrQX/79iw4kjMJRinig=
-github.com/giantswarm/apiextensions/v6 v6.4.1 h1:s8Y6SjBI0fFDPOooZl9wMnU3Ah4zfxsl1VutlhPvMiI=
-github.com/giantswarm/apiextensions/v6 v6.4.1/go.mod h1:Wgc2Rx8YAYF2HidjabEvhsj5ADL+RteIC86ofulY+YE=
+github.com/giantswarm/apiextensions/v6 v6.5.0 h1:zCzZjB5nKQqINZr+HNONEuHHjuXx6kiXPDZxAVYfVAY=
+github.com/giantswarm/apiextensions/v6 v6.5.0/go.mod h1:Wgc2Rx8YAYF2HidjabEvhsj5ADL+RteIC86ofulY+YE=
 github.com/giantswarm/backoff v1.0.0 h1:1oeTvyPsm1tJrHlSmfxbIWuoCNWPOkWJCb8kfLvE2T0=
 github.com/giantswarm/backoff v1.0.0/go.mod h1:l/WqbggvG5Ndxxws0LUgVEvP5E82Qj5/PF8SMip/1QM=
 github.com/giantswarm/exporterkit v1.0.0 h1:6TwzJ5UklUp/xajBK3sx4gArFfMAAIEDs4/F1FvOCaE=
@@ -213,8 +213,8 @@ github.com/giantswarm/microkit v1.0.0 h1:i72WS1JDRorcWVbnxKjK9VwVnSdnIJP3XDE+Mgj
 github.com/giantswarm/microkit v1.0.0/go.mod h1:vMKfEv9A6lBbhkByPSxw+Rpvu/vpUDSW5htNZ9R0oFw=
 github.com/giantswarm/micrologger v1.0.0 h1:5W4h3K414CXhoXQ3rkGbrMl8yUGdbCLKMdg/EezccM4=
 github.com/giantswarm/micrologger v1.0.0/go.mod h1:jFY9TUZLYnQ437GwbodmGmwEJ5cImEJ1f5NTPyDHB24=
-github.com/giantswarm/operatorkit/v8 v8.0.0 h1:AM1Xxg8X6xQjhxh+Jn1Tiv2MkpG8Ro4gqEsytZBBU5M=
-github.com/giantswarm/operatorkit/v8 v8.0.0/go.mod h1:dPrvvQj2UNBw6jLDYqvGhnDfJImwih8A+F3Oc1VS8XM=
+github.com/giantswarm/operatorkit/v7 v7.1.0 h1:yRUwj9ZUqBd+UV0C5n784+Qe6y/olILtg444XD6hjLA=
+github.com/giantswarm/operatorkit/v7 v7.1.0/go.mod h1:5enwhyIjd4xKrYXV9+enqttcmB9BE2Ocl1V12IwJIuw=
 github.com/giantswarm/to v0.4.0 h1:x0GjbI94/nxcHztJiRtJzihCjgmUlEOto8RD98VA7WI=
 github.com/giantswarm/to v0.4.0/go.mod h1:RTRtw+Dyk6YqoiNBOGLO981BqhibtVwogdaFIMO1y/A=
 github.com/giantswarm/versionbundle v1.0.0 h1:36wuA6qrA5MkqKLKyUWmQLab1f293svA8/ac28VAG+4=
