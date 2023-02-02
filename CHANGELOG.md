@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.20.3] - 2023-02-02
+
 ### Fixed
 
 - Fix heartbeat update mechanism to prevent leftover labels in OpsGenie.
@@ -1837,7 +1839,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.3...HEAD
+[4.20.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.2...v4.20.3
 [4.20.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.1...v4.20.2
 [4.20.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.0...v4.20.1
 [4.20.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.19.2...v4.20.0
