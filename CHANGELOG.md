@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.20.4] - 2023-02-07
+
 ### Fixed
 
 - Fix certificates created as directories rathen than files
@@ -1843,7 +1845,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.4...HEAD
+[4.20.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.3...v4.20.4
 [4.20.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.2...v4.20.3
 [4.20.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.1...v4.20.2
 [4.20.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.0...v4.20.1
