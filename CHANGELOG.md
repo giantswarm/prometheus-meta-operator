@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix certificates created as directories rathen than files
+
 ## [4.20.3] - 2023-02-02
 
 ### Fixed
