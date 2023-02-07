@@ -4,6 +4,9 @@ kind: ConfigMap
 metadata:
   name: notification-template
   namespace: monitoring
+  labels:
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/name: alertmanager
 data:
   notification-template.tmpl: |
     {{ print `{{ define "__alertmanager" }}Alertmanager{{ end }}
