@@ -36,12 +36,15 @@ spec:
       - name: etcd-client-ca
         hostPath:
           path: {{ .Values.prometheus.etcdClientCertificates.ca }}
+          type: File
       - name: etcd-client-crt
         hostPath:
           path: {{ .Values.prometheus.etcdClientCertificates.crt }}
+          type: File
       - name: etcd-client-key
         hostPath:
           path: {{ .Values.prometheus.etcdClientCertificates.key }}
+          type: File
       serviceAccountName: {{ include "resource.default.name"  . }}
       securityContext:
         runAsUser: {{ .Values.pod.user.id }}
