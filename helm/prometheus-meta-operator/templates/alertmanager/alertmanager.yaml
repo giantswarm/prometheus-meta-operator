@@ -18,6 +18,12 @@ spec:
                 operator: NotIn
                 values:
                   - master
+  alertmanagerConfiguration:
+    name: alertmanager-config
+    templates:
+      - configMap:
+          name: notification-template
+          key: notification-template.tmpl
   alertmanagerConfigSelector:
     matchLabels:
       app.kubernetes.io/instance: alertmanager
