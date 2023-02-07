@@ -4,7 +4,6 @@ kind: Alertmanager
 metadata:
   labels:
     app.kubernetes.io/instance: alertmanager
-    app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: alertmanager
   name: alertmanager
   namespace: monitoring
