@@ -66,12 +66,14 @@ spec:
           mountPath: /var/run/{{ include "name" . }}/configmap/
         - name: {{ include "name" . }}-secret
           mountPath: /var/run/{{ include "name" . }}/secret/
+       {{- if eq .Values.managementCluster.provider.flavor "vintage" }}
         - mountPath: /etcd-client-certs/ca.pem
           name: etcd-client-ca
         - mountPath: /etcd-client-certs/crt.pem
           name: etcd-client-crt
         - mountPath: /etcd-client-certs/key.pem
           name: etcd-client-key
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /healthz
