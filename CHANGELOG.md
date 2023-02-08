@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix PMO etcd-certs volumes binding
+- Make PMO etcd-certs volumes binding only on vintage, so that CAPI doesn't fail deployment because the certs are binded via a secret.  
 
 ### Added
 
