@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix PMO etcd-certs volumes binding
+
+### Added
+
+- Add `.provider.flavor` property 
+
 ## [4.20.4] - 2023-02-07
 
 ### Fixed

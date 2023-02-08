@@ -33,6 +33,7 @@ spec:
           items:
           - key: secret.yml
             path: secret.yml
+      {{- if eq .Values.managementCluster.provider.flavor "vintage" }}
       - name: etcd-client-ca
         hostPath:
           path: {{ .Values.prometheus.etcdClientCertificates.ca }}
@@ -45,6 +46,7 @@ spec:
         hostPath:
           path: {{ .Values.prometheus.etcdClientCertificates.key }}
           type: File
+      {{- end }}
       serviceAccountName: {{ include "resource.default.name"  . }}
       securityContext:
         runAsUser: {{ .Values.pod.user.id }}

@@ -39,6 +39,7 @@ managementCluster:
   pipeline: ""
   provider:
     kind: ""
+    flavor: ""
   insecureCA: false
 
 prometheus:
