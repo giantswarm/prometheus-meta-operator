@@ -24,13 +24,13 @@ func getObjectMeta(v interface{}, installation string) (metav1.ObjectMeta, error
 }
 
 // ToSecret returns the target secret by combining results of getObjectMeta and getSource.
-func (sc *secretCopier) ToSecret(ctx context.Context, v interface{}) (metav1.Object, error) {
+func (sc *secretCopier) ToSecret(ctx context.Context, v interface{}, config Config) (metav1.Object, error) {
 	objectMeta, err := getObjectMeta(v, sc.installation)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	data, err := sc.getSource(ctx, v)
+	data, err := sc.getSource(ctx, v, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
