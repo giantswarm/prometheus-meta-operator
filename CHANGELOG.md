@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Manage etcd certificates differently between CAPI/Vintage. On Vintage, etcd certificates are binded via a volume. On CAPI, certificates are binded via a secret.
+- Pass the missing Provider property to `etcdcertificates.Config`
+
 
 ### Added
 
