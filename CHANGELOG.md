@@ -9,11 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Make PMO etcd-certs volumes binding only on vintage, so that CAPI doesn't fail deployment because the certs are binded via a secret.  
+- Manage etcd certificates differently between CAPI/Vintage. On Vintage, etcd certificates are binding via a volume. On CAPI, certificates are binding via a secret.
 
 ### Added
 
-- Add `.provider.flavor` property 
+- Add `.provider.flavor` property in Helm chart. 
 
 ## [4.20.4] - 2023-02-07
 
