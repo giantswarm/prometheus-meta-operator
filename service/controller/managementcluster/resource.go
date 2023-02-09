@@ -98,6 +98,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient:    config.K8sClient,
 			Logger:       config.Logger,
 			Installation: config.Installation,
+			Provider:     config.Provider,
 		}
 
 		etcdCertificatesResource, err = etcdcertificates.New(c)
