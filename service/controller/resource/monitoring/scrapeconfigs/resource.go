@@ -257,7 +257,8 @@ func hasPrometheusAgentOrCannotBeScraped(ctx context.Context, ctrlClient client.
 		return true, nil
 	}
 
-	// On vintage, the agent runs on any release >= v19.0.0 for azure and  >= v18.2.0 for aws
+	// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore targets.
+	// After azure 19.0.0 and aws 18.2.0, they are scraped by the prometheus agent.
 	release := cluster.GetLabels()["release.giantswarm.io/version"]
 	version, err := semver.Parse(release)
 	if err != nil {
