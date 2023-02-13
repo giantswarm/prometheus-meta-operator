@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Allow agent configuration on aws 18.2.0.
+- Fix list of targets to scrape or ignore.
 
 ## [4.20.4] - 2023-02-07
 

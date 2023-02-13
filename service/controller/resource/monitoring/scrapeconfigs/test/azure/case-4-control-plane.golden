@@ -49,7 +49,6 @@
   - source_labels: [__name__]
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
-
 # falco-exporter
 - job_name: kubernetes-prometheus/falco-exporter-kubernetes/0
   honor_labels: true
@@ -1539,7 +1538,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-
 
 
 - job_name: kubernetes-prometheus/vault-kubernetes/0

@@ -1,4 +1,111 @@
 
+- job_name: foo-prometheus/kubernetes-apiserver-foo/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: endpoints
+
+    api_server: https://master.foo:443
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
+    insecure_skip_verify: true
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_component]
+    regex: apiserver
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoint_port_name]
+    regex: https
+    action: keep
+  - target_label: app
+    replacement: kubernetes
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: foo
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: workload_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+# Add scrape configuration for docker
+- job_name: foo-prometheus/docker-foo/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+
+    api_server: https://master.foo:443
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
+    insecure_skip_verify: false
+  relabel_configs:
+  - target_label: __address__
+    replacement: master.foo:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:9323/proxy/metrics
+  - target_label: app
+    replacement: docker
+  - source_labels: [__meta_kubernetes_node_address_InternalIP]
+    replacement: ${1}:9323
+    target_label: instance
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: foo
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: workload_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: medium
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  metric_relabel_configs:
+  - source_labels: [__name__]
+    regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
+    action: keep
 # Add scrape configuration for cadvisor
 - job_name: foo-prometheus/cadvisor-foo/0
   honor_labels: true

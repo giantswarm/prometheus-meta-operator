@@ -1,4 +1,4 @@
-[[- if not .IsRunningAgentOrCannotBeScraped ]]
+[[- if not (contains "kube-apiserver" .IgnoredTargets) ]]
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-apiserver-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -17,8 +17,8 @@
     replacement: kubernetes
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-[[ end ]]
-[[- if not .CAPICluster ]]
+[[- end ]]
+[[- if not (contains "docker" .IgnoredTargets) ]]
 # Add scrape configuration for docker
 - job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
   honor_labels: true
@@ -44,7 +44,7 @@
   - source_labels: [__name__]
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
-[[ end ]]
+[[- end ]]
 [[- if eq .ClusterType "management_cluster" ]]
 # falco-exporter
 - job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
@@ -243,7 +243,7 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-[[- if not .IsRunningAgentOrCannotBeScraped ]]
+[[- if not (contains "kube-controller-manager" .IgnoredTargets) ]]
 # kube-controller-manager
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
   honor_labels: true
@@ -289,6 +289,8 @@
     replacement: kube-controller-manager
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+[[- end ]]
+[[- if not (contains "kube-scheduler" .IgnoredTargets) ]]
 # kube-scheduler
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-scheduler-[[ .ClusterID ]]/0
   honor_labels: true
@@ -334,7 +336,7 @@
     replacement: kube-scheduler
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
+[[- end ]]
 # kube-proxy
 - job_name: [[ .ClusterID ]]-prometheus/kube-proxy-[[ .ClusterID ]]/0
   honor_labels: true
@@ -1110,7 +1112,7 @@
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
 [[ end ]]
-[[ if not .CAPICluster ]]
+[[- if not (contains "vault" .IgnoredTargets) ]]
 - job_name: [[ .ClusterID ]]-prometheus/vault-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
