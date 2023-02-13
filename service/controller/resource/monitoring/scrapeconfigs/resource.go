@@ -276,7 +276,10 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		if version.Major >= 18 {
+		if version.Major >= 19 ||
+			(config.Provider == "aws" && version.Major == 18 && version.Minor >= 2) { // aws 18.2.0 is running the agent
+			ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+		} else if version.Major >= 18 {
 			ignoredTargets = append(ignoredTargets, "kube-controller-manager", "kube-scheduler")
 		}
 	}
