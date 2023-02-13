@@ -222,7 +222,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 
 	// For CAPI clusters, this is a case to case basis. We need to check the default app version for now.
 	if key.IsCAPIManagementCluster(config.Provider) {
-		ignoredTargets = append(ignoredTargets, "docker", "vault")
+		ignoredTargets = append(ignoredTargets)
 		appVersion, err := getDefaultAppVersion(ctx, ctrlClient, cluster, config)
 		if err != nil {
 			return nil, microerror.Mask(err)

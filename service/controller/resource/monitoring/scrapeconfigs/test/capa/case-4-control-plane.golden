@@ -1,4 +1,54 @@
 
+# Add scrape configuration for docker
+- job_name: kubernetes-prometheus/docker-kubernetes/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  relabel_configs:
+  - target_label: __address__
+    replacement: kubernetes.default:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:9323/proxy/metrics
+  - target_label: app
+    replacement: docker
+  - source_labels: [__meta_kubernetes_node_address_InternalIP]
+    replacement: ${1}:9323
+    target_label: instance
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: management_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: capa
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  metric_relabel_configs:
+  - source_labels: [__name__]
+    regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
+    action: keep
 # falco-exporter
 - job_name: kubernetes-prometheus/falco-exporter-kubernetes/0
   honor_labels: true
@@ -1504,6 +1554,42 @@
   relabel_configs:
   - source_labels: [__address__]
     target_label: __param_target
+
+
+- job_name: kubernetes-prometheus/vault-kubernetes/0
+  honor_labels: true
+  scheme: http
+  static_configs:
+  - targets:
+    - vault1.some-installation.test:10300
+    labels:
+      app: vault
+  - targets:
+    - vault1.some-installation.test:9005
+    labels:
+      app: cert-exporter
+  relabel_configs:
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: management_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: capa
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
 
 # nginx-ingress-controller
 - job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0

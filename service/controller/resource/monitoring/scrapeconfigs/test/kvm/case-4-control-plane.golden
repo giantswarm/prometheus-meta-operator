@@ -1765,6 +1765,7 @@
   - target_label: customer
     replacement: pmo
 
+
 - job_name: kubernetes-prometheus/vault-kubernetes/0
   honor_labels: true
   scheme: http
