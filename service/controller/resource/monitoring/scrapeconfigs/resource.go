@@ -216,13 +216,12 @@ func getDefaultAppVersion(ctx context.Context, ctrlClient client.Client, cluster
 	return app.Status.Version, nil
 }
 
-// List of targets we ignore in the scrape config (whether they are scraped by the agent or they are unscrappable)
+// List of targets we ignore in the scrape config (because they may be scraped by the agent or not scrappable)
 func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) ([]string, error) {
 	ignoredTargets := make([]string, 0)
 
 	// For CAPI clusters, this is a case to case basis. We need to check the default app version for now.
 	if key.IsCAPIManagementCluster(config.Provider) {
-		ignoredTargets = append(ignoredTargets)
 		appVersion, err := getDefaultAppVersion(ctx, ctrlClient, cluster, config)
 		if err != nil {
 			return nil, microerror.Mask(err)
