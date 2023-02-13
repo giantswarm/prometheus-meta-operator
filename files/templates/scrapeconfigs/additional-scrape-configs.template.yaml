@@ -1,4 +1,4 @@
-[[- if not .IsRunningAgent ]]
+[[- if not .IsRunningAgentOrCannotBeScraped ]]
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-apiserver-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
@@ -243,7 +243,7 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-[[- if not .IsRunningAgent ]]
+[[- if not .IsRunningAgentOrCannotBeScraped ]]
 # kube-controller-manager
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
   honor_labels: true

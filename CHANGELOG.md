@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Allow agent configuration on aws 18.2.0.
+
 ## [4.20.4] - 2023-02-07
 
 ### Fixed

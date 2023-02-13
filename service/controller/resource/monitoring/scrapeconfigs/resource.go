@@ -44,25 +44,25 @@ type Config struct {
 }
 
 type TemplateData struct {
-	AdditionalScrapeConfigs   string
-	APIServerURL              string
-	Bastions                  []string
-	Provider                  string
-	ClusterID                 string
-	ClusterType               string
-	ServicePriority           string
-	Customer                  string
-	Organization              string
-	SecretName                string
-	EtcdSecretName            string
-	Installation              string
-	IsRunningAgent            bool
-	Mayu                      string
-	Vault                     string
-	WorkloadClusterETCDDomain string
-	CAPICluster               bool
-	CAPIManagementCluster     bool
-	VintageManagementCluster  bool
+	AdditionalScrapeConfigs         string
+	APIServerURL                    string
+	Bastions                        []string
+	Provider                        string
+	ClusterID                       string
+	ClusterType                     string
+	ServicePriority                 string
+	Customer                        string
+	Organization                    string
+	SecretName                      string
+	EtcdSecretName                  string
+	Installation                    string
+	IsRunningAgentOrCannotBeScraped bool
+	Mayu                            string
+	Vault                           string
+	WorkloadClusterETCDDomain       string
+	CAPICluster                     bool
+	CAPIManagementCluster           bool
+	VintageManagementCluster        bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -169,31 +169,31 @@ func toData(ctx context.Context, ctrlClient client.Client, v interface{}, config
 }
 
 func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (*TemplateData, error) {
-	isRunningAgent, err := hasPrometheusAgent(ctx, ctrlClient, cluster, config)
+	IsRunningAgentOrCannotBeScraped, err := hasPrometheusAgentOrCannotBeScraped(ctx, ctrlClient, cluster, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	d := &TemplateData{
-		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
-		APIServerURL:              key.APIUrl(cluster),
-		Bastions:                  config.Bastions,
-		ClusterID:                 key.ClusterID(cluster),
-		ClusterType:               key.ClusterType(config.Installation, cluster),
-		ServicePriority:           key.GetServicePriority(cluster),
-		Customer:                  config.Customer,
-		Organization:              key.GetOrganization(cluster),
-		Provider:                  config.Provider,
-		Installation:              config.Installation,
-		SecretName:                key.Secret(),
-		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
-		Vault:                     config.Vault,
-		Mayu:                      config.Mayu,
-		IsRunningAgent:            isRunningAgent,
-		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
-		CAPICluster:               key.IsCAPICluster(cluster),
-		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
-		VintageManagementCluster:  !key.IsCAPIManagementCluster(config.Provider),
+		AdditionalScrapeConfigs:         config.AdditionalScrapeConfigs,
+		APIServerURL:                    key.APIUrl(cluster),
+		Bastions:                        config.Bastions,
+		ClusterID:                       key.ClusterID(cluster),
+		ClusterType:                     key.ClusterType(config.Installation, cluster),
+		ServicePriority:                 key.GetServicePriority(cluster),
+		Customer:                        config.Customer,
+		Organization:                    key.GetOrganization(cluster),
+		Provider:                        config.Provider,
+		Installation:                    config.Installation,
+		SecretName:                      key.Secret(),
+		EtcdSecretName:                  key.EtcdSecret(config.Installation, cluster),
+		Vault:                           config.Vault,
+		Mayu:                            config.Mayu,
+		IsRunningAgentOrCannotBeScraped: IsRunningAgentOrCannotBeScraped,
+		WorkloadClusterETCDDomain:       config.WorkloadClusterETCDDomain,
+		CAPICluster:                     key.IsCAPICluster(cluster),
+		CAPIManagementCluster:           key.IsCAPIManagementCluster(config.Provider),
+		VintageManagementCluster:        !key.IsCAPIManagementCluster(config.Provider),
 	}
 
 	return d, nil
@@ -212,8 +212,8 @@ func getDefaultAppVersion(ctx context.Context, ctrlClient client.Client, cluster
 	return app.Status.Version, nil
 }
 
-// hasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics.
-func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (bool, error) {
+// hasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics or if the targets cannot be scraped (releases >= 18)
+func hasPrometheusAgentOrCannotBeScraped(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (bool, error) {
 	// For CAPI clusters, this is a case to case basis. We need to check the default app version for now.
 	if key.IsCAPIManagementCluster(config.Provider) {
 		appVersion, err := getDefaultAppVersion(ctx, ctrlClient, cluster, config)
@@ -257,13 +257,14 @@ func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster m
 		return true, nil
 	}
 
-	// On vintage, the agent runs on any release >= v19.0.0
+	// On vintage, the agent runs on any release >= v19.0.0 for azure and  >= v18.2.0 for aws
 	release := cluster.GetLabels()["release.giantswarm.io/version"]
 	version, err := semver.Parse(release)
 	if err != nil {
 		return false, microerror.Mask(err)
 	}
-	return version.Major >= 19, nil
+
+	return version.Major >= 18, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {
