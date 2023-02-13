@@ -11,17 +11,19 @@ import (
 )
 
 // getSource retrieves data for the desired Secret.
-func (sc *secretCopier) getSource(ctx context.Context, v interface{}) (map[string]string, error) {
-	data, err := sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
-	if err != nil {
-		sc.logger.Debugf(ctx, "could not get certificates from secret : %v", err)
-
+func (sc *secretCopier) getSource(ctx context.Context, v interface{}, config Config) (map[string]string, error) {
+	var data map[string]string
+	var err error
+	if key.IsCAPIManagementCluster(config.Provider) {
+		// In CAPI clusters, etcd certificates are stored in a secret
+		data, err = sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
+	} else {
+		// In Vintage clusters, etcd certificates are mounted as files on the node filesystem
 		data, err = sc.getSourceFromDisk()
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
 	}
-
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	return data, nil
 }
 
