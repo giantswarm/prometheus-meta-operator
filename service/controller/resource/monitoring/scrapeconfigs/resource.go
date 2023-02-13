@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"path"
 	"reflect"
+	"strings"
 
 	"github.com/blang/semver"
 	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
@@ -27,6 +28,8 @@ const (
 	templateDirectory = "/opt/prometheus-meta-operator"
 	templatePath      = "files/templates/scrapeconfigs/*.yaml"
 )
+
+var kubernetesTargets = []string{"kube-apiserver", "kube-controller-manager", "kube-scheduler"}
 
 type Config struct {
 	K8sClient k8sclient.Interface
@@ -56,7 +59,7 @@ type TemplateData struct {
 	SecretName                string
 	EtcdSecretName            string
 	Installation              string
-	IsRunningAgent            bool
+	IgnoredTargets            string
 	Mayu                      string
 	Vault                     string
 	WorkloadClusterETCDDomain string
@@ -169,7 +172,8 @@ func toData(ctx context.Context, ctrlClient client.Client, v interface{}, config
 }
 
 func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (*TemplateData, error) {
-	isRunningAgent, err := hasPrometheusAgent(ctx, ctrlClient, cluster, config)
+	ignoredTargets, err := listTargetsToIgnore(ctx, ctrlClient, cluster, config)
+
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -189,7 +193,7 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
 		Vault:                     config.Vault,
 		Mayu:                      config.Mayu,
-		IsRunningAgent:            isRunningAgent,
+		IgnoredTargets:            strings.Join(ignoredTargets[:], ","),
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
 		CAPICluster:               key.IsCAPICluster(cluster),
 		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
@@ -212,58 +216,73 @@ func getDefaultAppVersion(ctx context.Context, ctrlClient client.Client, cluster
 	return app.Status.Version, nil
 }
 
-// hasPrometheusAgent returns true if the release uses the prometheus agent to collect k8s metrics.
-func hasPrometheusAgent(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (bool, error) {
+// List of targets we ignore in the scrape config (because they may be scraped by the agent or not scrappable)
+func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) ([]string, error) {
+	ignoredTargets := make([]string, 0)
+
 	// For CAPI clusters, this is a case to case basis. We need to check the default app version for now.
 	if key.IsCAPIManagementCluster(config.Provider) {
 		appVersion, err := getDefaultAppVersion(ctx, ctrlClient, cluster, config)
 		if err != nil {
-			return false, microerror.Mask(err)
+			return nil, microerror.Mask(err)
 		}
 		version, err := semver.Parse(appVersion)
 		if err != nil {
-			return false, microerror.Mask(err)
+			return nil, microerror.Mask(err)
 		}
+
 		switch config.Provider {
 		case "capa":
 			capaAgentVersion, err := semver.Parse("0.11.0")
 			if err != nil {
-				return false, microerror.Mask(err)
+				return nil, microerror.Mask(err)
 			}
-			return version.GTE(capaAgentVersion), nil
+			if version.GTE(capaAgentVersion) {
+				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+			}
 		case "cloud-directory":
 			cloudDirectorAgentVersion, err := semver.Parse("0.3.0")
 			if err != nil {
-				return false, microerror.Mask(err)
+				return nil, microerror.Mask(err)
 			}
-			return version.GTE(cloudDirectorAgentVersion), nil
+			if version.GTE(cloudDirectorAgentVersion) {
+				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+			}
 		case "gcp":
 			gcpAgentVersion, err := semver.Parse("0.16.0")
 			if err != nil {
-				return false, microerror.Mask(err)
+				return nil, microerror.Mask(err)
 			}
-			return version.GTE(gcpAgentVersion), nil
+			if version.GTE(gcpAgentVersion) {
+				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+			}
 		case "openstack":
 			openstackAgentVersion, err := semver.Parse("0.8.0")
 			if err != nil {
-				return false, microerror.Mask(err)
+				return nil, microerror.Mask(err)
 			}
-			return version.GTE(openstackAgentVersion), nil
-		default:
-			return false, nil
+			if version.GTE(openstackAgentVersion) {
+				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+			}
 		}
-	} else if key.IsManagementCluster(config.Installation, cluster) {
-		// Vintage MC
-		return true, nil
+	} else if key.IsManagementCluster(config.Installation, cluster) { // Vintage MC
+		// Vintage MCs (apart from KVM) are all running agents.
+		ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+	} else { // Vintage WC
+		// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore those targets.
+		release := cluster.GetLabels()["release.giantswarm.io/version"]
+		version, err := semver.Parse(release)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		if version.Major >= 19 ||
+			(config.Provider == "aws" && version.Major == 18 && version.Minor >= 2) { // aws 18.2.0 is running the agent
+			ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+		} else if version.Major >= 18 {
+			ignoredTargets = append(ignoredTargets, "kube-controller-manager", "kube-scheduler")
+		}
 	}
-
-	// On vintage, the agent runs on any release >= v19.0.0
-	release := cluster.GetLabels()["release.giantswarm.io/version"]
-	version, err := semver.Parse(release)
-	if err != nil {
-		return false, microerror.Mask(err)
-	}
-	return version.Major >= 19, nil
+	return ignoredTargets, nil
 }
 
 func hasChanged(current, desired metav1.Object) bool {

@@ -49,7 +49,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-
 # Add scrape configuration for cadvisor
 - job_name: bar-prometheus/cadvisor-bar/0
   honor_labels: true
@@ -460,7 +459,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-
 # kube-proxy
 - job_name: bar-prometheus/kube-proxy-bar/0
   honor_labels: true

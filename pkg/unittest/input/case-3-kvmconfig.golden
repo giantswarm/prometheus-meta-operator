@@ -4,6 +4,6 @@ metadata:
   labels:
     "giantswarm.io/service-priority": "lowest"
     giantswarm.io/organization: my-organization
-    "release.giantswarm.io/version": 18.0.0
+    "release.giantswarm.io/version": 17.0.0
   name: bar
   namespace: org-my-organization
