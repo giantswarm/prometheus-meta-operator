@@ -175,7 +175,25 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 		return nil, microerror.Mask(nodeCpuNotFoundError)
 	}
 
-	q, err := quantityMultiply(nodeCpu, 0.9)
+	n, ok := nodeCpu.AsInt64()
+	if !ok {
+		return nil, microerror.Maskf(quantityConversionError, nodeCpu.String())
+	}
+
+	var q *resource.Quantity
+	// If allocatable cpu is less then 6
+	// maxAllowedCPU is 80%
+	if n <= 6 {
+		q, err = quantityMultiply(nodeCpu, 0.8)
+		// If allocatable cpu is more then 12
+		// maxAllowedCPU is 60%
+	} else if n >= 12 {
+		q, err = quantityMultiply(nodeCpu, 0.6)
+		// Default 90%
+	} else {
+		q, err = quantityMultiply(nodeCpu, 0.9)
+	}
+
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
