@@ -182,7 +182,7 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 
 	var q *resource.Quantity
 	// If allocatable cpu is less then 6
-	// maxAllowedCPU is 80%
+	// maxAllowedCPU is 70%
 	if n <= 6 {
 		q, err = quantityMultiply(nodeCpu, 0.7)
 		// If allocatable cpu is more then 12
