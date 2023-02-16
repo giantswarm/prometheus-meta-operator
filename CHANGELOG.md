@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use resource.Quantity.AsApproximateFloat64() instead of AsInt64(), in order to avoid conversion issue when multiply cpu, e.g. 3880m
+
 ## [4.20.6] - 2023-02-13
 
 ### Changed
