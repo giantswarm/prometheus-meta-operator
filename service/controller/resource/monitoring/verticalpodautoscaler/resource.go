@@ -2,6 +2,7 @@ package verticalpodautoscaler
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -174,10 +175,18 @@ func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
 }
 
 func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error) {
-	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+
+	ignoreControlPlanes := metav1.LabelSelectorRequirement{
+		Key:      "node-role.kubernetes.io/control-plane",
+		Operator: metav1.LabelSelectorOpDoesNotExist,
+		Values:   []string{""},
+	}
+
+	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: ignoreControlPlanes.String()})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
+	fmt.Println("NODECount: ", len(nodes.Items))
 
 	var nodeMemory *resource.Quantity
 	if len(nodes.Items) > 0 {
