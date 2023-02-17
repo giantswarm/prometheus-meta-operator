@@ -13,8 +13,8 @@ spec:
     - containerName: prometheus
       controlledValues: RequestsAndLimits
       maxAllowed:
-        cpu: "7"
-        memory: "7"
+        cpu: 7200m
+        memory: 7500m
       minAllowed:
         cpu: 100m
         memory: "1073741824"

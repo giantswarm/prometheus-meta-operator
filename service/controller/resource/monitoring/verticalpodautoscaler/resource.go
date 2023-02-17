@@ -215,7 +215,7 @@ func quantityMultiply(q *resource.Quantity, multiplier float64) (*resource.Quant
 
 	i := q.AsApproximateFloat64()
 	n := i * multiplier
-	q.Set(int64(n))
+	q.SetMilli(int64(n * 1000))
 
 	return q, nil
 }
