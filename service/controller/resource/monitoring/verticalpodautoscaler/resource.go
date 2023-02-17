@@ -176,13 +176,8 @@ func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
 
 func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error) {
 
-	ignoreControlPlanes := metav1.LabelSelectorRequirement{
-		Key:      "node-role.kubernetes.io/control-plane",
-		Operator: metav1.LabelSelectorOpDoesNotExist,
-		Values:   []string{""},
-	}
-
-	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: ignoreControlPlanes.String()})
+	selector := "node-role.kubernetes.io/control-plane!="
+	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
