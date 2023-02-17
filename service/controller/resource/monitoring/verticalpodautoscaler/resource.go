@@ -84,11 +84,15 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	minCpu := key.PrometheusDefaultCPU()
 	minMemory := key.PrometheusDefaultMemory()
 
-	maxCpu, err := r.getMaxCPU(ctx)
+	nodeList, err := r.listWorkerNodes(ctx)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	maxMemory, err := r.getMaxMemory(ctx)
+	maxCpu, err := r.getMaxCPU(nodeList)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	maxMemory, err := r.getMaxMemory(nodeList)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -139,14 +143,19 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	return vpa, nil
 }
 
-func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
+func (r *Resource) listWorkerNodes(ctx context.Context) (*v1.NodeList, error) {
 
 	// Selects only worker nodes
 	selector := "node-role.kubernetes.io/control-plane!="
-	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
+	nodeList, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
+
+	return nodeList, nil
+}
+
+func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 
 	var nodeCpu *resource.Quantity
 	if len(nodes.Items) > 0 {
@@ -175,14 +184,7 @@ func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
 	return q, nil
 }
 
-func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error) {
-
-	// Selects only worker nodes
-	selector := "node-role.kubernetes.io/control-plane!="
-	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) {
 
 	var nodeMemory *resource.Quantity
 	if len(nodes.Items) > 0 {
