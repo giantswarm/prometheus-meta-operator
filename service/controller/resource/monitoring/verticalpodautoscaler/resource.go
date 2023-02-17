@@ -2,14 +2,12 @@ package verticalpodautoscaler
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	autoscaling "k8s.io/api/autoscaling/v1"
 	v1 "k8s.io/api/core/v1"
-
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -142,7 +140,10 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 }
 
 func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
-	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+
+	// Selects only worker nodes
+	selector := "node-role.kubernetes.io/control-plane!="
+	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -176,12 +177,12 @@ func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
 
 func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error) {
 
+	// Selects only worker nodes
 	selector := "node-role.kubernetes.io/control-plane!="
 	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	fmt.Println("NODECount: ", len(nodes.Items))
 
 	var nodeMemory *resource.Quantity
 	if len(nodes.Items) > 0 {
