@@ -175,13 +175,10 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 		return nil, microerror.Mask(nodeCpuNotFoundError)
 	}
 
-	n, ok := nodeCpu.AsInt64()
-	if !ok {
-		return nil, microerror.Maskf(quantityConversionError, nodeCpu.String())
-	}
-
+	// We cast nodeCpu.AsApproximateFloat64()
+	// to avoid failure in clusters that have millis cpu set.
+	n := int64(nodeCpu.AsApproximateFloat64())
 	var q *resource.Quantity
-
 	if n <= 8 {
 		// If allocatable cpu is equal or less than 8
 		// maxAllowedCPU is 70% of total
