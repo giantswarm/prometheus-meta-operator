@@ -181,17 +181,15 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 	}
 
 	var q *resource.Quantity
-	// If allocatable cpu is less then 6
-	// maxAllowedCPU is 70%
-	if n <= 6 {
+
+	if n <= 8 {
+		// If allocatable cpu is equal or less than 8
+		// maxAllowedCPU is 70% of total
 		q, err = quantityMultiply(nodeCpu, 0.7)
-		// If allocatable cpu is more then 12
-		// maxAllowedCPU is 60%
-	} else if n >= 12 {
-		q, err = quantityMultiply(nodeCpu, 0.6)
-		// Default 90%
 	} else {
-		q, err = quantityMultiply(nodeCpu, 0.9)
+		// More than 8 CPUs
+		// maxAllowedCPU is 50% of total
+		q, err = quantityMultiply(nodeCpu, 0.5)
 	}
 
 	if err != nil {
