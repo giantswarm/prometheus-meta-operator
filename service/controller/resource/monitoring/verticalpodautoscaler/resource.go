@@ -144,7 +144,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 }
 
 func (r *Resource) listWorkerNodes(ctx context.Context) (*v1.NodeList, error) {
-
 	// Selects only worker nodes
 	selector := "node-role.kubernetes.io/control-plane!="
 	nodeList, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
