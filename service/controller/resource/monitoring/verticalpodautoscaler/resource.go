@@ -8,7 +8,6 @@ import (
 	"github.com/giantswarm/micrologger"
 	autoscaling "k8s.io/api/autoscaling/v1"
 	v1 "k8s.io/api/core/v1"
-
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -85,11 +84,15 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	minCpu := key.PrometheusDefaultCPU()
 	minMemory := key.PrometheusDefaultMemory()
 
-	maxCpu, err := r.getMaxCPU(ctx)
+	nodeList, err := r.listWorkerNodes(ctx)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	maxMemory, err := r.getMaxMemory(ctx)
+	maxCpu, err := r.getMaxCPU(nodeList)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	maxMemory, err := r.getMaxMemory(nodeList)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -140,11 +143,18 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	return vpa, nil
 }
 
-func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
-	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{})
+func (r *Resource) listWorkerNodes(ctx context.Context) (*v1.NodeList, error) {
+	// Selects only worker nodes
+	selector := "node-role.kubernetes.io/control-plane!="
+	nodeList, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
+
+	return nodeList, nil
+}
+
+func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 
 	var nodeCpu *resource.Quantity
 	if len(nodes.Items) > 0 {
@@ -173,11 +183,7 @@ func (r *Resource) getMaxCPU(ctx context.Context) (*resource.Quantity, error) {
 	return q, nil
 }
 
-func (r *Resource) getMaxMemory(ctx context.Context) (*resource.Quantity, error) {
-	nodes, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{})
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) {
 
 	var nodeMemory *resource.Quantity
 	if len(nodes.Items) > 0 {
