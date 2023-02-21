@@ -32,11 +32,6 @@ spec:
       certFile: /etc/prometheus/secrets/cluster-certificates/crt
       keyFile: /etc/prometheus/secrets/cluster-certificates/key
   arbitraryFSAccessThroughSMs: {}
-  containers:
-  - name: prometheus
-    readinessProbe:
-      initialDelaySeconds: 300
-    resources: {}
   enableFeatures:
   - remote-write-receiver
   externalLabels:
