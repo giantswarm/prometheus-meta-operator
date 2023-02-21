@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use resource.Quantity.AsApproximateFloat64() instead of AsInt64(), in order to avoid conversion issue when multiply cpu, e.g. 3880m
 - Use label selector to selects only worker nodes for vpa resource to get maxCPU and maxMemory
 - List nodes from API only once in VPA resource
+- Adds `kyverno` namespace to default scrape config for WC
 
 ## [4.20.6] - 2023-02-13
 
