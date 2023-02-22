@@ -60,6 +60,7 @@ route:
     matchers:
     - severity=~"page|notify"
     - team="celestial"
+    - sloth_severity=~"page|ticket"
     continue: false
 
   # Team Firecracker Slack
@@ -67,6 +68,7 @@ route:
     matchers:
     - severity=~"page|notify"
     - team="firecracker"
+    - sloth_severity=~"page|ticket"
     continue: false
 
   # Team Phoenix Slack
@@ -74,6 +76,7 @@ route:
     matchers:
     - severity=~"page|notify"
     - team="phoenix"
+    - sloth_severity=~"page|ticket"
     continue: false
 
   # Team Hydra Slack
