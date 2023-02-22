@@ -58,25 +58,25 @@ route:
   # Team Celestial Slack
   - receiver: team_phoenix_slack
     matchers:
-    - severity="notify"
+    - severity=~"page|notify"
     - team="celestial"
-    - sloth_severity="ticket"
+    - sloth_severity=~"page|ticket"
     continue: false
 
   # Team Firecracker Slack
   - receiver: team_phoenix_slack
     matchers:
-    - severity="notify"
+    - severity=~"page|notify"
     - team="firecracker"
-    - sloth_severity="ticket"
+    - sloth_severity=~"page|ticket"
     continue: false
 
   # Team Phoenix Slack
   - receiver: team_phoenix_slack
     matchers:
-    - severity="notify"
+    - severity=~"page|notify"
     - team="phoenix"
-    - sloth_severity="ticket"
+    - sloth_severity=~"page|ticket"
     continue: false
 
   # Team Hydra Slack
