@@ -175,7 +175,7 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 		return nil, microerror.Mask(nodeCpuNotFoundError)
 	}
 
-	q, err := quantityMultiply(nodeCpu, 0.7)
+	q, err := quantityMultiply(nodeCpu, 0.5)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
