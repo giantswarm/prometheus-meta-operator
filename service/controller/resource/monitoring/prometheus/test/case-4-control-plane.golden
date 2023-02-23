@@ -32,11 +32,6 @@ spec:
       cert: {}
       insecureSkipVerify: true
   arbitraryFSAccessThroughSMs: {}
-  containers:
-  - name: prometheus
-    readinessProbe:
-      initialDelaySeconds: 300
-    resources: {}
   enableFeatures:
   - remote-write-receiver
   externalLabels:

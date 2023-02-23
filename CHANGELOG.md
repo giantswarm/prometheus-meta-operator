@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove Prometheus readinessProbe 5mn delay; since there is already a 15mn startupProbe
+
 ## [4.21.0] - 2023-02-23
 
 ### Changed
