@@ -12,7 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Use resource.Quantity.AsApproximateFloat64() instead of AsInt64(), in order to avoid conversion issue when multiply cpu, e.g. 3880m
 - Use label selector to selects only worker nodes for vpa resource to get maxCPU and maxMemory
 - List nodes from API only once in VPA resource
+- Improve VPA maxAllowedCPU, use 70% of the node allocatable CPU.
+- Prevent 'notify' severity alerts from being sent to '#alert-phoenix' Slack channel (too noisy).
 - Adds `kyverno` namespace to WC & MC default scrape config for cadvisor metrics
+
+### Added
+
+- Send SLO (sloth based) notify level alerts to '#alert-phoenix' Slack channel.
 
 ## [4.20.6] - 2023-02-13
 
