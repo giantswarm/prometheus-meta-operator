@@ -80,6 +80,7 @@ spec:
       - workload_cluster
   rules:
     alert: {}
+  scrapeInterval: 60s
   secrets:
   - etcd-certificates
   securityContext:

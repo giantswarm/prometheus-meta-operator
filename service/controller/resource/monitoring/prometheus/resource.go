@@ -40,6 +40,7 @@ type Config struct {
 	LogLevel          string
 	RetentionDuration string
 	RetentionSize     string
+	ScrapeInterval    string
 	Version           string
 }
 
@@ -214,7 +215,8 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						corev1.ResourceMemory: *key.PrometheusDefaultMemoryLimit(),
 					},
 				},
-				RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
+				RoutePrefix:    fmt.Sprintf("/%s", key.ClusterID(cluster)),
+				ScrapeInterval: promv1.Duration(config.ScrapeInterval),
 				SecurityContext: &corev1.PodSecurityContext{
 					RunAsUser:    &uid,
 					RunAsGroup:   &gid,

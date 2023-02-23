@@ -134,6 +134,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Mayu, "", "Mayu host.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Duration, "2w", "Retention duration for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Size, "90Gi", "Retention size for prometheus.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ScrapeInterval, "60s", "Default scrape interval for prometheus jobs.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "100Gi", "Storage size for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.41.0", "Prometheus container image version.")
 

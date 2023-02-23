@@ -9,6 +9,7 @@ type Prometheus struct {
 	Mayu                    string
 	Storage                 PrometheusStorage
 	Retention               PrometheusRetention
+	ScrapeInterval          string
 	Version                 string
 }
 

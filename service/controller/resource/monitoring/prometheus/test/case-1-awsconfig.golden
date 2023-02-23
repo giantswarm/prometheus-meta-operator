@@ -75,6 +75,7 @@ spec:
       - management_cluster
   rules:
     alert: {}
+  scrapeInterval: 60s
   secrets:
   - cluster-certificates
   securityContext:

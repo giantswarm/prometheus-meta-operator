@@ -55,6 +55,7 @@ type Config struct {
 	PrometheusRemoteWriteURL    string
 	PrometheusRetentionDuration string
 	PrometheusRetentionSize     string
+	PrometheusScrapeInterval    string
 	PrometheusVersion           string
 
 	RestrictedAccessEnabled bool

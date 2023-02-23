@@ -160,6 +160,7 @@ func New(config Config) (*Service, error) {
 				PrometheusLogLevel:          config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 				PrometheusRetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+				PrometheusScrapeInterval:    config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 				PrometheusVersion:           config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
@@ -199,6 +200,7 @@ func New(config Config) (*Service, error) {
 				PrometheusLogLevel:          config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 				PrometheusRetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+				PrometheusScrapeInterval:    config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 				PrometheusVersion:           config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),

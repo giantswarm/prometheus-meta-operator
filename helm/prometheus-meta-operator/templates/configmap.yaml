@@ -45,6 +45,7 @@ data:
         retention:
           duration: 2w
           size: 90GB
+        scrapeInterval: 60s
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
         {{- if .Values.slack }}

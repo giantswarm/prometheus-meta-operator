@@ -42,6 +42,7 @@ type ControllerConfig struct {
 	PrometheusRemoteWriteURL    string
 	PrometheusRetentionDuration string
 	PrometheusRetentionSize     string
+	PrometheusScrapeInterval    string
 	PrometheusVersion           string
 
 	RestrictedAccessEnabled bool
