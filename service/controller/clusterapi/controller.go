@@ -36,14 +36,15 @@ type ControllerConfig struct {
 
 	OpsgenieKey string
 
-	PrometheusAddress           string
-	PrometheusBaseDomain        string
-	PrometheusLogLevel          string
-	PrometheusRemoteWriteURL    string
-	PrometheusRetentionDuration string
-	PrometheusRetentionSize     string
-	PrometheusScrapeInterval    string
-	PrometheusVersion           string
+	PrometheusAddress            string
+	PrometheusBaseDomain         string
+	PrometheusEvaluationInterval string
+	PrometheusLogLevel           string
+	PrometheusRemoteWriteURL     string
+	PrometheusRetentionDuration  string
+	PrometheusRetentionSize      string
+	PrometheusScrapeInterval     string
+	PrometheusVersion            string
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string

@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Increased ScrapeInterval from 30s to 60s
+- Increased ScrapeInterval and EvaluationInterval from 30s to 60s
 
 ## [4.21.0] - 2023-02-23
 

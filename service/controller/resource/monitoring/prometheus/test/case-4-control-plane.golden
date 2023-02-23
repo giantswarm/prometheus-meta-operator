@@ -34,6 +34,7 @@ spec:
   arbitraryFSAccessThroughSMs: {}
   enableFeatures:
   - remote-write-receiver
+  evaluationInterval: 60s
   externalLabels:
     cluster_id: kubernetes
     cluster_type: management_cluster

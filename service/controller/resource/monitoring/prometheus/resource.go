@@ -29,19 +29,20 @@ type Config struct {
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
 
-	Address           string
-	Bastions          []string
-	Customer          string
-	Installation      string
-	Pipeline          string
-	Provider          string
-	Region            string
-	Registry          string
-	LogLevel          string
-	RetentionDuration string
-	RetentionSize     string
-	ScrapeInterval    string
-	Version           string
+	Address            string
+	Bastions           []string
+	Customer           string
+	EvaluationInterval string
+	Installation       string
+	Pipeline           string
+	Provider           string
+	Region             string
+	Registry           string
+	LogLevel           string
+	RetentionDuration  string
+	RetentionSize      string
+	ScrapeInterval     string
+	Version            string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -242,8 +243,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 			},
 
-			Retention:     promv1.Duration(config.RetentionDuration),
-			RetentionSize: promv1.ByteSize(config.RetentionSize),
+			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
+			Retention:          promv1.Duration(config.RetentionDuration),
+			RetentionSize:      promv1.ByteSize(config.RetentionSize),
 			RuleNamespaceSelector: &metav1.LabelSelector{
 				MatchLabels: map[string]string{
 					"name": key.NamespaceMonitoring(),

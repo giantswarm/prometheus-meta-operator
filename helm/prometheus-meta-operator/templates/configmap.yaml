@@ -38,6 +38,7 @@ data:
         {{- range .Values.prometheus.bastions }}
         - {{ . }}
         {{- end }}
+        evaluationInterval: 60s
         logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.prometheus.mayu }}
         remoteWrite:

@@ -18,18 +18,19 @@ func TestPrometheus(t *testing.T) {
 	}
 
 	config := Config{
-		Address:           "http://prometheus/cluster",
-		Customer:          "Giant Swarm",
-		Installation:      "test-installation",
-		Pipeline:          "testing",
-		Provider:          "provider",
-		Region:            "onprem",
-		LogLevel:          "debug",
-		Registry:          "quay.io",
-		RetentionDuration: "2w",
-		RetentionSize:     "45Gi",
-		ScrapeInterval:    "60s",
-		Version:           "v2.28.1",
+		Address:            "http://prometheus/cluster",
+		Customer:           "Giant Swarm",
+		EvaluationInterval: "60s",
+		Installation:       "test-installation",
+		Pipeline:           "testing",
+		Provider:           "provider",
+		Region:             "onprem",
+		LogLevel:           "debug",
+		Registry:           "quay.io",
+		RetentionDuration:  "2w",
+		RetentionSize:      "45Gi",
+		ScrapeInterval:     "60s",
+		Version:            "v2.28.1",
 	}
 
 	c := unittest.Config{

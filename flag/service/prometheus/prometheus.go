@@ -5,6 +5,7 @@ type Prometheus struct {
 	Address                 string
 	BaseDomain              string
 	Bastions                string
+	EvaluationInterval      string
 	LogLevel                string
 	Mayu                    string
 	Storage                 PrometheusStorage

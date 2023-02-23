@@ -60,13 +60,14 @@ type resourcesConfig struct {
 	SlackApiURL             string
 	SlackProjectName        string
 
-	PrometheusAddress           string
-	PrometheusBaseDomain        string
-	PrometheusLogLevel          string
-	PrometheusRetentionDuration string
-	PrometheusRetentionSize     string
-	PrometheusScrapeInterval    string
-	PrometheusVersion           string
+	PrometheusAddress            string
+	PrometheusBaseDomain         string
+	PrometheusEvaluationInterval string
+	PrometheusLogLevel           string
+	PrometheusRetentionDuration  string
+	PrometheusRetentionSize      string
+	PrometheusScrapeInterval     string
+	PrometheusVersion            string
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
@@ -191,20 +192,21 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
-			Address:           config.PrometheusAddress,
-			PrometheusClient:  config.PrometheusClient,
-			Logger:            config.Logger,
-			Customer:          config.Customer,
-			Installation:      config.Installation,
-			Pipeline:          config.Pipeline,
-			Version:           config.PrometheusVersion,
-			Provider:          config.Provider,
-			Region:            config.Region,
-			Registry:          config.Registry,
-			LogLevel:          config.PrometheusLogLevel,
-			RetentionDuration: config.PrometheusRetentionDuration,
-			RetentionSize:     config.PrometheusRetentionSize,
-			ScrapeInterval:    config.PrometheusScrapeInterval,
+			Address:            config.PrometheusAddress,
+			PrometheusClient:   config.PrometheusClient,
+			Logger:             config.Logger,
+			Customer:           config.Customer,
+			Installation:       config.Installation,
+			Pipeline:           config.Pipeline,
+			Version:            config.PrometheusVersion,
+			Provider:           config.Provider,
+			Region:             config.Region,
+			Registry:           config.Registry,
+			EvaluationInterval: config.PrometheusEvaluationInterval,
+			LogLevel:           config.PrometheusLogLevel,
+			RetentionDuration:  config.PrometheusRetentionDuration,
+			RetentionSize:      config.PrometheusRetentionSize,
+			ScrapeInterval:     config.PrometheusScrapeInterval,
 		}
 
 		prometheusResource, err = prometheus.New(c)

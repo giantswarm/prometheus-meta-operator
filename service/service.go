@@ -155,13 +155,14 @@ func New(config Config) (*Service, error) {
 
 				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
-				PrometheusAddress:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-				PrometheusBaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				PrometheusLogLevel:          config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-				PrometheusRetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				PrometheusRetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-				PrometheusScrapeInterval:    config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
-				PrometheusVersion:           config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+				PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
+				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
+				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+				PrometheusRetentionSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
+				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
@@ -195,13 +196,14 @@ func New(config Config) (*Service, error) {
 
 				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
-				PrometheusAddress:           config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-				PrometheusBaseDomain:        config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				PrometheusLogLevel:          config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-				PrometheusRetentionDuration: config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				PrometheusRetentionSize:     config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
-				PrometheusScrapeInterval:    config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
-				PrometheusVersion:           config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+				PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
+				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
+				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+				PrometheusRetentionSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
+				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
