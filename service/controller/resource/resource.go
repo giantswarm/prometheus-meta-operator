@@ -193,19 +193,21 @@ func New(config Config) ([]resource.Interface, error) {
 	var prometheusResource resource.Interface
 	{
 		c := prometheus.Config{
-			Address:           config.PrometheusAddress,
-			PrometheusClient:  config.PrometheusClient,
-			Logger:            config.Logger,
-			Customer:          config.Customer,
-			Installation:      config.Installation,
-			Pipeline:          config.Pipeline,
-			Version:           config.PrometheusVersion,
-			Provider:          config.Provider,
-			Region:            config.Region,
-			Registry:          config.Registry,
-			LogLevel:          config.PrometheusLogLevel,
-			RetentionDuration: config.PrometheusRetentionDuration,
-			RetentionSize:     config.PrometheusRetentionSize,
+			Address:            config.PrometheusAddress,
+			PrometheusClient:   config.PrometheusClient,
+			Logger:             config.Logger,
+			Customer:           config.Customer,
+			Installation:       config.Installation,
+			Pipeline:           config.Pipeline,
+			Version:            config.PrometheusVersion,
+			Provider:           config.Provider,
+			Region:             config.Region,
+			Registry:           config.Registry,
+			LogLevel:           config.PrometheusLogLevel,
+			RetentionDuration:  config.PrometheusRetentionDuration,
+			RetentionSize:      config.PrometheusRetentionSize,
+			EvaluationInterval: config.PrometheusEvaluationInterval,
+			ScrapeInterval:     config.PrometheusScrapeInterval,
 		}
 
 		prometheusResource, err = prometheus.New(c)
