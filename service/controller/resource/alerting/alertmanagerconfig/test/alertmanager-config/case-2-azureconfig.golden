@@ -2,9 +2,10 @@ global:
   resolve_timeout: 5m
   slack_api_url: https://slack
 
+#
 #templates:
 #- '/etc/alertmanager/config/*.tmpl'
-
+#
 #route:
 #  group_by: [alertname, cluster_id, installation, status]
 #  group_interval: 15m
@@ -63,6 +64,7 @@ global:
 #    matchers:
 #    - severity=~"page|notify"
 #    - team="celestial"
+#    - sloth_severity=~"page|ticket"
 #    continue: false
 #
 #  # Team Firecracker Slack
@@ -70,6 +72,7 @@ global:
 #    matchers:
 #    - severity=~"page|notify"
 #    - team="firecracker"
+#    - sloth_severity=~"page|ticket"
 #    continue: false
 #
 #  # Team Phoenix Slack
@@ -77,6 +80,7 @@ global:
 #    matchers:
 #    - severity=~"page|notify"
 #    - team="phoenix"
+#    - sloth_severity=~"page|ticket"
 #    continue: false
 #
 #  # Team Hydra Slack
