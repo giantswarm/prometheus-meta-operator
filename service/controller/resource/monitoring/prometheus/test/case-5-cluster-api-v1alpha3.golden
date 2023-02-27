@@ -66,8 +66,9 @@ spec:
   retentionSize: 45Gi
   routePrefix: /baz
   ruleNamespaceSelector:
-    matchLabels:
-      name: monitoring
+    matchExpressions:
+    - key: kubernetes.io/metadata.name
+      operator: Exists
   ruleSelector:
     matchExpressions:
     - key: cluster_type
