@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove Prometheus readinessProbe 5mn delay; since there is already a 15mn startupProbe
+
+### Changed
+
+- Adds `kyverno` namespace to WC & MC default scrape config for cadvisor metrics
+
+## [4.21.0] - 2023-02-23
+
 ### Changed
 
 - Use resource.Quantity.AsApproximateFloat64() instead of AsInt64(), in order to avoid conversion issue when multiply cpu, e.g. 3880m
@@ -14,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - List nodes from API only once in VPA resource
 - Improve VPA maxAllowedCPU, use 70% of the node allocatable CPU.
 - Prevent 'notify' severity alerts from being sent to '#alert-phoenix' Slack channel (too noisy).
-- Adds `kyverno` namespace to WC & MC default scrape config for cadvisor metrics
+- Update getMaxCPU use 50% of the node allocatable CPU.
 
 ### Added
 
@@ -1875,7 +1885,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.6...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.21.0...HEAD
+[4.21.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.6...v4.21.0
 [4.20.6]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.5...v4.20.6
 [4.20.5]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.4...v4.20.5
 [4.20.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.3...v4.20.4
