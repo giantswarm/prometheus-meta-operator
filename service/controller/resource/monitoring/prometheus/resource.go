@@ -281,6 +281,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"management_cluster"},
 				},
+				{
+					Key:      key.TeamLabel,
+					Operator: metav1.LabelSelectorOpExists,
+				},
 			},
 		}
 
@@ -325,13 +329,17 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"workload_cluster"},
 				},
+				{
+					Key:      key.TeamLabel,
+					Operator: metav1.LabelSelectorOpExists,
+				},
 			},
 		}
 
 		// We do not discover the service monitors discovered by the agent running on the management cluster
 		allMonitorSelector := []metav1.LabelSelectorRequirement{
 			{
-				Key:      "application.giantswarm.io/team",
+				Key:      key.TeamLabel,
 				Operator: metav1.LabelSelectorOpDoesNotExist,
 			},
 		}

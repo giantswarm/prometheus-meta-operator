@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Look up PrometheusRules CR in the whole MC
+- Look up PrometheusRules CR in the whole MC only labelled with `application.giantswarm.io/team`
 
 ## [4.22.0] - 2023-02-27
 

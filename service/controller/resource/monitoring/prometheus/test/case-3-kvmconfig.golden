@@ -75,6 +75,8 @@ spec:
       operator: NotIn
       values:
       - management_cluster
+    - key: application.giantswarm.io/team
+      operator: Exists
   rules:
     alert: {}
   scrapeInterval: 60s
