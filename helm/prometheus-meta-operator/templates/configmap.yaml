@@ -38,6 +38,7 @@ data:
         {{- range .Values.prometheus.bastions }}
         - {{ . }}
         {{- end }}
+        evaluationInterval: 60s
         logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.prometheus.mayu }}
         remoteWrite:
@@ -45,6 +46,7 @@ data:
         retention:
           duration: 2w
           size: 90GB
+        scrapeInterval: 60s
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
         {{- if .Values.slack }}

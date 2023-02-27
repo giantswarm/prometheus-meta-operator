@@ -34,6 +34,7 @@ spec:
   arbitraryFSAccessThroughSMs: {}
   enableFeatures:
   - remote-write-receiver
+  evaluationInterval: 60s
   externalLabels:
     cluster_id: foo
     cluster_type: workload_cluster
@@ -75,6 +76,7 @@ spec:
       - management_cluster
   rules:
     alert: {}
+  scrapeInterval: 60s
   secrets:
   - cluster-certificates
   securityContext:

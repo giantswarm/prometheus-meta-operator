@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Remove Prometheus readinessProbe 5mn delay; since there is already a 15mn startupProbe
+- Removed Prometheus readinessProbe 5mn delay; since there is already a 15mn startupProbe
 
 ### Changed
 
-- Adds `kyverno` namespace to WC & MC default scrape config for cadvisor metrics
+- Increased ScrapeInterval and EvaluationInterval from 30s to 60s
+    - pros: twice less CPU usage, less disk usage
+    - cons: up to 30s more delay in alerts, and very short usage peaks get smoothed over 1 minute
+- Addep `kyverno` namespace to WC & MC default scrape config for cadvisor metrics
 
 ## [4.21.0] - 2023-02-23
 

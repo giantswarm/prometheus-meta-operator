@@ -130,10 +130,12 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Address, "", "Address to access Prometheus UI.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.BaseDomain, "", "Base domain to create Prometheus Ingress resources under.")
 	daemonCommand.PersistentFlags().StringSlice(f.Service.Prometheus.Bastions, make([]string, 0), "Address of the bastions.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.EvaluationInterval, "60s", "Evaluation interval for prometheus rules.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.LogLevel, "info", "Prometheus log level.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Mayu, "", "Mayu host.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Duration, "2w", "Retention duration for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Size, "90Gi", "Retention size for prometheus.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ScrapeInterval, "60s", "Default scrape interval for prometheus jobs.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "100Gi", "Storage size for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.41.0", "Prometheus container image version.")
 
