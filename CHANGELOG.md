@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.22.0] - 2023-02-27
+
 ### Fixed
 
 - Removed Prometheus readinessProbe 5mn delay; since there is already a 15mn startupProbe
@@ -1888,7 +1890,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.21.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.22.0...HEAD
+[4.22.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.21.0...v4.22.0
 [4.21.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.6...v4.21.0
 [4.20.6]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.5...v4.20.6
 [4.20.5]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.4...v4.20.5
