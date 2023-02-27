@@ -39,8 +39,8 @@ app.kubernetes.io/instance: {{ .Release.Name | quote }}
 {{- end -}}
 
 {{- define "prometheus-meta-operator.alertmanager-ownership-annotations" -}}
-"helm.sh/hook": "pre-upgrade"
-"helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded,hook-failed"
+"helm.sh/hook": "pre-install,pre-upgrade"
+"helm.sh/hook-delete-policy": "before-hook-creation,hook-succeeded"
 {{- end -}}
 
 {{/* Create a label which can be used to select any orphaned alertmanager-ownership hook resources */}}
