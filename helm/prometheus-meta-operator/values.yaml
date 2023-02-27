@@ -14,7 +14,7 @@ pod:
     id: 1000
 
 alertmanager:
-  enabled: false
+  enabled: true
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"
   logLevel: info
