@@ -61,7 +61,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 		Name:        fmt.Sprintf("prometheus-%s-remote-write", key.ClusterID(cluster)),
 		Namespace:   key.Namespace(cluster),
 		Labels:      key.PrometheusLabels(cluster),
-		Annotations: key.RemoteWriteAuthenticationAnnotations(),
+		Annotations: key.RemoteWriteAuthenticationAnnotations(config.BaseDomain),
 	}, nil
 }
 

@@ -70,6 +70,14 @@
                 }
             }
         },
+        "ingress": {
+            "type": "object",
+            "properties": {
+                "externalDNS": {
+                    "type": "boolean"
+                }
+            }
+        },
         "image": {
             "type": "object",
             "properties": {

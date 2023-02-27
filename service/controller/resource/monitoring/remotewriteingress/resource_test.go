@@ -20,7 +20,7 @@ func TestIngress(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toIngress(v, Config{BaseDomain: "https://prometheus"})
+			return toIngress(v, Config{BaseDomain: "prometheus"})
 		},
 		Update: *update,
 	}

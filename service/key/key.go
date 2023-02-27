@@ -142,7 +142,7 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 	}
 }
 
-func RemoteWriteAuthenticationAnnotations() map[string]string {
+func RemoteWriteAuthenticationAnnotations(baseDomain string) map[string]string {
 	return map[string]string{
 		"nginx.ingress.kubernetes.io/auth-type":   "basic",
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
@@ -151,6 +151,9 @@ func RemoteWriteAuthenticationAnnotations() map[string]string {
 		"nginx.ingress.kubernetes.io/client-body-buffer-size": "10m",
 		// Remote write requests can be quite big. (default max body size: 1m)
 		"nginx.ingress.kubernetes.io/proxy-body-size": "10m",
+		// external-dns
+		"external-dns.alpha.kubernetes.io/hostname": baseDomain,
+		"giantswarm.io/external-dns":                "managed",
 	}
 }
 

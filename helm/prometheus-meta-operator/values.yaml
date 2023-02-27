@@ -13,6 +13,9 @@ pod:
   group:
     id: 1000
 
+ingress:
+  externalDNS: false
+
 alertmanager:
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"

@@ -3,6 +3,10 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/tls-acme: "{{ .Values.prometheus.letsencrypt }}"
+    {{- if .Values.ingress.externalDNS }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.alertmanager.host }},{{ .Values.prometheus.host }}
+    giantswarm.io/external-dns: managed
+    {{- end }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
   name: {{ include "resource.default.name" . }}

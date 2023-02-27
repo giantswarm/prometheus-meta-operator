@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Un-drop `nginx_ingress_controller_request_duration_seconds_bucket` for workload clusters
+- Add additional annotations on all `ingress` objects to support DNS record creation via `external-dns`
 
 ## [4.23.0] - 2023-02-28
 
