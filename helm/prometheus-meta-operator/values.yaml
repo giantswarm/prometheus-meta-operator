@@ -25,6 +25,9 @@ alertmanager:
     apiURL: ""
   storage:
     size: 1Gi
+  opsgenieKey:
+    secretName: alertmanager-config
+    secretKey: opsgenie.key
 
 certificate:
   monitoring:
