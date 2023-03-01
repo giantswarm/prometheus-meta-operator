@@ -45,12 +45,14 @@ type ControllerConfig struct {
 	SlackApiURL             string
 	SlackProjectName        string
 
-	PrometheusAddress           string
-	PrometheusBaseDomain        string
-	PrometheusLogLevel          string
-	PrometheusRetentionDuration string
-	PrometheusRetentionSize     string
-	PrometheusVersion           string
+	PrometheusAddress            string
+	PrometheusBaseDomain         string
+	PrometheusEvaluationInterval string
+	PrometheusLogLevel           string
+	PrometheusRetentionDuration  string
+	PrometheusRetentionSize      string
+	PrometheusScrapeInterval     string
+	PrometheusVersion            string
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string

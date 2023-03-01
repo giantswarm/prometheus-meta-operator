@@ -24,7 +24,7 @@ const (
 	MonitoringLabel      string = "giantswarm.io/monitoring"
 	OrganizationLabel    string = "giantswarm.io/organization"
 	ServicePriorityLabel string = "giantswarm.io/service-priority"
-
+	TeamLabel            string = "application.giantswarm.io/team"
 	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
 	PrometheusMemoryLimitCoefficient      float64 = 1.2
 	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"

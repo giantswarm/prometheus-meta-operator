@@ -29,18 +29,20 @@ type Config struct {
 	PrometheusClient promclient.Interface
 	Logger           micrologger.Logger
 
-	Address           string
-	Bastions          []string
-	Customer          string
-	Installation      string
-	Pipeline          string
-	Provider          string
-	Region            string
-	Registry          string
-	LogLevel          string
-	RetentionDuration string
-	RetentionSize     string
-	Version           string
+	Address            string
+	Bastions           []string
+	Customer           string
+	EvaluationInterval string
+	Installation       string
+	Pipeline           string
+	Provider           string
+	Region             string
+	Registry           string
+	LogLevel           string
+	RetentionDuration  string
+	RetentionSize      string
+	ScrapeInterval     string
+	Version            string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -182,18 +184,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						},
 					},
 				},
-				// Add 5mn initial delay to the readinessProbe to give Prometheus more
-				// time to load data and start. This fixes the current 10mn delay set
-				// by default in prometheus-operator which results in crash looping Prometheus
-				// when there are too much data to load.
-				Containers: []corev1.Container{
-					{
-						Name: "prometheus",
-						ReadinessProbe: &corev1.Probe{
-							InitialDelaySeconds: 300,
-						},
-					},
-				},
 				EnableFeatures: []string{"remote-write-receiver"},
 				ExternalLabels: map[string]string{
 					key.ClusterIDKey:    key.ClusterID(cluster),
@@ -226,7 +216,8 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						corev1.ResourceMemory: *key.PrometheusDefaultMemoryLimit(),
 					},
 				},
-				RoutePrefix: fmt.Sprintf("/%s", key.ClusterID(cluster)),
+				RoutePrefix:    fmt.Sprintf("/%s", key.ClusterID(cluster)),
+				ScrapeInterval: promv1.Duration(config.ScrapeInterval),
 				SecurityContext: &corev1.PodSecurityContext{
 					RunAsUser:    &uid,
 					RunAsGroup:   &gid,
@@ -252,11 +243,17 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 			},
 
-			Retention:     promv1.Duration(config.RetentionDuration),
-			RetentionSize: promv1.ByteSize(config.RetentionSize),
+			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
+			Retention:          promv1.Duration(config.RetentionDuration),
+			RetentionSize:      promv1.ByteSize(config.RetentionSize),
+			// Fetches Prometheus rules from any namespace on the Management Cluster
+			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
 			RuleNamespaceSelector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"name": key.NamespaceMonitoring(),
+				MatchExpressions: []metav1.LabelSelectorRequirement{
+					{
+						Key:      "kubernetes.io/metadata.name",
+						Operator: metav1.LabelSelectorOpExists,
+					},
 				},
 			},
 		},
@@ -283,6 +280,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					Key:      key.ClusterTypeKey,
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"management_cluster"},
+				},
+				{
+					Key:      key.TeamLabel,
+					Operator: metav1.LabelSelectorOpExists,
 				},
 			},
 		}
@@ -328,13 +329,17 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"workload_cluster"},
 				},
+				{
+					Key:      key.TeamLabel,
+					Operator: metav1.LabelSelectorOpExists,
+				},
 			},
 		}
 
 		// We do not discover the service monitors discovered by the agent running on the management cluster
 		allMonitorSelector := []metav1.LabelSelectorRequirement{
 			{
-				Key:      "application.giantswarm.io/team",
+				Key:      key.TeamLabel,
 				Operator: metav1.LabelSelectorOpDoesNotExist,
 			},
 		}
