@@ -341,8 +341,8 @@ spec:
   - name: opsgenie_router
     opsgenieConfigs:
       - apiKey:
-          key: opsgenie.key
-          name: alertmanager-alertmanager-generated
+          key: {{ .Values.alertmanager.opsgenieKey.secretKey }}
+          name: {{ .Values.alertmanager.opsgenieKey.secretName }}
         tags: "{{`{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},`}}{{ .Values.managementCluster.provider }},{{ .Values.managementCluster.name }},{{ .Values.managementCluster.pipeline }}"
   - name: team_ops_slack
     slackConfigs:
