@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Un-drop `nginx_ingress_controller_request_duration_seconds_bucket` for workload clusters
+
 ## [4.23.0] - 2023-02-28
 
 ### Changed
