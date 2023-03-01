@@ -5,6 +5,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/grafana"
+	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/installation"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/opsgenie"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/prometheus"
@@ -26,4 +27,5 @@ type Service struct {
 	Provider     provider.Provider
 	Security     security.Security
 	Vault        vault.Vault
+	Ingress      ingress.Ingress
 }

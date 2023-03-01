@@ -25,6 +25,7 @@ type Config struct {
 	BaseDomain              string
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
+	ExternalDNS             bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -60,10 +61,13 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	}
 
 	annotations := map[string]string{
-		"nginx.ingress.kubernetes.io/auth-signin":   "https://$host/oauth2/start?rd=$escaped_request_uri",
-		"nginx.ingress.kubernetes.io/auth-url":      "https://$host/oauth2/auth",
-		"external-dns.alpha.kubernetes.io/hostname": config.BaseDomain,
-		"giantswarm.io/external-dns":                "managed",
+		"nginx.ingress.kubernetes.io/auth-signin": "https://$host/oauth2/start?rd=$escaped_request_uri",
+		"nginx.ingress.kubernetes.io/auth-url":    "https://$host/oauth2/auth",
+	}
+
+	if config.ExternalDNS {
+		annotations["external-dns.alpha.kubernetes.io/hostname"] = config.BaseDomain
+		annotations["giantswarm.io/external-dns"] = "managed"
 	}
 
 	if config.RestrictedAccessEnabled {

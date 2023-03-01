@@ -2,16 +2,18 @@ apiVersion: v1
 kind: Ingress
 metadata:
   annotations:
+    external-dns.alpha.kubernetes.io/hostname: prometheus
+    giantswarm.io/external-dns: managed
     nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
     nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
   creationTimestamp: null
   labels:
-    app.kubernetes.io/instance: baz
+    app.kubernetes.io/instance: bar
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
-    giantswarm.io/cluster: baz
-  name: prometheus-baz
-  namespace: baz-prometheus
+    giantswarm.io/cluster: bar
+  name: prometheus-bar
+  namespace: bar-prometheus
 spec:
   ingressClassName: nginx
   rules:
@@ -23,7 +25,7 @@ spec:
             name: prometheus-operated
             port:
               number: 9090
-        path: /baz
+        path: /bar
         pathType: ImplementationSpecific
 status:
   loadBalancer: {}
