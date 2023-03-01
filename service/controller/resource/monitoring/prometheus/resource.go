@@ -246,9 +246,14 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
 			Retention:          promv1.Duration(config.RetentionDuration),
 			RetentionSize:      promv1.ByteSize(config.RetentionSize),
+			// Fetches Prometheus rules from any namespace on the Management Cluster
+			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
 			RuleNamespaceSelector: &metav1.LabelSelector{
-				MatchLabels: map[string]string{
-					"name": key.NamespaceMonitoring(),
+				MatchExpressions: []metav1.LabelSelectorRequirement{
+					{
+						Key:      "kubernetes.io/metadata.name",
+						Operator: metav1.LabelSelectorOpExists,
+					},
 				},
 			},
 		},
@@ -275,6 +280,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					Key:      key.ClusterTypeKey,
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"management_cluster"},
+				},
+				{
+					Key:      key.TeamLabel,
+					Operator: metav1.LabelSelectorOpExists,
 				},
 			},
 		}
@@ -320,13 +329,17 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					Operator: metav1.LabelSelectorOpNotIn,
 					Values:   []string{"workload_cluster"},
 				},
+				{
+					Key:      key.TeamLabel,
+					Operator: metav1.LabelSelectorOpExists,
+				},
 			},
 		}
 
 		// We do not discover the service monitors discovered by the agent running on the management cluster
 		allMonitorSelector := []metav1.LabelSelectorRequirement{
 			{
-				Key:      "application.giantswarm.io/team",
+				Key:      key.TeamLabel,
 				Operator: metav1.LabelSelectorOpDoesNotExist,
 			},
 		}
