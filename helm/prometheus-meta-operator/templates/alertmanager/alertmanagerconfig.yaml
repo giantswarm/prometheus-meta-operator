@@ -17,13 +17,16 @@ spec:
     routes:
     - receiver: harbor_implementation
       matchers:
-        - app="harbor"
+        - name: app
+          value: "harbor"
       continue: false
 
     # Falco noise Slack
     - receiver: falco_noise_slack
       matchers:
-        - alertname=~"Falco.*"
+        - name: alertname
+          matchType: "=~"
+          value: "Falco.*"
       continue: false
 
     # Team Shield Slack
@@ -32,14 +35,18 @@ spec:
     # the default opsgenie route
     - receiver: team_shield_slack
       matchers:
-        - severity=~"page|notify"
-        - team="shield"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "shield"
       continue: false
 
     # Team Ops Opsgenie
     - receiver: opsgenie_router
       matchers:
-        - severity="page"
+        - name: severity
+          value: "page"
       continue: true
 
     # Service Level slack -- chooses the slack channel based on the provider
@@ -53,66 +60,94 @@ spec:
     - receiver: team_rocket_slack
     {{- end }}
       matchers:
-        - alertname="ServiceLevelBurnRateTooHigh"
+        - name: alertname
+          value: "ServiceLevelBurnRateTooHigh"
       continue: false
 
     # Team Atlas Slack
     - receiver: team_atlas_slack
       matchers:
       {{- if eq .Values.managementCluster.pipeline "stable" }}
-      - severity!="page"
+      - name: severity
+        matchType: "!="
+        value: "page"
       {{- end }}
-      - team="atlas"
-      - type!="heartbeat"
-      - alertname!~"Inhibition.*"
+      - name: team
+        value: "atlas"
+      - name: type
+        matchType: "!="
+        value: "heartbeat"
+      - name: alertname
+        matchType: "!~"
+        value: "Inhibition.*"
       continue: false
 
     # Team Celestial Slack
     - receiver: team_phoenix_slack
       matchers:
-        - severity=~"page|notify"
-        - team="celestial"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "celestial"
       continue: false
 
     # Team Firecracker Slack
     - receiver: team_phoenix_slack
       matchers:
-        - severity=~"page|notify"
-        - team="firecracker"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "firecracker"
       continue: false
 
     # Team Phoenix Slack
     - receiver: team_phoenix_slack
       matchers:
-        - severity=~"page|notify"
-        - team="phoenix"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "phoenix"
       continue: false
 
     # Team Hydra Slack
     - receiver: team_hydra_slack
       matchers:
-        - severity=~"page|notify"
-        - team="hydra"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "hydra"
       continue: false
 
     # Team Clippy Slack
     - receiver: team_clippy_slack
       matchers:
-        - severity=~"page|notify"
-        - team="clippy"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "clippy"
       continue: false
 
     # Team Rocket Slack
     - receiver: team_rocket_slack
       matchers:
-        - severity=~"page|notify"
-        - team="rocket"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "rocket"
       continue: false
 
     # Team Ops Slack
     - receiver: team_ops_slack
       matchers:
-        - severity=~"page|notify"
+        - name: severity
+          matchType: "=~"
+          value: "page|notify"
       continue: true
 
   receivers:
