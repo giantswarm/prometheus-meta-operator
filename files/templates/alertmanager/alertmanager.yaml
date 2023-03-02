@@ -1,3 +1,6 @@
+## TODO: To be deleted and moved
+# to Alertmanager.spec.alertmanagerConfiguration
+# once the field has more support for our uses cases: e.g. (slack_api_url)
 global:
   resolve_timeout: 5m
 [[- if .ProxyURL ]]
