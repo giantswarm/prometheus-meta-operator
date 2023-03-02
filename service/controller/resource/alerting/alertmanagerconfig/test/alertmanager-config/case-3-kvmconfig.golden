@@ -11,3 +11,6 @@ route:
   group_wait: 30s
   repeat_interval: 4h
   receiver: root
+
+receivers:
+  - name: root
