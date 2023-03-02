@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.24.0] - 2023-03-02
+
 ### Changed
 
 - Un-drop `nginx_ingress_controller_request_duration_seconds_bucket` for workload clusters
@@ -1901,7 +1903,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.23.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.0...HEAD
+[4.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.23.0...v4.24.0
 [4.23.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.22.0...v4.23.0
 [4.22.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.21.0...v4.22.0
 [4.21.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.6...v4.21.0
