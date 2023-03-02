@@ -1,3 +1,13 @@
 global:
   resolve_timeout: 5m
   slack_api_url: https://slack
+
+templates:
+  - '/etc/alertmanager/config/*.tmpl'
+
+route:
+  group_by: [alertname, cluster_id, installation, status]
+  group_interval: 15m
+  group_wait: 30s
+  repeat_interval: 4h
+  receiver: root
