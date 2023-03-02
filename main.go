@@ -145,6 +145,8 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().Bool(f.Service.Security.RestrictedAccess.Enabled, false, "Is the access to the prometheus restricted to certain subnets?")
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")
 
+	daemonCommand.PersistentFlags().Bool(f.Service.Ingress.ExternalDNS.Enabled, false, "Should the generated ingress resources get additional annotations for external-dns")
+
 	daemonCommand.PersistentFlags().String(f.Service.Vault.Host, "", "Host used to connect to Vault.")
 
 	err = newCommand.CobraCommand().Execute()
