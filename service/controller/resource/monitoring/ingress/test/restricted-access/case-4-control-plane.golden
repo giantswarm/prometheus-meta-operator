@@ -4,14 +4,15 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
     nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+    nginx.ingress.kubernetes.io/whitelist-source-range: 21.10.178/24
   creationTimestamp: null
   labels:
-    app.kubernetes.io/instance: baz
+    app.kubernetes.io/instance: kubernetes
     app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: prometheus
-    giantswarm.io/cluster: baz
-  name: prometheus-baz
-  namespace: baz-prometheus
+    giantswarm.io/cluster: kubernetes
+  name: prometheus-kubernetes
+  namespace: kubernetes-prometheus
 spec:
   ingressClassName: nginx
   rules:
@@ -23,7 +24,7 @@ spec:
             name: prometheus-operated
             port:
               number: 9090
-        path: /baz
+        path: /kubernetes
         pathType: ImplementationSpecific
 status:
   loadBalancer: {}

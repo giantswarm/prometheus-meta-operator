@@ -10,6 +10,10 @@ metadata:
     {{- if .Values.security.restrictAccess.enabled }}
     nginx.ingress.kubernetes.io/whitelist-source-range: "{{ .Values.security.subnet.vpn }}"
     {{- end }}
+    {{- if .Values.ingress.externalDNS }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.alertmanager.host }}
+    giantswarm.io/external-dns: managed
+    {{- end }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
 spec:

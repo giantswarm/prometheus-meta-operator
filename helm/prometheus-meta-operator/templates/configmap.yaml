@@ -64,6 +64,9 @@ data:
         restrictedAccess:
           enabled: {{ .Values.security.restrictAccess.enabled }}
           subnets: {{ .Values.security.subnet.vpn }}
+      ingress:
+        externalDNS:
+          enabled: {{ .Values.ingress.externalDNS }}
       provider:
         kind: {{ .Values.managementCluster.provider.kind }}
       installation:

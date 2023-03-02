@@ -20,9 +20,10 @@ const (
 )
 
 type Config struct {
-	K8sClient  k8sclient.Interface
-	Logger     micrologger.Logger
-	BaseDomain string
+	K8sClient   k8sclient.Interface
+	Logger      micrologger.Logger
+	BaseDomain  string
+	ExternalDNS bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -61,7 +62,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 		Name:        fmt.Sprintf("prometheus-%s-remote-write", key.ClusterID(cluster)),
 		Namespace:   key.Namespace(cluster),
 		Labels:      key.PrometheusLabels(cluster),
-		Annotations: key.RemoteWriteAuthenticationAnnotations(),
+		Annotations: key.RemoteWriteAuthenticationAnnotations(config.BaseDomain, config.ExternalDNS),
 	}, nil
 }
 

@@ -57,6 +57,8 @@ type ControllerConfig struct {
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
 
+	ExternalDNS bool
+
 	Mayu  string
 	Vault string
 }

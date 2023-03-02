@@ -18,7 +18,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: https://prometheus
+  - host: prometheus
     http:
       paths:
       - backend:

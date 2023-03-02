@@ -47,6 +47,8 @@ type ControllerConfig struct {
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
+
+	ExternalDNS bool
 }
 
 type Controller struct {

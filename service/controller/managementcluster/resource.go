@@ -71,6 +71,8 @@ type resourcesConfig struct {
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
 
+	ExternalDNS bool
+
 	Mayu  string
 	Vault string
 }
@@ -240,6 +242,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			BaseDomain:              config.PrometheusBaseDomain,
 			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
 			WhitelistedSubnets:      config.WhitelistedSubnets,
+			ExternalDNS:             config.ExternalDNS,
 		}
 
 		monitoringIngressResource, err = ingress.New(c)
@@ -295,9 +298,10 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var remoteWriteIngressResource resource.Interface
 	{
 		c := remotewriteingress.Config{
-			K8sClient:  config.K8sClient,
-			Logger:     config.Logger,
-			BaseDomain: config.PrometheusBaseDomain,
+			K8sClient:   config.K8sClient,
+			Logger:      config.Logger,
+			BaseDomain:  config.PrometheusBaseDomain,
+			ExternalDNS: config.ExternalDNS,
 		}
 
 		remoteWriteIngressResource, err = remotewriteingress.New(c)
