@@ -27,7 +27,6 @@ spec:
   podMetadata:
     labels:
       app.kubernetes.io/instance: alertmanager
-      app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: alertmanager
   priorityClassName: prometheus
   replicas: 1
