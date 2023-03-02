@@ -166,6 +166,8 @@ func New(config Config) (*Service, error) {
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+
+				ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
 			}
 
 			clusterapiController, err = clusterapi.NewController(c)
@@ -207,6 +209,8 @@ func New(config Config) (*Service, error) {
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+
+				ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
 			}
 			legacyController, err = legacy.NewController(c)
 			if err != nil {
@@ -256,6 +260,8 @@ func New(config Config) (*Service, error) {
 			RestrictedAccessEnabled:  config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 			PrometheusScrapeInterval: config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 			WhitelistedSubnets:       config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+
+			ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
 
 			Mayu:  config.Viper.GetString(config.Flag.Service.Prometheus.Mayu),
 			Vault: config.Viper.GetString(config.Flag.Service.Vault.Host),

@@ -142,8 +142,9 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 	}
 }
 
-func RemoteWriteAuthenticationAnnotations() map[string]string {
-	return map[string]string{
+func RemoteWriteAuthenticationAnnotations(baseDomain string, externalDNS bool) map[string]string {
+
+	annotations := map[string]string{
 		"nginx.ingress.kubernetes.io/auth-type":   "basic",
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
 		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
@@ -152,6 +153,14 @@ func RemoteWriteAuthenticationAnnotations() map[string]string {
 		// Remote write requests can be quite big. (default max body size: 1m)
 		"nginx.ingress.kubernetes.io/proxy-body-size": "10m",
 	}
+
+	// create external-dns required annotations
+	if externalDNS {
+		annotations["external-dns.alpha.kubernetes.io/hostname"] = baseDomain
+		annotations["giantswarm.io/external-dns"] = "managed"
+	}
+
+	return annotations
 }
 
 func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, installation string, provider string) (string, string) {

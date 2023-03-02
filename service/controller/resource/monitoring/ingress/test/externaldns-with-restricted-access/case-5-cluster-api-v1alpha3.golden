@@ -2,8 +2,11 @@ apiVersion: v1
 kind: Ingress
 metadata:
   annotations:
+    external-dns.alpha.kubernetes.io/hostname: prometheus.3lkdj.test.gigantic.io
+    giantswarm.io/external-dns: managed
     nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
     nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+    nginx.ingress.kubernetes.io/whitelist-source-range: 21.10.178/24
   creationTimestamp: null
   labels:
     app.kubernetes.io/instance: baz
@@ -15,7 +18,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: prometheus
+  - host: prometheus.3lkdj.test.gigantic.io
     http:
       paths:
       - backend:
