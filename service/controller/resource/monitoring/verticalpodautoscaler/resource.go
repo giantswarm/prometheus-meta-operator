@@ -127,14 +127,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 							v1.ResourceMemory: *maxMemory,
 						},
 					},
-					{
-						ContainerName: "prometheus-config-reloader",
-						Mode:          &containerScalingModeOff,
-					},
-					{
-						ContainerName: "rules-configmap-reloader",
-						Mode:          &containerScalingModeOff,
-					},
 				},
 			},
 		},
