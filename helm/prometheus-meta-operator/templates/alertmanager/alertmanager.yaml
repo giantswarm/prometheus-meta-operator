@@ -21,6 +21,7 @@ spec:
     matchLabels:
       app.kubernetes.io/instance: alertmanager
       app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/managed-by: prometheus-meta-operator
   configSecret: alertmanager-config
   externalUrl: {{ .Values.alertmanager.address }}
   logLevel: info
