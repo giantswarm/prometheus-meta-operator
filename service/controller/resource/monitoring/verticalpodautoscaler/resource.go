@@ -204,7 +204,11 @@ func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) 
 		return nil, microerror.Mask(nodeMemoryNotFoundError)
 	}
 
-	q, err := quantityMultiply(nodeMemory, 0.9)
+	// set max `requests` RAM to 80% node RAM.
+	// When setting default limit, make sure max VPA limit won't go higher than available RAM!
+	// because limit grows proportionnaly to requests, and here we compute max requests
+	// So check that PrometheusMemoryLimitCoefficient*MaxMemory < node memory
+	q, err := quantityMultiply(nodeMemory, 0.8)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
