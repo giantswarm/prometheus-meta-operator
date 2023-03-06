@@ -3,6 +3,7 @@ package key
 import (
 	"fmt"
 	"math"
+	"regexp"
 
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
@@ -101,8 +102,10 @@ func GetServicePriority(cluster metav1.Object) string {
 }
 
 func GetOrganization(cluster metav1.Object) string {
-	if organization, ok := cluster.GetLabels()[OrganizationLabel]; ok && organization != "" {
-		return organization
+	re := regexp.MustCompile(`org-(.*)`)
+	match := re.FindStringSubmatch(cluster.GetNamespace())
+	if len(match) >= 2 {
+		return match[1]
 	}
 	return DefaultOrganization
 }

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Enable Opsgenie alerts for Shield.
 
+### Fixed
+
+- Change source for the organization label.
+
 ## [4.46.0] - 2023-08-21
 
 ### Added
