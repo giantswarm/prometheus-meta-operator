@@ -26,6 +26,10 @@ const (
 	ServicePriorityLabel string = "giantswarm.io/service-priority"
 	TeamLabel            string = "application.giantswarm.io/team"
 	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
+	// When setting default limit, make sure max VPA limit won't go higher than available RAM!
+	// because limit grows proportionnaly to requests, and here we compute max requests
+	// So check that [MaxMemory factor]*PrometheusMemoryLimitCoefficient < 1 (100% node memory)
+	// for instance, 0.8*1.2 = 0.96 => OK.
 	PrometheusMemoryLimitCoefficient      float64 = 1.2
 	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"
 	PrometheusServiceName                         = "prometheus-operated"

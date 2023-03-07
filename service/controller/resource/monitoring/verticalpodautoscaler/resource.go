@@ -99,7 +99,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 
 	updateModeAuto := vpa_types.UpdateModeAuto
 	containerScalingModeAuto := vpa_types.ContainerScalingModeAuto
-	containerScalingModeOff := vpa_types.ContainerScalingModeOff
 	containerControlledValuesRequestsAndLimits := vpa_types.ContainerControlledValuesRequestsAndLimits
 	vpa := &vpa_types.VerticalPodAutoscaler{
 		ObjectMeta: objectMeta,
@@ -126,14 +125,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 							v1.ResourceCPU:    *maxCpu,
 							v1.ResourceMemory: *maxMemory,
 						},
-					},
-					{
-						ContainerName: "prometheus-config-reloader",
-						Mode:          &containerScalingModeOff,
-					},
-					{
-						ContainerName: "rules-configmap-reloader",
-						Mode:          &containerScalingModeOff,
 					},
 				},
 			},
@@ -204,12 +195,22 @@ func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) 
 		return nil, microerror.Mask(nodeMemoryNotFoundError)
 	}
 
-	q, err := quantityMultiply(nodeMemory, 0.9)
+	// set max `requests` RAM to 80% node RAM.
+	// When setting default limit, make sure max VPA limit won't go higher than available RAM!
+	// because limit grows proportionnaly to requests, and here we compute max requests
+	// So check that PrometheusMemoryLimitCoefficient*MaxMemory < node memory
+	q, err := quantityMultiply(nodeMemory, 0.8)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	q, err = quantityMultiply(q, 1/key.PrometheusMemoryLimitCoefficient)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	// Memory must be a whole number of bytes
+	q.Set(int64(q.AsApproximateFloat64()))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
