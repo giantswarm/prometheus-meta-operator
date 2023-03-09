@@ -166,13 +166,13 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 		return nil, microerror.Mask(nodeCpuNotFoundError)
 	}
 
-	// set max CPU to 75% node CPU.
+	// set max CPU (cpu limit) to 75% node CPU.
 	q, err := quantityMultiply(nodeCpu, 0.75)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	// Scale down MaxCPU for VPA to take into account the fact that it sets VPA `requests`, and we want the `limit` to be no more than xx% of node's available CPU.
+	// Scale down MaxCPU for VPA to take into account the fact that it sets VPA `requests`, and we want the `limit` to be no more than 75% of node's available CPU in that case.
 	q, err = quantityMultiply(q, 1/key.PrometheusCPULimitCoefficient)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -202,13 +202,13 @@ func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) 
 		return nil, microerror.Mask(nodeMemoryNotFoundError)
 	}
 
-	// set max RAM to 90% node RAM.
+	// set max RAM (memory limit) to 90% node RAM.
 	q, err := quantityMultiply(nodeMemory, 0.9)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	// Scale down MaxMemory for VPA to take into account the fact that it sets VPA `requests`, and we want the `limit` to be no more than xx% of node's available memory.
+	// Scale down MaxMemory for VPA to take into account the fact that it sets VPA `requests`, and we want the `limit` to be no more than 90% of node's available memory in that case.
 	q, err = quantityMultiply(q, 1/key.PrometheusMemoryLimitCoefficient)
 	if err != nil {
 		return nil, microerror.Mask(err)
