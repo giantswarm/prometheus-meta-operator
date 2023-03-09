@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- VPA settings: changes in 4.24.0 were wrong, resulting in too low limits.
+    - Previous logic (4.23.0) was right, and limits were 90% node size.
+    - Comments have been updated for better understanding
+    - limit has been reverted to 90% node size
+    - code for CPU limits has been updated to do the same kind of calculations
+    - tests have been updated for more meaningful results
+
 ## [4.24.0] - 2023-03-02
 
 ### Changed
