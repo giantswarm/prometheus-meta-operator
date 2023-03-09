@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- simplified and fixed mem limit calculation to actually do what the comments say - will result in higher mem limits.
+
 ## [4.24.0] - 2023-03-02
 
 ### Changed

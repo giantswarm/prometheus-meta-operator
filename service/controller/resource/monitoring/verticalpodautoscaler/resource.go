@@ -204,11 +204,6 @@ func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) 
 		return nil, microerror.Mask(err)
 	}
 
-	q, err = quantityMultiply(q, 1/key.PrometheusMemoryLimitCoefficient)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	// Memory must be a whole number of bytes
 	q.Set(int64(q.AsApproximateFloat64()))
 	if err != nil {
