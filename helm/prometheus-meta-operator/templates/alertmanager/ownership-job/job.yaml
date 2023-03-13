@@ -39,6 +39,5 @@ spec:
               name=$(kubectl get chart --namespace=giantswarm -l app.kubernetes.io/name=prometheus-meta-operator --output=jsonpath="{.items[0].spec.name}")
               namespace=$(kubectl get chart --namespace=giantswarm -l app.kubernetes.io/name=prometheus-meta-operator --output=jsonpath="{.items[0].spec.namespace}")
               kubectl patch --type=merge --record=false -p '{"metadata":{"annotations":{"meta.helm.sh/release-name": "'"${name}"'","meta.helm.sh/release-namespace": "'"${namespace}"'"},"labels":{"app.kubernetes.io/managed-by": "Helm"}}}' -n "${namespace}" alertmanager alertmanager
-              kubectl patch --record=false -n "${namespace}" --type json --patch '[{ "op": "remove", "path": "/spec/alertmanagerConfigSelector/matchLabels/app.kubernetes.io~1managed-by", "value": "prometheus-meta-operator" }]' alertmanager alertmanager
       restartPolicy: Never
   backoffLimit: 4
