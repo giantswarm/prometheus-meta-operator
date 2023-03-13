@@ -5,8 +5,7 @@ metadata:
   name: alertmanager-config
   namespace: monitoring
   labels:
-    app.kubernetes.io/instance: alertmanager
-    app.kubernetes.io/name: alertmanager
+    app.kubernetes.io/name: alertmanager-config
 spec:
   route:
     groupBy: [alertname, cluster_id, installation, status]
