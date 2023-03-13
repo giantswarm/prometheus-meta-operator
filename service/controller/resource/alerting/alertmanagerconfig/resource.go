@@ -1,5 +1,7 @@
 package alertmanagerconfig
 
+// TODO: To be removed  and replaced with `alertmanagerConfiguration`
+
 import (
 	"context"
 	"path"

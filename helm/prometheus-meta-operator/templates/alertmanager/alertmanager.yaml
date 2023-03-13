@@ -21,6 +21,13 @@ spec:
     matchLabels:
       app.kubernetes.io/instance: alertmanager
       app.kubernetes.io/name: alertmanager
+  # TODO: change `configSecret` to `alertmanagerConfiguration`
+  ## Remove
+  # alertmanagerConfiguration:
+  #   resolveTimeout: 5m
+  #   httpConfig: ?
+  #   slackAPIURL: secretKeyRef
+  #
   configSecret: alertmanager-config
   externalUrl: {{ .Values.alertmanager.address }}
   logLevel: info
