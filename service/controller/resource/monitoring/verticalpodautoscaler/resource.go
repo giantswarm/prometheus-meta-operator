@@ -99,7 +99,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 
 	updateModeAuto := vpa_types.UpdateModeAuto
 	containerScalingModeAuto := vpa_types.ContainerScalingModeAuto
-	containerScalingModeOff := vpa_types.ContainerScalingModeOff
 	containerControlledValuesRequestsAndLimits := vpa_types.ContainerControlledValuesRequestsAndLimits
 	vpa := &vpa_types.VerticalPodAutoscaler{
 		ObjectMeta: objectMeta,
@@ -126,14 +125,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 							v1.ResourceCPU:    *maxCpu,
 							v1.ResourceMemory: *maxMemory,
 						},
-					},
-					{
-						ContainerName: "prometheus-config-reloader",
-						Mode:          &containerScalingModeOff,
-					},
-					{
-						ContainerName: "rules-configmap-reloader",
-						Mode:          &containerScalingModeOff,
 					},
 				},
 			},
@@ -175,7 +166,14 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 		return nil, microerror.Mask(nodeCpuNotFoundError)
 	}
 
-	q, err := quantityMultiply(nodeCpu, 0.5)
+	// set max CPU (cpu limit) to 75% node CPU.
+	q, err := quantityMultiply(nodeCpu, 0.75)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	// Scale down MaxCPU for VPA to take into account the fact that it sets VPA `requests`, and we want the `limit` to be no more than 75% of node's available CPU in that case.
+	q, err = quantityMultiply(q, 1/key.PrometheusCPULimitCoefficient)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -204,12 +202,20 @@ func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) 
 		return nil, microerror.Mask(nodeMemoryNotFoundError)
 	}
 
+	// set max RAM (memory limit) to 90% node RAM.
 	q, err := quantityMultiply(nodeMemory, 0.9)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
+	// Scale down MaxMemory for VPA to take into account the fact that it sets VPA `requests`, and we want the `limit` to be no more than 90% of node's available memory in that case.
 	q, err = quantityMultiply(q, 1/key.PrometheusMemoryLimitCoefficient)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	// Memory must be a whole number of bytes
+	q.Set(int64(q.AsApproximateFloat64()))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
