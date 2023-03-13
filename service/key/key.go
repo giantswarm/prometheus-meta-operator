@@ -25,7 +25,11 @@ const (
 	OrganizationLabel    string = "giantswarm.io/organization"
 	ServicePriorityLabel string = "giantswarm.io/service-priority"
 	TeamLabel            string = "application.giantswarm.io/team"
+	// PrometheusCPULimitCoefficient is the number used to compute the CPU limit from the CPU request.
+	// It is used when computing VPA settings, to set `max requests` so that `max limits` respects MaxCPU factor.
+	PrometheusCPULimitCoefficient float64 = 1.5
 	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
+	// It is used when computing VPA settings, to set `max request` so that `max limits` respect MaxMemory factor.
 	PrometheusMemoryLimitCoefficient      float64 = 1.2
 	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"
 	PrometheusServiceName                         = "prometheus-operated"
@@ -189,7 +193,12 @@ func PrometheusDefaultCPU() *resource.Quantity {
 }
 
 func PrometheusDefaultCPULimit() *resource.Quantity {
-	return resource.NewMilliQuantity(100*1.5, resource.DecimalSI)
+	return resource.NewMilliQuantity(
+		int64(math.Floor(
+			100*PrometheusCPULimitCoefficient,
+		)),
+		resource.DecimalSI,
+	)
 }
 
 func PrometheusDefaultMemory() *resource.Quantity {

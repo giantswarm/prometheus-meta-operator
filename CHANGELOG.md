@@ -7,10 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.24.1] - 2023-03-09
+
+### Changed
+
+- VPA settings: changes in 4.24.0 were wrong, resulting in too low limits.
+    - Previous logic (4.23.0) was right, and limits were 90% node size.
+    - Comments have been updated for better understanding
+    - limit has been reverted to 90% node size
+    - code for CPU limits has been updated to do the same kind of calculations
+    - tests have been updated for more meaningful results
+
+## [4.24.0] - 2023-03-02
+
 ### Changed
 
 - Un-drop `nginx_ingress_controller_request_duration_seconds_bucket` for workload clusters
 - Add additional annotations on all `ingress` objects to support DNS record creation via `external-dns`
+- VPA settings: changed max memory requests from 90% to 80% of node RAM, so that memory limit is 96% node RAM (avoids crashing node with big prometheis)
+- VPA settings: remove useless config for `prometheus-config-reloader` and `rules-configmap-reloader`: now it's only 1 container called `config-reloader`, and default config scales it down just nice!
 
 ## [4.23.0] - 2023-02-28
 
@@ -1901,7 +1916,9 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.23.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.1...HEAD
+[4.24.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.0...v4.24.1
+[4.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.23.0...v4.24.0
 [4.23.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.22.0...v4.23.0
 [4.22.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.21.0...v4.22.0
 [4.21.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.20.6...v4.21.0
