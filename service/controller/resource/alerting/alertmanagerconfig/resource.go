@@ -93,10 +93,10 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	//notificationTemplate, err := renderNotificationTemplate(templateDirectory, config)
-	//if err != nil {
-	//	return nil, microerror.Mask(err)
-	//}
+	notificationTemplate, err := renderNotificationTemplate(templateDirectory, config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	alertmanagerConfigSecret, err := renderAlertmanagerConfig(templateDirectory, config)
 	if err != nil {
@@ -106,9 +106,9 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			key.AlertmanagerKey(): alertmanagerConfigSecret,
-			//"notification-template.tmpl": notificationTemplate,
-			key.OpsgenieKey(): []byte(config.OpsgenieKey),
+			key.AlertmanagerKey():        alertmanagerConfigSecret,
+			"notification-template.tmpl": notificationTemplate,
+			key.OpsgenieKey():            []byte(config.OpsgenieKey),
 		},
 		Type: "Opaque",
 	}
