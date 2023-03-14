@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/google/go-cmp/cmp"
@@ -27,6 +28,7 @@ const (
 
 type Config struct {
 	PrometheusClient promclient.Interface
+	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 
 	Address            string
