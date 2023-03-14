@@ -68,7 +68,7 @@ spec:
       cpu: 100m
       memory: "1073741824"
   retention: 2w
-  retentionSize: "96636764160"
+  retentionSize: 90Gi
   routePrefix: /kubernetes
   ruleNamespaceSelector:
     matchExpressions:

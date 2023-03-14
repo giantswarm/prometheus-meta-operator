@@ -39,6 +39,8 @@ const (
 	RemoteWriteIngressAuthSecretName string = "remote-write-ingress-auth"
 	// PrometheusVolumeSizeAnnotation is the annotation referenced in the Cluster CR to define the size of Prometheus Volume.
 	PrometheusVolumeSizeAnnotation string = "monitoring.giantswarm.io/prometheus-volume-size"
+	// We apply a ratio to the volume storage size to compute the RetentionSize property (RetentionSize = 90% volume storage size)
+	PrometheusVolumeStorageLimitRatio = 0.9
 
 	ClusterIDKey       string = "cluster_id"
 	ClusterTypeKey     string = "cluster_type"

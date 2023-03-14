@@ -37,7 +37,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
 			desiredVolumeSize := resource.MustParse(pvcresizing.PrometheusVolumeSize(desiredPVCSize))
 
-			needToUpdatePrometheuses := false
+			needToUpdatePrometheis := false
 			// Check the value of annotation with the current value in PVC.
 			if currentPVCSize.Value() < desiredVolumeSize.Value() {
 				// Resizing requested. Following the procedure described here:
@@ -50,7 +50,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					return microerror.Mask(err)
 				}
 				r.logger.Debugf(ctx, "resized PVC %v", pvc.GetName())
-				needToUpdatePrometheuses = true
+				needToUpdatePrometheis = true
 			} else if currentPVCSize.Value() > desiredVolumeSize.Value() {
 				// Since downsizing a volume is forbidden, we have to replace the PVC and the STS, causing a data loss
 				// Therefore, we replace the PVC and STS
@@ -61,11 +61,11 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					return microerror.Mask(err)
 				}
 				r.logger.Debugf(ctx, "replaced PVC %v", pvc.GetName())
-				needToUpdatePrometheuses = true
+				needToUpdatePrometheis = true
 			}
 
 			// PVC have been updated, we need to update Retention.Size field on all prometheuses
-			if needToUpdatePrometheuses {
+			if needToUpdatePrometheis {
 				prometheusList, err := r.listPrometheus(ctx)
 				if err != nil {
 					return microerror.Mask(err)
