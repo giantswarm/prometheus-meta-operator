@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Followup on Alertmanager resource to Helm
+  - Set Alertmanager enabled by default.
+  - remove the label managed-by: pmo from alertmanagerConfigSelector.
+
+
 ## [4.25.0] - 2023-03-14
 
 ### Changed
