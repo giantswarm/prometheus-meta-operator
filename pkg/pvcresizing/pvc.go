@@ -1,6 +1,8 @@
 package pvcresizing
 
 import (
+	"fmt"
+
 	"k8s.io/apimachinery/pkg/api/resource"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -31,5 +33,6 @@ func PrometheusVolumeSize(annotationValue string) string {
 func GetRetentionSize(storageSize resource.Quantity) string {
 	// Set Retention.Size (TSDB limit) to a ratio of the volume storage size.
 	storageSize.Set(int64(storageSize.AsApproximateFloat64() * key.PrometheusVolumeStorageLimitRatio))
-	return storageSize.String()
+	// Trick to fit with the expected format in RetentionSize property
+	return fmt.Sprintf("%sB", storageSize.String())
 }
