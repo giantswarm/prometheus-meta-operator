@@ -1,0 +1,27 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: {{ include "prometheus-meta-operator.alertmanager-ownership" . }}
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+    # create hook dependencies in the right order
+    "helm.sh/hook-weight": "-7"
+    {{- include "prometheus-meta-operator.alertmanager-ownership-annotations" . | nindent 4 }}
+  labels:
+    app.kubernetes.io/component: {{ include "prometheus-meta-operator.alertmanager-ownership" . | quote }}
+    {{- include "labels.selector" . | nindent 4 }}
+    role: {{ include "prometheus-meta-operator.alertmanager-ownership-selector" . | quote }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/component: {{ include "prometheus-meta-operator.alertmanager-ownership" . | quote }}
+      {{- include "labels.selector" . | nindent 6 }}
+  # allow egress traffic to the Kubernetes API
+  egress:
+    ## Wildcard because IpBlock not supported by cilium
+    - {}
+  # deny ingress traffic
+  ingress: []
+  policyTypes:
+    - Egress
+    - Ingress

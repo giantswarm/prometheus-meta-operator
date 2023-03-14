@@ -1,8 +1,9 @@
+{{- if .Values.alertmanager.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: Alertmanager
 metadata:
-  creationTimestamp: null
   labels:
     app.kubernetes.io/instance: alertmanager
-    app.kubernetes.io/managed-by: prometheus-meta-operator
     app.kubernetes.io/name: alertmanager
   name: alertmanager
   namespace: monitoring
@@ -11,23 +12,22 @@ spec:
     nodeAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
-        - matchExpressions:
-          - key: role
-            operator: NotIn
-            values:
-            - master
-  alertmanagerConfigMatcherStrategy: {}
+          - matchExpressions:
+              - key: role
+                operator: NotIn
+                values:
+                  - master
   alertmanagerConfigSelector:
     matchLabels:
       app.kubernetes.io/instance: alertmanager
-      app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: alertmanager
+      app.kubernetes.io/managed-by: prometheus-meta-operator
   configSecret: alertmanager-config
-  externalUrl: http://alertmanager/cluster
+  externalUrl: {{ .Values.alertmanager.address }}
+  logLevel: info
   podMetadata:
     labels:
       app.kubernetes.io/instance: alertmanager
-      app.kubernetes.io/managed-by: prometheus-meta-operator
       app.kubernetes.io/name: alertmanager
   priorityClassName: prometheus
   replicas: 1
@@ -49,16 +49,17 @@ spec:
       metadata: {}
       spec:
         accessModes:
-        - ReadWriteOnce
+          - ReadWriteOnce
         resources:
           requests:
             storage: 1Gi
       status: {}
   topologySpreadConstraints:
-  - labelSelector:
-      matchLabels:
-        app.kubernetes.io/name: alertmanager
-    maxSkew: 1
-    topologyKey: kubernetes.io/hostname
-    whenUnsatisfiable: ScheduleAnyway
-  version: v0.22.1
+    - labelSelector:
+        matchLabels:
+          app.kubernetes.io/name: alertmanager
+      maxSkew: 1
+      topologyKey: kubernetes.io/hostname
+      whenUnsatisfiable: ScheduleAnyway
+  version: {{ .Values.alertmanager.version }}
+{{- end }}
