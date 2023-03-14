@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.25.0] - 2023-03-14
+
 ### Changed
 
 - Move Alertmanager resource to Helm
@@ -1924,7 +1926,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.0...HEAD
+[4.25.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.1...v4.25.0
 [4.24.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.0...v4.24.1
 [4.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.23.0...v4.24.0
 [4.23.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.22.0...v4.23.0
