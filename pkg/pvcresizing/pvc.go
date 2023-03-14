@@ -1,6 +1,8 @@
 package pvcresizing
 
-import "strconv"
+import (
+	"k8s.io/apimachinery/pkg/api/resource"
+)
 
 const (
 	PrometheusStorageSizeSmall  PrometheusStorageSizeType = "small"
@@ -27,7 +29,8 @@ func PrometheusVolumeSize(annotationValue string) string {
 	}
 }
 
-func GetRetentionSize(storageSize float64) string {
+func GetRetentionSize(storageSize resource.Quantity) string {
 	// Set Retention.Size (TSDB limit) to a ratio of the volume storage size.
-	return strconv.FormatInt(int64(storageSize*VOLUME_STORAGE_LIMIT), 10)
+	storageSize.Set(int64(storageSize.AsApproximateFloat64() * VOLUME_STORAGE_LIMIT))
+	return storageSize.String()
 }

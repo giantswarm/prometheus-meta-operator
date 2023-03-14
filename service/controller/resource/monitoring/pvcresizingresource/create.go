@@ -79,7 +79,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 								"retentionSize": "%v" 
 							} 
 						}`,
-						promv1.ByteSize(pvcresizing.GetRetentionSize(desiredVolumeSize.AsApproximateFloat64()))))
+						promv1.ByteSize(pvcresizing.GetRetentionSize(desiredVolumeSize))))
 					_, err := r.promClient.
 						MonitoringV1().
 						Prometheuses(metav1.NamespaceAll).
