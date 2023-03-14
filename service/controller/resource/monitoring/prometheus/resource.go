@@ -245,7 +245,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
 			Retention:          promv1.Duration(config.RetentionDuration),
-			RetentionSize:      promv1.ByteSize(config.RetentionSize),
+			RetentionSize:      promv1.ByteSize(pvcresizing.GetRetentionSize(storageSize.AsApproximateFloat64())),
 			// Fetches Prometheus rules from any namespace on the Management Cluster
 			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
 			RuleNamespaceSelector: &metav1.LabelSelector{

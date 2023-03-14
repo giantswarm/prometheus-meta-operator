@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Updated `RetentionSize` property in Prometheus CR according to Volume Storage Size (90%)
+
 ## [4.24.1] - 2023-03-09
 
 ### Changed
