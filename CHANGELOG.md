@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move Alertmanager resource to Helm
+  - Delete `controller resource alerting/alertmanager`.
+  - Create alertmanager template in helm.
+  - Delete the obsolete static scraping configs for alertmanager.
+  - Add a hook job that change the ownership labels for alertmanager resource.
+
 ## [4.24.1] - 2023-03-09
 
 ### Changed
