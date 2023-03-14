@@ -104,6 +104,12 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		return nil, microerror.Mask(err)
 	}
 
+	// TODO: use the return value to compute request memory for Prometheus.
+	_, err = getClusterNodeCount(ctx, config.K8sClient, cluster)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	var replicas int32 = 1
 	// Configured following https://github.com/prometheus-operator/prometheus-operator/issues/541#issuecomment-451884171
 	// as the volume could not mount otherwise
