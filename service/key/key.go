@@ -30,7 +30,7 @@ const (
 	PrometheusCPULimitCoefficient float64 = 1.5
 	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
 	// It is used when computing VPA settings, to set `max request` so that `max limits` respect MaxMemory factor.
-	PrometheusMemoryLimitCoefficient      float64 = 1.2
+	PrometheusMemoryLimitCoefficient      float64 = 1
 	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"
 	PrometheusServiceName                         = "prometheus-operated"
 	// RemoteWriteAPIEndpointConfigSecretName is the secret name used by a Prometheus client to access the Prometheus remote write endpoint. It is used at https://github.com/giantswarm/observability-bundle/blob/main/helm/observability-bundle/templates/apps.yaml

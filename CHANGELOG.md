@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Prometheus resources: set requests=limits. Still allowing prometheus up to 90% of node capacity.
+
 ## [4.24.1] - 2023-03-09
 
 ### Changed

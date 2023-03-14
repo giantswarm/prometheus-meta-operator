@@ -14,7 +14,7 @@ spec:
       controlledValues: RequestsAndLimits
       maxAllowed:
         cpu: "4"
-        memory: 12Gi
+        memory: "15461882265"
       minAllowed:
         cpu: 100m
         memory: "1073741824"
