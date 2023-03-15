@@ -1,5 +1,13 @@
 package pvcresizing
 
+import (
+	"fmt"
+
+	"k8s.io/apimachinery/pkg/api/resource"
+
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
+)
+
 const (
 	PrometheusStorageSizeSmall  PrometheusStorageSizeType = "small"
 	PrometheusStorageSizeMedium PrometheusStorageSizeType = "medium"
@@ -20,4 +28,13 @@ func PrometheusVolumeSize(annotationValue string) string {
 	default:
 		return "100Gi"
 	}
+}
+
+// Set Retention.Size (TSDB limit) to a ratio of the volume storage size.
+// See Prometheus spec: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#prometheusspec
+// See ByteSize format: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#bytesizestring-alias
+func GetRetentionSize(storageSize resource.Quantity) string {
+	storageSize.Set(int64(storageSize.AsApproximateFloat64() * key.PrometheusVolumeStorageLimitRatio))
+	// Trick to fit with the expected format
+	return fmt.Sprintf("%sB", storageSize.String())
 }
