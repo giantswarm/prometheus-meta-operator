@@ -11,9 +11,6 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/types"
 
-	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
-
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/pvcresizing"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -37,7 +34,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			desiredPVCSize := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
 			desiredVolumeSize := resource.MustParse(pvcresizing.PrometheusVolumeSize(desiredPVCSize))
 
-			needToUpdatePrometheis := false
 			// Check the value of annotation with the current value in PVC.
 			if currentPVCSize.Value() < desiredVolumeSize.Value() {
 				// Resizing requested. Following the procedure described here:
@@ -50,7 +46,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					return microerror.Mask(err)
 				}
 				r.logger.Debugf(ctx, "resized PVC %v", pvc.GetName())
-				needToUpdatePrometheis = true
 			} else if currentPVCSize.Value() > desiredVolumeSize.Value() {
 				// Since downsizing a volume is forbidden, we have to replace the PVC and the STS, causing a data loss
 				// Therefore, we replace the PVC and STS
@@ -61,39 +56,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 					return microerror.Mask(err)
 				}
 				r.logger.Debugf(ctx, "replaced PVC %v", pvc.GetName())
-				needToUpdatePrometheis = true
-			}
-
-			// PVC have been updated, we need to update Retention.Size field on all prometheuses
-			if needToUpdatePrometheis {
-				prometheusList, err := r.listPrometheus(ctx)
-				if err != nil {
-					return microerror.Mask(err)
-				}
-
-				for _, prom := range prometheusList.Items {
-					// Patch Retention.Size with a ratio of the desired value
-					patch := []byte(fmt.Sprintf(
-						`{
-							"spec": { 
-								"retentionSize": "%v" 
-							} 
-						}`,
-						promv1.ByteSize(pvcresizing.GetRetentionSize(desiredVolumeSize))))
-					_, err := r.promClient.
-						MonitoringV1().
-						Prometheuses(metav1.NamespaceAll).
-						Patch(
-							ctx,
-							prom.GetName(),
-							types.StrategicMergePatchType,
-							patch,
-							metav1.PatchOptions{},
-						)
-					if err != nil {
-						return microerror.Mask(err)
-					}
-				}
 			}
 		}
 	}
@@ -120,27 +82,6 @@ func (r *Resource) listPVCs(ctx context.Context, clusterID, namespace string) ([
 		return nil, fmt.Errorf("could not find PVCs for %v", clusterID)
 	}
 	return list.Items, err
-}
-
-func prometheusSelector() labels.Selector {
-	// We select all prometheuses managed by pmo (agent is not and we don't want it as it has no retentionSize property)
-	return labels.SelectorFromSet(labels.Set(map[string]string{
-		"app.kubernetes.io/name":       "prometheus",
-		"app.kubernetes.io/managed-by": project.Name(),
-	}))
-}
-
-func (r *Resource) listPrometheus(ctx context.Context) (*promv1.PrometheusList, error) {
-	prometheusList, err := r.promClient.
-		MonitoringV1().
-		Prometheuses(metav1.NamespaceAll).
-		List(ctx, metav1.ListOptions{
-			LabelSelector: prometheusSelector().String(),
-		})
-	if err != nil {
-		return nil, fmt.Errorf("could not find any Prometheuses")
-	}
-	return prometheusList, err
 }
 
 func (r *Resource) resize(ctx context.Context, desiredVolumeSize resource.Quantity, pvc corev1.PersistentVolumeClaim) error {
