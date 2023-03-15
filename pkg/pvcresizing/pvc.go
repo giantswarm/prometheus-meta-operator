@@ -30,11 +30,11 @@ func PrometheusVolumeSize(annotationValue string) string {
 	}
 }
 
+// Set Retention.Size (TSDB limit) to a ratio of the volume storage size.
+// See Prometheus spec: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#prometheusspec
+// See ByteSize format: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#bytesizestring-alias
 func GetRetentionSize(storageSize resource.Quantity) string {
-	// Set Retention.Size (TSDB limit) to a ratio of the volume storage size.
 	storageSize.Set(int64(storageSize.AsApproximateFloat64() * key.PrometheusVolumeStorageLimitRatio))
-	// Trick to fit with the expected format in RetentionSize property
-	// See Prometheus spec: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#prometheusspec
-	// See ByteSize format: https://github.com/prometheus-operator/prometheus-operator/blob/main/Documentation/api.md#bytesizestring-alias
+	// Trick to fit with the expected format
 	return fmt.Sprintf("%sB", storageSize.String())
 }
