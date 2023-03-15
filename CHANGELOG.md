@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Updated `RetentionSize` property in Prometheus CR according to Volume Storage Size (90%)
+- Allow ownership job patch `alertmanagerConfigSelector` to fail in case the label has been already removed.
 
 ## [4.25.1] - 2023-03-14
 
