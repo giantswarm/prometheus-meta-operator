@@ -11,6 +11,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Prometheus resources: set requests=limits. Still allowing prometheus up to 90% of node capacity.
 
+## [4.25.3] - 2023-03-15
+
+## [4.25.2] - 2023-03-15
+
+### Changed
+
+- Updated `RetentionSize` property in Prometheus CR according to Volume Storage Size (90%)
+- Allow ownership job patch `alertmanagerConfigSelector` to fail in case the label has been already removed.
+
+## [4.25.1] - 2023-03-14
+
+### Changed
+
+- Followup on Alertmanager resource to Helm
+  - Set Alertmanager enabled by default.
+  - remove the label managed-by: pmo from alertmanagerConfigSelector.
+
 ## [4.25.0] - 2023-03-14
 
 ### Changed
@@ -1930,7 +1947,10 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.3...HEAD
+[4.25.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.2...v4.25.3
+[4.25.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.1...v4.25.2
+[4.25.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.0...v4.25.1
 [4.25.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.1...v4.25.0
 [4.24.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.0...v4.24.1
 [4.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.23.0...v4.24.0

@@ -63,7 +63,7 @@ spec:
       cpu: 100m
       memory: "1073741824"
   retention: 2w
-  retentionSize: 45Gi
+  retentionSize: 90GiB
   routePrefix: /alice
   ruleNamespaceSelector:
     matchExpressions:

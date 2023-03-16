@@ -106,4 +106,11 @@ Three values are possible:
 
 while `medium` is the default value.
 
+
+The retention size of prometheis will be set according to the volume size: we apply a ratio of 90%:
+
+* `small` (30 Gi) => retentionSize = 27Gi
+* `medium` (100 Gi) => retentionSize = 90Gi
+* `large` (200 Gi) => retentionSize = 180Gi
+
 Check [Prometheus Volume Sizing](https://docs.giantswarm.io/getting-started/observability/monitoring/prometheus/volume-size/) for more details.
