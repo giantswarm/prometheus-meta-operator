@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Prometheus resources: set requests=limits. Still allowing prometheus up to 90% of node capacity.
+- Prometheus TSDB size: reduce it to 85% of disk space, to keep space for WAL before alerts fire.
 
 ## [4.25.3] - 2023-03-15
 
