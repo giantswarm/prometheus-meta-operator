@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump Default Prometheus image to `v2.43.0`
+- Bump Prometheus default image to `v2.43.0`
 
 ## [4.28.0] - 2023-03-23
 
@@ -22,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Allow changes in the remote write api endpoint secret.
-- Default Prometheus image to `v2.43.0`
 
 ### Fixed
 
