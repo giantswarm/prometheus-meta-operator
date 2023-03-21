@@ -631,6 +631,20 @@
   - source_labels: [__name__]
     regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
     action: drop
+  # drop uid label from kube-state-metrics
+  - source_labels: [app,uid]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: uid
+  # drop container_id label from kube-state-metrics (kube_pod_info)
+  - source_labels: [app,container_id]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: container_id
   - source_labels: [app,deployment]
     separator: ;
     regex: kube-state-metrics;(.+)

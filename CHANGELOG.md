@@ -7,9 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Drop `uid` label from kube-state-metrics metrics.
+- Drop `container_id` label from kube-state-metrics metrics.
+
 ### Changed
 
 - Allow changes in the remote write api endpoint secret.
+
 
 ## [4.26.0] - 2023-03-20
 
