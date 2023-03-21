@@ -137,7 +137,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Size, "90Gi", "Retention size for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ScrapeInterval, "60s", "Default scrape interval for prometheus jobs.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "100Gi", "Storage size for prometheus.")
-	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.41.0", "Prometheus container image version.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.43.0", "Prometheus container image version.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")
 	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
