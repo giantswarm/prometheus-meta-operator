@@ -73,9 +73,8 @@ data:
         customer: {{ .Values.managementCluster.customer }}
         name: {{ .Values.managementCluster.name }}
         pipeline: {{ .Values.managementCluster.pipeline }}
-        {{- if eq .Values.managementCluster.provider.kind "aws" }}
-        region: {{ .Values.managementCluster.provider.region }}
-        {{- else if eq .Values.managementCluster.provider.kind "azure" }}
+        {{- $providers := list "aws" "azure" "gcp" "capa" "capz" }}
+        {{- if has .Values.managementCluster.provider.kind $providers }}
         region: {{ .Values.managementCluster.provider.region }}
         {{- else }}
         region: onprem
