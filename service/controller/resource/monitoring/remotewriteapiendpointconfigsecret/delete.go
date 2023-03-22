@@ -20,7 +20,6 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		name, namespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, r.Installation, r.Provider)
 
 		current, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
-
 		if err != nil {
 			return microerror.Mask(err)
 		}
@@ -28,6 +27,20 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		err = r.deleteSecret(ctx, current)
 		if err != nil {
 			return microerror.Mask(err)
+		}
+
+		// Delete duplicate secret until the new observability bundle is upgraded everywhere
+		if !key.IsCAPIManagementCluster(r.Provider) {
+			duplicateName := getConfigMapCopyName(r.Installation, cluster, name)
+			duplicate, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, duplicateName, metav1.GetOptions{})
+			if err != nil {
+				return microerror.Mask(err)
+			}
+
+			err = r.deleteSecret(ctx, duplicate)
+			if err != nil {
+				return microerror.Mask(err)
+			}
 		}
 
 	}

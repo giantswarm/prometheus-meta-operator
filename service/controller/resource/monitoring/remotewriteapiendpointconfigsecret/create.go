@@ -13,10 +13,17 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
+func getConfigMapCopyName(installation string, cluster metav1.Object, name string) string {
+	if key.IsManagementCluster(installation, cluster) {
+		// Vintage MC
+		return installation + "-" + name
+	}
+	return key.ClusterID(cluster) + "-" + name
+}
+
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	r.logger.Debugf(ctx, "ensuring prometheus remote write api endpoint secret")
 	{
-
 		cluster, err := key.ToCluster(obj)
 		if err != nil {
 			return microerror.Mask(err)
@@ -30,6 +37,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			err = r.createSecret(ctx, cluster, name, namespace)
 			if err != nil {
 				return microerror.Mask(err)
+			}
+			// Create duplicate secret until the new observability bundle is upgraded everywhere
+			if !key.IsCAPIManagementCluster(r.Provider) {
+				duplicateName := getConfigMapCopyName(r.Installation, cluster, name)
+				err = r.createSecret(ctx, cluster, duplicateName, namespace)
+				if err != nil {
+					return microerror.Mask(err)
+				}
 			}
 		} else if err != nil {
 			return microerror.Mask(err)
@@ -61,12 +76,46 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			if err != nil {
 				return microerror.Mask(err)
 			}
+
 			if !reflect.DeepEqual(current.Data, desired.Data) {
 				updateMeta(current, desired)
 				_, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Update(ctx, desired, metav1.UpdateOptions{})
 				if err != nil {
 					return microerror.Mask(err)
 				}
+			}
+
+			// Create or update duplicate secret until the new observability bundle is upgraded everywhere
+			if !key.IsCAPIManagementCluster(r.Provider) {
+				duplicateName := getConfigMapCopyName(r.Installation, cluster, name)
+
+				desiredDuplicate, err := r.desiredSecret(cluster, duplicateName, namespace, password)
+				if err != nil {
+					return microerror.Mask(err)
+				}
+
+				currentDuplicate, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, duplicateName, metav1.GetOptions{})
+				if apierrors.IsNotFound(err) {
+
+					if err != nil {
+						return microerror.Mask(err)
+					}
+					err = r.createSecret(ctx, cluster, duplicateName, namespace)
+					if err != nil {
+						return microerror.Mask(err)
+					}
+				} else if err != nil {
+					return microerror.Mask(err)
+				}
+
+				if !reflect.DeepEqual(currentDuplicate.Data, desiredDuplicate.Data) {
+					updateMeta(currentDuplicate, desiredDuplicate)
+					_, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Update(ctx, desiredDuplicate, metav1.UpdateOptions{})
+					if err != nil {
+						return microerror.Mask(err)
+					}
+				}
+
 			}
 		}
 	}
