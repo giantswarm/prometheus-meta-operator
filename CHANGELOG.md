@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Allow changes in the remote write api endpoint secret.
 - Default Prometheus image to `v2.43.0`
 
+### Fixed
+
+- The region as external Label for capa,gcp and capz
+
 ## [4.26.0] - 2023-03-20
 
 ### Changed
