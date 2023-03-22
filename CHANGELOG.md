@@ -33,6 +33,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Drop `uid` label from kube-state-metrics metrics.
 - Drop `container_id` label from kube-state-metrics metrics.
 
+### Fixed
+
+- The region as external Label for capa,gcp and capz
+
 ## [4.26.0] - 2023-03-20
 
 ### Changed
