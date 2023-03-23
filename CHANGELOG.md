@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.27.0] - 2023-03-22
+### Remove
+
+- Drop `id` and `name` label from cAdvisor metrics.
 
 ## [4.27.0] - 2023-03-22
 
@@ -1970,7 +1972,6 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 
 [Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.27.0...HEAD
-[4.27.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.27.0...v4.27.0
 [4.27.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.26.0...v4.27.0
 [4.26.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.3...v4.26.0
 [4.25.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.2...v4.25.3
