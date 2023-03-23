@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bump Prometheus default image to `v2.43.0`
+
 ## [4.28.0] - 2023-03-23
 
 ### Remove
