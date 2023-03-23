@@ -90,6 +90,9 @@
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
   metric_relabel_configs:
+  # drop id and name labels from cAdvisor as they do not provide value but use a lot of RAM
+  - action: labeldrop
+    regex: id|name
 [[- if eq .ClusterType "management_cluster" ]]
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman|flux-.*|kyverno)
@@ -580,7 +583,7 @@
     replacement: ${1}
     action: replace
   - action: labeldrop
-    regex: "label_topology_kubernetes_io_region|label_topology_kubernetes_io_zone"
+    regex: label_topology_kubernetes_io_region|label_topology_kubernetes_io_zone
   # Override with label for AWS clusters if exists.
   - source_labels: [app,label_giantswarm_io_machine_deployment]
     regex: kube-state-metrics;(.+)
@@ -594,7 +597,7 @@
     replacement: ${1}
     action: replace
   - action: labeldrop
-    regex: "label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment"
+    regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
 [[ if eq .ClusterType "management_cluster" ]]
 # cluster-operator before 3.2.0
 - job_name: [[ .ClusterID ]]-prometheus/cluster-operator-[[ .ClusterID ]]/0
