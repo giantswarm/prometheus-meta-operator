@@ -158,7 +158,7 @@
   - action: labeldrop
     regex: id|name
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman|flux-.*|kyverno)
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|flux-.*|kyverno)
     action: keep
 # calico-node
 - job_name: kubernetes-prometheus/calico-node-kubernetes/0
