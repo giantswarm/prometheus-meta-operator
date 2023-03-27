@@ -108,6 +108,10 @@
   # drop id and name labels from cAdvisor as they do not provide value but use a lot of RAM
   - action: labeldrop
     regex: id|name
+  # dropping explained here https://github.com/giantswarm/giantswarm/issues/26361
+  - source_labels: [__name__]
+    regex: container_(blkio_device_usage_total|network_transmit_errors_total|network_receive_errors_total|tasks_state|memory_failures_total|memory_max_usage_bytes|cpu_load_average_10s|memory_failcnt|cpu_system_seconds_total)
+    action: drop
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|kong.*|kyverno)
     action: keep
