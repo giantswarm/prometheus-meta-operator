@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Bump Prometheus default image to `v2.43.0`
 
+### Removed
+
+- Drop some unused metrics from cAdvisor.
+
 ## [4.28.0] - 2023-03-23
 
 ### Remove
