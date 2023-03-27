@@ -167,7 +167,7 @@ func (r *Resource) deleteSecret(ctx context.Context, secret *corev1.Secret) erro
 func defaultQueueConfig() promv1.QueueConfig {
 	return promv1.QueueConfig{
 		Capacity:          30000,
-		MaxSamplesPerSend: 150000,
+		MaxSamplesPerSend: 300000,
 		MaxShards:         10,
 	}
 }

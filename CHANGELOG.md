@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Bump Prometheus default image to `v2.43.0`
+- Prometheus-agent tuning: increase maxSamplesPerSend from 150000 to 300000
 
 ### Removed
 
