@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.29.0] - 2023-03-27
+
 ### Changed
 
 - Bump Prometheus default image to `v2.43.0`
@@ -1982,7 +1984,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 - First release.
 
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.28.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.0...HEAD
+[4.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.28.0...v4.29.0
 [4.28.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.27.0...v4.28.0
 [4.27.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.26.0...v4.27.0
 [4.26.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.3...v4.26.0
