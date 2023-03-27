@@ -99,7 +99,7 @@
     action: drop
 [[- if eq .ClusterType "management_cluster" ]]
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|draughtsman|flux-.*|kyverno)
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|flux-.*|kyverno)
     action: keep
 [[- else ]]
   - source_labels: [namespace]
