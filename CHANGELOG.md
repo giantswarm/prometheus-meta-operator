@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Prometheus remotewrite endpoints for agents: increase max body size from 10m to 50m
+
 ### Removed
 
 - Removed pod_id relabelling as it's not needed anymore.
