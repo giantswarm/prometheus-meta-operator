@@ -462,12 +462,6 @@
   - source_labels: [__meta_kubernetes_pod_node_name]
     target_label: node
 [[ include "_labelingschema" . | indent 2 ]]
-  metric_relabel_configs:
-  - source_labels: [mountpoint]
-    target_label: pod_id
-    regex: /var/lib/kubelet/pods/([a-zA-Z0-9-]+)/.*
-    action: replace
-    replacement: $1
 - job_name: [[ .ClusterID ]]-prometheus/workload-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https

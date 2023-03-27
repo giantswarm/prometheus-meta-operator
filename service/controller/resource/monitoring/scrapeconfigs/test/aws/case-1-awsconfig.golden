@@ -809,12 +809,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-  metric_relabel_configs:
-  - source_labels: [mountpoint]
-    target_label: pod_id
-    regex: /var/lib/kubelet/pods/([a-zA-Z0-9-]+)/.*
-    action: replace
-    replacement: $1
 - job_name: alice-prometheus/workload-alice/0
   honor_labels: true
   scheme: https

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Removed pod_id relabelling as it's not needed anymore.
+
 ## [4.29.0] - 2023-03-27
 
 ### Changed
