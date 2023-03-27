@@ -154,6 +154,11 @@
     target_label: app
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+  metric_relabel_configs:
+    # drop metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: awscni_assigned_ip_per_cidr
+    action: drop
 [[- end ]]
 # Add etcd configuration
 - job_name: [[ .ClusterID ]]-prometheus/etcd-[[ .ClusterID ]]/0
@@ -250,6 +255,10 @@
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
+  metric_relabel_configs:
+  # drop uid label from kubelet
+  - action: labeldrop
+    regex: uid
 [[- if not (contains "kube-controller-manager" .IgnoredTargets) ]]
 # kube-controller-manager
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
@@ -525,6 +534,13 @@
     replacement: ""
     action: replace
     target_label: uid
+    # drop image_id label from kube-state-metrics
+  - source_labels: [app,image_id]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: image_id
   # drop container_id label from kube-state-metrics (kube_pod_info)
   - source_labels: [app,container_id]
     separator: ;

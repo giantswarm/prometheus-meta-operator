@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Drop `awscni_assigned_ip_per_cidr` metric from aws cni.
+- Drop `uid` label from kubelet.
+- Drop `image_id` label from kube-state-metrics.
+
 ## [4.29.1] - 2023-03-27
 
 ### Changed
