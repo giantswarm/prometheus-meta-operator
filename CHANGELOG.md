@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.31.1] - 2023-03-28
+
 ### Changed
 
 - Prometheus-agent tuning: revert maxSamplesPerSend to 150000
@@ -2028,7 +2030,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.1...HEAD
+[4.31.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.0...v4.31.1
 [4.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.30.0...v4.31.0
 [4.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...v4.30.0
 [4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2
