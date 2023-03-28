@@ -2012,7 +2012,6 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 
 [Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...HEAD
-[4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...v4.29.2
 [4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2
 [4.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.0...v4.29.1
 [4.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.28.0...v4.29.0
