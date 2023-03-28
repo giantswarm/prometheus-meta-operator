@@ -304,6 +304,10 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+  metric_relabel_configs:
+  # drop uid label from kubelet
+  - action: labeldrop
+    regex: uid
 # kube-proxy
 - job_name: foo-prometheus/kube-proxy-foo/0
   honor_labels: true
@@ -689,6 +693,13 @@
     replacement: ""
     action: replace
     target_label: uid
+    # drop image_id label from kube-state-metrics
+  - source_labels: [app,image_id]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: image_id
   # drop container_id label from kube-state-metrics (kube_pod_info)
   - source_labels: [app,container_id]
     separator: ;
