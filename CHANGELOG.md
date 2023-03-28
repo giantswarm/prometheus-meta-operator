@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Drop `coredns_dns_response_size_bytes_bucket` and `coredns_dns_request_size_bytes_bucket` from coredns metrics.
 - Drop `nginx_ingress_controller_connect_duration_seconds_bucket` `nginx_ingress_controller_header_duration_seconds_bucket` `nginx_ingress_controller_bytes_sent_count` `nginx_ingress_controller_request_duration_seconds_sum` from nginx-ingress-controller metrics.
 - Drop `kong_upstream_target_health` and `kong_latency_bucket` Kong metrics.
-- Drop `kube_pod_tolerations` `kube_pod_status_reason` `kube_pod_status_scheduled` `kube_replicaset_metadata_generation` `kube_replicaset_status_observed_generation` `kube_replicaset_annotations` and`kube_replicaset_status_fully_labeled_replicas` kube-state-metrics metrics.
+- Drop `kube_pod_tolerations` `kube_pod_status_scheduled` `kube_replicaset_metadata_generation` `kube_replicaset_status_observed_generation` `kube_replicaset_annotations` and`kube_replicaset_status_fully_labeled_replicas` kube-state-metrics metrics.
 - Drop `promtail_request_duration_seconds_bucket` and `loki_request_duration_seconds_bucket` metrics from promtail and loki.
 
 ## [4.30.0] - 2023-03-28

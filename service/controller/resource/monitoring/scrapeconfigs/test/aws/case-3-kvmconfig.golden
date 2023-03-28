@@ -378,6 +378,7 @@
   # drop unused rest client metrics
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
   # drop uid label from kubelet
   - action: labeldrop
     regex: uid
@@ -466,6 +467,7 @@
   # drop unused rest client metrics
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
 # kube-scheduler
 - job_name: bar-prometheus/kubernetes-scheduler-bar/0
   honor_labels: true
@@ -551,6 +553,7 @@
   # drop unused rest client metrics
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
 # kube-proxy
 - job_name: bar-prometheus/kube-proxy-bar/0
   honor_labels: true
@@ -627,6 +630,7 @@
   # drop unused rest client metrics
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
 # coredns
 - job_name: bar-prometheus/coredns-bar/0
   honor_labels: true
@@ -944,14 +948,16 @@
     action: drop
   # drop unused kube-state-metrics metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
-    regex: kube_(pod_tolerations|pod_status_reason|pod_status_scheduled|replicaset_metadata_generation|replicaset_status_observed_generation|replicaset_annotations|replicaset_status_fully_labeled_replicas)
+    regex: kube_(pod_tolerations|pod_status_scheduled|replicaset_metadata_generation|replicaset_status_observed_generation|replicaset_annotations|replicaset_status_fully_labeled_replicas)
     action: drop
   # drop unused promtail/loki metrics
   - source_labels: [__name__]
     regex: promtail_request_duration_seconds_bucket|loki_request_duration_seconds_bucket
+    action: drop
   # drop unused rest client metrics
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
   # drop uid label from kube-state-metrics
   - source_labels: [app,uid]
     separator: ;
