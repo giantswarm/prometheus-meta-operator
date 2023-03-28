@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+- Remove immutable secret deletion not needed after 4.27.0.
 - Remove alertmanager ownership job.
 
 ## [4.29.2] - 2023-03-28
@@ -2009,7 +2010,6 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 ### Added
 
 - First release.
-
 
 [Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...HEAD
 [4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2

@@ -36,20 +36,6 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		if current != nil {
-			// We thought that having an immutable secret would be a good thing as the remote write password cannot be changed (causing remote write errors)
-			// However, this causes a lot of issues if we want to update the other configurations like the queue config.
-			// Hence if the secret is immutable, we force delete it to create a non-immutable one
-			if current.Immutable != nil && *current.Immutable {
-				err = r.deleteSecret(ctx, current)
-				if err != nil {
-					return microerror.Mask(err)
-				}
-				err = r.createSecret(ctx, cluster, name, namespace)
-				if err != nil {
-					return microerror.Mask(err)
-				}
-			}
-
 			// As it takes a long time to apply the new password to the agent due to a built-in delay in the app-platform,
 			// we keep the already generated remote write password.
 			password, err := readRemoteWritePasswordFromSecret(*current)
