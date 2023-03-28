@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.31.0] - 2023-03-28
+
+### Removed
+
+- Drop `rest_client_rate_limiter_duration_seconds_bucket` `rest_client_request_size_bytes_bucket` `rest_client_response_size_bytes_bucket` from Kubernetes component metrics.
+- Drop `coredns_dns_response_size_bytes_bucket` and `coredns_dns_request_size_bytes_bucket` from coredns metrics.
+- Drop `nginx_ingress_controller_connect_duration_seconds_bucket` `nginx_ingress_controller_header_duration_seconds_bucket` `nginx_ingress_controller_bytes_sent_count` `nginx_ingress_controller_request_duration_seconds_sum` from nginx-ingress-controller metrics.
+- Drop `kong_upstream_target_health` and `kong_latency_bucket` Kong metrics.
+- Drop `kube_pod_tolerations` `kube_pod_status_scheduled` `kube_replicaset_metadata_generation` `kube_replicaset_status_observed_generation` `kube_replicaset_annotations` and`kube_replicaset_status_fully_labeled_replicas` kube-state-metrics metrics.
+- Drop `promtail_request_duration_seconds_bucket` and `loki_request_duration_seconds_bucket` metrics from promtail and loki.
+
 ## [4.30.0] - 2023-03-28
 
 ### Removed
@@ -2013,7 +2024,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.30.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.0...HEAD
+[4.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.30.0...v4.31.0
 [4.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...v4.30.0
 [4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2
 [4.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.0...v4.29.1
