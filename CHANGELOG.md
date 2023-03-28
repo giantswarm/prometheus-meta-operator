@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.29.2] - 2023-03-28
 
+## [4.29.2] - 2023-03-28
+
 ### Changed
 
 - VPA settings: set memory limit to 80% node size
@@ -2004,6 +2006,7 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 
 [Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...HEAD
+[4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...v4.29.2
 [4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2
 [4.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.0...v4.29.1
 [4.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.28.0...v4.29.0
