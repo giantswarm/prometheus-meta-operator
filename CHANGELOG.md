@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Remove immutable secret deletion not needed after 4.27.0.
+- Remove alertmanager ownership job.
 
 ## [4.29.2] - 2023-03-28
 
@@ -72,6 +73,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prometheus-agent tuning: increase maxSamplesPerSend from 50000 to 150000
 
 ## [4.25.3] - 2023-03-15
+
+### Fixed
+
+- Fix ownership job
 
 ## [4.25.2] - 2023-03-15
 
