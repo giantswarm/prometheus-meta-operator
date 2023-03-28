@@ -105,6 +105,13 @@
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
   metric_relabel_configs:
+  # drop id and name labels from cAdvisor as they do not provide value but use a lot of RAM
+  - action: labeldrop
+    regex: id|name
+  # dropping explained here https://github.com/giantswarm/giantswarm/issues/26361
+  - source_labels: [__name__]
+    regex: container_(blkio_device_usage_total|network_transmit_errors_total|network_receive_errors_total|tasks_state|memory_failures_total|memory_max_usage_bytes|cpu_load_average_10s|memory_failcnt|cpu_system_seconds_total)
+    action: drop
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|kong.*|kyverno)
     action: keep
@@ -297,6 +304,10 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+  metric_relabel_configs:
+  # drop uid label from kubelet
+  - action: labeldrop
+    regex: uid
 # kube-proxy
 - job_name: baz-prometheus/kube-proxy-baz/0
   honor_labels: true
@@ -575,12 +586,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-  metric_relabel_configs:
-  - source_labels: [mountpoint]
-    target_label: pod_id
-    regex: /var/lib/kubelet/pods/([a-zA-Z0-9-]+)/.*
-    action: replace
-    replacement: $1
 - job_name: baz-prometheus/workload-baz/0
   honor_labels: true
   scheme: https
@@ -688,6 +693,13 @@
     replacement: ""
     action: replace
     target_label: uid
+    # drop image_id label from kube-state-metrics
+  - source_labels: [app,image_id]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: image_id
   # drop container_id label from kube-state-metrics (kube_pod_info)
   - source_labels: [app,container_id]
     separator: ;
@@ -744,7 +756,7 @@
     replacement: ${1}
     action: replace
   - action: labeldrop
-    regex: "label_topology_kubernetes_io_region|label_topology_kubernetes_io_zone"
+    regex: label_topology_kubernetes_io_region|label_topology_kubernetes_io_zone
   # Override with label for AWS clusters if exists.
   - source_labels: [app,label_giantswarm_io_machine_deployment]
     regex: kube-state-metrics;(.+)
@@ -758,7 +770,7 @@
     replacement: ${1}
     action: replace
   - action: labeldrop
-    regex: "label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment"
+    regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
 
 # prometheus
 - job_name: baz-prometheus/prometheus-baz/0

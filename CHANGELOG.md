@@ -11,6 +11,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove immutable secret deletion not needed after 4.27.0.
 
+## [4.29.2] - 2023-03-28
+
+### Changed
+
+- VPA settings: set memory limit to 80% node size
+- Drop `awscni_assigned_ip_per_cidr` metric from aws cni.
+- Drop `uid` label from kubelet.
+- Drop `image_id` label from kube-state-metrics.
+
+## [4.29.1] - 2023-03-27
+
+### Changed
+
+- Prometheus remotewrite endpoints for agents: increase max body size from 10m to 50m
+
+### Removed
+
+- Removed pod_id relabelling as it's not needed anymore.
+
+## [4.29.0] - 2023-03-27
+
+### Changed
+
+- Bump Prometheus default image to `v2.43.0`
+- Prometheus-agent tuning: increase maxSamplesPerSend from 150000 to 300000
+
+### Removed
+
+- Drop some unused metrics from cAdvisor.
+- Remove draughtsman references.
+
+## [4.28.0] - 2023-03-23
+
+### Remove
+
+- Drop `id` and `name` label from cAdvisor metrics.
+
 ## [4.27.0] - 2023-03-22
 
 ### Changed
@@ -1969,9 +2006,12 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.27.0...HEAD
-[4.27.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.27.0...v4.27.0
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...HEAD
+[4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2
+[4.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.0...v4.29.1
+[4.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.28.0...v4.29.0
+[4.28.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.27.0...v4.28.0
+[4.27.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.26.0...v4.27.0
 [4.26.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.3...v4.26.0
 [4.25.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.2...v4.25.3
 [4.25.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.1...v4.25.2
