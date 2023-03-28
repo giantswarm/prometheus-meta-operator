@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Prometheus-agent tuning: revert maxSamplesPerSend to 150000
+
 ## [4.31.0] - 2023-03-28
 
 ### Removed
