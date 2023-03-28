@@ -7,7 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.29.2] - 2023-03-28
+### Removed
+
+- Remove alertmanager ownership job.
 
 ## [4.29.2] - 2023-03-28
 
@@ -70,6 +72,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prometheus-agent tuning: increase maxSamplesPerSend from 50000 to 150000
 
 ## [4.25.3] - 2023-03-15
+
+### Fixed
+
+- Fix ownership job
 
 ## [4.25.2] - 2023-03-15
 
@@ -2006,7 +2012,6 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 
 [Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...HEAD
-[4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...v4.29.2
 [4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2
 [4.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.0...v4.29.1
 [4.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.28.0...v4.29.0
