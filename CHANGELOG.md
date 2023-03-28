@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- VPA settings: set memory limit to 80% node size
+
 ## [4.29.1] - 2023-03-27
 
 ### Changed
