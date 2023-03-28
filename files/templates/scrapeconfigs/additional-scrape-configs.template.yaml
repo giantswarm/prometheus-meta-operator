@@ -256,6 +256,10 @@
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
   metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
   # drop uid label from kubelet
   - action: labeldrop
     regex: uid
@@ -305,6 +309,11 @@
     replacement: kube-controller-manager
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+  metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
 [[- end ]]
 [[- if not (contains "kube-scheduler" .IgnoredTargets) ]]
 # kube-scheduler
@@ -352,6 +361,11 @@
     replacement: kube-scheduler
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+  metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
 [[- end ]]
 # kube-proxy
 - job_name: [[ .ClusterID ]]-prometheus/kube-proxy-[[ .ClusterID ]]/0
@@ -381,6 +395,11 @@
     replacement: kube-proxy
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+  metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
 # coredns
 - job_name: [[ .ClusterID ]]-prometheus/coredns-[[ .ClusterID ]]/0
   honor_labels: true
@@ -411,6 +430,11 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+  metric_relabel_configs:
+  # drop unused coredns metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: coredns_dns_(response_size_bytes_bucket|request_size_bytes_bucket)
+    action: drop
 # cert-exporter
 - job_name: [[ .ClusterID ]]-prometheus/cert-exporter-[[ .ClusterID ]]/0
   honor_labels: true
@@ -523,9 +547,25 @@
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
   metric_relabel_configs:
-  # drop metrics with the highest cardinality as they increase Prometheus memory usage
+  # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
-    regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
+    regex: nginx_ingress_controller_(bytes_sent_bucket|request_size_bucket|response_duration_seconds_bucket|response_size_bucket|request_duration_seconds_count|connect_duration_seconds_bucket|header_duration_seconds_bucket|bytes_sent_count|request_duration_seconds_sum)
+    action: drop
+  # drop unused kong metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: kong_(upstream_target_health|latency_bucket)
+    action: drop
+  # drop unused kube-state-metrics metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: kube_(pod_tolerations|pod_status_scheduled|replicaset_metadata_generation|replicaset_status_observed_generation|replicaset_annotations|replicaset_status_fully_labeled_replicas)
+    action: drop
+  # drop unused promtail/loki metrics
+  - source_labels: [__name__]
+    regex: promtail_request_duration_seconds_bucket|loki_request_duration_seconds_bucket
+    action: drop
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
     action: drop
   # drop uid label from kube-state-metrics
   - source_labels: [app,uid]
@@ -1153,6 +1193,11 @@
     action: drop
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
+  metric_relabel_configs:
+  # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: nginx_ingress_controller_(bytes_sent_bucket|request_size_bucket|response_duration_seconds_bucket|response_size_bucket|request_duration_seconds_count|connect_duration_seconds_bucket|header_duration_seconds_bucket|bytes_sent_count|request_duration_seconds_sum)
+    action: drop
 [[ end ]]
 # prometheus
 - job_name: [[ .ClusterID ]]-prometheus/prometheus-[[ .ClusterID ]]/0
