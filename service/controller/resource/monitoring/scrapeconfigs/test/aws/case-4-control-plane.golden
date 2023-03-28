@@ -285,6 +285,11 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  metric_relabel_configs:
+    # drop metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: awscni_assigned_ip_per_cidr
+    action: drop
 # Add etcd configuration
 - job_name: kubernetes-prometheus/etcd-kubernetes/0
   honor_labels: true
@@ -394,6 +399,10 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+  metric_relabel_configs:
+  # drop uid label from kubelet
+  - action: labeldrop
+    regex: uid
 # kube-proxy
 - job_name: kubernetes-prometheus/kube-proxy-kubernetes/0
   honor_labels: true
@@ -744,6 +753,13 @@
     replacement: ""
     action: replace
     target_label: uid
+    # drop image_id label from kube-state-metrics
+  - source_labels: [app,image_id]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: image_id
   # drop container_id label from kube-state-metrics (kube_pod_info)
   - source_labels: [app,container_id]
     separator: ;

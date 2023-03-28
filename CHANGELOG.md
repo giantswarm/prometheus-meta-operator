@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - VPA settings: set memory limit to 80% node size
+- Drop `awscni_assigned_ip_per_cidr` metric from aws cni.
+- Drop `uid` label from kubelet.
+- Drop `image_id` label from kube-state-metrics.
 
 ## [4.29.1] - 2023-03-27
 
