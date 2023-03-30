@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Drop node-exporter metrics (`node_filesystem_files` `node_filesystem_readonly` `node_nfs_requests_total` `node_network_carrier` `node_network_transmit_colls_total` `node_network_carrier_changes_total` `node_network_transmit_packets_total` `node_network_carrier_down_changes_total` `node_network_carrier_up_changes_total` `node_network_iface_id` `node_xfs_.+` `node_ethtool_.+`)
+- Drop kong metrics (`kong_latency_count` `kong_latency_sum`)
+- Drop kube-state-metrics metrics (`kube_.+_metadata_resource_version`)
+- Drop nginx-ingress-controller metrics (`nginx_ingress_controller_bytes_sent_sum` `nginx_ingress_controller_request_size_count` `nginx_ingress_controller_response_size_count` `nginx_ingress_controller_response_duration_seconds_sum` `nginx_ingress_controller_response_duration_seconds_count` `nginx_ingress_controller_ingress_upstream_latency_seconds` `nginx_ingress_controller_ingress_upstream_latency_seconds_sum` `nginx_ingress_controller_ingress_upstream_latency_seconds_count`)
+
 ## [4.31.1] - 2023-03-28
 
 ### Changed
