@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.32.0] - 2023-03-30
+
 ### Removed
 
 - Drop node-exporter metrics (`node_filesystem_files` `node_filesystem_readonly` `node_nfs_requests_total` `node_network_carrier` `node_network_transmit_colls_total` `node_network_carrier_changes_total` `node_network_transmit_packets_total` `node_network_carrier_down_changes_total` `node_network_carrier_up_changes_total` `node_network_iface_id` `node_xfs_.+` `node_ethtool_.+`)
@@ -2037,7 +2039,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.32.0...HEAD
+[4.32.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.1...v4.32.0
 [4.31.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.0...v4.31.1
 [4.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.30.0...v4.31.0
 [4.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...v4.30.0
