@@ -3,7 +3,7 @@ image:
   tag: "[[ .Version ]]"
 
 registry:
-  domain: quay.io
+  domain: docker.io
   pullSecret:
     dockerConfigJSON: "Cg=="
 
@@ -20,11 +20,13 @@ alertmanager:
   enabled: true
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"
+  imageRepository: giantswarm/alertmanager
   logLevel: info
   slack:
     apiURL: ""
   storage:
     size: 1Gi
+  version: "v0.25.0"
 
 certificate:
   monitoring:
@@ -33,9 +35,6 @@ certificate:
 
 grafana:
   address: ""
-
-grafanaCloud:
-  remoteWriteURL: ""
 
 managementCluster:
   name: ""
@@ -58,6 +57,7 @@ prometheus:
   heartbeat:
     opsgenieKey: ""
   host: "prometheus:9090"
+  imageRepository: giantswarm/prometheus
   logLevel: info
   letsencrypt: false
   mayu: ""

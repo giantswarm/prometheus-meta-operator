@@ -25,6 +25,7 @@ func TestPrometheus(t *testing.T) {
 		Pipeline:           "testing",
 		Provider:           "provider",
 		Region:             "onprem",
+		ImageRepository:    "giantswarm/prometheus",
 		LogLevel:           "debug",
 		Registry:           "quay.io",
 		RetentionDuration:  "2w",

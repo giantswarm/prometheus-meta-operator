@@ -3,7 +3,6 @@ package service
 import (
 	"github.com/giantswarm/operatorkit/v7/pkg/flag/service/kubernetes"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/grafana"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/installation"
@@ -19,7 +18,6 @@ import (
 type Service struct {
 	Installation installation.Installation
 	Kubernetes   kubernetes.Kubernetes
-	Alertmanager alertmanager.Alertmanager
 	Prometheus   prometheus.Prometheus
 	Grafana      grafana.Grafana
 	Slack        slack.Slack

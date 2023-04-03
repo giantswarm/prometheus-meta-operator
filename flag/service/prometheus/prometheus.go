@@ -6,6 +6,7 @@ type Prometheus struct {
 	BaseDomain              string
 	Bastions                string
 	EvaluationInterval      string
+	ImageRepository         string
 	LogLevel                string
 	Mayu                    string
 	Retention               PrometheusRetention
@@ -15,9 +16,4 @@ type Prometheus struct {
 
 type PrometheusRetention struct {
 	Duration string
-}
-
-type PrometheusRemoteWriteBasicAuth struct {
-	Username string
-	Password string
 }

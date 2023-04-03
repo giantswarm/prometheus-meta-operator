@@ -161,6 +161,7 @@ func New(config Config) (*Service, error) {
 				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
+				PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
@@ -203,6 +204,7 @@ func New(config Config) (*Service, error) {
 				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
+				PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
@@ -237,21 +239,17 @@ func New(config Config) (*Service, error) {
 			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-			AlertmanagerAddress:     config.Viper.GetString(config.Flag.Service.Alertmanager.Address),
-			AlertmanagerBaseDomain:  config.Viper.GetString(config.Flag.Service.Alertmanager.BaseDomain),
-			AlertmanagerLogLevel:    config.Viper.GetString(config.Flag.Service.Alertmanager.LogLevel),
-			AlertmanagerStorageSize: config.Viper.GetString(config.Flag.Service.Alertmanager.Storage.Size),
-			AlertmanagerVersion:     config.Viper.GetString(config.Flag.Service.Alertmanager.Version),
-			GrafanaAddress:          config.Viper.GetString(config.Flag.Service.Grafana.Address),
-			OpsgenieKey:             config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			SlackApiURL:             config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
-			SlackProjectName:        config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
+			GrafanaAddress:   config.Viper.GetString(config.Flag.Service.Grafana.Address),
+			OpsgenieKey:      config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			SlackApiURL:      config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
+			SlackProjectName: config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
 
 			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 			PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 			RestrictedAccessEnabled:  config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
