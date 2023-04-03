@@ -22,8 +22,3 @@ type PrometheusRetention struct {
 	Duration string
 	Size     string
 }
-
-type PrometheusRemoteWriteBasicAuth struct {
-	Username string
-	Password string
-}
