@@ -34,9 +34,6 @@ certificate:
 grafana:
   address: ""
 
-grafanaCloud:
-  remoteWriteURL: ""
-
 managementCluster:
   name: ""
   customer: ""

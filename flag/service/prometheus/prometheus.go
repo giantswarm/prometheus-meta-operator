@@ -8,14 +8,9 @@ type Prometheus struct {
 	EvaluationInterval      string
 	LogLevel                string
 	Mayu                    string
-	Storage                 PrometheusStorage
 	Retention               PrometheusRetention
 	ScrapeInterval          string
 	Version                 string
-}
-
-type PrometheusStorage struct {
-	Size string
 }
 
 type PrometheusRetention struct {

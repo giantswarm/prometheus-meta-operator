@@ -39,7 +39,6 @@ type ControllerConfig struct {
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
-	PrometheusRemoteWriteURL     string
 	PrometheusRetentionDuration  string
 	PrometheusScrapeInterval     string
 	PrometheusVersion            string
