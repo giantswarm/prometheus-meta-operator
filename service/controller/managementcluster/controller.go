@@ -50,7 +50,6 @@ type ControllerConfig struct {
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
 	PrometheusRetentionDuration  string
-	PrometheusRetentionSize      string
 	PrometheusScrapeInterval     string
 	PrometheusVersion            string
 

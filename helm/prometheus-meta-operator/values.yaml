@@ -66,15 +66,8 @@ prometheus:
     ## Retention duration for prometheus.
     duration: "2w"
 
-    ## Retention size for prometheus.
-    size: "90GB"
-
   ## Default scrape interval for prometheus jobs.
   scrapeInterval: "60s"
-
-  ## Storage size for prometheus.
-  storage:
-    size: 100Gi
 
   ## Prometheus container image version.
   # version: ""

@@ -45,10 +45,7 @@ data:
           url: {{ .Values.grafanaCloud.remoteWriteURL }}
         retention:
           duration: {{ .Values.prometheus.retention.duration }}
-          size: {{ .Values.prometheus.retention.size }}
         scrapeInterval: {{ .Values.prometheus.scrapeInterval }}
-        storage:
-          size: {{ .Values.prometheus.storage.size }}
         {{- if .Values.prometheus.version }}
         version: {{ .Values.prometheus.version }}
         {{- end }}
