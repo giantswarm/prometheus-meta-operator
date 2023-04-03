@@ -26,7 +26,7 @@ data:
         baseDomain: {{ .Values.alertmanager.host }}
         logLevel: {{ .Values.alertmanager.logLevel }}
         storage:
-          size: {{ .Values.alertmanager.storage.pvcSize }}
+          size: {{ .Values.alertmanager.storage.size }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-
@@ -38,15 +38,20 @@ data:
         {{- range .Values.prometheus.bastions }}
         - {{ . }}
         {{- end }}
-        evaluationInterval: 60s
+        evaluationInterval: {{ .Values.prometheus.evaluationInterval }}
         logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.prometheus.mayu }}
         remoteWrite:
           url: {{ .Values.grafanaCloud.remoteWriteURL }}
         retention:
-          duration: 2w
-          size: 90GB
-        scrapeInterval: 60s
+          duration: {{ .Values.prometheus.retention.duration }}
+          size: {{ .Values.prometheus.retention.size }}
+        scrapeInterval: {{ .Values.prometheus.scrapeInterval }}
+        storage:
+          size: {{ .Values.prometheus.storage.size }}
+        {{- if .Values.prometheus.version }}
+        version: {{ .Values.prometheus.version }}
+        {{- end }}
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
         {{- if .Values.slack }}
