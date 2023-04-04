@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.33.0] - 2023-04-04
+
 ### Changed
 
 - Add more flexibility in the configuration so prometheus image, pvc size and so on can be overwritten by configuration.
@@ -2043,7 +2045,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.32.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.33.0...HEAD
+[4.33.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.32.0...v4.33.0
 [4.32.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.1...v4.32.0
 [4.31.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.0...v4.31.1
 [4.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.30.0...v4.31.0
