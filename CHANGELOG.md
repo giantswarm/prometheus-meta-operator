@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Add more flexibility in the configuration so prometheus image, pvc size and so on can be overwritten by configuration.
+
 ## [4.32.0] - 2023-03-30
 
 ### Removed

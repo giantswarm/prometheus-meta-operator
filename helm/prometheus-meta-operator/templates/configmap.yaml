@@ -32,12 +32,16 @@ data:
         {{- range .Values.prometheus.bastions }}
         - {{ . }}
         {{- end }}
-        evaluationInterval: 60s
+        evaluationInterval: {{ .Values.prometheus.evaluationInterval }}
         logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.prometheus.mayu }}
         retention:
-          duration: 2w
-        scrapeInterval: 60s
+          duration: {{ .Values.prometheus.retention.duration }}
+        scrapeInterval: {{ .Values.prometheus.scrapeInterval }}
+        imageRepository: {{ .Values.prometheus.imageRepository }}
+        {{- if .Values.prometheus.version }}
+        version: {{ .Values.prometheus.version }}
+        {{- end }}
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
         {{- if .Values.slack }}

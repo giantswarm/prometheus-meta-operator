@@ -33,6 +33,7 @@ type Config struct {
 	Bastions           []string
 	Customer           string
 	EvaluationInterval string
+	ImageRepository    string
 	Installation       string
 	Pipeline           string
 	Provider           string
@@ -140,7 +141,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 	labels[key.MonitoringLabel] = "true"
 
-	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.Version)
+	image := fmt.Sprintf("%s/%s:%s", config.Registry, config.ImageRepository, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
@@ -236,6 +237,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						},
 					},
 				},
+				Version:        config.Version,
 				WALCompression: &walCompression,
 				Web: &promv1.PrometheusWebSpec{
 					PageTitle: &pageTitle,

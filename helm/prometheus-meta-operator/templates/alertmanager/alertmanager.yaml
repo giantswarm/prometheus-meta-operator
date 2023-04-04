@@ -23,7 +23,8 @@ spec:
       app.kubernetes.io/name: alertmanager
   configSecret: alertmanager-config
   externalUrl: {{ .Values.alertmanager.address }}
-  logLevel: info
+  image: {{ printf "%s/%s:%s" .Values.registry.domain .Values.alertmanager.imageRepository .Values.alertmanager.version }}
+  logLevel: {{ .Values.alertmanager.logLevel }}
   podMetadata:
     labels:
       app.kubernetes.io/instance: alertmanager
@@ -45,14 +46,12 @@ spec:
   serviceAccountName: alertmanager
   storage:
     volumeClaimTemplate:
-      metadata: {}
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: 1Gi
-      status: {}
+            storage: {{ .Values.alertmanager.storage.size }}
   topologySpreadConstraints:
     - labelSelector:
         matchLabels:

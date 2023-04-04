@@ -42,6 +42,7 @@ type ControllerConfig struct {
 	PrometheusLogLevel           string
 	PrometheusRetentionDuration  string
 	PrometheusScrapeInterval     string
+	PrometheusImageRepository    string
 	PrometheusVersion            string
 
 	RestrictedAccessEnabled bool

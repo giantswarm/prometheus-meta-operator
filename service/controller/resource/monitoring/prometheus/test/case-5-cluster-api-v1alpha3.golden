@@ -113,6 +113,7 @@ spec:
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
   tsdb: {}
+  version: v2.28.1
   walCompression: true
   web:
     pageTitle: test-installation/baz Prometheus

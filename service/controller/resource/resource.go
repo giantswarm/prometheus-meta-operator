@@ -55,6 +55,7 @@ type Config struct {
 	PrometheusLogLevel           string
 	PrometheusRetentionDuration  string
 	PrometheusScrapeInterval     string
+	PrometheusImageRepository    string
 	PrometheusVersion            string
 
 	RestrictedAccessEnabled bool
@@ -207,6 +208,7 @@ func New(config Config) ([]resource.Interface, error) {
 			LogLevel:           config.PrometheusLogLevel,
 			RetentionDuration:  config.PrometheusRetentionDuration,
 			EvaluationInterval: config.PrometheusEvaluationInterval,
+			ImageRepository:    config.PrometheusImageRepository,
 			ScrapeInterval:     config.PrometheusScrapeInterval,
 		}
 
