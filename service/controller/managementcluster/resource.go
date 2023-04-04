@@ -49,22 +49,16 @@ type resourcesConfig struct {
 	Region                  string
 	Registry                string
 
-	AlertmanagerAddress     string
-	AlertmanagerBaseDomain  string
-	AlertmanagerLogLevel    string
-	AlertmanagerStorageSize string
-	AlertmanagerVersion     string
-	GrafanaAddress          string
-	OpsgenieKey             string
-	SlackApiURL             string
-	SlackProjectName        string
+	GrafanaAddress   string
+	OpsgenieKey      string
+	SlackApiURL      string
+	SlackProjectName string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
 	PrometheusRetentionDuration  string
-	PrometheusRetentionSize      string
 	PrometheusScrapeInterval     string
 	PrometheusVersion            string
 
@@ -189,7 +183,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			EvaluationInterval: config.PrometheusEvaluationInterval,
 			LogLevel:           config.PrometheusLogLevel,
 			RetentionDuration:  config.PrometheusRetentionDuration,
-			RetentionSize:      config.PrometheusRetentionSize,
 			ScrapeInterval:     config.PrometheusScrapeInterval,
 		}
 

@@ -35,22 +35,16 @@ type ControllerConfig struct {
 	Region                  string
 	Registry                string
 
-	AlertmanagerAddress     string
-	AlertmanagerBaseDomain  string
-	AlertmanagerLogLevel    string
-	AlertmanagerStorageSize string
-	AlertmanagerVersion     string
-	GrafanaAddress          string
-	OpsgenieKey             string
-	SlackApiURL             string
-	SlackProjectName        string
+	GrafanaAddress   string
+	OpsgenieKey      string
+	SlackApiURL      string
+	SlackProjectName string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
 	PrometheusRetentionDuration  string
-	PrometheusRetentionSize      string
 	PrometheusScrapeInterval     string
 	PrometheusVersion            string
 

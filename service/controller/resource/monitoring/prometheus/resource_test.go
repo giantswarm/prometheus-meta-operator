@@ -28,7 +28,6 @@ func TestPrometheus(t *testing.T) {
 		LogLevel:           "debug",
 		Registry:           "quay.io",
 		RetentionDuration:  "2w",
-		RetentionSize:      "45Gi",
 		ScrapeInterval:     "60s",
 		Version:            "v2.28.1",
 	}

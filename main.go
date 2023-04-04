@@ -120,12 +120,6 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Address, "", "Address to access Alertmanager UI.")
-	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.BaseDomain, "", "Base domain to create Alertmanager Ingress resources under.")
-	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.LogLevel, "info", "Prometheus log level.")
-	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Storage.Size, "1Gi", "Storage size for alertmanagers.")
-	daemonCommand.PersistentFlags().String(f.Service.Alertmanager.Version, "v0.25.0", "Alertmanager container image version.")
-
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.AdditionalScrapeConfigs, "", "Additional installation-specific scrape configs.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Address, "", "Address to access Prometheus UI.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.BaseDomain, "", "Base domain to create Prometheus Ingress resources under.")
@@ -134,9 +128,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.LogLevel, "info", "Prometheus log level.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Mayu, "", "Mayu host.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Duration, "2w", "Retention duration for prometheus.")
-	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Size, "90Gi", "Retention size for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ScrapeInterval, "60s", "Default scrape interval for prometheus jobs.")
-	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Storage.Size, "100Gi", "Storage size for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.43.0", "Prometheus container image version.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")

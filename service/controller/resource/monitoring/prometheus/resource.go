@@ -40,7 +40,6 @@ type Config struct {
 	Registry           string
 	LogLevel           string
 	RetentionDuration  string
-	RetentionSize      string
 	ScrapeInterval     string
 	Version            string
 }

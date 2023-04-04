@@ -8,6 +8,9 @@
                 "address": {
                     "type": "string"
                 },
+                "enabled": {
+                    "type": "boolean"
+                },
                 "host": {
                     "type": "string"
                 },
@@ -25,12 +28,6 @@
                 "storage": {
                     "type": "object",
                     "properties": {
-                        "createPVC": {
-                            "type": "boolean"
-                        },
-                        "enabled": {
-                            "type": "boolean"
-                        },
                         "size": {
                             "type": "string"
                         }
@@ -62,10 +59,13 @@
                 }
             }
         },
-        "grafanaCloud": {
+        "image": {
             "type": "object",
             "properties": {
-                "remoteWriteURL": {
+                "name": {
+                    "type": "string"
+                },
+                "tag": {
                     "type": "string"
                 }
             }
@@ -78,22 +78,14 @@
                 }
             }
         },
-        "image": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "tag": {
-                    "type": "string"
-                }
-            }
-        },
         "managementCluster": {
             "type": "object",
             "properties": {
                 "customer": {
                     "type": "string"
+                },
+                "insecureCA": {
+                    "type": "boolean"
                 },
                 "name": {
                     "type": "string"
@@ -104,6 +96,9 @@
                 "provider": {
                     "type": "object",
                     "properties": {
+                        "flavor": {
+                            "type": "string"
+                        },
                         "kind": {
                             "type": "string"
                         }
@@ -177,17 +172,6 @@
                 },
                 "mayu": {
                     "type": "string"
-                },
-                "storage": {
-                    "type": "object",
-                    "properties": {
-                        "createPVC": {
-                            "type": "boolean"
-                        },
-                        "enabled": {
-                            "type": "boolean"
-                        }
-                    }
                 }
             }
         },

@@ -21,12 +21,6 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
-      alertmanager:
-        address: {{ .Values.alertmanager.address }}
-        baseDomain: {{ .Values.alertmanager.host }}
-        logLevel: {{ .Values.alertmanager.logLevel }}
-        storage:
-          size: {{ .Values.alertmanager.storage.pvcSize }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-
@@ -41,11 +35,8 @@ data:
         evaluationInterval: 60s
         logLevel: {{ .Values.prometheus.logLevel }}
         mayu: {{ .Values.prometheus.mayu }}
-        remoteWrite:
-          url: {{ .Values.grafanaCloud.remoteWriteURL }}
         retention:
           duration: 2w
-          size: 90GB
         scrapeInterval: 60s
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
