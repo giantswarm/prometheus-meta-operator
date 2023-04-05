@@ -1,6 +1,8 @@
 package legacy
 
 import (
+	"net/url"
+
 	"github.com/giantswarm/apiextensions/v6/pkg/apis/provider/v1alpha1"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -11,17 +13,16 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource"
 )
 
 type ControllerConfig struct {
-	K8sClient          k8sclient.Interface
-	Logger             micrologger.Logger
-	PrometheusClient   promclient.Interface
-	VpaClient          vpa_clientset.Interface
-	ProxyConfiguration domain.ProxyConfiguration
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
+	VpaClient        vpa_clientset.Interface
+	Proxy            func(reqURL *url.URL) (*url.URL, error)
 
 	AdditionalScrapeConfigs string
 	Bastions                []string

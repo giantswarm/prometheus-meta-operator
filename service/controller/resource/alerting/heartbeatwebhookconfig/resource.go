@@ -13,7 +13,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -23,10 +22,10 @@ const (
 )
 
 type Config struct {
-	Client             monitoringclient.Interface
-	Logger             micrologger.Logger
-	Installation       string
-	ProxyConfiguration domain.ProxyConfiguration
+	Client       monitoringclient.Interface
+	Logger       micrologger.Logger
+	Installation string
+	Proxy        func(reqURL *url.URL) (*url.URL, error)
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -95,23 +94,36 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	}
 	address := urlAddress.String()
 
+	webhookHttpConfig := monitoringv1alpha1.HTTPConfig{
+		Authorization: &monitoringv1.SafeAuthorization{
+			Type: "GenieKey",
+			Credentials: &corev1.SecretKeySelector{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: key.AlertManagerSecretName(),
+				},
+				Key: key.OpsgenieKey(),
+			},
+		},
+	}
+
+	opsgenieUrl, err := url.Parse("https://api.opsgenie.com/v2/heartbeats")
+	if err != nil {
+		return nil, err
+	}
+	proxyURL, err := config.Proxy(opsgenieUrl)
+	if err != nil {
+		return nil, err
+	}
+	if proxyURL != nil {
+		webhookHttpConfig.ProxyURL = proxyURL.String()
+	}
+
 	receiver := monitoringv1alpha1.Receiver{
 		Name: key.HeartbeatReceiverName(cluster, config.Installation),
 		WebhookConfigs: []monitoringv1alpha1.WebhookConfig{
 			{
-				URL: &address,
-				HTTPConfig: &monitoringv1alpha1.HTTPConfig{
-					ProxyURL: config.ProxyConfiguration.GetURLForEndpoint("api.opsgenie.com"),
-					Authorization: &monitoringv1.SafeAuthorization{
-						Type: "GenieKey",
-						Credentials: &corev1.SecretKeySelector{
-							LocalObjectReference: corev1.LocalObjectReference{
-								Name: key.AlertManagerSecretName(),
-							},
-							Key: key.OpsgenieKey(),
-						},
-					},
-				},
+				URL:          &address,
+				HTTPConfig:   &webhookHttpConfig,
 				SendResolved: &sendResolved,
 			},
 		},

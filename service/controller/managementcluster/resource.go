@@ -1,6 +1,8 @@
 package managementcluster
 
 import (
+	"net/url"
+
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -10,7 +12,6 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
@@ -37,7 +38,7 @@ type resourcesConfig struct {
 	PrometheusClient promclient.Interface
 	VpaClient        vpa_clientset.Interface
 
-	ProxyConfiguration domain.ProxyConfiguration
+	Proxy func(reqURL *url.URL) (*url.URL, error)
 
 	AdditionalScrapeConfigs string
 	Bastions                []string
@@ -121,16 +122,16 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var alertmanagerConfigResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
-			K8sClient:          config.K8sClient,
-			Logger:             config.Logger,
-			Installation:       config.Installation,
-			Provider:           config.Provider,
-			ProxyConfiguration: config.ProxyConfiguration,
-			OpsgenieKey:        config.OpsgenieKey,
-			GrafanaAddress:     config.GrafanaAddress,
-			SlackApiURL:        config.SlackApiURL,
-			SlackProjectName:   config.SlackProjectName,
-			Pipeline:           config.Pipeline,
+			K8sClient:        config.K8sClient,
+			Logger:           config.Logger,
+			Installation:     config.Installation,
+			Provider:         config.Provider,
+			Proxy:            config.Proxy,
+			OpsgenieKey:      config.OpsgenieKey,
+			GrafanaAddress:   config.GrafanaAddress,
+			SlackApiURL:      config.SlackApiURL,
+			SlackProjectName: config.SlackProjectName,
+			Pipeline:         config.Pipeline,
 		}
 
 		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
@@ -158,8 +159,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Client: config.PrometheusClient,
 			Logger: config.Logger,
 
-			Installation:       config.Installation,
-			ProxyConfiguration: config.ProxyConfiguration,
+			Installation: config.Installation,
+			Proxy:        config.Proxy,
 		}
 
 		heartbeatWebhookConfigResource, err = heartbeatwebhookconfig.New(c)

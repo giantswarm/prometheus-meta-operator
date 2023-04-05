@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"golang.org/x/net/http/httpproxy"
+
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
@@ -43,14 +45,17 @@ func TestRenderingOfAlertmanagerNotificationTemplate(t *testing.T) {
 		t.Fatal(err)
 	}
 }
-
 func TestRenderingOfAlertmanagerConfig(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
+
+		proxyConfig := httpproxy.Config{}
+
 		config := Config{
 			GrafanaAddress:   "https://grafana",
 			Installation:     "test-installation",
 			OpsgenieKey:      "opsgenie-key",
+			Proxy:            proxyConfig.ProxyFunc(),
 			Pipeline:         "testing",
 			Provider:         "aws",
 			SlackApiURL:      "https://slack",

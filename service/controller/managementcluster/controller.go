@@ -1,6 +1,8 @@
 package managementcluster
 
 import (
+	"net/url"
+
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -13,17 +15,16 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 type ControllerConfig struct {
-	K8sClient          k8sclient.Interface
-	Logger             micrologger.Logger
-	PrometheusClient   promclient.Interface
-	VpaClient          vpa_clientset.Interface
-	ProxyConfiguration domain.ProxyConfiguration
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
+	VpaClient        vpa_clientset.Interface
+	Proxy            func(reqURL *url.URL) (*url.URL, error)
 
 	AdditionalScrapeConfigs string
 	Bastions                []string
