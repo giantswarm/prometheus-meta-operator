@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `loki` namespace in cAdvisor scrape config for MC.
+
 ### Fixed
 
 - Fix proxy configuration as no_proxy was not respected.
