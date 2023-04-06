@@ -162,7 +162,7 @@
     regex: container_(blkio_device_usage_total|network_transmit_errors_total|network_receive_errors_total|tasks_state|memory_failures_total|memory_max_usage_bytes|cpu_load_average_10s|memory_failcnt|cpu_system_seconds_total)
     action: drop
   - source_labels: [namespace]
-    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|flux-.*|kyverno)
+    regex: (kube-system|giantswarm.*|.*-prometheus|monitoring|flux-.*|kyverno|loki)
     action: keep
 # calico-node
 - job_name: kubernetes-prometheus/calico-node-kubernetes/0
