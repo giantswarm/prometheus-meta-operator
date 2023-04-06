@@ -3,6 +3,7 @@ package prometheusremotewrite
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/giantswarm/microerror"
 	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
@@ -58,7 +59,18 @@ func updateMeta(c, d metav1.Object) {
 }
 
 func (r *Resource) setRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.RemoteWrite, prometheus *promv1.Prometheus) error {
+	remoteWriteUrl, err := url.Parse(remoteWrite.Spec.RemoteWrite.URL)
+	if err != nil {
+		return err
+	}
+	proxyURL, err := r.Proxy(remoteWriteUrl)
+	if err != nil {
+		return err
+	}
 
+	if proxyURL != nil {
+		remoteWrite.Spec.RemoteWrite.ProxyURL = proxyURL.String()
+	}
 	desired, ok := r.ensurePrometheusRemoteWrite(*remoteWrite, *prometheus)
 	if !ok {
 		r.logger.Debugf(ctx, fmt.Sprintf("no update required for Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
@@ -68,7 +80,7 @@ func (r *Resource) setRemoteWrite(ctx context.Context, remoteWrite *pmov1alpha1.
 	r.logger.Debugf(ctx, fmt.Sprintf("updating Prometheus CR %#q in namespace %#q", desired.Name, desired.Namespace))
 
 	updateMeta(prometheus, desired)
-	_, err := r.prometheusClient.MonitoringV1().
+	_, err = r.prometheusClient.MonitoringV1().
 		Prometheuses(prometheus.GetNamespace()).
 		Update(ctx, desired, metav1.UpdateOptions{})
 	if err != nil {

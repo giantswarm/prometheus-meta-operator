@@ -5,6 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"golang.org/x/net/http/httpproxy"
+
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
@@ -16,7 +18,9 @@ func TestAlertmanager(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	proxyConfig := httpproxy.Config{}
 	config := Config{
+		Proxy:        proxyConfig.ProxyFunc(),
 		Installation: "test-installation",
 	}
 

@@ -1,6 +1,8 @@
 package remotewrite
 
 import (
+	"net/url"
+
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -11,15 +13,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
 
 type ControllerConfig struct {
-	K8sClient          k8sclient.Interface
-	Logger             micrologger.Logger
-	PrometheusClient   promclient.Interface
-	ProxyConfiguration domain.ProxyConfiguration
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
+	Proxy            func(reqURL *url.URL) (*url.URL, error)
 }
 
 type Controller struct {
