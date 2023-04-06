@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Handle prometheus scrape target removal based on the observability bundle version.
+
 ## [4.34.0] - 2023-04-06
 
 ### Added

@@ -49,6 +49,66 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+# Add kubelet configuration
+- job_name: alice-prometheus/kubelet-alice/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+
+    api_server: https://master.alice:443
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
+    insecure_skip_verify: true
+  relabel_configs:
+  - target_label: app
+    replacement: kubelet
+  - source_labels: [__address__]
+    target_label: instance
+  - target_label: __address__
+    replacement: master.alice:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: alice
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: workload_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
+  # drop uid label from kubelet
+  - action: labeldrop
+    regex: uid
 # Add scrape configuration for cadvisor
 - job_name: alice-prometheus/cadvisor-alice/0
   honor_labels: true
@@ -322,66 +382,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-# Add kubelet configuration
-- job_name: alice-prometheus/kubelet-alice/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: node
-
-    api_server: https://master.alice:443
-    tls_config:
-      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  relabel_configs:
-  - target_label: app
-    replacement: kubelet
-  - source_labels: [__address__]
-    target_label: instance
-  - target_label: __address__
-    replacement: master.alice:443
-  - source_labels: [__meta_kubernetes_node_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: alice
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  metric_relabel_configs:
-  # drop unused rest client metrics
-  - source_labels: [__name__]
-    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
-    action: drop
-  # drop uid label from kubelet
-  - action: labeldrop
-    regex: uid
 # kube-controller-manager
 - job_name: alice-prometheus/kubernetes-controller-manager-alice/0
   honor_labels: true

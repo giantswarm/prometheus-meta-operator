@@ -203,82 +203,78 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 	return d, nil
 }
 
-func getDefaultAppVersion(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (string, error) {
-	appName := fmt.Sprintf("%s-default-apps", key.ClusterID(cluster))
+func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (string, error) {
+	appName := fmt.Sprintf("%s-observability-bundle", key.ClusterID(cluster))
 	appNamespace := cluster.GetNamespace()
+
+	if key.IsManagementCluster(config.Installation, cluster) && !key.IsCAPIManagementCluster(config.Provider) {
+		// Vintage MC
+		appName = "observability-bundle"
+		appNamespace = "giantswarm"
+	}
+
 	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
 
 	app := &appsv1alpha1.App{}
 	err := ctrlClient.Get(ctx, objectKey, app)
+	if apierrors.IsNotFound(err) {
+		return "0.0.0", nil // 0.0.0 does not exist
+	}
 	if err != nil {
 		return "", err
 	}
-	return app.Status.Version, nil
+	if app.Status.Version != "" {
+		return app.Status.Version, nil
+	}
+	// This avoids a race condition where the app is created for the cluster but not deployed.
+	return "0.0.0", nil
 }
 
 // List of targets we ignore in the scrape config (because they may be scraped by the agent or not scrappable)
 func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) ([]string, error) {
 	ignoredTargets := make([]string, 0)
 
-	// For CAPI clusters, this is a case to case basis. We need to check the default app version for now.
-	if key.IsCAPIManagementCluster(config.Provider) {
-		appVersion, err := getDefaultAppVersion(ctx, ctrlClient, cluster, config)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-		version, err := semver.Parse(appVersion)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
+	appVersion, err := getObservabilityBundleAppVersion(ctx, ctrlClient, cluster, config)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
-		switch config.Provider {
-		case "capa":
-			capaAgentVersion, err := semver.Parse("0.11.0")
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			if version.GTE(capaAgentVersion) {
-				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
-			}
-		case "cloud-directory":
-			cloudDirectorAgentVersion, err := semver.Parse("0.3.0")
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			if version.GTE(cloudDirectorAgentVersion) {
-				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
-			}
-		case "gcp":
-			gcpAgentVersion, err := semver.Parse("0.16.0")
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			if version.GTE(gcpAgentVersion) {
-				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
-			}
-		case "openstack":
-			openstackAgentVersion, err := semver.Parse("0.8.0")
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			if version.GTE(openstackAgentVersion) {
-				ignoredTargets = append(ignoredTargets, kubernetesTargets...)
-			}
-		}
-	} else if key.IsManagementCluster(config.Installation, cluster) { // Vintage MC
-		// Vintage MCs (apart from KVM) are all running agents.
+	version, err := semver.Parse(appVersion)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	initialBundleVersion, err := semver.Parse("0.1.0")
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	bundleWithKSMAndExportersVersion, err := semver.Parse("0.4.0")
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	if version.GTE(initialBundleVersion) {
 		ignoredTargets = append(ignoredTargets, kubernetesTargets...)
-	} else { // Vintage WC
+	}
+
+	if version.GTE(bundleWithKSMAndExportersVersion) {
+		ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
+
+		if key.IsCAPIManagementCluster(config.Provider) {
+			ignoredTargets = append(ignoredTargets, "etcd")
+		}
+	}
+
+	// Vintage WC
+	if !key.IsCAPIManagementCluster(config.Provider) && !key.IsManagementCluster(config.Installation, cluster) {
 		// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore those targets.
 		release := cluster.GetLabels()["release.giantswarm.io/version"]
 		version, err := semver.Parse(release)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
-		if version.Major >= 19 ||
-			(config.Provider == "aws" && version.Major == 18 && version.Minor >= 2) { // aws 18.2.0 is running the agent
-			ignoredTargets = append(ignoredTargets, kubernetesTargets...)
-		} else if version.Major >= 18 {
+		if version.Major >= 18 {
 			ignoredTargets = append(ignoredTargets, "kube-controller-manager", "kube-scheduler")
 		}
 	}
