@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.35.0] - 2023-04-11
+
 ### Changed
 
 - Handle prometheus scrape target removal based on the observability bundle version.
@@ -2059,7 +2061,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.34.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.0...HEAD
+[4.35.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.34.0...v4.35.0
 [4.34.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.33.0...v4.34.0
 [4.33.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.32.0...v4.33.0
 [4.32.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.1...v4.32.0
