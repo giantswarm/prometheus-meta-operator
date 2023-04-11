@@ -41,6 +41,24 @@ func TestAWSScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 
+		var client client.Client
+		{
+			schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+				apiextensionsv1.AddToScheme,
+				appsv1alpha1.AddToScheme,
+			})
+
+			err := schemeBuilder.AddToScheme(scheme.Scheme)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			client = fake.NewClientBuilder().
+				WithScheme(scheme.Scheme).
+				WithRuntimeObjects().
+				Build()
+		}
+
 		config := Config{
 			TemplatePath: path,
 			Provider:     "aws",
@@ -49,7 +67,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(context.Background(), nil, v, config)
+			return toData(context.Background(), client, v, config)
 		}
 	}
 
@@ -81,6 +99,24 @@ func TestAzureScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 
+		var client client.Client
+		{
+			schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+				apiextensionsv1.AddToScheme,
+				appsv1alpha1.AddToScheme,
+			})
+
+			err := schemeBuilder.AddToScheme(scheme.Scheme)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			client = fake.NewClientBuilder().
+				WithScheme(scheme.Scheme).
+				WithRuntimeObjects().
+				Build()
+		}
+
 		config := Config{
 			TemplatePath: path,
 			Provider:     "azure",
@@ -89,7 +125,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			Installation: "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(context.Background(), nil, v, config)
+			return toData(context.Background(), client, v, config)
 		}
 	}
 
@@ -121,6 +157,24 @@ func TestKVMScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 
+		var client client.Client
+		{
+			schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+				apiextensionsv1.AddToScheme,
+				appsv1alpha1.AddToScheme,
+			})
+
+			err := schemeBuilder.AddToScheme(scheme.Scheme)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			client = fake.NewClientBuilder().
+				WithScheme(scheme.Scheme).
+				WithRuntimeObjects().
+				Build()
+		}
+
 		config := Config{
 			AdditionalScrapeConfigs: additionalScrapeConfigs,
 			TemplatePath:            path,
@@ -130,7 +184,7 @@ func TestKVMScrapeconfigs(t *testing.T) {
 			Installation:            "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return toData(context.Background(), nil, v, config)
+			return toData(context.Background(), client, v, config)
 		}
 	}
 
@@ -163,47 +217,20 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 	var apps = []runtime.Object{
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "alice-default-apps",
+				Name:      "baz-observability-bundle",
 				Namespace: "org-my-organization",
 			},
 			Status: appsv1alpha1.AppStatus{
-				Version: "0.7.0",
+				Version: "0.2.0",
 			},
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "foo-default-apps",
+				Name:      "kubernetes-observability-bundle",
 				Namespace: "org-my-organization",
 			},
 			Status: appsv1alpha1.AppStatus{
-				Version: "0.7.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "bar-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.7.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.8.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "1.0.0",
+				Version: "0.4.0",
 			},
 		},
 	}
@@ -272,47 +299,20 @@ func TestGCPScrapeconfigs(t *testing.T) {
 	var apps = []runtime.Object{
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "alice-default-apps",
+				Name:      "baz-observability-bundle",
 				Namespace: "org-my-organization",
 			},
 			Status: appsv1alpha1.AppStatus{
-				Version: "0.16.0",
+				Version: "0.2.0",
 			},
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "foo-default-apps",
+				Name:      "kubernetes-observability-bundle",
 				Namespace: "org-my-organization",
 			},
 			Status: appsv1alpha1.AppStatus{
-				Version: "0.15.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "bar-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.15.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.16.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "1.0.0",
+				Version: "0.4.0",
 			},
 		},
 	}
@@ -381,47 +381,20 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 	var apps = []runtime.Object{
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "alice-default-apps",
+				Name:      "baz-observability-bundle",
 				Namespace: "org-my-organization",
 			},
 			Status: appsv1alpha1.AppStatus{
-				Version: "0.11.0",
+				Version: "0.2.0",
 			},
 		},
 		&appsv1alpha1.App{
 			ObjectMeta: v1.ObjectMeta{
-				Name:      "foo-default-apps",
+				Name:      "kubernetes-observability-bundle",
 				Namespace: "org-my-organization",
 			},
 			Status: appsv1alpha1.AppStatus{
-				Version: "0.9.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "bar-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.10.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.12.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-default-apps",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "1.0.0",
+				Version: "0.4.0",
 			},
 		},
 	}

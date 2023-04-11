@@ -66,6 +66,35 @@
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
 [[- end ]]
+[[- if not (contains "kubelet" .IgnoredTargets) ]]
+# Add kubelet configuration
+- job_name: [[ .ClusterID ]]-prometheus/kubelet-[[ .ClusterID ]]/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+[[ include "_apiserver" . ]]
+[[ include "_tlsconfig_skip" . | indent 2 ]]
+  relabel_configs:
+  - target_label: app
+    replacement: kubelet
+  - source_labels: [__address__]
+    target_label: instance
+  - target_label: __address__
+    replacement: [[ .APIServerURL ]]
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
+[[ include "_labelingschema" . | indent 2 ]]
+[[ include "_node_role" . | indent 2 ]]
+  metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
+  # drop uid label from kubelet
+  - action: labeldrop
+    regex: uid
 # Add scrape configuration for cadvisor
 - job_name: [[ .ClusterID ]]-prometheus/cadvisor-[[ .ClusterID ]]/0
   honor_labels: true
@@ -105,6 +134,7 @@
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|kong.*|kyverno)
     action: keep
+[[- end ]]
 [[- end ]]
 # calico-node
 - job_name: [[ .ClusterID ]]-prometheus/calico-node-[[ .ClusterID ]]/0
@@ -160,6 +190,7 @@
     regex: awscni_assigned_ip_per_cidr
     action: drop
 [[- end ]]
+[[- if not (contains "etcd" .IgnoredTargets) ]]
 # Add etcd configuration
 - job_name: [[ .ClusterID ]]-prometheus/etcd-[[ .ClusterID ]]/0
   honor_labels: true
@@ -235,34 +266,7 @@
     source_labels: [__meta_kubernetes_node_address_InternalIP]
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
-# Add kubelet configuration
-- job_name: [[ .ClusterID ]]-prometheus/kubelet-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: node
-[[ include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
-  relabel_configs:
-  - target_label: app
-    replacement: kubelet
-  - source_labels: [__address__]
-    target_label: instance
-  - target_label: __address__
-    replacement: [[ .APIServerURL ]]
-  - source_labels: [__meta_kubernetes_node_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
-[[ include "_labelingschema" . | indent 2 ]]
-[[ include "_node_role" . | indent 2 ]]
-  metric_relabel_configs:
-  # drop unused rest client metrics
-  - source_labels: [__name__]
-    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
-    action: drop
-  # drop uid label from kubelet
-  - action: labeldrop
-    regex: uid
+[[- end ]]
 [[- if not (contains "kube-controller-manager" .IgnoredTargets) ]]
 # kube-controller-manager
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-controller-manager-[[ .ClusterID ]]/0
@@ -400,6 +404,7 @@
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
     action: drop
+[[- if not (contains "coredns" .IgnoredTargets) ]]
 # coredns
 - job_name: [[ .ClusterID ]]-prometheus/coredns-[[ .ClusterID ]]/0
   honor_labels: true
@@ -435,6 +440,7 @@
   - source_labels: [__name__]
     regex: coredns_dns_(response_size_bytes_bucket|request_size_bytes_bucket)
     action: drop
+[[- end ]]
 # cert-exporter
 - job_name: [[ .ClusterID ]]-prometheus/cert-exporter-[[ .ClusterID ]]/0
   honor_labels: true
@@ -552,6 +558,16 @@
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
   metric_relabel_configs:
+  [[- if (contains "coredns" .IgnoredTargets) ]]
+  - source_labels: [app]
+    regex: coredns
+    action: drop
+  [[- end ]]
+  [[- if (contains "kube-state-metrics" .IgnoredTargets) ]]
+  - source_labels: [app]
+    regex: kube-state-metrics
+    action: drop
+  [[- end ]]
   # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
     regex: nginx_ingress_controller_(bytes_sent_bucket|request_size_bucket|response_duration_seconds_bucket|response_size_bucket|request_duration_seconds_count|connect_duration_seconds_bucket|header_duration_seconds_bucket|bytes_sent_count|request_duration_seconds_sum|bytes_sent_sum|request_size_count|response_size_count|response_duration_seconds_sum|response_duration_seconds_count|ingress_upstream_latency_seconds|ingress_upstream_latency_seconds_sum|ingress_upstream_latency_seconds_count)
