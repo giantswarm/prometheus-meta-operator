@@ -24,9 +24,10 @@ import (
 )
 
 const (
-	Name              = "scrapeconfigs"
-	templateDirectory = "/opt/prometheus-meta-operator"
-	templatePath      = "files/templates/scrapeconfigs/*.yaml"
+	Name                              = "scrapeconfigs"
+	templateDirectory                 = "/opt/prometheus-meta-operator"
+	templatePath                      = "files/templates/scrapeconfigs/*.yaml"
+	unknownObservabilityBundleVersion = "0.0.0"
 )
 
 var kubernetesTargets = []string{"kube-apiserver", "kube-controller-manager", "kube-scheduler"}
@@ -213,21 +214,21 @@ func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Cli
 		appNamespace = "giantswarm"
 	}
 
-	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
-
 	app := &appsv1alpha1.App{}
+	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
 	err := ctrlClient.Get(ctx, objectKey, app)
-	if apierrors.IsNotFound(err) {
-		return "0.0.0", nil // 0.0.0 does not exist
-	}
 	if err != nil {
+		if apierrors.IsNotFound(err) {
+			return unknownObservabilityBundleVersion, nil
+		}
 		return "", err
 	}
+
 	if app.Status.Version != "" {
 		return app.Status.Version, nil
 	}
 	// This avoids a race condition where the app is created for the cluster but not deployed.
-	return "0.0.0", nil
+	return unknownObservabilityBundleVersion, nil
 }
 
 // List of targets we ignore in the scrape config (because they may be scraped by the agent or not scrappable)
