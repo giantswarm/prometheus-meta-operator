@@ -132,6 +132,9 @@ func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace s
 			Name:      name,
 			Namespace: namespace,
 			Labels:    key.PrometheusLabels(cluster),
+			Finalizers: []string{
+				"monitoring.giantswarm.io/prometheus-remote-write",
+			},
 		},
 		Data: map[string][]byte{
 			"values": []byte(marshalledValues),
