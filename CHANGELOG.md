@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.35.2] - 2023-04-13
+
 ### Fixed
 
 - Allow PMO to patch secrets so it can remove finalizers.
@@ -2071,7 +2073,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.2...HEAD
+[4.35.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.1...v4.35.2
 [4.35.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.0...v4.35.1
 [4.35.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.34.0...v4.35.0
 [4.34.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.33.0...v4.34.0
