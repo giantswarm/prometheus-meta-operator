@@ -33,6 +33,7 @@ rules:
       - secrets
     verbs:
       - create
+      - patch # Needed to remove a finalizer
       - update # Needed to update the additionalScrapeConfigs
       - delete
       - deletecollection
