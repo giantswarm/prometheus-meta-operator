@@ -50,6 +50,7 @@ route:
   # Team Atlas Slack
   - receiver: team_atlas_slack
     matchers:
+    - severity=~"page|notify"
     - team="atlas"
     - type!="heartbeat"
     - alertname!~"Inhibition.*"
