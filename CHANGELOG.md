@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change Atlas slack alert router to only route alerts with page and/or notify severity matcher.
+
 ## [4.35.2] - 2023-04-13
 
 ### Fixed

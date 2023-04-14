@@ -63,7 +63,9 @@ route:
   - receiver: team_atlas_slack
     matchers:
     [[- if eq .Pipeline "stable" ]]
-    - severity!="page"
+    - severity="notify"
+    [[- else ]]
+    - severity=~"page|notify"
     [[- end ]]
     - team="atlas"
     - type!="heartbeat"
