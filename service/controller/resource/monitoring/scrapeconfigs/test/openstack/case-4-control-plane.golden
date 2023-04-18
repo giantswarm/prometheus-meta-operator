@@ -450,11 +450,17 @@
   - target_label: customer
     replacement: pmo
   metric_relabel_configs:
+  - source_labels: [container]
+    regex: prometheus-operator-app
+    action: drop
   - source_labels: [app]
     regex: coredns
     action: drop
   - source_labels: [app]
     regex: kube-state-metrics
+    action: drop
+  - source_labels: [app]
+    regex: aws-load-balancer-controller
     action: drop
   # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]

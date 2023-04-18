@@ -558,6 +558,11 @@
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
   metric_relabel_configs:
+  [[- if (contains "prometheus-operator-app" .IgnoredTargets) ]]
+  - source_labels: [container]
+    regex: prometheus-operator-app
+    action: drop
+  [[- end ]]
   [[- if (contains "coredns" .IgnoredTargets) ]]
   - source_labels: [app]
     regex: coredns
@@ -566,6 +571,11 @@
   [[- if (contains "kube-state-metrics" .IgnoredTargets) ]]
   - source_labels: [app]
     regex: kube-state-metrics
+    action: drop
+  [[- end ]]
+  [[- if (contains "aws-load-balancer-controller" .IgnoredTargets) ]]
+  - source_labels: [app]
+    regex: aws-load-balancer-controller
     action: drop
   [[- end ]]
   # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage

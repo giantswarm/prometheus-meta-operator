@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change Atlas slack alert router to only route alerts with page and/or notify severity matcher.
 
+### Fixed
+
+- Fix list of ignored targets for Vintage WCs.
+
 ## [4.35.2] - 2023-04-13
 
 ### Fixed
