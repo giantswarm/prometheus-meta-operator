@@ -30,8 +30,6 @@ const (
 	unknownObservabilityBundleVersion = "0.0.0"
 )
 
-var kubernetesTargets = []string{"kube-apiserver", "kube-controller-manager", "kube-scheduler"}
-
 type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
@@ -260,11 +258,11 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 	}
 
 	if version.GTE(initialBundleVersion) {
-		ignoredTargets = append(ignoredTargets, kubernetesTargets...)
+		ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler")
 	}
 
 	if version.GTE(bundleWithKSMAndExportersVersion) {
-		ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
+		ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics", "aws-load-balancer-controller")
 
 		if key.IsCAPIManagementCluster(config.Provider) {
 			ignoredTargets = append(ignoredTargets, "etcd")
