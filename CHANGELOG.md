@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.35.3] - 2023-04-18
+
 ### Changed
 
 - Change Atlas slack alert router to only route alerts with page and/or notify severity matcher.
@@ -2081,7 +2083,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.3...HEAD
+[4.35.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.2...v4.35.3
 [4.35.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.1...v4.35.2
 [4.35.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.0...v4.35.1
 [4.35.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.34.0...v4.35.0
