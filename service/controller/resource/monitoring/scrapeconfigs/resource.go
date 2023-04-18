@@ -208,10 +208,14 @@ func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Cli
 	appName := fmt.Sprintf("%s-observability-bundle", key.ClusterID(cluster))
 	appNamespace := cluster.GetNamespace()
 
-	if key.IsManagementCluster(config.Installation, cluster) && !key.IsCAPIManagementCluster(config.Provider) {
-		// Vintage MC
-		appName = "observability-bundle"
-		appNamespace = "giantswarm"
+	if !key.IsCAPIManagementCluster(config.Provider) {
+		if key.IsManagementCluster(config.Installation, cluster) {
+			// Vintage MC
+			appName = "observability-bundle"
+			appNamespace = "giantswarm"
+		} else {
+			appNamespace = key.ClusterID(cluster)
+		}
 	}
 
 	app := &appsv1alpha1.App{}
