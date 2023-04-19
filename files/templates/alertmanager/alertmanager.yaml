@@ -161,14 +161,6 @@ receivers:
       url: '{{ template "__alert_silence_link" .}}'
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
-- name: team_teddyfriends_slack
-  slack_configs:
-  - channel: '#team-teddyfriends'
-    actions:
-    - type: button
-      text: ':grafana: Dashboard'
-      url: '{{ (index .Alerts 0).Annotations.dashboard }}'
-
 - name: team_atlas_slack
   slack_configs:
   [[- if eq .Pipeline "stable" ]]
@@ -195,6 +187,14 @@ receivers:
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
+- name: team_teddyfriends_slack
+  slack_configs:
+  - channel: '#team-teddyfriends'
+    actions:
+    - type: button
+      text: ':grafana: Dashboard'
+      url: '{{ (index .Alerts 0).Annotations.dashboard }}'
 
 - name: team_phoenix_slack
   slack_configs:
