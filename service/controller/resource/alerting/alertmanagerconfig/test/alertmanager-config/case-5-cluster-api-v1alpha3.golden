@@ -468,7 +468,7 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
-    - prometheus_agent_down=true
+    - inhibition_prometheus_agent_down=true
   target_matchers:
     - cancel_if_prometheus_agent_down=true
   equal: [cluster_id]
