@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Add Inhibition rule when prometheus-agent is down.
+
 ## [4.35.3] - 2023-04-18
 
 ### Changed
