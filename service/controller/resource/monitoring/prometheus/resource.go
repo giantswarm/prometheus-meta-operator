@@ -175,7 +175,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 											Key:      "role",
 											Operator: corev1.NodeSelectorOpNotIn,
 											Values: []string{
-												"master",
+												"control-plane",
 											},
 										},
 									},

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Deprecate `role=master` in favor of `role=control-plane`.
+
 ## [4.35.4] - 2023-04-25
 
 ### Changed

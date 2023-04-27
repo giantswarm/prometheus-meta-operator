@@ -22,7 +22,7 @@ spec:
           - key: role
             operator: NotIn
             values:
-            - master
+            - control-plane
   apiserverConfig:
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     host: https://kubernetes.default:443
