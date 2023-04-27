@@ -22,7 +22,7 @@ spec:
           - key: role
             operator: NotIn
             values:
-            - master
+            - control-plane
   apiserverConfig:
     host: https://master.bar:443
     tlsConfig:
