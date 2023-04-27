@@ -6,10 +6,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/giantswarm/micrologger"
-
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	k8sclientfake "github.com/giantswarm/k8sclient/v7/pkg/k8sclient/fake"
+	"github.com/giantswarm/micrologger"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -51,8 +50,10 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 	var k8sClient k8sclient.Interface
 	{
 		c := k8sclient.ClientsConfig{
-			Logger:        logger,
-			SchemeBuilder: k8sclient.SchemeBuilder(v1.SchemeBuilder),
+			Logger: logger,
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				v1.SchemeBuilder.AddToScheme,
+			},
 		}
 		k8sClient, err = k8sclientfake.NewClients(c, node)
 		if err != nil {

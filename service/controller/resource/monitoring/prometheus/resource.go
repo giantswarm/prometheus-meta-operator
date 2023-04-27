@@ -2,6 +2,7 @@ package prometheus
 
 import (
 	"fmt"
+	"math"
 	"net/url"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -104,12 +105,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		return nil, microerror.Mask(err)
 	}
 
-	// TODO: use the return value to compute request memory for Prometheus.
-	_, err = getClusterNodeCount(ctx, config.K8sClient, cluster)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
 	var replicas int32 = 1
 	// Configured following https://github.com/prometheus-operator/prometheus-operator/issues/541#issuecomment-451884171
 	// as the volume could not mount otherwise
@@ -148,6 +143,23 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	}
 
 	labels[key.MonitoringLabel] = "true"
+
+	prometheusMemory := key.PrometheusDefaultMemory()
+	if !key.IsManagementCluster(config.Installation, cluster) || key.IsCAPIManagementCluster(config.Provider) {
+		nodeCount, err := countClusterNodes(ctx, config.K8sClient, cluster)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		if nodeCount > 2 {
+			// We consider that a node requires 500Mb of Prometheus RAM
+			prometheusMemory = resource.NewQuantity(
+				int64(math.Floor(
+					1024*1024*512*float64(nodeCount),
+				)),
+				resource.DecimalSI,
+			)
+		}
+	}
 
 	image := fmt.Sprintf("%s/%s:%s", config.Registry, config.ImageRepository, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
@@ -212,11 +224,11 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						// cpu: 100m
 						corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
 						// memory: 1Gi
-						corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
+						corev1.ResourceMemory: *prometheusMemory,
 					},
 					Limits: corev1.ResourceList{
-						// memory: 1.2Gi
-						corev1.ResourceMemory: *key.PrometheusDefaultMemoryLimit(),
+						// memory: 1Gi
+						corev1.ResourceMemory: *prometheusMemory,
 					},
 				},
 				RoutePrefix:    fmt.Sprintf("/%s", key.ClusterID(cluster)),

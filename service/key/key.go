@@ -210,15 +210,6 @@ func PrometheusDefaultMemory() *resource.Quantity {
 	return resource.NewQuantity(1024*1024*1024, resource.DecimalSI)
 }
 
-func PrometheusDefaultMemoryLimit() *resource.Quantity {
-	return resource.NewQuantity(
-		int64(math.Floor(
-			1024*1024*1024*PrometheusMemoryLimitCoefficient,
-		)),
-		resource.DecimalSI,
-	)
-}
-
 func AlertmanagerKey() string {
 	return "alertmanager.yaml"
 }

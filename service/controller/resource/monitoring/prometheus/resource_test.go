@@ -6,6 +6,13 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	k8sclientfake "github.com/giantswarm/k8sclient/v7/pkg/k8sclient/fake"
+	"github.com/giantswarm/micrologger"
+	v1 "k8s.io/api/core/v1"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
+	capiexp "sigs.k8s.io/cluster-api/exp/api/v1beta1"
+
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
@@ -15,6 +22,32 @@ func TestPrometheus(t *testing.T) {
 	outputDir, err := filepath.Abs("./test")
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	var logger micrologger.Logger
+	{
+		c := micrologger.Config{}
+
+		logger, err = micrologger.New(c)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	var k8sClient k8sclient.Interface
+	{
+		c := k8sclient.ClientsConfig{
+			Logger: logger,
+			SchemeBuilder: k8sclient.SchemeBuilder{
+				v1.SchemeBuilder.AddToScheme,
+				capi.AddToScheme,
+				capiexp.AddToScheme,
+			},
+		}
+		k8sClient, err = k8sclientfake.NewClients(c)
+		if err != nil {
+			t.Fatal(err)
+		}
 	}
 
 	config := Config{
@@ -31,6 +64,7 @@ func TestPrometheus(t *testing.T) {
 		RetentionDuration:  "2w",
 		ScrapeInterval:     "60s",
 		Version:            "v2.28.1",
+		K8sClient:          k8sClient,
 	}
 
 	c := unittest.Config{
