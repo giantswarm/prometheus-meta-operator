@@ -234,7 +234,7 @@
     target_label: pod_name
 [[- else ]]
   - source_labels: [__meta_kubernetes_node_label_role]
-    regex: control-plane
+    regex: control-plane|master
     action: keep
   # by default use node address
   - source_labels: [__address__]
