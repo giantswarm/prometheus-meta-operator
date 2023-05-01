@@ -90,8 +90,8 @@ func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbea
 
 	h := &heartbeat.Heartbeat{
 		Name:         key.HeartbeatName(cluster, installation),
-		Description:  "*Recipe:* https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/heartbeat-expired/",
-		Interval:     25,
+		Description:  "📗 Runbook: https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/heartbeat-expired/",
+		Interval:     60,
 		IntervalUnit: string(heartbeat.Minutes),
 		Enabled:      true,
 		Expired:      false,

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Increased heartbeat delay before alert from 25min to 60min
+- Updated alertmanager heartbeat config for faster response
+
 ## [4.36.1] - 2023-04-28
 
 ### Fixed
