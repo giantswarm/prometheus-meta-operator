@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix forgotten kube-state-metrics down source labels.
+
 ## [4.36.3] - 2023-05-02
 
 ### Fixed
