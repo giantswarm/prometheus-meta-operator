@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.36.4] - 2023-05-02
+
 ### Fixed
 
 - Fix forgotten kube-state-metrics down source labels.
@@ -2118,7 +2120,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.4...HEAD
+[4.36.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.3...v4.36.4
 [4.36.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.2...v4.36.3
 [4.36.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.1...v4.36.2
 [4.36.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.0...v4.36.1
