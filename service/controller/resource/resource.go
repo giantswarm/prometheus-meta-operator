@@ -48,7 +48,8 @@ type Config struct {
 	Region                  string
 	Registry                string
 
-	OpsgenieKey string
+	OpsgenieKey    string
+	GrafanaAddress string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
@@ -271,10 +272,11 @@ func New(config Config) ([]resource.Interface, error) {
 	var heartbeatResource resource.Interface
 	{
 		c := heartbeat.Config{
-			Logger:       config.Logger,
-			Installation: config.Installation,
-			OpsgenieKey:  config.OpsgenieKey,
-			Pipeline:     config.Pipeline,
+			Logger:         config.Logger,
+			Installation:   config.Installation,
+			OpsgenieKey:    config.OpsgenieKey,
+			Pipeline:       config.Pipeline,
+			GrafanaAddress: config.GrafanaAddress,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)

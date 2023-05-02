@@ -21,10 +21,11 @@ const (
 )
 
 type Config struct {
-	Logger       micrologger.Logger
-	Installation string
-	OpsgenieKey  string
-	Pipeline     string
+	Logger         micrologger.Logger
+	Installation   string
+	OpsgenieKey    string
+	Pipeline       string
+	GrafanaAddress string
 }
 
 type Resource struct {
@@ -32,6 +33,7 @@ type Resource struct {
 	heartbeatClient *heartbeat.Client
 	installation    string
 	pipeline        string
+	grafanaAddress  string
 }
 
 func New(config Config) (*Resource, error) {
@@ -46,6 +48,9 @@ func New(config Config) (*Resource, error) {
 	}
 	if config.OpsgenieKey == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.OpsgenieKey must not be empty", config)
+	}
+	if config.GrafanaAddress == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.GrafanaAddress must not be empty", config)
 	}
 
 	c := &client.Config{
@@ -64,6 +69,7 @@ func New(config Config) (*Resource, error) {
 		heartbeatClient: client,
 		installation:    config.Installation,
 		pipeline:        config.Pipeline,
+		grafanaAddress:  config.GrafanaAddress,
 	}
 
 	return r, nil
@@ -73,7 +79,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbeat.Heartbeat, error) {
+func toHeartbeat(v interface{}, installation string, pipeline string, grafanaAddress string) (*heartbeat.Heartbeat, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -90,7 +96,7 @@ func toHeartbeat(v interface{}, installation string, pipeline string) (*heartbea
 
 	h := &heartbeat.Heartbeat{
 		Name:         key.HeartbeatName(cluster, installation),
-		Description:  "📗 Runbook: https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/heartbeat-expired/",
+		Description:  fmt.Sprintf("📗 Runbook: https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/heartbeat-expired/\n📈 Dashboard: %s", grafanaAddress),
 		Interval:     60,
 		IntervalUnit: string(heartbeat.Minutes),
 		Enabled:      true,

@@ -250,10 +250,11 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var heartbeatResource resource.Interface
 	{
 		c := heartbeat.Config{
-			Installation: config.Installation,
-			Logger:       config.Logger,
-			OpsgenieKey:  config.OpsgenieKey,
-			Pipeline:     config.Pipeline,
+			Installation:   config.Installation,
+			Logger:         config.Logger,
+			OpsgenieKey:    config.OpsgenieKey,
+			Pipeline:       config.Pipeline,
+			GrafanaAddress: config.GrafanaAddress,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)

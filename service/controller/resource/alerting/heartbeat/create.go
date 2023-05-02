@@ -8,7 +8,7 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	desired, err := toHeartbeat(obj, r.installation, r.pipeline)
+	desired, err := toHeartbeat(obj, r.installation, r.pipeline, r.grafanaAddress)
 	if err != nil {
 		return microerror.Mask(err)
 	}
