@@ -85,6 +85,8 @@
   - source_labels: [__meta_kubernetes_node_name]
     target_label: __metrics_path__
     replacement: /api/v1/nodes/${1}:10250/proxy/metrics
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: node
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
   metric_relabel_configs:
