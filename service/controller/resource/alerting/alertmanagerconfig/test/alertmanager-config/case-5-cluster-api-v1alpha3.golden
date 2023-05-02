@@ -35,14 +35,6 @@ route:
     - team="shield"
     continue: false
 
-  # Team Teddyfriends Slack
-  # We only forward the alerts to the Slack channel
-  - receiver: team_teddyfriends_slack
-    matchers:
-    - severity=~"page|notify"
-    - team="teddyfriends"
-    continue: false
-
   # Team Ops Opsgenie
   - receiver: opsgenie_router
     matchers:
@@ -167,14 +159,6 @@ receivers:
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
-
-- name: team_teddyfriends_slack
-  slack_configs:
-  - channel: '#team-teddyfriends'
-    actions:
-    - type: button
-      text: ':grafana: Dashboard'
-      url: '{{ (index .Alerts 0).Annotations.dashboard }}'
 
 - name: team_phoenix_slack
   slack_configs:
