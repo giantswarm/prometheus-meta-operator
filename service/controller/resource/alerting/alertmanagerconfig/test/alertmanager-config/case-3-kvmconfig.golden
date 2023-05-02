@@ -305,7 +305,7 @@ receivers:
 
 inhibit_rules:
 - source_matchers:
-  - kube_state_metrics_down=true
+  - inhibit_kube_state_metrics_down=true
   target_matchers:
   - cancel_if_kube_state_metrics_down=true
   equal: [cluster_id]
