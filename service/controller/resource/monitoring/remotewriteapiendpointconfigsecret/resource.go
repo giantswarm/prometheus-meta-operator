@@ -32,6 +32,7 @@ type Config struct {
 	Pipeline        string
 	Provider        string
 	Region          string
+	Version         string
 }
 
 type Resource struct {
@@ -46,6 +47,7 @@ type Resource struct {
 	Pipeline        string
 	Provider        string
 	Region          string
+	Version         string
 }
 
 func New(config Config) (*Resource, error) {
@@ -61,6 +63,7 @@ func New(config Config) (*Resource, error) {
 		Pipeline:        config.Pipeline,
 		Provider:        config.Provider,
 		Region:          config.Region,
+		Version:         config.Version,
 	}
 
 	return r, nil
@@ -80,7 +83,18 @@ type RemoteWrite struct {
 }
 
 type GlobalRemoteWriteValues struct {
-	Global RemoteWriteValues `yaml:"global" json:"global"`
+	Global                RemoteWriteValues     `yaml:"global" json:"global"`
+	PrometheusAgentConfig PrometheusAgentConfig `yaml:"prometheus-agent" json:"prometheus-agent"`
+}
+
+type PrometheusAgentConfig struct {
+	Shards  int                  `yaml:"shards" json:"shards"`
+	Version string               `yaml:"version" json:"version"`
+	Image   PrometheusAgentImage `yaml:"image" json:"image"`
+}
+
+type PrometheusAgentImage struct {
+	Tag string `yaml:"tag" json:"tag"`
 }
 
 type RemoteWriteValues struct {
@@ -88,7 +102,7 @@ type RemoteWriteValues struct {
 	ExternalLabels map[string]string `yaml:"externalLabels" json:"externalLabels"`
 }
 
-func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace string, password string) (*corev1.Secret, error) {
+func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace string, password string, version string) (*corev1.Secret, error) {
 	url := fmt.Sprintf(remoteWriteEndpointTemplateURL, r.BaseDomain, key.ClusterID(cluster))
 	remoteWrites := []RemoteWrite{
 		{
@@ -122,7 +136,15 @@ func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace s
 		ExternalLabels: externalLabels,
 	}
 
-	marshalledValues, err := yaml.Marshal(GlobalRemoteWriteValues{values})
+	prometheusAgentConfig := PrometheusAgentConfig{
+		Shards:  4,
+		Version: r.Version,
+		Image: PrometheusAgentImage{
+			Tag: r.Version,
+		},
+	}
+
+	marshalledValues, err := yaml.Marshal(GlobalRemoteWriteValues{values, prometheusAgentConfig})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -143,7 +165,7 @@ func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace s
 	}, nil
 }
 
-func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string) error {
+func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, version string) error {
 	r.logger.Debugf(ctx, "generating password for the prometheus agent")
 	password, err := r.PasswordManager.GeneratePassword(32)
 	if err != nil {
@@ -151,7 +173,7 @@ func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name
 		return microerror.Mask(err)
 	}
 
-	secret, err := r.desiredSecret(cluster, name, namespace, password)
+	secret, err := r.desiredSecret(cluster, name, namespace, password, version)
 	if err != nil {
 		return microerror.Mask(err)
 	}

@@ -319,6 +319,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Pipeline:        config.Pipeline,
 			Provider:        config.Provider,
 			Region:          config.Region,
+			Version:         config.PrometheusVersion,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)

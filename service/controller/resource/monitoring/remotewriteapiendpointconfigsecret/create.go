@@ -27,7 +27,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		// Get the current secret if it exists.
 		current, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			err = r.createSecret(ctx, cluster, name, namespace)
+			err = r.createSecret(ctx, cluster, name, namespace, r.Version)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -43,7 +43,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			desired, err := r.desiredSecret(cluster, name, namespace, password)
+			desired, err := r.desiredSecret(cluster, name, namespace, password, r.Version)
 			if err != nil {
 				return microerror.Mask(err)
 			}
