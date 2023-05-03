@@ -1,4 +1,4 @@
-package remotewriteapiendpointconfigsecret
+package remotewriteconfig
 
 import (
 	"context"
@@ -12,19 +12,19 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	r.logger.Debugf(ctx, "deleting prometheus remote write api endpoint secret")
+	r.logger.Debugf(ctx, "deleting prometheus remote write config")
 	{
 		cluster, err := key.ToCluster(obj)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Installation)
+		name := key.RemoteWriteConfigName(cluster)
 		namespace := key.GetClusterAppsNamespace(cluster, r.Installation, r.Provider)
 
-		_, err = r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
+		_, err = r.k8sClient.K8sClient().CoreV1().ConfigMaps(namespace).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			// We ignore cases where the secret is not found (it it was manually deleted for instance)
+			// We ignore cases where the configmap is not found (it it was manually deleted for instance)
 			return nil
 		} else if err != nil {
 			return microerror.Mask(err)
@@ -32,18 +32,18 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 
 		// Delete the finalizer
 		patch := []byte(`{"metadata":{"finalizers":null}}`)
-		current, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Patch(ctx, name, types.StrategicMergePatchType, patch, metav1.PatchOptions{})
+		current, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(namespace).Patch(ctx, name, types.StrategicMergePatchType, patch, metav1.PatchOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		err = r.deleteSecret(ctx, current)
+		err = r.deleteConfigMap(ctx, current)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
 	}
-	r.logger.Debugf(ctx, "deleted prometheus remote write api endpoint secret")
+	r.logger.Debugf(ctx, "deleted prometheus remote write config")
 
 	return nil
 }
