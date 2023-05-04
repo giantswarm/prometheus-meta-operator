@@ -104,7 +104,7 @@ func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespac
 		Image: remotewriteconfiguration.PrometheusAgentImage{
 			Tag: r.Version,
 		},
-		Shards:  4,
+		Shards:  1,
 		Version: r.Version,
 	}
 
