@@ -172,11 +172,8 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 								{
 									MatchExpressions: []corev1.NodeSelectorRequirement{
 										{
-											Key:      "role",
-											Operator: corev1.NodeSelectorOpNotIn,
-											Values: []string{
-												"control-plane",
-											},
+											Key:      "node-role.kubernetes.io/control-plane",
+											Operator: corev1.NodeSelectorOpDoesNotExist,
 										},
 									},
 								},
