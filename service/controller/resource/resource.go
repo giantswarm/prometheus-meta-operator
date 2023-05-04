@@ -186,6 +186,10 @@ func New(config Config) ([]resource.Interface, error) {
 			K8sClient:       config.K8sClient,
 			Logger:          config.Logger,
 			PasswordManager: passwordManager,
+			BaseDomain:      config.PrometheusBaseDomain,
+			Installation:    config.Installation,
+			InsecureCA:      config.InsecureCA,
+			Provider:        config.Provider,
 		}
 
 		remoteWriteSecretResource, err = remotewritesecret.New(c)

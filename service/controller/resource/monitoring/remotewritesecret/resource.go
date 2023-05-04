@@ -41,6 +41,24 @@ type Resource struct {
 }
 
 func New(config Config) (*Resource, error) {
+	if config.K8sClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.K8sClient must not be empty")
+	}
+	if config.Logger == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.Logger must not be empty")
+	}
+	if config.PasswordManager == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.PasswordManager must not be empty")
+	}
+	if config.BaseDomain == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.BaseDomain must not be empty")
+	}
+	if config.Installation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.Installation must not be empty")
+	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.Provider must not be empty")
+	}
 	r := &Resource{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
