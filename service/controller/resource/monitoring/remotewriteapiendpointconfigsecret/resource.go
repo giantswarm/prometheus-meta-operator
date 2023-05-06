@@ -67,9 +67,6 @@ func New(config Config) (*Resource, error) {
 	if config.Provider == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.Provider must not be empty")
 	}
-	if config.Region == "" {
-		return nil, microerror.Maskf(invalidConfigError, "config.Region must not be empty")
-	}
 	if config.Version == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.Version must not be empty")
 	}
