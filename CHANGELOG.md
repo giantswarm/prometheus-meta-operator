@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix prometheus control plane node toleration.
 
+### Removed
+
+- Stop pushing to `openstack-app-collection`.
+
 ## [4.36.4] - 2023-05-02
 
 ### Fixed
