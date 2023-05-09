@@ -19,7 +19,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Installation)
+		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Provider)
 		namespace := key.GetClusterAppsNamespace(cluster, r.Installation, r.Provider)
 
 		_, err = r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})

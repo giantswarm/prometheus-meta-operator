@@ -13,11 +13,6 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	// If we are in a management cluster, we do not need this secret
-	if key.IsManagementCluster(r.Installation, obj) {
-		return r.EnsureDeleted(ctx, obj)
-	}
-
 	r.logger.Debugf(ctx, "ensuring prometheus remote write api endpoint secret")
 	{
 		cluster, err := key.ToCluster(obj)
@@ -33,7 +28,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Installation)
+		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Provider)
 		namespace := key.GetClusterAppsNamespace(cluster, r.Installation, r.Provider)
 		// Get the current secret if it exists.
 		current, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
