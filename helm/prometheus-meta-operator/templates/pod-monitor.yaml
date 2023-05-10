@@ -13,4 +13,4 @@ spec:
     matchLabels:
       {{- include "labels.selector" . | nindent 6 }}
   podMetricsEndpoints:
-    - targetPort: http
+    - port: http
