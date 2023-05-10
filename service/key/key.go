@@ -33,8 +33,8 @@ const (
 	PrometheusMemoryLimitCoefficient      float64 = 1
 	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"
 	PrometheusServiceName                         = "prometheus-operated"
-	// RemoteWriteAPIEndpointConfigSecretName is the secret name used by a Prometheus client to access the Prometheus remote write endpoint. It is used at https://github.com/giantswarm/observability-bundle/blob/main/helm/observability-bundle/templates/apps.yaml
-	RemoteWriteAPIEndpointConfigSecretName string = "remote-write-api-endpoint-config"
+	// RemoteWriteAPIEndpointConfigSecretNameKey is the secret name used by a Prometheus client to access the Prometheus remote write endpoint. It is used at https://github.com/giantswarm/observability-bundle/blob/main/helm/observability-bundle/templates/apps.yaml
+	RemoteWriteAPIEndpointConfigSecretNameKey string = "remote-write-api-endpoint-config"
 	// RemoteWriteIngressAuthSecretName is the secret name referenced in the ingress to enable authentication against the Prometheus remote write endpoint.
 	RemoteWriteIngressAuthSecretName string = "remote-write-ingress-auth"
 	// PrometheusVolumeSizeAnnotation is the annotation referenced in the Cluster CR to define the size of Prometheus Volume.
@@ -169,17 +169,28 @@ func RemoteWriteAuthenticationAnnotations(baseDomain string, externalDNS bool) m
 	return annotations
 }
 
-func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, installation string, provider string) (string, string) {
-	name := RemoteWriteAPIEndpointConfigSecretName
-	namespace := ClusterID(cluster)
+func RemoteWriteConfigName(cluster metav1.Object) string {
+	return fmt.Sprintf("%s-remote-write-config", ClusterID(cluster))
+}
 
+func RemoteWriteSecretName(cluster metav1.Object) string {
+	return fmt.Sprintf("%s-remote-write-secret", ClusterID(cluster))
+}
+
+func GetClusterAppsNamespace(cluster metav1.Object, installation string, provider string) string {
 	if IsCAPIManagementCluster(provider) {
-		name = ClusterID(cluster) + "-" + name
-		namespace = cluster.GetNamespace()
+		return cluster.GetNamespace()
 	} else if IsManagementCluster(installation, cluster) {
-		namespace = "giantswarm"
+		return "giantswarm"
 	}
-	return name, namespace
+	return ClusterID(cluster)
+}
+
+func RemoteWriteAPIEndpointConfigSecretName(cluster metav1.Object, provider string) string {
+	if IsCAPIManagementCluster(provider) {
+		return fmt.Sprintf("%s-%s", ClusterID(cluster), RemoteWriteAPIEndpointConfigSecretNameKey)
+	}
+	return RemoteWriteAPIEndpointConfigSecretNameKey
 }
 
 func AlertmanagerDefaultCPU() *resource.Quantity {

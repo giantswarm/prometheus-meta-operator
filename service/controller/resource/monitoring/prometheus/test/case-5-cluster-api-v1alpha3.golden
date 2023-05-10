@@ -19,10 +19,8 @@ spec:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: role
-            operator: NotIn
-            values:
-            - control-plane
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   apiserverConfig:
     host: https://master.baz:443
     tlsConfig:

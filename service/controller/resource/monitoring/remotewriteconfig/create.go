@@ -1,4 +1,4 @@
-package remotewriteapiendpointconfigsecret
+package remotewriteconfig
 
 import (
 	"context"
@@ -8,32 +8,25 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	r.logger.Debugf(ctx, "ensuring prometheus remote write api endpoint secret")
+	r.logger.Debugf(ctx, "ensuring prometheus remote write config")
 	{
+
 		cluster, err := key.ToCluster(obj)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		// Get password from remote-write-secret
-		r.logger.Debugf(ctx, "looking up for secret remote write secret")
-		_, password, err := remotewriteconfiguration.GetUsernameAndPassword(r.k8sClient.K8sClient(), ctx, cluster, r.Installation, r.Provider)
-		if err != nil {
-			r.logger.Errorf(ctx, err, "lookup for remote write secret failed")
-			return microerror.Mask(err)
-		}
-
-		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Provider)
+		name := key.RemoteWriteConfigName(cluster)
 		namespace := key.GetClusterAppsNamespace(cluster, r.Installation, r.Provider)
-		// Get the current secret if it exists.
-		current, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
+
+		// Get the current configmap if it exists.
+		current, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(namespace).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			err = r.createSecret(ctx, cluster, name, namespace, password, r.Version)
+			err = r.createConfigMap(ctx, cluster, name, namespace, r.Version)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -42,13 +35,13 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		if current != nil {
-			desired, err := r.desiredSecret(cluster, name, namespace, password, r.Version)
+			desired, err := r.desiredConfigMap(cluster, name, namespace, r.Version)
 			if err != nil {
 				return microerror.Mask(err)
 			}
 			if !reflect.DeepEqual(current.Data, desired.Data) {
 				updateMeta(current, desired)
-				_, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Update(ctx, desired, metav1.UpdateOptions{})
+				_, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(namespace).Update(ctx, desired, metav1.UpdateOptions{})
 				if err != nil {
 					return microerror.Mask(err)
 				}
@@ -56,7 +49,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 	}
 
-	r.logger.Debugf(ctx, "ensured prometheus remote write api endpoint secret")
+	r.logger.Debugf(ctx, "ensured prometheus remote write config")
 
 	return nil
 }

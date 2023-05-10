@@ -19,10 +19,8 @@ spec:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: role
-            operator: NotIn
-            values:
-            - control-plane
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   apiserverConfig:
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     host: https://kubernetes.default:443

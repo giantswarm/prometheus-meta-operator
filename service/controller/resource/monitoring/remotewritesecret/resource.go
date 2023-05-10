@@ -1,4 +1,4 @@
-package remotewriteapiendpointconfigsecret
+package remotewritesecret
 
 import (
 	"context"
@@ -10,39 +10,34 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
-	Name = "remotewriteapiendpointconfigsecret"
+	Name = "remotewritesecret"
 )
 
 type Config struct {
-	K8sClient    k8sclient.Interface
-	Logger       micrologger.Logger
-	BaseDomain   string
-	Customer     string
-	Installation string
-	InsecureCA   bool
-	Pipeline     string
-	Provider     string
-	Region       string
-	Version      string
+	K8sClient       k8sclient.Interface
+	Logger          micrologger.Logger
+	PasswordManager password.Manager
+	BaseDomain      string
+	InsecureCA      bool
+	Installation    string
+	Provider        string
 }
 
 type Resource struct {
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 
-	BaseDomain   string
-	Customer     string
-	Installation string
-	InsecureCA   bool
-	Pipeline     string
-	Provider     string
-	Region       string
-	Version      string
+	PasswordManager password.Manager
+	BaseDomain      string
+	InsecureCA      bool
+	Installation    string
+	Provider        string
 }
 
 func New(config Config) (*Resource, error) {
@@ -52,37 +47,27 @@ func New(config Config) (*Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.Logger must not be empty")
 	}
+	if config.PasswordManager == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.PasswordManager must not be empty")
+	}
 	if config.BaseDomain == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.BaseDomain must not be empty")
-	}
-	if config.Customer == "" {
-		return nil, microerror.Maskf(invalidConfigError, "config.Customer must not be empty")
 	}
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.Installation must not be empty")
 	}
-	if config.Pipeline == "" {
-		return nil, microerror.Maskf(invalidConfigError, "config.Pipeline must not be empty")
-	}
 	if config.Provider == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.Provider must not be empty")
 	}
-	if config.Version == "" {
-		return nil, microerror.Maskf(invalidConfigError, "config.Version must not be empty")
-	}
-
 	r := &Resource{
 		k8sClient: config.K8sClient,
 		logger:    config.Logger,
 
-		BaseDomain:   config.BaseDomain,
-		Customer:     config.Customer,
-		Installation: config.Installation,
-		InsecureCA:   config.InsecureCA,
-		Pipeline:     config.Pipeline,
-		Provider:     config.Provider,
-		Region:       config.Region,
-		Version:      config.Version,
+		PasswordManager: config.PasswordManager,
+		BaseDomain:      config.BaseDomain,
+		InsecureCA:      config.InsecureCA,
+		Installation:    config.Installation,
+		Provider:        config.Provider,
 	}
 
 	return r, nil
@@ -92,26 +77,13 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace string, password string, version string) (*corev1.Secret, error) {
-	globalConfig := remotewriteconfiguration.GlobalConfig{
-		RemoteWrite: []remotewriteconfiguration.RemoteWrite{
-			remotewriteconfiguration.DefaultRemoteWrite(key.ClusterID(cluster), r.BaseDomain, password, r.InsecureCA),
-		},
-		ExternalLabels: map[string]string{
-			key.ClusterIDKey:       key.ClusterID(cluster),
-			key.ClusterTypeKey:     key.ClusterType(r.Installation, cluster),
-			key.CustomerKey:        r.Customer,
-			key.InstallationKey:    r.Installation,
-			key.OrganizationKey:    key.GetOrganization(cluster),
-			key.PipelineKey:        r.Pipeline,
-			key.ProviderKey:        r.Provider,
-			key.RegionKey:          r.Region,
-			key.ServicePriorityKey: key.GetServicePriority(cluster),
-		},
-	}
-
+func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace string, password string) (*corev1.Secret, error) {
 	remoteWriteConfig := remotewriteconfiguration.RemoteWriteConfig{
-		GlobalConfig: globalConfig,
+		PrometheusAgentConfig: remotewriteconfiguration.PrometheusAgentConfig{
+			RemoteWrite: []remotewriteconfiguration.RemoteWrite{
+				remotewriteconfiguration.DefaultRemoteWrite(key.ClusterID(cluster), r.BaseDomain, password, r.InsecureCA),
+			},
+		},
 	}
 
 	marshalledValues, err := yaml.Marshal(remoteWriteConfig)
@@ -135,11 +107,20 @@ func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace s
 	}, nil
 }
 
-func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password, version string) error {
-	secret, err := r.desiredSecret(cluster, name, namespace, password, version)
+func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string) error {
+	r.logger.Debugf(ctx, "generating password for the prometheus agent")
+	password, err := r.PasswordManager.GeneratePassword(32)
+	if err != nil {
+		r.logger.Errorf(ctx, err, "failed to generate the prometheus agent password")
+		return microerror.Mask(err)
+	}
+
+	secret, err := r.desiredSecret(cluster, name, namespace, password)
 	if err != nil {
 		return microerror.Mask(err)
 	}
+
+	r.logger.Debugf(ctx, "generated password for the prometheus agent")
 
 	_, err = r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Create(ctx, secret, metav1.CreateOptions{})
 	return microerror.Mask(err)

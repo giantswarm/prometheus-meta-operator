@@ -1,4 +1,4 @@
-package remotewriteapiendpointconfigsecret
+package remotewritesecret
 
 import (
 	"context"
@@ -12,14 +12,14 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	r.logger.Debugf(ctx, "deleting prometheus remote write api endpoint secret")
+	r.logger.Debugf(ctx, "deleting prometheus remote write secret")
 	{
 		cluster, err := key.ToCluster(obj)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Provider)
+		name := key.RemoteWriteSecretName(cluster)
 		namespace := key.GetClusterAppsNamespace(cluster, r.Installation, r.Provider)
 
 		_, err = r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
@@ -43,7 +43,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		}
 
 	}
-	r.logger.Debugf(ctx, "deleted prometheus remote write api endpoint secret")
+	r.logger.Debugf(ctx, "deleted prometheus remote write secret")
 
 	return nil
 }

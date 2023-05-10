@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add sharding capabilities to the Prometheus Agent.
+- Create new remote-write-secret Secret and remote-write-config ConfigMap per cluster to not have a bad workaround in the observability bundle.
+
+### Fixed
+
+- Fix prometheus control plane node toleration.
+
 ### Removed
 
 - Stop pushing to `openstack-app-collection`.
