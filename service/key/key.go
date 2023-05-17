@@ -21,6 +21,7 @@ const (
 	DefaultServicePriority string = "highest"
 	DefaultOrganization    string = "giantswarm"
 
+	ClusterLabel         string = "giantswarm.io/cluster"
 	MonitoringLabel      string = "giantswarm.io/monitoring"
 	OrganizationLabel    string = "giantswarm.io/organization"
 	ServicePriorityLabel string = "giantswarm.io/service-priority"

@@ -22,6 +22,7 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
+	capiexp "sigs.k8s.io/cluster-api/exp/api/v1beta1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
@@ -97,6 +98,7 @@ func New(config Config) (*Service, error) {
 			SchemeBuilder: k8sclient.SchemeBuilder{
 				apiextensionsv1.AddToScheme,
 				capi.AddToScheme,
+				capiexp.AddToScheme,
 				appsv1alpha1.AddToScheme,
 				providerv1alpha1.AddToScheme,
 				pmov1alpha1.AddToScheme,

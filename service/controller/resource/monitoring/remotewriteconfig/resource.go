@@ -10,6 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/nodecounter"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -83,7 +84,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespace string, version string) (*corev1.ConfigMap, error) {
+func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespace string, version string, shards int) (*corev1.ConfigMap, error) {
 	externalLabels := map[string]string{
 		key.ClusterIDKey:       key.ClusterID(cluster),
 		key.ClusterTypeKey:     key.ClusterType(r.Installation, cluster),
@@ -101,7 +102,7 @@ func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespac
 		Image: remotewriteconfiguration.PrometheusAgentImage{
 			Tag: r.Version,
 		},
-		Shards:  1,
+		Shards:  shards,
 		Version: r.Version,
 	}
 
@@ -128,8 +129,22 @@ func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespac
 	}, nil
 }
 
+// We want to compute the number of shards based on the number of nodes.
+func (r *Resource) getShardsCountForCluster(ctx context.Context, cluster metav1.Object, currentShardCount int) (int, error) {
+	nodeCount, err := nodecounter.CountClusterNodes(ctx, r.k8sClient, cluster)
+	if err != nil {
+		return 0, microerror.Mask(err)
+	}
+	return computeShards(currentShardCount, nodeCount), nil
+}
+
 func (r *Resource) createConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string, version string) error {
-	configMap, err := r.desiredConfigMap(cluster, name, namespace, version)
+	shards, err := r.getShardsCountForCluster(ctx, cluster, 1)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	configMap, err := r.desiredConfigMap(cluster, name, namespace, version, shards)
 	if err != nil {
 		return microerror.Mask(err)
 	}

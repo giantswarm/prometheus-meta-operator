@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Dynamically compute Shards according to cluster size.
+
 ## [4.37.0] - 2023-05-10
 
 ### Added
