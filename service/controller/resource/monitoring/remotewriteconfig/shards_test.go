@@ -2,7 +2,7 @@ package remotewriteconfig
 
 import "testing"
 
-func TestShardComputationReturns1AgentEvery20Nodes(t *testing.T) {
+func TestShardComputationScaleUp(t *testing.T) {
 	expected := 1
 	result := computeShards(0, 20)
 	if result != expected {
@@ -10,9 +10,15 @@ func TestShardComputationReturns1AgentEvery20Nodes(t *testing.T) {
 	}
 
 	expected = 2
-	result = computeShards(1, 21)
+	result = computeShards(0, 21)
 	if result != expected {
-		t.Errorf(`expected computeShards(1, 21) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(0, 21) to be %d, got %d`, expected, result)
+	}
+
+	expected = 3
+	result = computeShards(0, 41)
+	if result != expected {
+		t.Errorf(`expected computeShards(0, 41) to be %d, got %d`, expected, result)
 	}
 }
 
@@ -30,7 +36,7 @@ func TestShardComputationReturnsAtLeast1Shart(t *testing.T) {
 	}
 }
 
-func TestShardComputationScalesAgentsDown(t *testing.T) {
+func TestShardComputationScaleDown(t *testing.T) {
 	expected := 2
 	result := computeShards(1, 21)
 	if result != expected {
