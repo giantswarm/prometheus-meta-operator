@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Dynamically compute Shards according to cluster size.
+- Dynamically compute agent shards number according to cluster size.
 
 ## [4.37.0] - 2023-05-10
 
