@@ -43,7 +43,10 @@ func countMachineDeploymentClusterNodes(ctx context.Context, k8sClient k8sclient
 
 	var nodeCount int32 = 0
 	for _, machinedeployment := range machinedeployments.Items {
-		nodeCount += machinedeployment.Status.Replicas
+		// If the machinedeployment has no role label or one without the bastion value then we keep it
+		if role, ok := machinedeployment.Labels["cluster.x-k8s.io/role"]; !ok || role != "bastion" {
+			nodeCount += machinedeployment.Status.Replicas
+		}
 	}
 
 	return nodeCount, nil
@@ -66,7 +69,10 @@ func countMachinePoolClusterNodes(ctx context.Context, k8sClient k8sclient.Inter
 
 	var nodeCount int32 = 0
 	for _, machinepool := range machinepools.Items {
-		nodeCount += machinepool.Status.Replicas
+		// If the machinepool has no role label or one without the bastion value then we keep it
+		if role, ok := machinepool.Labels["cluster.x-k8s.io/role"]; !ok || role != "bastion" {
+			nodeCount += machinepool.Status.Replicas
+		}
 	}
 
 	return nodeCount, nil
