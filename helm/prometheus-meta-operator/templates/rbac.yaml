@@ -64,6 +64,13 @@ rules:
       - update
       - patch
   - apiGroups:
+      - cluster.x-k8s.io
+    resources:
+      - machinedeployments
+      - machinepools
+    verbs:
+      - list
+  - apiGroups:
       - networking.k8s.io
     resources:
       - ingresses
