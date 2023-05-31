@@ -150,7 +150,6 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 }
 
 func RemoteWriteAuthenticationAnnotations(baseDomain string, externalDNS bool) map[string]string {
-
 	annotations := map[string]string{
 		"nginx.ingress.kubernetes.io/auth-type":   "basic",
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
@@ -276,12 +275,16 @@ func PrometheusSTSName(cluster metav1.Object) string {
 	return fmt.Sprintf("prometheus-%s", ClusterID(cluster))
 }
 
-func AlertManagerSecretName() string {
+func AlertmanagerSecretName() string {
 	return "alertmanager-config"
 }
 
-func PrometheusAlertmanagerConfigurationKey() string {
+func PrometheusAlertmanagerWiringKey() string {
 	return "alertmanager-additional.yaml"
+}
+
+func OpsGenieApiKey() string {
+	return "opsGenieApiKey"
 }
 
 func APIUrl(obj interface{}) string {

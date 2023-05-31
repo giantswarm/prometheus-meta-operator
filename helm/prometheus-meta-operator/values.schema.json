@@ -8,9 +8,6 @@
                 "address": {
                     "type": "string"
                 },
-                "enabled": {
-                    "type": "boolean"
-                },
                 "host": {
                     "type": "string"
                 },
@@ -19,6 +16,22 @@
                 },
                 "logLevel": {
                     "type": "string"
+                },
+                "opsgenie": {
+                    "type": "object",
+                    "properties": {
+                        "apiKey": {
+                            "type": "null"
+                        }
+                    }
+                },
+                "slack": {
+                    "type": "object",
+                    "properties": {
+                        "apiUrl": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "storage": {
                     "type": "object",

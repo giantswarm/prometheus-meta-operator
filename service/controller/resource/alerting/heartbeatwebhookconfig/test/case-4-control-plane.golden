@@ -13,8 +13,8 @@ spec:
     - httpConfig:
         authorization:
           credentials:
-            key: opsgenieApiKey
-            name: alertmanager-global
+            key: opsGenieApiKey
+            name: alertmanager-config
           type: GenieKey
       sendResolved: false
       url: https://api.opsgenie.com/v2/heartbeats/test-installation-kubernetes/ping

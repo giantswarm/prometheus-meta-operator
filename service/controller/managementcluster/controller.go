@@ -36,7 +36,7 @@ type ControllerConfig struct {
 	Region                  string
 	Registry                string
 
-	OpsgenieKey    string
+	OpsgenieKey string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string

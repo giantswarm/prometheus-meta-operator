@@ -120,8 +120,9 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var alertmanagerWiringResource resource.Interface
 	{
 		c := alertmanagerwiring.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			K8sClient:      config.K8sClient,
+			Logger:         config.Logger,
+			OpsGenieApiKey: config.OpsgenieKey,
 		}
 
 		alertmanagerWiringResource, err = alertmanagerwiring.New(c)

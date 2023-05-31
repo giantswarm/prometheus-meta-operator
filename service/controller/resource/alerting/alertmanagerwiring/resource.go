@@ -29,8 +29,9 @@ var (
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	K8sClient      k8sclient.Interface
+	Logger         micrologger.Logger
+	OpsGenieApiKey string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -40,18 +41,23 @@ func New(config Config) (*generic.Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
+	if config.OpsGenieApiKey == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.OpsGenieApiKey must not be empty", config)
+	}
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
 		return wrappedClient{client: c}
 	}
 
 	c := generic.Config{
-		ClientFunc:       clientFunc,
-		Logger:           config.Logger,
-		Name:             Name,
-		GetObjectMeta:    getObjectMeta,
-		GetDesiredObject: toSecret,
-		HasChangedFunc:   hasChanged,
+		ClientFunc:    clientFunc,
+		Logger:        config.Logger,
+		Name:          Name,
+		GetObjectMeta: getObjectMeta,
+		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
+			return toSecret(ctx, v, config.OpsGenieApiKey)
+		},
+		HasChangedFunc: hasChanged,
 	}
 	r, err := generic.New(c)
 	if err != nil {
@@ -68,7 +74,7 @@ func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error
 	}
 
 	return metav1.ObjectMeta{
-		Name:      key.AlertManagerSecretName(),
+		Name:      key.AlertmanagerSecretName(),
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
@@ -77,7 +83,7 @@ func toData(v interface{}) []byte {
 	return []byte(alertmanagerConfig)
 }
 
-func toSecret(ctx context.Context, v interface{}) (metav1.Object, error) {
+func toSecret(ctx context.Context, v interface{}, opsGenieApiKey string) (metav1.Object, error) {
 	objectMeta, err := getObjectMeta(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -86,7 +92,8 @@ func toSecret(ctx context.Context, v interface{}) (metav1.Object, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			key.PrometheusAlertmanagerConfigurationKey(): toData(v),
+			key.PrometheusAlertmanagerWiringKey(): toData(v),
+			key.OpsGenieApiKey():                  []byte(opsGenieApiKey),
 		},
 	}
 

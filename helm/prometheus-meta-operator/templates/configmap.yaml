@@ -21,8 +21,6 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
-      opsgenie:
-        apiKey: {{ .Values.alertmanager.opsgenie.apiKey }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-
