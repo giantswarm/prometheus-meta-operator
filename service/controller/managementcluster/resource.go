@@ -1,6 +1,8 @@
 package managementcluster
 
 import (
+	"net/url"
+
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
@@ -10,7 +12,6 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
@@ -21,8 +22,10 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteapiendpointconfigsecret"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteingressauth"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewritesecret"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
@@ -37,7 +40,7 @@ type resourcesConfig struct {
 	PrometheusClient promclient.Interface
 	VpaClient        vpa_clientset.Interface
 
-	ProxyConfiguration domain.ProxyConfiguration
+	Proxy func(reqURL *url.URL) (*url.URL, error)
 
 	AdditionalScrapeConfigs string
 	Bastions                []string
@@ -49,23 +52,18 @@ type resourcesConfig struct {
 	Region                  string
 	Registry                string
 
-	AlertmanagerAddress     string
-	AlertmanagerBaseDomain  string
-	AlertmanagerLogLevel    string
-	AlertmanagerStorageSize string
-	AlertmanagerVersion     string
-	GrafanaAddress          string
-	OpsgenieKey             string
-	SlackApiURL             string
-	SlackProjectName        string
+	GrafanaAddress   string
+	OpsgenieKey      string
+	SlackApiURL      string
+	SlackProjectName string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
 	PrometheusRetentionDuration  string
-	PrometheusRetentionSize      string
 	PrometheusScrapeInterval     string
+	PrometheusImageRepository    string
 	PrometheusVersion            string
 
 	RestrictedAccessEnabled bool
@@ -126,16 +124,16 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var alertmanagerConfigResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
-			K8sClient:          config.K8sClient,
-			Logger:             config.Logger,
-			Installation:       config.Installation,
-			Provider:           config.Provider,
-			ProxyConfiguration: config.ProxyConfiguration,
-			OpsgenieKey:        config.OpsgenieKey,
-			GrafanaAddress:     config.GrafanaAddress,
-			SlackApiURL:        config.SlackApiURL,
-			SlackProjectName:   config.SlackProjectName,
-			Pipeline:           config.Pipeline,
+			K8sClient:        config.K8sClient,
+			Logger:           config.Logger,
+			Installation:     config.Installation,
+			Provider:         config.Provider,
+			Proxy:            config.Proxy,
+			OpsgenieKey:      config.OpsgenieKey,
+			GrafanaAddress:   config.GrafanaAddress,
+			SlackApiURL:      config.SlackApiURL,
+			SlackProjectName: config.SlackProjectName,
+			Pipeline:         config.Pipeline,
 		}
 
 		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
@@ -163,8 +161,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Client: config.PrometheusClient,
 			Logger: config.Logger,
 
-			Installation:       config.Installation,
-			ProxyConfiguration: config.ProxyConfiguration,
+			Installation: config.Installation,
+			Proxy:        config.Proxy,
 		}
 
 		heartbeatWebhookConfigResource, err = heartbeatwebhookconfig.New(c)
@@ -189,7 +187,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			EvaluationInterval: config.PrometheusEvaluationInterval,
 			LogLevel:           config.PrometheusLogLevel,
 			RetentionDuration:  config.PrometheusRetentionDuration,
-			RetentionSize:      config.PrometheusRetentionSize,
+			ImageRepository:    config.PrometheusImageRepository,
 			ScrapeInterval:     config.PrometheusScrapeInterval,
 		}
 
@@ -310,19 +308,56 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
+	var remoteWriteConfigResource resource.Interface
 	{
-		c := remotewriteapiendpointconfigsecret.Config{
+		c := remotewriteconfig.Config{
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			Customer:     config.Customer,
+			Installation: config.Installation,
+			Pipeline:     config.Pipeline,
+			Provider:     config.Provider,
+			Region:       config.Region,
+			Version:      config.PrometheusVersion,
+		}
+
+		remoteWriteConfigResource, err = remotewriteconfig.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var remoteWriteSecretResource resource.Interface
+	{
+		c := remotewritesecret.Config{
 			K8sClient:       config.K8sClient,
 			Logger:          config.Logger,
 			PasswordManager: passwordManager,
 			BaseDomain:      config.PrometheusBaseDomain,
-			Customer:        config.Customer,
 			Installation:    config.Installation,
 			InsecureCA:      config.InsecureCA,
-			Pipeline:        config.Pipeline,
 			Provider:        config.Provider,
-			Region:          config.Region,
+		}
+
+		remoteWriteSecretResource, err = remotewritesecret.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
+	{
+		c := remotewriteapiendpointconfigsecret.Config{
+			K8sClient:    config.K8sClient,
+			Logger:       config.Logger,
+			BaseDomain:   config.PrometheusBaseDomain,
+			Customer:     config.Customer,
+			Installation: config.Installation,
+			InsecureCA:   config.InsecureCA,
+			Pipeline:     config.Pipeline,
+			Provider:     config.Provider,
+			Region:       config.Region,
+			Version:      config.PrometheusVersion,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
@@ -338,6 +373,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
+		remoteWriteConfigResource,
+		remoteWriteSecretResource,
 		remoteWriteAPIEndpointConfigSecretResource,
 		remoteWriteIngressAuthResource,
 		remoteWriteIngressResource,

@@ -4,8 +4,9 @@ package service
 
 import (
 	"context"
-	"os"
 	"sync"
+
+	"golang.org/x/net/http/httpproxy"
 
 	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	providerv1alpha1 "github.com/giantswarm/apiextensions/v6/pkg/apis/provider/v1alpha1"
@@ -21,10 +22,10 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
+	capiexp "sigs.k8s.io/cluster-api/exp/api/v1beta1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/clusterapi"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/legacy"
@@ -97,6 +98,7 @@ func New(config Config) (*Service, error) {
 			SchemeBuilder: k8sclient.SchemeBuilder{
 				apiextensionsv1.AddToScheme,
 				capi.AddToScheme,
+				capiexp.AddToScheme,
 				appsv1alpha1.AddToScheme,
 				providerv1alpha1.AddToScheme,
 				pmov1alpha1.AddToScheme,
@@ -127,21 +129,16 @@ func New(config Config) (*Service, error) {
 
 	var provider = config.Viper.GetString(config.Flag.Service.Provider.Kind)
 
-	var proxyConfiguration = domain.ProxyConfiguration{
-		HTTPProxy:  os.Getenv("HTTP_PROXY"),
-		HTTPSProxy: os.Getenv("HTTPS_PROXY"),
-		NoProxy:    os.Getenv("NO_PROXY"),
-	}
-
+	var proxyConfig = httpproxy.FromEnvironment()
 	var clusterapiController *clusterapi.Controller
 	{
 		if shouldCreateCAPIController(provider) {
 			c := clusterapi.ControllerConfig{
-				K8sClient:          k8sClient,
-				Logger:             config.Logger,
-				PrometheusClient:   prometheusClient,
-				VpaClient:          vpaClient,
-				ProxyConfiguration: proxyConfiguration,
+				K8sClient:        k8sClient,
+				Logger:           config.Logger,
+				PrometheusClient: prometheusClient,
+				VpaClient:        vpaClient,
+				Proxy:            proxyConfig.ProxyFunc(),
 
 				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
 				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
@@ -160,8 +157,8 @@ func New(config Config) (*Service, error) {
 				PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				PrometheusRetentionSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
 				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
+				PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
@@ -181,11 +178,12 @@ func New(config Config) (*Service, error) {
 	{
 		if shouldCreateLegacyController(provider) {
 			c := legacy.ControllerConfig{
-				K8sClient:               k8sClient,
-				Logger:                  config.Logger,
-				PrometheusClient:        prometheusClient,
-				VpaClient:               vpaClient,
-				ProxyConfiguration:      proxyConfiguration,
+				K8sClient:        k8sClient,
+				Logger:           config.Logger,
+				PrometheusClient: prometheusClient,
+				VpaClient:        vpaClient,
+				Proxy:            proxyConfig.ProxyFunc(),
+
 				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
 				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
 				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
@@ -203,8 +201,8 @@ func New(config Config) (*Service, error) {
 				PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				PrometheusRetentionSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
 				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
+				PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
@@ -227,7 +225,7 @@ func New(config Config) (*Service, error) {
 			PrometheusClient: prometheusClient,
 			VpaClient:        vpaClient,
 
-			ProxyConfiguration: proxyConfiguration,
+			Proxy: proxyConfig.ProxyFunc(),
 
 			AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
 			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
@@ -239,22 +237,17 @@ func New(config Config) (*Service, error) {
 			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-			AlertmanagerAddress:     config.Viper.GetString(config.Flag.Service.Alertmanager.Address),
-			AlertmanagerBaseDomain:  config.Viper.GetString(config.Flag.Service.Alertmanager.BaseDomain),
-			AlertmanagerLogLevel:    config.Viper.GetString(config.Flag.Service.Alertmanager.LogLevel),
-			AlertmanagerStorageSize: config.Viper.GetString(config.Flag.Service.Alertmanager.Storage.Size),
-			AlertmanagerVersion:     config.Viper.GetString(config.Flag.Service.Alertmanager.Version),
-			GrafanaAddress:          config.Viper.GetString(config.Flag.Service.Grafana.Address),
-			OpsgenieKey:             config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			SlackApiURL:             config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
-			SlackProjectName:        config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
+			GrafanaAddress:   config.Viper.GetString(config.Flag.Service.Grafana.Address),
+			OpsgenieKey:      config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			SlackApiURL:      config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
+			SlackProjectName: config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
 
 			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 			PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-			PrometheusRetentionSize:      config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Size),
+			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
 			RestrictedAccessEnabled:  config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
@@ -292,10 +285,10 @@ func New(config Config) (*Service, error) {
 	var remotewriteController *remotewrite.Controller
 	{
 		c := remotewrite.ControllerConfig{
-			K8sClient:          k8sClient,
-			Logger:             config.Logger,
-			PrometheusClient:   prometheusClient,
-			ProxyConfiguration: proxyConfiguration,
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+			Proxy:            proxyConfig.ProxyFunc(),
 		}
 		remotewriteController, err = remotewrite.NewController(c)
 		if err != nil {

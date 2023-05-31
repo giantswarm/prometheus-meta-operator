@@ -21,6 +21,7 @@ const (
 	DefaultServicePriority string = "highest"
 	DefaultOrganization    string = "giantswarm"
 
+	ClusterLabel         string = "giantswarm.io/cluster"
 	MonitoringLabel      string = "giantswarm.io/monitoring"
 	OrganizationLabel    string = "giantswarm.io/organization"
 	ServicePriorityLabel string = "giantswarm.io/service-priority"
@@ -30,15 +31,17 @@ const (
 	PrometheusCPULimitCoefficient float64 = 1.5
 	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
 	// It is used when computing VPA settings, to set `max request` so that `max limits` respect MaxMemory factor.
-	PrometheusMemoryLimitCoefficient      float64 = 1.2
+	PrometheusMemoryLimitCoefficient      float64 = 1
 	PrometheusMetaOperatorRemoteWriteName string  = "prometheus-meta-operator"
 	PrometheusServiceName                         = "prometheus-operated"
-	// RemoteWriteAPIEndpointConfigSecretName is the secret name used by a Prometheus client to access the Prometheus remote write endpoint. It is used at https://github.com/giantswarm/observability-bundle/blob/main/helm/observability-bundle/templates/apps.yaml
-	RemoteWriteAPIEndpointConfigSecretName string = "remote-write-api-endpoint-config"
+	// RemoteWriteAPIEndpointConfigSecretNameKey is the secret name used by a Prometheus client to access the Prometheus remote write endpoint. It is used at https://github.com/giantswarm/observability-bundle/blob/main/helm/observability-bundle/templates/apps.yaml
+	RemoteWriteAPIEndpointConfigSecretNameKey string = "remote-write-api-endpoint-config"
 	// RemoteWriteIngressAuthSecretName is the secret name referenced in the ingress to enable authentication against the Prometheus remote write endpoint.
 	RemoteWriteIngressAuthSecretName string = "remote-write-ingress-auth"
 	// PrometheusVolumeSizeAnnotation is the annotation referenced in the Cluster CR to define the size of Prometheus Volume.
 	PrometheusVolumeSizeAnnotation string = "monitoring.giantswarm.io/prometheus-volume-size"
+	// We apply a ratio to the volume storage size to compute the RetentionSize property (RetentionSize = 90% volume storage size)
+	PrometheusVolumeStorageLimitRatio = 0.85
 
 	ClusterIDKey       string = "cluster_id"
 	ClusterTypeKey     string = "cluster_type"
@@ -153,9 +156,9 @@ func RemoteWriteAuthenticationAnnotations(baseDomain string, externalDNS bool) m
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
 		"nginx.ingress.kubernetes.io/auth-realm":  "Authentication Required",
 		// Set this annotation to avoid using a temporary buffer file for remote write requests
-		"nginx.ingress.kubernetes.io/client-body-buffer-size": "10m",
+		"nginx.ingress.kubernetes.io/client-body-buffer-size": "50m",
 		// Remote write requests can be quite big. (default max body size: 1m)
-		"nginx.ingress.kubernetes.io/proxy-body-size": "10m",
+		"nginx.ingress.kubernetes.io/proxy-body-size": "50m",
 	}
 
 	// create external-dns required annotations
@@ -167,17 +170,28 @@ func RemoteWriteAuthenticationAnnotations(baseDomain string, externalDNS bool) m
 	return annotations
 }
 
-func RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster metav1.Object, installation string, provider string) (string, string) {
-	name := RemoteWriteAPIEndpointConfigSecretName
-	namespace := ClusterID(cluster)
+func RemoteWriteConfigName(cluster metav1.Object) string {
+	return fmt.Sprintf("%s-remote-write-config", ClusterID(cluster))
+}
 
+func RemoteWriteSecretName(cluster metav1.Object) string {
+	return fmt.Sprintf("%s-remote-write-secret", ClusterID(cluster))
+}
+
+func GetClusterAppsNamespace(cluster metav1.Object, installation string, provider string) string {
 	if IsCAPIManagementCluster(provider) {
-		name = ClusterID(cluster) + "-" + name
-		namespace = cluster.GetNamespace()
+		return cluster.GetNamespace()
 	} else if IsManagementCluster(installation, cluster) {
-		namespace = "giantswarm"
+		return "giantswarm"
 	}
-	return name, namespace
+	return ClusterID(cluster)
+}
+
+func RemoteWriteAPIEndpointConfigSecretName(cluster metav1.Object, provider string) string {
+	if IsCAPIManagementCluster(provider) {
+		return fmt.Sprintf("%s-%s", ClusterID(cluster), RemoteWriteAPIEndpointConfigSecretNameKey)
+	}
+	return RemoteWriteAPIEndpointConfigSecretNameKey
 }
 
 func AlertmanagerDefaultCPU() *resource.Quantity {

@@ -19,10 +19,8 @@ spec:
       requiredDuringSchedulingIgnoredDuringExecution:
         nodeSelectorTerms:
         - matchExpressions:
-          - key: role
-            operator: NotIn
-            values:
-            - master
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
   apiserverConfig:
     bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     host: https://kubernetes.default:443
@@ -63,12 +61,12 @@ spec:
   resources:
     limits:
       cpu: 150m
-      memory: "1288490188"
+      memory: "1073741824"
     requests:
       cpu: 100m
       memory: "1073741824"
   retention: 2w
-  retentionSize: 45Gi
+  retentionSize: 85GiB
   routePrefix: /kubernetes
   ruleNamespaceSelector:
     matchExpressions:
@@ -115,6 +113,7 @@ spec:
     topologyKey: kubernetes.io/hostname
     whenUnsatisfiable: ScheduleAnyway
   tsdb: {}
+  version: v2.28.1
   walCompression: true
   web:
     pageTitle: test-installation/kubernetes Prometheus

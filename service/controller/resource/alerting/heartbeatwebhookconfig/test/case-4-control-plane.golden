@@ -20,7 +20,7 @@ spec:
       url: https://api.opsgenie.com/v2/heartbeats/test-installation-kubernetes/ping
   route:
     groupInterval: 30s
-    groupWait: 5m
+    groupWait: 30s
     matchers:
     - name: cluster_id
       value: kubernetes
@@ -29,4 +29,4 @@ spec:
     - name: type
       value: heartbeat
     receiver: heartbeat_test-installation_kubernetes
-    repeatInterval: 1m
+    repeatInterval: 15m

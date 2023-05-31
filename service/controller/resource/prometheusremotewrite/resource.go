@@ -1,6 +1,8 @@
 package prometheusremotewrite
 
 import (
+	"net/url"
+
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/micrologger"
 	"github.com/google/go-cmp/cmp"
@@ -8,7 +10,6 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewriteutils"
 )
 
@@ -17,10 +18,10 @@ const (
 )
 
 type Config struct {
-	K8sClient          k8sclient.Interface
-	Logger             micrologger.Logger
-	PrometheusClient   promclient.Interface
-	ProxyConfiguration domain.ProxyConfiguration
+	K8sClient        k8sclient.Interface
+	Logger           micrologger.Logger
+	PrometheusClient promclient.Interface
+	Proxy            func(reqURL *url.URL) (*url.URL, error)
 }
 
 type Resource struct {
@@ -28,7 +29,7 @@ type Resource struct {
 	logger           micrologger.Logger
 	prometheusClient promclient.Interface
 
-	ProxyConfiguration domain.ProxyConfiguration
+	Proxy func(reqURL *url.URL) (*url.URL, error)
 }
 
 type prometheusAndMetadata struct {
@@ -43,7 +44,7 @@ func New(config Config) (*Resource, error) {
 		logger:           config.Logger,
 		prometheusClient: config.PrometheusClient,
 
-		ProxyConfiguration: config.ProxyConfiguration,
+		Proxy: config.Proxy,
 	}
 
 	return r, nil
@@ -55,8 +56,6 @@ func (r *Resource) Name() string {
 
 func (r *Resource) ensurePrometheusRemoteWrite(rw pmov1alpha1.RemoteWrite, p promv1.Prometheus) (*promv1.Prometheus, bool) {
 	rw.Spec.RemoteWrite.Name = rw.GetName()
-
-	rw.Spec.RemoteWrite.ProxyURL = r.ProxyConfiguration.GetURLForEndpoint(rw.Spec.RemoteWrite.URL)
 
 	if p.Spec.RemoteWrite != nil {
 		if rwIndex, ok := remoteWriteExists(rw.GetName(), p.Spec.RemoteWrite); !ok { // item not found

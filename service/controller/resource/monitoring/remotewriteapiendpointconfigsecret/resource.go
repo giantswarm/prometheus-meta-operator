@@ -2,176 +2,150 @@ package remotewriteapiendpointconfigsecret
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	promv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
+	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
-	Name                           = "remotewriteapiendpointconfigsecret"
-	remoteWriteEndpointTemplateURL = "https://%s/%s/api/v1/write"
+	Name = "remotewriteapiendpointconfigsecret"
 )
 
 type Config struct {
-	K8sClient       k8sclient.Interface
-	Logger          micrologger.Logger
-	PasswordManager password.Manager
-	BaseDomain      string
-	Customer        string
-	Installation    string
-	InsecureCA      bool
-	Pipeline        string
-	Provider        string
-	Region          string
+	K8sClient    k8sclient.Interface
+	Logger       micrologger.Logger
+	BaseDomain   string
+	Customer     string
+	Installation string
+	InsecureCA   bool
+	Pipeline     string
+	Provider     string
+	Region       string
+	Version      string
 }
 
-type RemoteWrite struct {
-	Name        string             `json:"name"`
-	Password    string             `json:"password"`
-	Username    string             `json:"username"`
-	URL         string             `json:"url"`
-	QueueConfig promv1.QueueConfig `json:"queueConfig"`
-	TLSConfig   promv1.TLSConfig   `json:"tlsConfig"`
+type Resource struct {
+	k8sClient k8sclient.Interface
+	logger    micrologger.Logger
+
+	BaseDomain   string
+	Customer     string
+	Installation string
+	InsecureCA   bool
+	Pipeline     string
+	Provider     string
+	Region       string
+	Version      string
 }
 
-type GlobalRemoteWriteValues struct {
-	Global RemoteWriteValues `json:"global"`
-}
-
-type RemoteWriteValues struct {
-	RemoteWrite    []RemoteWrite     `json:"remoteWrite"`
-	ExternalLabels map[string]string `json:"externalLabels"`
-}
-
-func New(config Config) (*generic.Resource, error) {
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
-		return wrappedClient{client: c}
+func New(config Config) (*Resource, error) {
+	if config.K8sClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.K8sClient must not be empty")
+	}
+	if config.Logger == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.Logger must not be empty")
+	}
+	if config.BaseDomain == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.BaseDomain must not be empty")
+	}
+	if config.Customer == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.Customer must not be empty")
+	}
+	if config.Installation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.Installation must not be empty")
+	}
+	if config.Pipeline == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.Pipeline must not be empty")
+	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.Provider must not be empty")
+	}
+	if config.Version == "" {
+		return nil, microerror.Maskf(invalidConfigError, "config.Version must not be empty")
 	}
 
-	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
-		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(ctx, v, config.Installation, config.Provider)
-		},
-		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
-			return toSecret(ctx, v, config)
-		},
-		HasChangedFunc: hasChanged,
-	}
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	r := &Resource{
+		k8sClient: config.K8sClient,
+		logger:    config.Logger,
+
+		BaseDomain:   config.BaseDomain,
+		Customer:     config.Customer,
+		Installation: config.Installation,
+		InsecureCA:   config.InsecureCA,
+		Pipeline:     config.Pipeline,
+		Provider:     config.Provider,
+		Region:       config.Region,
+		Version:      config.Version,
 	}
 
 	return r, nil
 }
 
-func getObjectMeta(ctx context.Context, v interface{}, installation string, provider string) (metav1.ObjectMeta, error) {
-	cluster, err := key.ToCluster(v)
-	if err != nil {
-		return metav1.ObjectMeta{}, microerror.Mask(err)
+func (r *Resource) Name() string {
+	return Name
+}
+
+func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace string, password string, version string) (*corev1.Secret, error) {
+	globalConfig := remotewriteconfiguration.GlobalConfig{
+		RemoteWrite: []remotewriteconfiguration.RemoteWrite{
+			remotewriteconfiguration.DefaultRemoteWrite(key.ClusterID(cluster), r.BaseDomain, password, r.InsecureCA),
+		},
+		ExternalLabels: map[string]string{
+			key.ClusterIDKey:       key.ClusterID(cluster),
+			key.ClusterTypeKey:     key.ClusterType(r.Installation, cluster),
+			key.CustomerKey:        r.Customer,
+			key.InstallationKey:    r.Installation,
+			key.OrganizationKey:    key.GetOrganization(cluster),
+			key.PipelineKey:        r.Pipeline,
+			key.ProviderKey:        r.Provider,
+			key.RegionKey:          r.Region,
+			key.ServicePriorityKey: key.GetServicePriority(cluster),
+		},
 	}
 
-	name, namespace := key.RemoteWriteAPIEndpointConfigSecretNameAndNamespace(cluster, installation, provider)
+	remoteWriteConfig := remotewriteconfiguration.RemoteWriteConfig{
+		GlobalConfig: globalConfig,
+	}
 
-	return metav1.ObjectMeta{
-		Name:      name,
-		Namespace: namespace,
-		Labels:    key.PrometheusLabels(cluster),
+	marshalledValues, err := yaml.Marshal(remoteWriteConfig)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	return &corev1.Secret{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      name,
+			Namespace: namespace,
+			Labels:    key.PrometheusLabels(cluster),
+			Finalizers: []string{
+				"monitoring.giantswarm.io/prometheus-remote-write",
+			},
+		},
+		Data: map[string][]byte{
+			"values": marshalledValues,
+		},
+		Type: "Opaque",
 	}, nil
 }
 
-func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta(ctx, v, config.Installation, config.Provider)
+func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password, version string) error {
+	secret, err := r.desiredSecret(cluster, name, namespace, password, version)
 	if err != nil {
-		return nil, microerror.Mask(err)
+		return microerror.Mask(err)
 	}
 
-	cluster, err := key.ToCluster(v)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	config.Logger.Debugf(ctx, "generating password for the prometheus agent")
-	password, err := config.PasswordManager.GeneratePassword(32)
-	if err != nil {
-		config.Logger.Errorf(ctx, err, "failed to generate the prometheus agent password")
-		return nil, microerror.Mask(err)
-	}
-
-	config.Logger.Debugf(ctx, "generate password for the prometheus agent")
-
-	url := fmt.Sprintf(remoteWriteEndpointTemplateURL, config.BaseDomain, key.ClusterID(cluster))
-	remoteWrites := []RemoteWrite{
-		{
-			Name:        key.PrometheusMetaOperatorRemoteWriteName,
-			URL:         url,
-			Username:    key.ClusterID(cluster),
-			Password:    password,
-			QueueConfig: defaultQueueConfig(),
-			TLSConfig: promv1.TLSConfig{
-				SafeTLSConfig: promv1.SafeTLSConfig{
-					InsecureSkipVerify: config.InsecureCA,
-				},
-			},
-		},
-	}
-
-	externalLabels := map[string]string{
-		key.ClusterIDKey:       key.ClusterID(cluster),
-		key.ClusterTypeKey:     key.ClusterType(config.Installation, cluster),
-		key.CustomerKey:        config.Customer,
-		key.InstallationKey:    config.Installation,
-		key.OrganizationKey:    key.GetOrganization(cluster),
-		key.PipelineKey:        config.Pipeline,
-		key.ProviderKey:        config.Provider,
-		key.RegionKey:          config.Region,
-		key.ServicePriorityKey: key.GetServicePriority(cluster),
-	}
-
-	values := RemoteWriteValues{
-		RemoteWrite:    remoteWrites,
-		ExternalLabels: externalLabels,
-	}
-	marshalledValues, err := yaml.Marshal(GlobalRemoteWriteValues{values})
-
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	var immutable bool = true
-	secret := &corev1.Secret{
-		ObjectMeta: objectMeta,
-		Data: map[string][]byte{
-			"values": []byte(marshalledValues),
-		},
-		Type:      "Opaque",
-		Immutable: &immutable,
-	}
-	return secret, nil
+	_, err = r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Create(ctx, secret, metav1.CreateOptions{})
+	return microerror.Mask(err)
 }
 
-func defaultQueueConfig() promv1.QueueConfig {
-	return promv1.QueueConfig{
-		Capacity:          30000,
-		MaxSamplesPerSend: 50000,
-		MaxShards:         10,
-	}
-}
-
-func hasChanged(current, desired metav1.Object) bool {
-	return false
+func (r *Resource) deleteSecret(ctx context.Context, secret *corev1.Secret) error {
+	err := r.k8sClient.K8sClient().CoreV1().Secrets(secret.Namespace).Delete(ctx, secret.Name, metav1.DeleteOptions{})
+	return microerror.Mask(err)
 }

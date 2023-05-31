@@ -31,8 +31,10 @@ rules:
       - ""
     resources:
       - secrets
+      - configmaps
     verbs:
       - create
+      - patch # Needed to remove a finalizer
       - update # Needed to update the additionalScrapeConfigs
       - delete
       - deletecollection
@@ -61,6 +63,13 @@ rules:
       - list
       - update
       - patch
+  - apiGroups:
+      - cluster.x-k8s.io
+    resources:
+      - machinedeployments
+      - machinepools
+    verbs:
+      - list
   - apiGroups:
       - networking.k8s.io
     resources:

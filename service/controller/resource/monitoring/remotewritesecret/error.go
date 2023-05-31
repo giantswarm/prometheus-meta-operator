@@ -1,16 +1,16 @@
-package remotewriteingressauth
+package remotewritesecret
 
 import (
 	"github.com/giantswarm/microerror"
 )
 
-var secretNotFound = &microerror.Error{
-	Kind: "secretNotFound",
+var invalidConfigError = &microerror.Error{
+	Kind: "invalidConfigError",
 }
 
-// IsSecretNotFound asserts secretNotFound.
-func IsSecretNotFound(err error) bool {
-	return microerror.Cause(err) == secretNotFound
+// IsInvalidConfig asserts invalidConfigError.
+func IsInvalidConfig(err error) bool {
+	return microerror.Cause(err) == invalidConfigError
 }
 
 var remoteWriteNotFound = &microerror.Error{

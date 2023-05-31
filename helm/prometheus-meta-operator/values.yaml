@@ -3,7 +3,7 @@ image:
   tag: "[[ .Version ]]"
 
 registry:
-  domain: quay.io
+  domain: docker.io
   pullSecret:
     dockerConfigJSON: "Cg=="
 
@@ -20,6 +20,7 @@ alertmanager:
   enabled: true
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"
+  imageRepository: giantswarm/alertmanager
   logLevel: info
   slack:
     apiURL: ""
@@ -28,6 +29,7 @@ alertmanager:
   opsgenieKey:
     secretName: alertmanager-config
     secretKey: opsgenie.key
+  version: "v0.25.0"
 
 certificate:
   monitoring:
@@ -36,9 +38,6 @@ certificate:
 
 grafana:
   address: ""
-
-grafanaCloud:
-  remoteWriteURL: ""
 
 managementCluster:
   name: ""
@@ -57,12 +56,24 @@ prometheus:
     ca: "ca"
     crt: "crt"
     key: "key"
+  evaluationInterval: "60s"
   heartbeat:
     opsgenieKey: ""
   host: "prometheus:9090"
+  imageRepository: giantswarm/prometheus
   logLevel: info
   letsencrypt: false
   mayu: ""
+
+  retention:
+    ## Retention duration for prometheus.
+    duration: "2w"
+
+  ## Default scrape interval for prometheus jobs.
+  scrapeInterval: "60s"
+
+  ## Prometheus container image version.
+  # version: ""
 
 security:
   restrictAccess:

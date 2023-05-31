@@ -33,6 +33,7 @@ type Config struct {
 	Bastions           []string
 	Customer           string
 	EvaluationInterval string
+	ImageRepository    string
 	Installation       string
 	Pipeline           string
 	Provider           string
@@ -40,7 +41,6 @@ type Config struct {
 	Registry           string
 	LogLevel           string
 	RetentionDuration  string
-	RetentionSize      string
 	ScrapeInterval     string
 	Version            string
 }
@@ -141,7 +141,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 	labels[key.MonitoringLabel] = "true"
 
-	image := fmt.Sprintf("%s/giantswarm/prometheus:%s", config.Registry, config.Version)
+	image := fmt.Sprintf("%s/%s:%s", config.Registry, config.ImageRepository, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
@@ -172,11 +172,8 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 								{
 									MatchExpressions: []corev1.NodeSelectorRequirement{
 										{
-											Key:      "role",
-											Operator: corev1.NodeSelectorOpNotIn,
-											Values: []string{
-												"master",
-											},
+											Key:      "node-role.kubernetes.io/control-plane",
+											Operator: corev1.NodeSelectorOpDoesNotExist,
 										},
 									},
 								},
@@ -237,6 +234,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						},
 					},
 				},
+				Version:        config.Version,
 				WALCompression: &walCompression,
 				Web: &promv1.PrometheusWebSpec{
 					PageTitle: &pageTitle,
@@ -245,7 +243,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
 			Retention:          promv1.Duration(config.RetentionDuration),
-			RetentionSize:      promv1.ByteSize(config.RetentionSize),
+			RetentionSize:      promv1.ByteSize(pvcresizing.GetRetentionSize(storageSize)),
 			// Fetches Prometheus rules from any namespace on the Management Cluster
 			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
 			RuleNamespaceSelector: &metav1.LabelSelector{

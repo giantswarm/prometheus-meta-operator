@@ -4,6 +4,7 @@ package alertmanagerconfig
 
 import (
 	"context"
+	"net/url"
 	"path"
 	"reflect"
 
@@ -13,7 +14,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -30,14 +30,14 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	Installation       string
-	Provider           string
-	ProxyConfiguration domain.ProxyConfiguration
-	OpsgenieKey        string
-	GrafanaAddress     string
-	SlackApiURL        string
-	SlackProjectName   string
-	Pipeline           string
+	Installation     string
+	Provider         string
+	Proxy            func(reqURL *url.URL) (*url.URL, error)
+	OpsgenieKey      string
+	GrafanaAddress   string
+	SlackApiURL      string
+	SlackProjectName string
+	Pipeline         string
 }
 
 type NotificationTemplateData struct {
@@ -144,15 +144,27 @@ func renderAlertmanagerConfig(templateDirectory string, config Config) ([]byte, 
 }
 
 func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
+	opsgenieUrl, err := url.Parse("https://api.opsgenie.com/v2/heartbeats")
+	if err != nil {
+		return nil, err
+	}
+	proxyURL, err := config.Proxy(opsgenieUrl)
+	if err != nil {
+		return nil, err
+	}
+
 	d := &AlertmanagerTemplateData{
 		Provider:         config.Provider,
 		Installation:     config.Installation,
-		ProxyURL:         config.ProxyConfiguration.GetURLForEndpoint("api.opsgenie.com"),
 		OpsgenieKey:      config.OpsgenieKey,
 		GrafanaAddress:   config.GrafanaAddress,
 		SlackApiURL:      config.SlackApiURL,
 		SlackProjectName: config.SlackProjectName,
 		Pipeline:         config.Pipeline,
+	}
+
+	if proxyURL != nil {
+		d.ProxyURL = proxyURL.String()
 	}
 
 	return d, nil

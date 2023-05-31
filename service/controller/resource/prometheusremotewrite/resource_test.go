@@ -10,7 +10,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/domain"
 )
 
 const (
@@ -22,7 +21,6 @@ const (
 var _ = flag.Bool("update", false, "doing nothing")
 
 func TestEnsurePrometheusRemoteWrite(t *testing.T) {
-
 	r := NewResource()
 	rw := remoteWrite(name, namespace, clusterSelector)
 	prom := prometheus()
@@ -32,7 +30,7 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 	expectedPrometheusAppend := expectedPrometheusAppend(rwAppend, *expectedEmptyPrometheus.p.DeepCopy(), false)
 
 	rwUpdate := *rw.DeepCopy()
-	rwUpdate.Spec.RemoteWrite.URL = "http://my-fancy-url/needs-update"
+	rwUpdate.Spec.RemoteWrite.URL = "http://my-proxy-url/needs-update"
 	expectedPrometheusUpdate := expectedPrometheusUpdate(rwUpdate, *expectedEmptyPrometheus.p.DeepCopy(), 0)
 
 	type args struct {
@@ -100,55 +98,7 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 	}
 }
 
-func TestEnsurePrometheusRemoteWriteWithProxy(t *testing.T) {
-	r := NewResourceWithProxy()
-	rw := remoteWrite(name, namespace, clusterSelector)
-	prom := prometheus()
-	expectedEmptyPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
-
-	rwAppend := remoteWrite("remotewrite-append", namespace, clusterSelector)
-	expectedPrometheusAppend := expectedPrometheusAppend(rwAppend, *expectedEmptyPrometheus.p.DeepCopy(), true)
-
-	type args struct {
-		rw pmov1alpha1.RemoteWrite
-		p  promv1.Prometheus
-	}
-
-	type want struct {
-		p  *promv1.Prometheus
-		ok bool
-	}
-
-	cases := map[string]struct {
-		reason string
-		args   args
-		want   want
-	}{
-		"AppendingRemoteWriteConfigWithProxy": {
-			reason: "Appending Prometheus remote write config",
-			args: args{
-				rw: rwAppend,
-				p:  *expectedEmptyPrometheus.p.DeepCopy(),
-			},
-			want: want(expectedPrometheusAppend),
-		},
-	}
-
-	for n, tc := range cases {
-		t.Run(n, func(t *testing.T) {
-			got, ok := r.ensurePrometheusRemoteWrite(tc.args.rw, tc.args.p)
-			if tc.want.ok != ok {
-				t.Errorf("\n%s\nExpand(...): -want, +got:\n%v", tc.reason, ok)
-			}
-			if diff := cmp.Diff(tc.want.p, got); diff != "" {
-				t.Errorf("\n%s\nExpand(...): -want, +got:\n%s", tc.reason, diff)
-			}
-		})
-	}
-}
-
 func TestRemovePrometheusRemoteWrite(t *testing.T) {
-
 	rw := remoteWrite(name, namespace, clusterSelector)
 	prom := prometheus()
 	expectedPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
@@ -204,7 +154,6 @@ func TestRemovePrometheusRemoteWrite(t *testing.T) {
 }
 
 func remoteWrite(name, namespace, clusterSelector string) pmov1alpha1.RemoteWrite {
-
 	return pmov1alpha1.RemoteWrite{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
@@ -215,7 +164,7 @@ func remoteWrite(name, namespace, clusterSelector string) pmov1alpha1.RemoteWrit
 				MatchLabels: map[string]string{"cluster": clusterSelector},
 			},
 			RemoteWrite: promv1.RemoteWriteSpec{
-				URL:  "https://my-fancy-url",
+				URL:  "https://my-proxy-url",
 				Name: "test",
 				BasicAuth: &promv1.BasicAuth{
 					Username: corev1.SecretKeySelector{
@@ -272,10 +221,6 @@ func expectedPrometheusAppend(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus
 	ok bool
 } {
 	rw.Spec.RemoteWrite.Name = rw.GetName()
-	if proxy {
-		r := NewResourceWithProxy()
-		rw.Spec.RemoteWrite.ProxyURL = r.ProxyConfiguration.GetURLForEndpoint("https://random-endpoint")
-	}
 
 	prom.Spec.RemoteWrite = append(prom.Spec.RemoteWrite, rw.Spec.RemoteWrite)
 	ok := true
@@ -331,19 +276,6 @@ func expectedRemoveRemoteWriteNotExists(prom promv1.Prometheus) struct {
 }
 
 func NewResource() *Resource {
-
 	r, _ := New(Config{})
-	return r
-}
-
-func NewResourceWithProxy() *Resource {
-	config := Config{
-		ProxyConfiguration: domain.ProxyConfiguration{
-			HTTPProxy:  "http://proxy-url",
-			HTTPSProxy: "",
-			NoProxy:    "http://no-proxy",
-		},
-	}
-	r, _ := New(config)
 	return r
 }

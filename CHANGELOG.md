@@ -7,6 +7,232 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.38.0] - 2023-05-22
+
+### Changed
+
+- Dynamically compute agent shards number according to cluster size.
+
+## [4.37.0] - 2023-05-10
+
+### Added
+
+- Add sharding capabilities to the Prometheus Agent.
+- Create new remote-write-secret Secret and remote-write-config ConfigMap per cluster to not have a bad workaround in the observability bundle.
+
+### Fixed
+
+- Fix prometheus control plane node toleration.
+
+### Removed
+
+- Stop pushing to `openstack-app-collection`.
+
+## [4.36.4] - 2023-05-02
+
+### Fixed
+
+- Fix forgotten kube-state-metrics down source labels.
+
+## [4.36.3] - 2023-05-02
+
+### Fixed
+
+- Add missing node label to kubelet.
+
+## [4.36.2] - 2023-05-01
+
+### Changed
+
+- Increased heartbeat delay before alert from 25min to 60min
+- Updated alertmanager heartbeat config for faster response
+
+## [4.36.1] - 2023-04-28
+
+### Fixed
+
+- Keep accepting 'master' as `role` label value for etcd scraping.
+
+## [4.36.0] - 2023-04-27
+
+### Changed
+
+- Deprecate `role=master` in favor of `role=control-plane`.
+
+## [4.35.4] - 2023-04-25
+
+### Changed
+
+- Add Inhibition rule when prometheus-agent is down.
+
+## [4.35.3] - 2023-04-18
+
+### Changed
+
+- Change Atlas slack alert router to only route alerts with page and/or notify severity matcher.
+
+### Fixed
+
+- Fix list of ignored targets for Vintage WCs.
+
+## [4.35.2] - 2023-04-13
+
+### Fixed
+
+- Allow PMO to patch secrets so it can remove finalizers.
+
+## [4.35.1] - 2023-04-12
+
+### Added
+
+- Add finalizer to remote-write-config to block cluster deletion until PMO deleted the secret.
+
+## [4.35.0] - 2023-04-11
+
+### Changed
+
+- Handle prometheus scrape target removal based on the observability bundle version.
+
+## [4.34.0] - 2023-04-06
+
+### Added
+
+- Add `loki` namespace in cAdvisor scrape config for MC.
+
+### Fixed
+
+- Fix proxy configuration as no_proxy was not respected.
+
+## [4.33.0] - 2023-04-04
+
+### Changed
+
+- Add more flexibility in the configuration so prometheus image, pvc size and so on can be overwritten by configuration.
+
+## [4.32.0] - 2023-03-30
+
+### Removed
+
+- Drop node-exporter metrics (`node_filesystem_files` `node_filesystem_readonly` `node_nfs_requests_total` `node_network_carrier` `node_network_transmit_colls_total` `node_network_carrier_changes_total` `node_network_transmit_packets_total` `node_network_carrier_down_changes_total` `node_network_carrier_up_changes_total` `node_network_iface_id` `node_xfs_.+` `node_ethtool_.+`)
+- Drop kong metrics (`kong_latency_count` `kong_latency_sum`)
+- Drop kube-state-metrics metrics (`kube_.+_metadata_resource_version`)
+- Drop nginx-ingress-controller metrics (`nginx_ingress_controller_bytes_sent_sum` `nginx_ingress_controller_request_size_count` `nginx_ingress_controller_response_size_count` `nginx_ingress_controller_response_duration_seconds_sum` `nginx_ingress_controller_response_duration_seconds_count` `nginx_ingress_controller_ingress_upstream_latency_seconds` `nginx_ingress_controller_ingress_upstream_latency_seconds_sum` `nginx_ingress_controller_ingress_upstream_latency_seconds_count`)
+
+## [4.31.1] - 2023-03-28
+
+### Changed
+
+- Prometheus-agent tuning: revert maxSamplesPerSend to 150000
+
+## [4.31.0] - 2023-03-28
+
+### Removed
+
+- Drop `rest_client_rate_limiter_duration_seconds_bucket` `rest_client_request_size_bytes_bucket` `rest_client_response_size_bytes_bucket` from Kubernetes component metrics.
+- Drop `coredns_dns_response_size_bytes_bucket` and `coredns_dns_request_size_bytes_bucket` from coredns metrics.
+- Drop `nginx_ingress_controller_connect_duration_seconds_bucket` `nginx_ingress_controller_header_duration_seconds_bucket` `nginx_ingress_controller_bytes_sent_count` `nginx_ingress_controller_request_duration_seconds_sum` from nginx-ingress-controller metrics.
+- Drop `kong_upstream_target_health` and `kong_latency_bucket` Kong metrics.
+- Drop `kube_pod_tolerations` `kube_pod_status_scheduled` `kube_replicaset_metadata_generation` `kube_replicaset_status_observed_generation` `kube_replicaset_annotations` and`kube_replicaset_status_fully_labeled_replicas` kube-state-metrics metrics.
+- Drop `promtail_request_duration_seconds_bucket` and `loki_request_duration_seconds_bucket` metrics from promtail and loki.
+
+## [4.30.0] - 2023-03-28
+
+### Removed
+
+- Remove immutable secret deletion not needed after 4.27.0.
+- Remove alertmanager ownership job.
+
+## [4.29.2] - 2023-03-28
+
+### Changed
+
+- VPA settings: set memory limit to 80% node size
+- Drop `awscni_assigned_ip_per_cidr` metric from aws cni.
+- Drop `uid` label from kubelet.
+- Drop `image_id` label from kube-state-metrics.
+
+## [4.29.1] - 2023-03-27
+
+### Changed
+
+- Prometheus remotewrite endpoints for agents: increase max body size from 10m to 50m
+
+### Removed
+
+- Removed pod_id relabelling as it's not needed anymore.
+
+## [4.29.0] - 2023-03-27
+
+### Changed
+
+- Bump Prometheus default image to `v2.43.0`
+- Prometheus-agent tuning: increase maxSamplesPerSend from 150000 to 300000
+
+### Removed
+
+- Drop some unused metrics from cAdvisor.
+- Remove draughtsman references.
+
+## [4.28.0] - 2023-03-23
+
+### Remove
+
+- Drop `id` and `name` label from cAdvisor metrics.
+
+## [4.27.0] - 2023-03-22
+
+### Changed
+
+- Allow changes in the remote write api endpoint secret.
+
+### Fixed
+
+- The region as external Label for capa,gcp and capz
+
+### Removed
+
+- Drop `uid` label from kube-state-metrics metrics.
+- Drop `container_id` label from kube-state-metrics metrics.
+
+## [4.26.0] - 2023-03-20
+
+### Changed
+
+- Prometheus resources: set requests=limits. Still allowing prometheus up to 90% of node capacity.
+- Prometheus TSDB size: reduce it to 85% of disk space, to keep space for WAL before alerts fire.
+- Prometheus-agent tuning: increase maxSamplesPerSend from 50000 to 150000
+
+## [4.25.3] - 2023-03-15
+
+### Fixed
+
+- Fix ownership job
+
+## [4.25.2] - 2023-03-15
+
+### Changed
+
+- Updated `RetentionSize` property in Prometheus CR according to Volume Storage Size (90%)
+- Allow ownership job patch `alertmanagerConfigSelector` to fail in case the label has been already removed.
+
+## [4.25.1] - 2023-03-14
+
+### Changed
+
+- Followup on Alertmanager resource to Helm
+  - Set Alertmanager enabled by default.
+  - remove the label managed-by: pmo from alertmanagerConfigSelector.
+
+## [4.25.0] - 2023-03-14
+
+### Changed
+
+- Move Alertmanager resource to Helm
+  - Delete `controller resource alerting/alertmanager`.
+  - Create alertmanager template in helm.
+  - Delete the obsolete static scraping configs for alertmanager.
+  - Add a hook job that change the ownership labels for alertmanager resource.
+
 ## [4.24.1] - 2023-03-09
 
 ### Changed
@@ -1915,8 +2141,35 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.38.0...HEAD
+[4.38.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.37.0...v4.38.0
+[4.37.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.4...v4.37.0
+[4.36.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.3...v4.36.4
+[4.36.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.2...v4.36.3
+[4.36.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.1...v4.36.2
+[4.36.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.36.0...v4.36.1
+[4.36.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.4...v4.36.0
+[4.35.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.3...v4.35.4
+[4.35.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.2...v4.35.3
+[4.35.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.1...v4.35.2
+[4.35.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.35.0...v4.35.1
+[4.35.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.34.0...v4.35.0
+[4.34.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.33.0...v4.34.0
+[4.33.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.32.0...v4.33.0
+[4.32.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.1...v4.32.0
+[4.31.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.31.0...v4.31.1
+[4.31.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.30.0...v4.31.0
+[4.30.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.2...v4.30.0
+[4.29.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.1...v4.29.2
+[4.29.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.29.0...v4.29.1
+[4.29.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.28.0...v4.29.0
+[4.28.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.27.0...v4.28.0
+[4.27.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.26.0...v4.27.0
+[4.26.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.3...v4.26.0
+[4.25.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.2...v4.25.3
+[4.25.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.1...v4.25.2
+[4.25.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.25.0...v4.25.1
+[4.25.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.1...v4.25.0
 [4.24.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.24.0...v4.24.1
 [4.24.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.23.0...v4.24.0
 [4.23.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.22.0...v4.23.0

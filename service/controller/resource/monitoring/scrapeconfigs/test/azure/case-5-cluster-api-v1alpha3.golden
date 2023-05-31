@@ -49,6 +49,68 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
+# Add kubelet configuration
+- job_name: baz-prometheus/kubelet-baz/0
+  honor_labels: true
+  scheme: https
+  kubernetes_sd_configs:
+  - role: node
+
+    api_server: https://master.baz:443
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+      key_file: /etc/prometheus/secrets/cluster-certificates/key
+      insecure_skip_verify: false
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
+    key_file: /etc/prometheus/secrets/cluster-certificates/key
+    insecure_skip_verify: true
+  relabel_configs:
+  - target_label: app
+    replacement: kubelet
+  - source_labels: [__address__]
+    target_label: instance
+  - target_label: __address__
+    replacement: master.baz:443
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: __metrics_path__
+    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
+  - source_labels: [__meta_kubernetes_node_name]
+    target_label: node
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: baz
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: workload_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization 
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
+  # Add role label.
+  - source_labels: [__meta_kubernetes_node_label_role]
+    target_label: role
+  metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
+  # drop uid label from kubelet
+  - action: labeldrop
+    regex: uid
 # Add scrape configuration for cadvisor
 - job_name: baz-prometheus/cadvisor-baz/0
   honor_labels: true
@@ -105,6 +167,13 @@
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
   metric_relabel_configs:
+  # drop id and name labels from cAdvisor as they do not provide value but use a lot of RAM
+  - action: labeldrop
+    regex: id|name
+  # dropping explained here https://github.com/giantswarm/giantswarm/issues/26361
+  - source_labels: [__name__]
+    regex: container_(blkio_device_usage_total|network_transmit_errors_total|network_receive_errors_total|tasks_state|memory_failures_total|memory_max_usage_bytes|cpu_load_average_10s|memory_failcnt|cpu_system_seconds_total)
+    action: drop
   - source_labels: [namespace]
     regex: (kube-system|giantswarm.*|kong.*|kyverno)
     action: keep
@@ -245,58 +314,6 @@
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
-# Add kubelet configuration
-- job_name: baz-prometheus/kubelet-baz/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: node
-
-    api_server: https://master.baz:443
-    tls_config:
-      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  relabel_configs:
-  - target_label: app
-    replacement: kubelet
-  - source_labels: [__address__]
-    target_label: instance
-  - target_label: __address__
-    replacement: master.baz:443
-  - source_labels: [__meta_kubernetes_node_name]
-    target_label: __metrics_path__
-    replacement: /api/v1/nodes/${1}:10250/proxy/metrics
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: baz
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
 # kube-proxy
 - job_name: baz-prometheus/kube-proxy-baz/0
   honor_labels: true
@@ -369,6 +386,11 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  metric_relabel_configs:
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
 # coredns
 - job_name: baz-prometheus/coredns-baz/0
   honor_labels: true
@@ -443,6 +465,11 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  metric_relabel_configs:
+  # drop unused coredns metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: coredns_dns_(response_size_bytes_bucket|request_size_bytes_bucket)
+    action: drop
 # cert-exporter
 - job_name: baz-prometheus/cert-exporter-baz/0
   honor_labels: true
@@ -576,11 +603,10 @@
   - target_label: customer
     replacement: pmo
   metric_relabel_configs:
-  - source_labels: [mountpoint]
-    target_label: pod_id
-    regex: /var/lib/kubelet/pods/([a-zA-Z0-9-]+)/.*
-    action: replace
-    replacement: $1
+  # drop unused metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: node_(filesystem_files|filesystem_readonly|nfs_requests_total|network_carrier|network_transmit_colls_total|network_carrier_changes_total|network_transmit_packets_total|network_carrier_down_changes_total|network_carrier_up_changes_total|network_iface_id|xfs_.+|ethtool_.+)
+    action: drop
 - job_name: baz-prometheus/workload-baz/0
   honor_labels: true
   scheme: https
@@ -677,10 +703,47 @@
   - target_label: customer
     replacement: pmo
   metric_relabel_configs:
-  # drop metrics with the highest cardinality as they increase Prometheus memory usage
+  # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
-    regex: (nginx_ingress_controller_bytes_sent_bucket|nginx_ingress_controller_request_size_bucket|nginx_ingress_controller_response_duration_seconds_bucket|nginx_ingress_controller_response_size_bucket)
+    regex: nginx_ingress_controller_(bytes_sent_bucket|request_size_bucket|response_duration_seconds_bucket|response_size_bucket|request_duration_seconds_count|connect_duration_seconds_bucket|header_duration_seconds_bucket|bytes_sent_count|request_duration_seconds_sum|bytes_sent_sum|request_size_count|response_size_count|response_duration_seconds_sum|response_duration_seconds_count|ingress_upstream_latency_seconds|ingress_upstream_latency_seconds_sum|ingress_upstream_latency_seconds_count)
     action: drop
+  # drop unused kong metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: kong_(upstream_target_health|latency_bucket|latency_count|latency_sum)
+    action: drop
+  # drop unused kube-state-metrics metrics with the highest cardinality as they increase Prometheus memory usage
+  - source_labels: [__name__]
+    regex: kube_(pod_tolerations|pod_status_scheduled|replicaset_metadata_generation|replicaset_status_observed_generation|replicaset_annotations|replicaset_status_fully_labeled_replicas|.+_metadata_resource_version)
+    action: drop
+  # drop unused promtail/loki metrics
+  - source_labels: [__name__]
+    regex: promtail_request_duration_seconds_bucket|loki_request_duration_seconds_bucket
+    action: drop
+  # drop unused rest client metrics
+  - source_labels: [__name__]
+    regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
+    action: drop
+  # drop uid label from kube-state-metrics
+  - source_labels: [app,uid]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: uid
+    # drop image_id label from kube-state-metrics
+  - source_labels: [app,image_id]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: image_id
+  # drop container_id label from kube-state-metrics (kube_pod_info)
+  - source_labels: [app,container_id]
+    separator: ;
+    regex: kube-state-metrics;(.+)
+    replacement: ""
+    action: replace
+    target_label: container_id
   - source_labels: [app,deployment]
     separator: ;
     regex: kube-state-metrics;(.+)
@@ -730,7 +793,7 @@
     replacement: ${1}
     action: replace
   - action: labeldrop
-    regex: "label_topology_kubernetes_io_region|label_topology_kubernetes_io_zone"
+    regex: label_topology_kubernetes_io_region|label_topology_kubernetes_io_zone
   # Override with label for AWS clusters if exists.
   - source_labels: [app,label_giantswarm_io_machine_deployment]
     regex: kube-state-metrics;(.+)
@@ -744,7 +807,7 @@
     replacement: ${1}
     action: replace
   - action: labeldrop
-    regex: "label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment"
+    regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
 
 # prometheus
 - job_name: baz-prometheus/prometheus-baz/0
