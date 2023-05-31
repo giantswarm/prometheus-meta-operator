@@ -13,7 +13,6 @@ import (
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -52,10 +51,7 @@ type resourcesConfig struct {
 	Region                  string
 	Registry                string
 
-	GrafanaAddress   string
-	OpsgenieKey      string
-	SlackApiURL      string
-	SlackProjectName string
+	OpsgenieKey string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
@@ -116,27 +112,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		rbacResource, err = rbac.New(c)
-		if err != nil {
-			return nil, microerror.Mask(err)
-		}
-	}
-
-	var alertmanagerConfigResource resource.Interface
-	{
-		c := alertmanagerconfig.Config{
-			K8sClient:        config.K8sClient,
-			Logger:           config.Logger,
-			Installation:     config.Installation,
-			Provider:         config.Provider,
-			Proxy:            config.Proxy,
-			OpsgenieKey:      config.OpsgenieKey,
-			GrafanaAddress:   config.GrafanaAddress,
-			SlackApiURL:      config.SlackApiURL,
-			SlackProjectName: config.SlackProjectName,
-			Pipeline:         config.Pipeline,
-		}
-
-		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -370,7 +345,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		namespaceResource,
 		etcdCertificatesResource,
 		rbacResource,
-		alertmanagerConfigResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
 		remoteWriteConfigResource,

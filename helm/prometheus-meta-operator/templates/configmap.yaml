@@ -21,6 +21,8 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
+      opsgenie:
+        apiKey: {{ .Values.alertmanager.opsgenie.apiKey }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-
@@ -42,19 +44,6 @@ data:
         {{- if .Values.prometheus.version }}
         version: {{ .Values.prometheus.version }}
         {{- end }}
-      slack:
-        apiURL: {{ .Values.alertmanager.slack.apiURL }}
-        {{- if .Values.slack }}
-        {{- if .Values.slack.projectName }}
-        projectName: {{.Values.slack.projectName}}
-        {{- else }}
-        projectName: {{printf "project-%s" .Values.managementCluster.customer }}
-        {{- end }}
-        {{- else }}
-        projectName: {{printf "project-%s" .Values.managementCluster.customer }}
-        {{- end }}
-      grafana:
-        address: {{ .Values.grafana.address }}
       security:
         restrictedAccess:
           enabled: {{ .Values.security.restrictAccess.enabled }}
@@ -64,6 +53,7 @@ data:
           enabled: {{ .Values.ingress.externalDNS }}
       provider:
         kind: {{ .Values.managementCluster.provider.kind }}
+        flavor: {{ .Values.managementCluster.provider.flavor }}
       installation:
         customer: {{ .Values.managementCluster.customer }}
         name: {{ .Values.managementCluster.name }}

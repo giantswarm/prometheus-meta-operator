@@ -155,7 +155,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				LocalObjectReference: corev1.LocalObjectReference{
 					Name: key.AlertManagerSecretName(),
 				},
-				Key: key.AlertManagerKey(),
+				Key: key.PrometheusAlertmanagerConfigurationKey(),
 			},
 
 			CommonPrometheusFields: promv1.CommonPrometheusFields{

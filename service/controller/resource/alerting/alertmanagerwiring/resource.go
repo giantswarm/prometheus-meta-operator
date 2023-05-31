@@ -86,7 +86,7 @@ func toSecret(ctx context.Context, v interface{}) (metav1.Object, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			key.AlertManagerKey(): toData(v),
+			key.PrometheusAlertmanagerConfigurationKey(): toData(v),
 		},
 	}
 

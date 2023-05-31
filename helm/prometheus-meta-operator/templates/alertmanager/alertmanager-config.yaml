@@ -1,11 +1,11 @@
-{{- if .Values.alertmanager.enabled }}
 apiVersion: monitoring.coreos.com/v1alpha1
 kind: AlertmanagerConfig
 metadata:
   name: alertmanager-config
   namespace: monitoring
   labels:
-    app.kubernetes.io/name: alertmanager-config
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/name: alertmanager
 spec:
   route:
     groupBy: [alertname, cluster_id, installation, status]
@@ -66,11 +66,13 @@ spec:
     # Team Atlas Slack
     - receiver: team_atlas_slack
       matchers:
-      {{- if eq .Values.managementCluster.pipeline "stable" }}
       - name: severity
-        matchType: "!="
-        value: "page"
-      {{- end }}
+        {{- if eq .Values.managementCluster.pipeline "stable" }}
+        value: "notify"
+        {{- else }}
+        matchType: "=~"
+        value: "page|notify"
+        {{- end }}
       - name: team
         value: "atlas"
       - name: type
@@ -89,6 +91,9 @@ spec:
           value: "page|notify"
         - name: team
           value: "celestial"
+        - name: sloth_severity
+          matchType: "=~"
+          value: "page|ticket"
       continue: false
 
     # Team Firecracker Slack
@@ -99,6 +104,9 @@ spec:
           value: "page|notify"
         - name: team
           value: "firecracker"
+        - name: sloth_severity
+          matchType: "=~"
+          value: "page|ticket" 
       continue: false
 
     # Team Phoenix Slack
@@ -109,6 +117,9 @@ spec:
           value: "page|notify"
         - name: team
           value: "phoenix"
+        - name: sloth_severity
+          matchType: "=~"
+          value: "page|ticket" 
       continue: false
 
     # Team Hydra Slack
@@ -119,6 +130,16 @@ spec:
           value: "page|notify"
         - name: team
           value: "hydra"
+      continue: false
+
+    # Team BigMac Slack	
+    - receiver: team_bigmac_slack
+      matchers:
+      - name: severity
+          matchType: "=~"
+          value: "page|notify"
+        - name: team
+          value: "bigmac"
       continue: false
 
     # Team Clippy Slack
@@ -260,6 +281,33 @@ spec:
           url: {{`'{{ template "__alert_silence_link" . }}'`}}
           style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
 
+	- name: team_bigmac_slack
+  slackConfigs:
+  {{- if eq .Values.managementCluster.pipeline "stable" }}
+  - channel: '#alert-bigmac'
+  {{- else }}
+  - channel: '#alert-bigmac-test'
+  {{- end }}
+    sendResolved: true
+    actions:
+      - type: button
+        text: ':green_book: OpsRecipe'
+        url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
+        style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
+      - type: button
+        text: ':coffin: Linked PMs'
+        url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
+      - type: button
+        text: ':mag: Query'
+        url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
+      - type: button
+        text: ':grafana: Dashboard'
+        url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+      - type: button
+        text: ':no_bell: Silence'
+        url: {{`'{{ template "__alert_silence_link" . }}'`}}
+        style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
+
   - name: team_clippy_slack
     slackConfigs:
     {{- if eq .Values.managementCluster.pipeline "stable" }}
@@ -340,9 +388,10 @@ spec:
   - name: opsgenie_router
     opsgenieConfigs:
       - apiKey:
-          key: {{ .Values.alertmanager.opsgenieKey.secretKey }}
-          name: {{ .Values.alertmanager.opsgenieKey.secretName }}
-        tags: "{{`{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},`}}{{ .Values.managementCluster.provider }},{{ .Values.managementCluster.name }},{{ .Values.managementCluster.pipeline }}"
+          key: {{ .Values.alertmanager.opsgenie.apiKey }}
+          name: alertmanager-global
+        tags: "{{`{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},`}}{{ .Values.managementCluster.provider.kind }},{{ .Values.managementCluster.name }},{{ .Values.managementCluster.pipeline }}"
+
   - name: team_ops_slack
     slackConfigs:
       {{- if eq .Values.managementCluster.pipeline "stable" }}
@@ -372,7 +421,7 @@ spec:
 
   inhibitRules:
     - sourceMatch:
-        - name: kube_state_metrics_down
+        - name: inhibit_kube_state_metrics_down
           value: "true"
       targetMatch:
         - name: cancel_if_kube_state_metrics_down
@@ -380,7 +429,7 @@ spec:
       equal: [cluster_id]
 
     - sourceMatch:
-        - name: kube_state_metrics_down
+        - name: inhibit_kube_state_metrics_down
           value: "true"
         - name: cluster_id
           value: {{ .Values.managementCluster.name }}
@@ -389,7 +438,7 @@ spec:
           value: "true"
 
     - sourceMatch:
-        - name: kube_state_metrics_down
+        - name: inhibit_kube_state_metrics_down
           value: "true"
       targetMatch:
         - name: cancel_if_any_kube_state_metrics_down
@@ -524,10 +573,10 @@ spec:
       equal: [cluster_id, instance]
 
     - sourceMatch:
-        - name: master_node_down
+        - name: control_plane_node_down
           value: "true"
       targetMatch:
-        - name: cancel_if_master_node_down
+        - name: cancel_if_control_plane_node_down
           value: "true"
       equal: [cluster_id]
 
@@ -568,11 +617,16 @@ spec:
         - name: cancel_if_cluster_is_not_running_prometheus_agent
           value: "true"
       equal: [cluster_id]
-
+    - sourceMatch:
+        - name: inhibit_prometheus_agent_down
+          value: "true"
+      targetMatch:
+        - name: cancel_if_prometheus_agent_down
+          value: "true"
+      equal: [cluster_id]
     - sourceMatch:
         - name: stack_failed
           value: "true"
       targetMatch:
         - name: cancel_if_stack_failed
           value: "true"
-{{- end }}

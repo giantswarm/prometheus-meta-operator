@@ -17,18 +17,16 @@ ingress:
   externalDNS: false
 
 alertmanager:
-  enabled: true
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"
   imageRepository: giantswarm/alertmanager
   logLevel: info
   slack:
-    apiURL: ""
+    apiUrl: ""
   storage:
     size: 1Gi
-  opsgenieKey:
-    secretName: alertmanager-config
-    secretKey: opsgenie.key
+  opsgenie:
+    apiKey:
   version: "v0.25.0"
 
 certificate:
@@ -57,8 +55,6 @@ prometheus:
     crt: "crt"
     key: "key"
   evaluationInterval: "60s"
-  heartbeat:
-    opsgenieKey: ""
   host: "prometheus:9090"
   imageRepository: giantswarm/prometheus
   logLevel: info
@@ -80,8 +76,5 @@ security:
     enabled: false
   subnet:
     vpn: ""
-
-slack:
-  projectName: ""
 
 vaultHost: ""

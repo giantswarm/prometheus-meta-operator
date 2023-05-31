@@ -150,7 +150,7 @@ func New(config Config) (*Service, error) {
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.ApiKey),
 
 				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
@@ -194,7 +194,7 @@ func New(config Config) (*Service, error) {
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.ApiKey),
 
 				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
@@ -237,10 +237,7 @@ func New(config Config) (*Service, error) {
 			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-			GrafanaAddress:   config.Viper.GetString(config.Flag.Service.Grafana.Address),
-			OpsgenieKey:      config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			SlackApiURL:      config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
-			SlackProjectName: config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
+			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.ApiKey),
 
 			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),

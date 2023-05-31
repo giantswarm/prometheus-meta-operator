@@ -280,7 +280,7 @@ func AlertManagerSecretName() string {
 	return "alertmanager-config"
 }
 
-func AlertManagerKey() string {
+func PrometheusAlertmanagerConfigurationKey() string {
 	return "alertmanager-additional.yaml"
 }
 
@@ -327,18 +327,6 @@ func CAFilePath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 }
 
-func AlertmanagerConfigMapName() string {
-	return "alertmanager"
-}
-
-func AlertmanagerConfigMapNamespace() string {
-	return monitoring
-}
-
-func AlertmanagerConfigMapKey() string {
-	return "config.yml"
-}
-
 // IsCAPICluster returns false if the cluster has any of the legacy labels such as azure-operator.giantswarm.io/version.
 func IsCAPICluster(obj metav1.Object) bool {
 	// TODO once we have migrated all clusters to CAPI, we can remove this
@@ -367,8 +355,4 @@ func IsCAPICluster(obj metav1.Object) bool {
 
 func IngressClassName() string {
 	return "nginx"
-}
-
-func OpsgenieKey() string {
-	return "opsgenie.key"
 }
