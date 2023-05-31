@@ -16,7 +16,7 @@ spec:
               - key: role
                 operator: NotIn
                 values:
-                  - master
+                  - control-plane
   alertmanagerConfigSelector:
     matchLabels:
       app.kubernetes.io/instance: alertmanager
