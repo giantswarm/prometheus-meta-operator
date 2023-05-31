@@ -1,9 +1,9 @@
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
 metadata:
-  name: alertmanager-psp
   labels:
     {{- include "labels.common" . | nindent 4 }}
+  name: alertmanager-psp
 spec:
   allowPrivilegeEscalation: false
   hostNetwork: false

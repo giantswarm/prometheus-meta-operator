@@ -150,7 +150,8 @@ func New(config Config) (*Service, error) {
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+				OpsGenieApiKey: config.Viper.GetString(config.Flag.Service.OpsGenie.ApiKey),
+				OpsGenieApiUrl: config.Viper.GetString(config.Flag.Service.OpsGenie.ApiUrl),
 
 				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
@@ -194,7 +195,8 @@ func New(config Config) (*Service, error) {
 				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+				OpsGenieApiKey: config.Viper.GetString(config.Flag.Service.OpsGenie.ApiKey),
+				OpsGenieApiUrl: config.Viper.GetString(config.Flag.Service.OpsGenie.ApiUrl),
 
 				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
@@ -237,10 +239,10 @@ func New(config Config) (*Service, error) {
 			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
 			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-			GrafanaAddress:   config.Viper.GetString(config.Flag.Service.Grafana.Address),
-			OpsgenieKey:      config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			SlackApiURL:      config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
-			SlackProjectName: config.Viper.GetString(config.Flag.Service.Slack.ProjectName),
+			GrafanaAddress: config.Viper.GetString(config.Flag.Service.Grafana.Address),
+			OpsGenieApiKey: config.Viper.GetString(config.Flag.Service.OpsGenie.ApiKey),
+			OpsGenieApiUrl: config.Viper.GetString(config.Flag.Service.OpsGenie.ApiUrl),
+			SlackApiURL:    config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
 
 			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),

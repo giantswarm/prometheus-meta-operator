@@ -21,7 +21,7 @@ type Service struct {
 	Prometheus   prometheus.Prometheus
 	Grafana      grafana.Grafana
 	Slack        slack.Slack
-	Opsgenie     opsgenie.Opsgenie
+	OpsGenie     opsgenie.OpsGenie
 	Provider     provider.Provider
 	Security     security.Security
 	Vault        vault.Vault

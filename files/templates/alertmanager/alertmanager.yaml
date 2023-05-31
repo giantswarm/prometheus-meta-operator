@@ -347,7 +347,7 @@ receivers:
 
 - name: opsgenie_router
   opsgenie_configs:
-  - api_key: [[ .OpsgenieKey ]]
+  - api_key: [[ .OpsGenieApiKey ]]
     tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},[[ .Provider ]],[[ .Installation ]],[[ .Pipeline ]]"
 
 - name: team_ops_slack

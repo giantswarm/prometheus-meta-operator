@@ -1,5 +1,6 @@
 package provider
 
 type Provider struct {
-	Kind string
+	Kind   string
+	Flavor string
 }

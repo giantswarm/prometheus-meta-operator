@@ -117,8 +117,10 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Registry, "", "Container image registry.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Installation.InsecureCA, false, "Is the management cluter CA insecure?")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
+	daemonCommand.PersistentFlags().String(f.Service.Provider.Flavor, "", "Provider flavor. One of capi or vintage.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")
+	daemonCommand.PersistentFlags().String(f.Service.OpsGenie.ApiKey, "", "OpsGenie Key used for API authentication.")
+	daemonCommand.PersistentFlags().String(f.Service.OpsGenie.ApiUrl, "", "OpsGenie Key used for API authentication.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.AdditionalScrapeConfigs, "", "Additional installation-specific scrape configs.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Address, "", "Address to access Prometheus UI.")
@@ -134,7 +136,6 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")
 	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
-	daemonCommand.PersistentFlags().String(f.Service.Slack.ProjectName, "", "Slack project name.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Security.RestrictedAccess.Enabled, false, "Is the access to the prometheus restricted to certain subnets?")
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")
 

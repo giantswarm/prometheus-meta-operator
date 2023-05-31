@@ -1,5 +1,6 @@
 package opsgenie
 
-type Opsgenie struct {
-	Key string
+type OpsGenie struct {
+	ApiKey string
+	ApiUrl string
 }

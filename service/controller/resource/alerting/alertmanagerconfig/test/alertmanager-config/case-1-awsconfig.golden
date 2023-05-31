@@ -307,7 +307,7 @@ receivers:
 
 - name: opsgenie_router
   opsgenie_configs:
-  - api_key: opsgenie-key
+  - api_key: opsgenie-api-key
     tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},aws,test-installation,testing"
 
 - name: team_ops_slack

@@ -369,6 +369,6 @@ func IngressClassName() string {
 	return "nginx"
 }
 
-func OpsgenieKey() string {
+func OpsGenieKey() string {
 	return "opsgenie.key"
 }

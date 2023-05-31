@@ -101,16 +101,16 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 				LocalObjectReference: corev1.LocalObjectReference{
 					Name: key.AlertManagerSecretName(),
 				},
-				Key: key.OpsgenieKey(),
+				Key: key.OpsGenieKey(),
 			},
 		},
 	}
 
-	opsgenieUrl, err := url.Parse("https://api.opsgenie.com/v2/heartbeats")
+	opsGenieUrl, err := url.Parse("https://api.opsgenie.com/v2/heartbeats")
 	if err != nil {
 		return nil, err
 	}
-	proxyURL, err := config.Proxy(opsgenieUrl)
+	proxyURL, err := config.Proxy(opsGenieUrl)
 	if err != nil {
 		return nil, err
 	}

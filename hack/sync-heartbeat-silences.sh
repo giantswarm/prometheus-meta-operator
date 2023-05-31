@@ -4,9 +4,9 @@
 #
 # Whenever a cluster is know to have issues, a silence is created in https://github.com/giantswarm/silences repository.
 # In some cases this silence might apply to the whole cluster,
-# when this is the case heartbeat in Opsgenie for the corresponding cluster
+# when this is the case heartbeat in OpsGenie for the corresponding cluster
 # should be disabled.
-# When the silence is then removed the heartbeat in Opsgenie should be re-enabled.
+# When the silence is then removed the heartbeat in OpsGenie should be re-enabled.
 #
 # There is currently no automation for this, so this script is here to help humans to do their job right.
 #

@@ -162,14 +162,6 @@
                 "evaluationInterval": {
                     "type": "string"
                 },
-                "heartbeat": {
-                    "type": "object",
-                    "properties": {
-                        "opsgenieKey": {
-                            "type": "string"
-                        }
-                    }
-                },
                 "host": {
                     "type": "string"
                 },
@@ -232,14 +224,6 @@
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "slack": {
-            "type": "object",
-            "properties": {
-                "projectName": {
-                    "type": "string"
                 }
             }
         },

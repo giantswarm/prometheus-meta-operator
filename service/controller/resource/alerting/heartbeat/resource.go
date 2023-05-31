@@ -21,10 +21,11 @@ const (
 )
 
 type Config struct {
-	Logger       micrologger.Logger
-	Installation string
-	OpsgenieKey  string
-	Pipeline     string
+	Logger         micrologger.Logger
+	Installation   string
+	OpsGenieApiKey string
+	OpsGenieApiUrl string
+	Pipeline       string
 }
 
 type Resource struct {
@@ -44,13 +45,16 @@ func New(config Config) (*Resource, error) {
 	if config.Pipeline == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Pipeline must not be empty", config)
 	}
-	if config.OpsgenieKey == "" {
-		return nil, microerror.Maskf(invalidConfigError, "%T.OpsgenieKey must not be empty", config)
+	if config.OpsGenieApiKey == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.OpsGenieApiKey must not be empty", config)
+	}
+	if config.OpsGenieApiUrl == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.OpsGenieApiUrl must not be empty", config)
 	}
 
 	c := &client.Config{
-		ApiKey:         config.OpsgenieKey,
-		OpsGenieAPIURL: client.API_URL,
+		ApiKey:         config.OpsGenieApiKey,
+		OpsGenieAPIURL: client.ApiUrl(config.OpsGenieApiUrl),
 		RetryCount:     1,
 		LogLevel:       logrus.FatalLevel,
 	}

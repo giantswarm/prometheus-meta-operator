@@ -36,10 +36,10 @@ type ControllerConfig struct {
 	Region                  string
 	Registry                string
 
-	GrafanaAddress   string
-	OpsgenieKey      string
-	SlackApiURL      string
-	SlackProjectName string
+	GrafanaAddress string
+	OpsGenieApiKey string
+	OpsGenieApiUrl string
+	SlackApiURL    string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
