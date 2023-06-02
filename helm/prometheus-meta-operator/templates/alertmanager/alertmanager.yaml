@@ -3,10 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
   labels:
-    app.kubernetes.io/instance: alertmanager
-    app.kubernetes.io/name: alertmanager
+    {{- include "labels.common" . | nindent 4 }}
   name: alertmanager
-  namespace: monitoring
+  namespace: {{ include "resource.default.namespace" . }}
 spec:
   affinity:
     nodeAffinity:

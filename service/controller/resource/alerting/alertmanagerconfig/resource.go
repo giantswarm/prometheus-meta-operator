@@ -28,14 +28,13 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	Installation     string
-	Provider         string
-	Proxy            func(reqURL *url.URL) (*url.URL, error)
-	OpsgenieKey      string
-	GrafanaAddress   string
-	SlackApiURL      string
-	SlackProjectName string
-	Pipeline         string
+	Installation   string
+	Provider       string
+	Proxy          func(reqURL *url.URL) (*url.URL, error)
+	OpsgenieKey    string
+	GrafanaAddress string
+	SlackApiURL    string
+	Pipeline       string
 }
 
 type NotificationTemplateData struct {
@@ -43,14 +42,13 @@ type NotificationTemplateData struct {
 }
 
 type AlertmanagerTemplateData struct {
-	Provider         string
-	Installation     string
-	ProxyURL         string
-	OpsgenieKey      string
-	GrafanaAddress   string
-	SlackApiURL      string
-	SlackProjectName string
-	Pipeline         string
+	Provider       string
+	Installation   string
+	ProxyURL       string
+	OpsgenieKey    string
+	GrafanaAddress string
+	SlackApiURL    string
+	Pipeline       string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -152,13 +150,12 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 	}
 
 	d := &AlertmanagerTemplateData{
-		Provider:         config.Provider,
-		Installation:     config.Installation,
-		OpsgenieKey:      config.OpsgenieKey,
-		GrafanaAddress:   config.GrafanaAddress,
-		SlackApiURL:      config.SlackApiURL,
-		SlackProjectName: config.SlackProjectName,
-		Pipeline:         config.Pipeline,
+		Provider:       config.Provider,
+		Installation:   config.Installation,
+		OpsgenieKey:    config.OpsgenieKey,
+		GrafanaAddress: config.GrafanaAddress,
+		SlackApiURL:    config.SlackApiURL,
+		Pipeline:       config.Pipeline,
 	}
 
 	if proxyURL != nil {

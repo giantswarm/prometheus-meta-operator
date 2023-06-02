@@ -45,14 +45,6 @@ data:
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
         {{- if .Values.slack }}
-        {{- if .Values.slack.projectName }}
-        projectName: {{.Values.slack.projectName}}
-        {{- else }}
-        projectName: {{printf "project-%s" .Values.managementCluster.customer }}
-        {{- end }}
-        {{- else }}
-        projectName: {{printf "project-%s" .Values.managementCluster.customer }}
-        {{- end }}
       grafana:
         address: {{ .Values.grafana.address }}
       security:
