@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/giantswarm/apiextensions-application v0.6.0
-	github.com/giantswarm/apiextensions/v6 v6.5.0
+	github.com/giantswarm/apiextensions/v6 v6.6.0
 	github.com/giantswarm/k8sclient/v7 v7.0.1
 	github.com/giantswarm/microendpoint v1.0.0
 	github.com/giantswarm/microerror v0.4.0
