@@ -244,16 +244,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
 			Retention:          promv1.Duration(config.RetentionDuration),
 			RetentionSize:      promv1.ByteSize(pvcresizing.GetRetentionSize(storageSize)),
-			// Fetches Prometheus rules from any namespace on the Management Cluster
-			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
-			RuleNamespaceSelector: &metav1.LabelSelector{
-				MatchExpressions: []metav1.LabelSelectorRequirement{
-					{
-						Key:      "kubernetes.io/metadata.name",
-						Operator: metav1.LabelSelectorOpExists,
-					},
-				},
-			},
 		},
 	}
 
@@ -270,20 +260,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 		prometheus.Spec.Secrets = []string{
 			key.Secret(),
-		}
-
-		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      key.ClusterTypeKey,
-					Operator: metav1.LabelSelectorOpNotIn,
-					Values:   []string{"management_cluster"},
-				},
-				{
-					Key:      key.TeamLabel,
-					Operator: metav1.LabelSelectorOpExists,
-				},
-			},
 		}
 
 		prometheus.Spec.ServiceMonitorSelector = &metav1.LabelSelector{
@@ -318,20 +294,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 		prometheus.Spec.Secrets = []string{
 			key.EtcdSecret(config.Installation, cluster),
-		}
-
-		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
-			MatchExpressions: []metav1.LabelSelectorRequirement{
-				{
-					Key:      key.ClusterTypeKey,
-					Operator: metav1.LabelSelectorOpNotIn,
-					Values:   []string{"workload_cluster"},
-				},
-				{
-					Key:      key.TeamLabel,
-					Operator: metav1.LabelSelectorOpExists,
-				},
-			},
 		}
 
 		// We do not discover the service monitors discovered by the agent running on the management cluster

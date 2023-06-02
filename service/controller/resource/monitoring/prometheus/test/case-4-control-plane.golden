@@ -68,18 +68,6 @@ spec:
   retention: 2w
   retentionSize: 85GiB
   routePrefix: /kubernetes
-  ruleNamespaceSelector:
-    matchExpressions:
-    - key: kubernetes.io/metadata.name
-      operator: Exists
-  ruleSelector:
-    matchExpressions:
-    - key: cluster_type
-      operator: NotIn
-      values:
-      - workload_cluster
-    - key: application.giantswarm.io/team
-      operator: Exists
   rules:
     alert: {}
   scrapeInterval: 60s
