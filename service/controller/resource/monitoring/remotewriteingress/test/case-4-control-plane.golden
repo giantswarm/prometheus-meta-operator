@@ -14,7 +14,7 @@ metadata:
     app.kubernetes.io/name: prometheus
     giantswarm.io/cluster: kubernetes
   name: prometheus-kubernetes-remote-write
-  namespace: kubernetes-prometheus
+  namespace: mimir
 spec:
   ingressClassName: nginx
   rules:
@@ -23,10 +23,10 @@ spec:
       paths:
       - backend:
           service:
-            name: prometheus-operated
+            name: mimir-gateway
             port:
-              number: 9090
-        path: /kubernetes/api/v1/write
+              number: 80
+        path: /kubernetes/api/v1/push
         pathType: ImplementationSpecific
 status:
   loadBalancer: {}
