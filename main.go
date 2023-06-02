@@ -134,7 +134,6 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")
 	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
-	daemonCommand.PersistentFlags().String(f.Service.Slack.ProjectName, "", "Slack project name.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Security.RestrictedAccess.Enabled, false, "Is the access to the prometheus restricted to certain subnets?")
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")
 

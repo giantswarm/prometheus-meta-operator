@@ -1,6 +1,11 @@
 package remotewriteconfig
 
-import "testing"
+import (
+	"flag"
+	"testing"
+)
+
+var _ = flag.Bool("update", false, "update the ouput file")
 
 func TestShardComputationScaleUp(t *testing.T) {
 	expected := 1

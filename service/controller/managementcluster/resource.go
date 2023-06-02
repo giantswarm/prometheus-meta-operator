@@ -52,10 +52,9 @@ type resourcesConfig struct {
 	Region                  string
 	Registry                string
 
-	GrafanaAddress   string
-	OpsgenieKey      string
-	SlackApiURL      string
-	SlackProjectName string
+	GrafanaAddress string
+	OpsgenieKey    string
+	SlackApiURL    string
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
@@ -124,16 +123,15 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var alertmanagerConfigResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
-			K8sClient:        config.K8sClient,
-			Logger:           config.Logger,
-			Installation:     config.Installation,
-			Provider:         config.Provider,
-			Proxy:            config.Proxy,
-			OpsgenieKey:      config.OpsgenieKey,
-			GrafanaAddress:   config.GrafanaAddress,
-			SlackApiURL:      config.SlackApiURL,
-			SlackProjectName: config.SlackProjectName,
-			Pipeline:         config.Pipeline,
+			K8sClient:      config.K8sClient,
+			Logger:         config.Logger,
+			Installation:   config.Installation,
+			Provider:       config.Provider,
+			Proxy:          config.Proxy,
+			OpsgenieKey:    config.OpsgenieKey,
+			GrafanaAddress: config.GrafanaAddress,
+			SlackApiURL:    config.SlackApiURL,
+			Pipeline:       config.Pipeline,
 		}
 
 		alertmanagerConfigResource, err = alertmanagerconfig.New(c)

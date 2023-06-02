@@ -52,14 +52,13 @@ func TestRenderingOfAlertmanagerConfig(t *testing.T) {
 		proxyConfig := httpproxy.Config{}
 
 		config := Config{
-			GrafanaAddress:   "https://grafana",
-			Installation:     "test-installation",
-			OpsgenieKey:      "opsgenie-key",
-			Proxy:            proxyConfig.ProxyFunc(),
-			Pipeline:         "testing",
-			Provider:         "aws",
-			SlackApiURL:      "https://slack",
-			SlackProjectName: "my-slack-project",
+			GrafanaAddress: "https://grafana",
+			Installation:   "test-installation",
+			OpsgenieKey:    "opsgenie-key",
+			Proxy:          proxyConfig.ProxyFunc(),
+			Pipeline:       "testing",
+			Provider:       "aws",
+			SlackApiURL:    "https://slack",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)

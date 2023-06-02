@@ -1,8 +1,6 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "resource.default.name" . }}-alertmanager
-  namespace: monitoring
   annotations:
     kubernetes.io/tls-acme: "{{ .Values.prometheus.letsencrypt }}"
     nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
@@ -16,8 +14,10 @@ metadata:
     {{- end }}
   labels:
     {{- include "labels.common" . | nindent 4 }}
+  name: {{ include "resource.default.name" . }}-alertmanager
+  namespace: {{ include "resource.default.namespace" . }}
 spec:
-  ingressClassName: "nginx"
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
   - host: {{ .Values.alertmanager.host }}
     http:

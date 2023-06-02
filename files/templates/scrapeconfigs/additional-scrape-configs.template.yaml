@@ -477,6 +477,7 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
+[[- if not (contains "node-exporter" .IgnoredTargets) ]]
 # node-exporter
 - job_name: [[ .ClusterID ]]-prometheus/node-exporter-[[ .ClusterID ]]/0
   honor_labels: true
@@ -508,6 +509,7 @@
   - source_labels: [__name__]
     regex: node_(filesystem_files|filesystem_readonly|nfs_requests_total|network_carrier|network_transmit_colls_total|network_carrier_changes_total|network_transmit_packets_total|network_carrier_down_changes_total|network_carrier_up_changes_total|network_iface_id|xfs_.+|ethtool_.+)
     action: drop
+[[- end ]]
 - job_name: [[ .ClusterID ]]-prometheus/workload-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https

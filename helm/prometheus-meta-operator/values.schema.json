@@ -79,6 +79,9 @@
         "ingress": {
             "type": "object",
             "properties": {
+                "className": {
+                    "type": "string"
+                },
                 "externalDNS": {
                     "type": "boolean"
                 }
@@ -232,14 +235,6 @@
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "slack": {
-            "type": "object",
-            "properties": {
-                "projectName": {
-                    "type": "string"
                 }
             }
         },
