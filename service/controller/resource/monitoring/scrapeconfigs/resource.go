@@ -258,7 +258,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 	}
 
 	if version.GTE(initialBundleVersion) {
-		ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler")
+		ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler", "node-exporter")
 	}
 
 	if version.GTE(bundleWithKSMAndExportersVersion) {

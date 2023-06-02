@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add static node-exporter target to the list of ignored targets because this target is needed for releases still using node-exporter < 1.14 (< aws 18.2.0).
+
 ## [4.38.1] - 2023-05-31
 
 ### Added

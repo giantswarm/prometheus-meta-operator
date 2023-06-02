@@ -44,7 +44,6 @@ data:
         {{- end }}
       slack:
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
-        {{- if .Values.slack }}
       grafana:
         address: {{ .Values.grafana.address }}
       security:
