@@ -10,9 +10,9 @@ metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
   name: {{ include "resource.default.name" . }}
-  namespace: monitoring
+  namespace: {{ include "resource.default.namespace" . }}
 spec:
-  ingressClassName: nginx
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
   - host: {{ .Values.prometheus.host }}
     http:

@@ -3,11 +3,9 @@ apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
   labels:
-    app.kubernetes.io/instance: alertmanager
-    app.kubernetes.io/managed-by: prometheus-meta-operator
-    app.kubernetes.io/name: alertmanager
+    {{- include "labels.common" . | nindent 4 }}
   name: alertmanager
-  namespace: monitoring
+  namespace: {{ include "resource.default.namespace" . }}
 spec:
   endpoints:
     - port: web
@@ -15,7 +13,7 @@ spec:
       path: /metrics
   namespaceSelector:
     matchNames:
-      - monitoring
+      - {{ include "resource.default.namespace" . }}
   selector:
     matchLabels:
       operated-alertmanager: "true"
