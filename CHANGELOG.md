@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Set Prometheus CPU requests=limits to avoid vpa from going crazy.
+
 ## [4.38.2] - 2023-06-02
 
 ### Added

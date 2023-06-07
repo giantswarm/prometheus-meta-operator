@@ -60,7 +60,7 @@ spec:
   replicas: 1
   resources:
     limits:
-      cpu: 150m
+      cpu: 100m
       memory: "1073741824"
     requests:
       cpu: 100m

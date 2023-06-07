@@ -28,7 +28,7 @@ const (
 	TeamLabel            string = "application.giantswarm.io/team"
 	// PrometheusCPULimitCoefficient is the number used to compute the CPU limit from the CPU request.
 	// It is used when computing VPA settings, to set `max requests` so that `max limits` respects MaxCPU factor.
-	PrometheusCPULimitCoefficient float64 = 1.5
+	PrometheusCPULimitCoefficient float64 = 1
 	// PrometheusMemoryLimitCoefficient is the number used to compute the memory limit from the memory request.
 	// It is used when computing VPA settings, to set `max request` so that `max limits` respect MaxMemory factor.
 	PrometheusMemoryLimitCoefficient      float64 = 1
