@@ -37,7 +37,7 @@ func TestPrometheus(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toPrometheus(context.TODO(), v, config)
+			return toPrometheus(context.Background(), v, config)
 		},
 		Update: *update,
 	}

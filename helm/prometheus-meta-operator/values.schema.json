@@ -8,9 +8,6 @@
                 "address": {
                     "type": "string"
                 },
-                "enabled": {
-                    "type": "boolean"
-                },
                 "host": {
                     "type": "string"
                 },

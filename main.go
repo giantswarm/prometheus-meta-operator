@@ -110,13 +110,16 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.CrtFile, "", "Certificate file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.KeyFile, "", "Key file path to use to authenticate with Kubernetes.")
 
+	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")
+
+	daemonCommand.PersistentFlags().Bool(f.Service.Ingress.ExternalDNS.Enabled, false, "Should the generated ingress resources get additional annotations for external-dns")
+
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Name, "", "Name of the installation.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Pipeline, "", "Pipeline of the installation (stable or testing).")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Region, "", "Region where the installation is located.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Customer, "", "Customer the installation belongs to.")
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Registry, "", "Container image registry.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Installation.InsecureCA, false, "Is the management cluter CA insecure?")
-	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")
 
@@ -132,12 +135,13 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ImageRepository, "giantswarm/prometheus", "Prometheus container image repository.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.43.0", "Prometheus container image version.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")
-	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
+	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
+	daemonCommand.PersistentFlags().String(f.Service.Provider.Flavor, "", "Provider flavor. One of capi or vintage.")
+
 	daemonCommand.PersistentFlags().Bool(f.Service.Security.RestrictedAccess.Enabled, false, "Is the access to the prometheus restricted to certain subnets?")
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")
 
-	daemonCommand.PersistentFlags().Bool(f.Service.Ingress.ExternalDNS.Enabled, false, "Should the generated ingress resources get additional annotations for external-dns")
+	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Vault.Host, "", "Host used to connect to Vault.")
 

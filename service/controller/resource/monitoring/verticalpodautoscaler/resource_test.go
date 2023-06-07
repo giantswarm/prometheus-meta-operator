@@ -73,7 +73,7 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 			if err != nil {
 				return nil, err
 			}
-			return r.getObject(context.TODO(), v)
+			return r.getObject(context.Background(), v)
 		},
 		Update: *update,
 	}
