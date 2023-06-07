@@ -146,7 +146,6 @@ func (r *Resource) listWorkerNodes(ctx context.Context) (*v1.NodeList, error) {
 }
 
 func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
-
 	var nodeCpu *resource.Quantity
 	if len(nodes.Items) > 0 {
 		n := nodes.Items[0]
@@ -182,7 +181,6 @@ func (r *Resource) getMaxCPU(nodes *v1.NodeList) (*resource.Quantity, error) {
 }
 
 func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) {
-
 	var nodeMemory *resource.Quantity
 	if len(nodes.Items) > 0 {
 		n := nodes.Items[0]
