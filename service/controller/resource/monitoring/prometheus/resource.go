@@ -207,7 +207,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						corev1.ResourceMemory: *key.PrometheusDefaultMemory(),
 					},
 					Limits: corev1.ResourceList{
-						// memory: 1.2Gi
+						// cpu: 150m
+						corev1.ResourceCPU: *key.PrometheusDefaultCPULimit(),
+						// memory: 1Gi
 						corev1.ResourceMemory: *key.PrometheusDefaultMemoryLimit(),
 					},
 				},
