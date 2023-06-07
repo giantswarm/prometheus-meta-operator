@@ -60,7 +60,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 
 	return metav1.ObjectMeta{
 		Name:        fmt.Sprintf("prometheus-%s-remote-write", key.ClusterID(cluster)),
-		Namespace:   "mimir",
+		Namespace:   key.Namespace(cluster),
 		Labels:      key.PrometheusLabels(cluster),
 		Annotations: key.RemoteWriteAuthenticationAnnotations(config.BaseDomain, config.ExternalDNS),
 	}, nil
@@ -113,12 +113,12 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 						HTTP: &networkingv1.HTTPIngressRuleValue{
 							Paths: []networkingv1.HTTPIngressPath{
 								{
-									Path: fmt.Sprintf("/%s/api/v1/push", key.ClusterID(cluster)),
+									Path: fmt.Sprintf("/%s/api/v1/write", key.ClusterID(cluster)),
 									Backend: networkingv1.IngressBackend{
 										Service: &networkingv1.IngressServiceBackend{
-											Name: "mimir-gateway",
+											Name: key.PrometheusServiceName,
 											Port: networkingv1.ServiceBackendPort{
-												Number: 80,
+												Number: key.PrometheusPort(),
 											},
 										},
 									},
