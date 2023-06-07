@@ -42,10 +42,6 @@ data:
         {{- if .Values.prometheus.version }}
         version: {{ .Values.prometheus.version }}
         {{- end }}
-      slack:
-        apiURL: {{ .Values.alertmanager.slack.apiURL }}
-      grafana:
-        address: {{ .Values.grafana.address }}
       security:
         restrictedAccess:
           enabled: {{ .Values.security.restrictAccess.enabled }}

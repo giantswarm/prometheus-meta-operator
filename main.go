@@ -110,8 +110,6 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.CrtFile, "", "Certificate file path to use to authenticate with Kubernetes.")
 	daemonCommand.PersistentFlags().String(f.Service.Kubernetes.TLS.KeyFile, "", "Key file path to use to authenticate with Kubernetes.")
 
-	daemonCommand.PersistentFlags().String(f.Service.Grafana.Address, "", "Grafana url.")
-
 	daemonCommand.PersistentFlags().Bool(f.Service.Ingress.ExternalDNS.Enabled, false, "Should the generated ingress resources get additional annotations for external-dns")
 
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Name, "", "Name of the installation.")
@@ -140,8 +138,6 @@ func mainE(ctx context.Context) error {
 
 	daemonCommand.PersistentFlags().Bool(f.Service.Security.RestrictedAccess.Enabled, false, "Is the access to the prometheus restricted to certain subnets?")
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")
-
-	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Vault.Host, "", "Host used to connect to Vault.")
 
