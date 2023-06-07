@@ -18,6 +18,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/nodecounter"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/pvcresizing"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -146,7 +147,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 	prometheusMemory := key.PrometheusDefaultMemory()
 	if !key.IsManagementCluster(config.Installation, cluster) || key.IsCAPIManagementCluster(config.Provider) {
-		nodeCount, err := countClusterNodes(ctx, config.K8sClient, cluster)
+		nodeCount, err := nodecounter.CountClusterNodes(ctx, config.K8sClient, cluster)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -222,12 +223,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				Resources: corev1.ResourceRequirements{
 					Requests: corev1.ResourceList{
 						// cpu: 100m
-						corev1.ResourceCPU: *key.PrometheusDefaultCPU(),
-						// memory: 1Gi
+						corev1.ResourceCPU:    *key.PrometheusDefaultCPU(),
 						corev1.ResourceMemory: *prometheusMemory,
 					},
 					Limits: corev1.ResourceList{
-						// memory: 1Gi
 						corev1.ResourceMemory: *prometheusMemory,
 					},
 				},

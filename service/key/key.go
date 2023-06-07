@@ -2,7 +2,6 @@ package key
 
 import (
 	"fmt"
-	"math"
 
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
