@@ -19,7 +19,25 @@ spec:
     matchLabels:
       app.kubernetes.io/instance: alertmanager
       app.kubernetes.io/name: alertmanager
-  configSecret: alertmanager-config
+  alertmanagerConfiguration:
+    global:
+      ## TODO [[- if .ProxyURL ]] [[ .ProxyURL ]] [[- end ]]
+      #httpConfig:
+      #  proxyURL: 
+      opsGenieApiKey:
+        key: opsGenieApiKey
+        name: alertmanager-global
+      opsGenieApiUrl:
+        key: opsGenieApiUrl
+        name: alertmanager-global
+      slackApiUrl:
+        key: slackApiUrl
+        name: alertmanager-global
+      resolveTimeout: "5m"
+    templates:
+    - configMap:
+        key: notification-template.tmpl
+        name: alertmanager-notification-template
   externalUrl: {{ .Values.alertmanager.address }}
   image: {{ printf "%s/%s:%s" .Values.registry.domain .Values.alertmanager.imageRepository .Values.alertmanager.version }}
   logLevel: {{ .Values.alertmanager.logLevel }}
