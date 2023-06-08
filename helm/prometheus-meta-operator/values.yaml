@@ -26,6 +26,31 @@ alertmanager:
     apiURL: ""
   storage:
     size: 1Gi
+  teams:
+  - name: atlas
+    oncall: true
+    stableNotifyOnly: true
+    extraMatchers:
+    - name: type
+      matchType: "!="
+      value: "heartbeat"
+    - name: alertname
+      matchType: "!~"
+      value: "Inhibition.*"
+  - name: bigmac
+    oncall: true
+  - name: clippy
+    oncall: true
+  - name: hydra
+    oncall: true
+  - name: phoenix
+    oncall: true
+  - name: rocket
+    oncall: true
+  - name: shield
+    # Shield doesn't have a proper support and on-call rotation yet, we're only forwarding
+    # alerts to the slack channel.
+    oncall: false
   version: "v0.25.0"
 
 certificate:
@@ -77,5 +102,9 @@ security:
     enabled: false
   subnet:
     vpn: ""
+
+proxy:
+  enabled: false
+  # https: ""
 
 vaultHost: ""

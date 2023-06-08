@@ -28,18 +28,26 @@ spec:
           value: "Falco.*"
       continue: false
 
-    # Team Shield Slack
-    # Shield doesn't have a proper support and on-call rotation yet, we're only forwarding
-    # alerts to the slack channel. Once the proper rotation is in place, we have to move it below
-    # the default opsgenie route
-    - receiver: team_shield_slack
+    ## For teams that do not have an oncall rotation, we put them before the opsgenie_router
+    {{- range .Values.alertmanager.teams }}
+    {{- if not .oncall }}
+    - receiver: team_{{ .name }}_slack
       matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "shield"
+      - name: team
+        value: {{ .name }}
+      - name: severity
+        {{- if and (.stableNotifyOnly) (eq $.Values.managementCluster.pipeline "stable") -}}
+        value: "notify"
+        {{- else }}
+        matchType: "=~"
+        value: "page|notify"
+        {{- end }}
+      {{- if .extraMatchers }}
+      {{ toYaml .extraMatchers | nindent 6 }}
+      {{- end }}
       continue: false
+    {{- end }}
+    {{- end }}
 
     # Team Ops Opsgenie
     - receiver: opsgenie_router
@@ -63,104 +71,26 @@ spec:
           value: "ServiceLevelBurnRateTooHigh"
       continue: false
 
-    # Team Atlas Slack
-    - receiver: team_atlas_slack
+    ## Teams with oncall rotation
+    {{- range .Values.alertmanager.teams }}
+    {{- if .oncall }}
+    - receiver: team_{{ .name }}_slack
       matchers:
+      - name: team
+        value: {{ .name }}
       - name: severity
-        {{- if eq .Values.managementCluster.pipeline "stable" }}
+        {{- if and (.stableNotifyOnly) (eq $.Values.managementCluster.pipeline "stable") -}}
         value: "notify"
         {{- else }}
         matchType: "=~"
         value: "page|notify"
         {{- end }}
-      - name: team
-        value: "atlas"
-      - name: type
-        matchType: "!="
-        value: "heartbeat"
-      - name: alertname
-        matchType: "!~"
-        value: "Inhibition.*"
+      {{- if .extraMatchers }}
+      {{ toYaml .extraMatchers | nindent 6 }}
+      {{- end }}
       continue: false
-
-    # Team Celestial Slack
-    - receiver: team_phoenix_slack
-      matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "celestial"
-        - name: sloth_severity
-          matchType: "=~"
-          value: "page|ticket"
-      continue: false
-
-    # Team Firecracker Slack
-    - receiver: team_phoenix_slack
-      matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "firecracker"
-        - name: sloth_severity
-          matchType: "=~"
-          value: "page|ticket" 
-      continue: false
-
-    # Team Phoenix Slack
-    - receiver: team_phoenix_slack
-      matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "phoenix"
-        - name: sloth_severity
-          matchType: "=~"
-          value: "page|ticket" 
-      continue: false
-
-    # Team Hydra Slack
-    - receiver: team_hydra_slack
-      matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "hydra"
-      continue: false
-
-    # Team BigMac Slack	
-    - receiver: team_bigmac_slack
-      matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "bigmac"
-      continue: false
-
-    # Team Clippy Slack
-    - receiver: team_clippy_slack
-      matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "clippy"
-      continue: false
-
-    # Team Rocket Slack
-    - receiver: team_rocket_slack
-      matchers:
-        - name: severity
-          matchType: "=~"
-          value: "page|notify"
-        - name: team
-          value: "rocket"
-      continue: false
+    {{- end }}
+    {{- end }}
 
     # Team Ops Slack
     - receiver: team_ops_slack
@@ -185,191 +115,6 @@ spec:
           - type: button
             text: ':green_book: OpsRecipe'
             url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
-            style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
-          - type: button
-            text: ':coffin: Linked PMs'
-            url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
-          - type: button
-            text: ':mag: Query'
-            url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
-          - type: button
-            text: ':grafana: Dashboard'
-            url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
-          - type: button
-            text: ':no_bell: Silence'
-            url: {{`'{{ template "__alert_silence_link" .}}'`}}
-            style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
-
-  - name: team_atlas_slack
-    slackConfigs:
-    {{- if eq .Values.managementCluster.pipeline "stable" }}
-    - channel: '#alert-atlas'
-    {{- else }}
-    - channel: '#alert-atlas-test'
-    {{- end }}
-      sendResolved: true
-      actions:
-        - type: button
-          text: ':green_book: OpsRecipe'
-          url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
-        - type: button
-          text: ':coffin: Linked PMs'
-          url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
-        - type: button
-          text: ':mag: Query'
-          url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
-        - type: button
-          text: ':grafana: Dashboard'
-          url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
-        - type: button
-          text: ':no_bell: Silence'
-          url: {{`'{{ template "__alert_silence_link" .}}'`}}
-          style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
-
-  - name: team_phoenix_slack
-    slackConfigs:
-    {{- if eq .Values.managementCluster.pipeline "stable" }}
-    - channel: '#alert-phoenix'
-    {{- else }}
-    - channel: '#alert-phoenix-test'
-    {{- end }}
-      sendResolved: true
-      actions:
-        - type: button
-          text: ':green_book: OpsRecipe'
-          url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
-        - type: button
-          text: ':coffin: Linked PMs'
-          url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
-        - type: button
-          text: ':mag: Query'
-          url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
-        - type: button
-          text: ':grafana: Dashboard'
-          url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
-        - type: button
-          text: ':no_bell: Silence'
-          url: {{`'{{ template "__alert_silence_link" . }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
-
-  - name: team_hydra_slack
-    slackConfigs:
-    {{- if eq .Values.managementCluster.pipeline "stable" }}
-    - channel: '#alert-hydra'
-    {{- else }}
-    - channel: '#alert-hydra-test'
-    {{- end }}
-      sendResolved: true
-      actions:
-        - type: button
-          text: ':green_book: OpsRecipe'
-          url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
-        - type: button
-          text: ':coffin: Linked PMs'
-          url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
-        - type: button
-          text: ':mag: Query'
-          url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
-        - type: button
-          text: ':grafana: Dashboard'
-          url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
-        - type: button
-          text: ':no_bell: Silence'
-          url: {{`'{{ template "__alert_silence_link" . }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
-
-  - name: team_bigmac_slack
-    slackConfigs:
-    {{- if eq .Values.managementCluster.pipeline "stable" }}
-    - channel: '#alert-bigmac'
-    {{- else }}
-    - channel: '#alert-bigmac-test'
-    {{- end }}
-      sendResolved: true
-      actions:
-        - type: button
-          text: ':green_book: OpsRecipe'
-          url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
-        - type: button
-          text: ':coffin: Linked PMs'
-          url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
-        - type: button
-          text: ':mag: Query'
-          url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
-        - type: button
-          text: ':grafana: Dashboard'
-          url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
-        - type: button
-          text: ':no_bell: Silence'
-          url: {{`'{{ template "__alert_silence_link" . }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
-
-  - name: team_clippy_slack
-    slackConfigs:
-    {{- if eq .Values.managementCluster.pipeline "stable" }}
-    - channel: '#alert-clippy'
-    {{- else }}
-    - channel: '#alert-clippy-test'
-    {{- end }}
-      sendResolved: true
-      actions:
-        - type: button
-          text: ':green_book: OpsRecipe'
-          url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
-        - type: button
-          text: ':coffin: Linked PMs'
-          url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
-        - type: button
-          text: ':mag: Query'
-          url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
-        - type: button
-          text: ':grafana: Dashboard'
-          url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
-        - type: button
-          text: ':no_bell: Silence'
-          url: {{`'{{ template "__alert_silence_link" . }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
-
-  - name: team_rocket_slack
-    slackConfigs:
-    {{- if eq .Values.managementCluster.pipeline "stable" }}
-    - channel: '#alert-rocket'
-    {{- else }}
-    - channel: '#alert-rocket-test'
-    {{- end }}
-      sendResolved: true
-      actions:
-        - type: button
-          text: ':green_book: OpsRecipe'
-          url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
-        - type: button
-          text: ':coffin: Linked PMs'
-          url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
-        - type: button
-          text: ':mag: Query'
-          url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
-        - type: button
-          text: ':grafana: Dashboard'
-          url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
-        - type: button
-          text: ':no_bell: Silence'
-          url: {{`'{{ template "__alert_silence_link" . }}'`}}
-          style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
-
-  - name: team_shield_slack
-    slackConfigs:
-      - channel: '#alert-shield'
-        sendResolved: true
-        actions:
-          - type: button
-            text: ':green_book: OpsRecipe'
-            url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
             style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
           - type: button
             text: ':coffin: Linked PMs'
@@ -379,16 +124,45 @@ spec:
             url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
           - type: button
             text: ':grafana: Dashboard'
-            url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+            url: '{{ $.Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
           - type: button
             text: ':no_bell: Silence'
-            url: {{`'{{ template "__alert_silence_link" .}}'`}}
+            url: {{`'{{ template "__alert_silence_link" . }}'`}}
             style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
+
+  {{- range .Values.alertmanager.teams }}
+  - name: team_{{ .name }}_slack
+    slackConfigs:
+    {{- if eq $.Values.managementCluster.pipeline "stable" }}
+    - channel: '#alert-{{ .name }}'
+    {{- else }}
+    - channel: '#alert-{{ .name }}-test'
+    {{- end }}
+      sendResolved: true
+      actions:
+        - type: button
+          text: ':green_book: OpsRecipe'
+          url: {{`'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'`}}
+          style: {{`'{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'`}}
+        - type: button
+          text: ':coffin: Linked PMs'
+          url: {{`'{{ template "__alert_linked_postmortems" . }}'`}}
+        - type: button
+          text: ':mag: Query'
+          url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
+        - type: button
+          text: ':grafana: Dashboard'
+          url: '{{ $.Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+        - type: button
+          text: ':no_bell: Silence'
+          url: {{`'{{ template "__alert_silence_link" . }}'`}}
+          style: {{`'{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'`}}
+  {{- end }}
 
   - name: opsgenie_router
     opsgenieConfigs:
       - apiKey:
-          key: {{ .Values.prometheus.heartbeat.opsgenieKey | b64enc | quote }}
+          key: opsGenieApiKey
           name: alertmanager-global
         tags: "{{`{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},`}}{{ .Values.managementCluster.provider.kind }},{{ .Values.managementCluster.name }},{{ .Values.managementCluster.pipeline }}"
 
@@ -413,7 +187,7 @@ spec:
           url: {{`'{{ (index .Alerts 0).GeneratorURL }}'`}}
         - type: button
           text: ':grafana: Dashboard'
-          url: '{{ .Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
+          url: '{{ $.Values.grafana.address }}{{`/d/{{ (index .Alerts 0).Annotations.dashboard }}`}}'
         - type: button
           text: ':no_bell: Silence'
           url: {{`'{{ template "__alert_silence_link" . }}'`}}

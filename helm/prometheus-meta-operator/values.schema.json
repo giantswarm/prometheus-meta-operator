@@ -33,6 +33,40 @@
                         }
                     }
                 },
+                "teams": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "extraMatchers": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "matchType": {
+                                            "type": "string"
+                                        },
+                                        "name": {
+                                            "type": "string"
+                                        },
+                                        "value": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            },
+                            "name": {
+                                "type": "string"
+                            },
+                            "oncall": {
+                                "type": "boolean"
+                            },
+                            "stableNotifyOnly": {
+                                "type": "boolean"
+                            }
+                        }
+                    }
+                },
                 "version": {
                     "type": "string"
                 }
@@ -195,6 +229,14 @@
                 },
                 "scrapeInterval": {
                     "type": "string"
+                }
+            }
+        },
+        "proxy": {
+            "type": "object",
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
                 }
             }
         },

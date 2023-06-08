@@ -20,10 +20,12 @@ spec:
       app.kubernetes.io/instance: alertmanager
       app.kubernetes.io/name: alertmanager
   alertmanagerConfiguration:
+    name: alertmanager-config
     global:
-      ## TODO [[- if .ProxyURL ]] [[ .ProxyURL ]] [[- end ]]
-      #httpConfig:
-      #  proxyURL: 
+      {{- if .Values.proxy.enabled }}
+      httpConfig:
+        proxyURL: {{ .Values.proxy.https }}
+      {{- end }}
       opsGenieApiKey:
         key: opsGenieApiKey
         name: alertmanager-global
