@@ -21,11 +21,14 @@ const (
 	DefaultServicePriority string = "highest"
 	DefaultOrganization    string = "giantswarm"
 
-	ClusterLabel         string = "giantswarm.io/cluster"
-	MonitoringLabel      string = "giantswarm.io/monitoring"
-	OrganizationLabel    string = "giantswarm.io/organization"
-	ServicePriorityLabel string = "giantswarm.io/service-priority"
-	TeamLabel            string = "application.giantswarm.io/team"
+	ClusterLabel                 string = "giantswarm.io/cluster"
+	MonitoringLabel              string = "giantswarm.io/monitoring"
+	OrganizationLabel            string = "giantswarm.io/organization"
+	ServicePriorityLabel         string = "giantswarm.io/service-priority"
+	TeamLabel                    string = "application.giantswarm.io/team"
+	OpsGenieApiKey               string = "opsGenieApiKey" // #nosec G101
+	AlertmanagerGlobalSecretName string = "alertmanager-global"
+
 	// PrometheusCPULimitCoefficient is the number used to compute the CPU limit from the CPU request.
 	// It is used when computing VPA settings, to set `max requests` so that `max limits` respects MaxCPU factor.
 	PrometheusCPULimitCoefficient float64 = 1.5
@@ -228,10 +231,6 @@ func PrometheusDefaultMemoryLimit() *resource.Quantity {
 	)
 }
 
-func AlertmanagerKey() string {
-	return "alertmanager.yaml"
-}
-
 func PrometheusPort() int32 {
 	return 9090
 }
@@ -276,11 +275,11 @@ func PrometheusSTSName(cluster metav1.Object) string {
 	return fmt.Sprintf("prometheus-%s", ClusterID(cluster))
 }
 
-func AlertManagerSecretName() string {
+func AlertmanagerSecretName() string {
 	return "alertmanager-config"
 }
 
-func AlertManagerKey() string {
+func AlertmanagerKey() string {
 	return "alertmanager-additional.yaml"
 }
 
@@ -327,18 +326,6 @@ func CAFilePath() string {
 	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 }
 
-func AlertmanagerConfigMapName() string {
-	return "alertmanager"
-}
-
-func AlertmanagerConfigMapNamespace() string {
-	return monitoring
-}
-
-func AlertmanagerConfigMapKey() string {
-	return "config.yml"
-}
-
 // IsCAPICluster returns false if the cluster has any of the legacy labels such as azure-operator.giantswarm.io/version.
 func IsCAPICluster(obj metav1.Object) bool {
 	// TODO once we have migrated all clusters to CAPI, we can remove this
@@ -367,8 +354,4 @@ func IsCAPICluster(obj metav1.Object) bool {
 
 func IngressClassName() string {
 	return "nginx"
-}
-
-func OpsgenieKey() string {
-	return "opsgenie.key"
 }

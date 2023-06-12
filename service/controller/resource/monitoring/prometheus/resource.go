@@ -153,9 +153,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			// This forces us to use the static config defined in resource/alerting/alertmanagerwiring.
 			AdditionalAlertManagerConfigs: &corev1.SecretKeySelector{
 				LocalObjectReference: corev1.LocalObjectReference{
-					Name: key.AlertManagerSecretName(),
+					Name: key.AlertmanagerSecretName(),
 				},
-				Key: key.AlertManagerKey(),
+				Key: key.AlertmanagerKey(),
 			},
 
 			CommonPrometheusFields: promv1.CommonPrometheusFields{

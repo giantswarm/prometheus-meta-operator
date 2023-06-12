@@ -21,7 +21,7 @@ func TestNamespace(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			return toNamespace(context.TODO(), v)
+			return toNamespace(context.Background(), v)
 		},
 		Update: *update,
 	}
