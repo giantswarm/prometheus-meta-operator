@@ -13,6 +13,8 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/runtime"
 	vpa_clientsetfake "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned/fake"
+	capi "sigs.k8s.io/cluster-api/api/v1beta1"
+	capiexp "sigs.k8s.io/cluster-api/exp/api/v1beta1"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
@@ -53,6 +55,8 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 			Logger: logger,
 			SchemeBuilder: k8sclient.SchemeBuilder{
 				v1.SchemeBuilder.AddToScheme,
+				capi.AddToScheme,
+				capiexp.AddToScheme,
 			},
 		}
 		k8sClient, err = k8sclientfake.NewClients(c, node)
@@ -66,15 +70,17 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
 			c := Config{
-				Logger:    logger,
-				K8sClient: k8sClient,
-				VpaClient: vpa_clientsetfake.NewSimpleClientset(),
+				Logger:       logger,
+				K8sClient:    k8sClient,
+				VpaClient:    vpa_clientsetfake.NewSimpleClientset(),
+				Installation: "gauss",
+				Provider:     "aws",
 			}
 			r, err := New(c)
 			if err != nil {
 				return nil, err
 			}
-			return r.getObject(context.TODO(), v)
+			return r.getObject(context.Background(), v)
 		},
 		Update: *update,
 	}

@@ -55,6 +55,7 @@ data:
           enabled: {{ .Values.ingress.externalDNS }}
       provider:
         kind: {{ .Values.managementCluster.provider.kind }}
+        flavor: {{ .Values.managementCluster.provider.flavor }}
       installation:
         customer: {{ .Values.managementCluster.customer }}
         name: {{ .Values.managementCluster.name }}

@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Dynamically compute Prometheus request memory according to cluster size.
 
+### Added
+
+- Add back Prometheus CPU limits.
+
 ## [4.39.0] - 2023-06-07
 
 ### Removed

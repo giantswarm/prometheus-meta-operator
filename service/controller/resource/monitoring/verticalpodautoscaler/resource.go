@@ -14,6 +14,7 @@ import (
 	vpa_types "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/apis/autoscaling.k8s.io/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -22,15 +23,19 @@ const (
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
-	VpaClient vpa_clientset.Interface
-	Logger    micrologger.Logger
+	K8sClient    k8sclient.Interface
+	VpaClient    vpa_clientset.Interface
+	Logger       micrologger.Logger
+	Installation string
+	Provider     string
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
-	vpaClient vpa_clientset.Interface
-	logger    micrologger.Logger
+	k8sClient    k8sclient.Interface
+	vpaClient    vpa_clientset.Interface
+	logger       micrologger.Logger
+	installation string
+	provider     string
 }
 
 func New(config Config) (*Resource, error) {
@@ -43,11 +48,19 @@ func New(config Config) (*Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
+	if config.Installation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
+	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
+	}
 
 	r := &Resource{
-		k8sClient: config.K8sClient,
-		vpaClient: config.VpaClient,
-		logger:    config.Logger,
+		k8sClient:    config.K8sClient,
+		vpaClient:    config.VpaClient,
+		logger:       config.Logger,
+		installation: config.Installation,
+		provider:     config.Provider,
 	}
 
 	return r, nil
@@ -82,7 +95,10 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	}
 
 	minCpu := key.PrometheusDefaultCPU()
-	minMemory := key.PrometheusDefaultMemory()
+	minMemory, err := prometheus.ComputePrometheusMinMemory(ctx, r.k8sClient, cluster, r.installation, r.provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	nodeList, err := r.listWorkerNodes(ctx)
 	if err != nil {

@@ -199,9 +199,11 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var verticalPodAutoScalerResource resource.Interface
 	{
 		c := verticalpodautoscaler.Config{
-			Logger:    config.Logger,
-			K8sClient: config.K8sClient,
-			VpaClient: config.VpaClient,
+			Logger:       config.Logger,
+			K8sClient:    config.K8sClient,
+			VpaClient:    config.VpaClient,
+			Installation: config.Installation,
+			Provider:     config.Provider,
 		}
 
 		verticalPodAutoScalerResource, err = verticalpodautoscaler.New(c)
