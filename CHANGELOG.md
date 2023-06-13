@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Update dropped labels in KSM metrics to avoid duplicate samples.
+- Drop unused greedy KSM metrics.
+
 ### Added
 
 - Add back Prometheus CPU limits.
