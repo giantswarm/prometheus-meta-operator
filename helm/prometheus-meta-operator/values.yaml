@@ -81,6 +81,7 @@ prometheus:
   evaluationInterval: "60s"
   heartbeat:
     opsgenieKey: ""
+    opsgenieUrl: "https://api.opsgenie.com/"
   host: "prometheus:9090"
   imageRepository: giantswarm/prometheus
   logLevel: info
