@@ -7,14 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add back Prometheus CPU limits.
+
+### Changed
+
+- Use grafana as an alert UI instead of alertmanager.
+
 ### Fixed
 
 - Update dropped labels in KSM metrics to avoid duplicate samples.
 - Drop unused greedy KSM metrics.
-
-### Added
-
-- Add back Prometheus CPU limits.
 
 ## [4.39.0] - 2023-06-07
 
