@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Move `gcp`, `capa` and `capz` alerts to team phoenix.
+
 ### Fixed
 
 - Update dropped labels in KSM metrics to avoid duplicate samples.
