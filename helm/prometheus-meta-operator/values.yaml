@@ -4,8 +4,6 @@ image:
 
 registry:
   domain: docker.io
-  pullSecret:
-    dockerConfigJSON: "Cg=="
 
 pod:
   user:
