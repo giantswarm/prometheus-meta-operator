@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add back Prometheus CPU limits.
+- Add alert routing for `team-turtles`
+
+### Changed
+
+- Move `gcp`, `capa` and `capz` alerts to team phoenix.
 
 ### Fixed
 
