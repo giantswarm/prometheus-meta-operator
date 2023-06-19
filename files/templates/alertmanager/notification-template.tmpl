@@ -1,13 +1,13 @@
-{{ define "__alertmanager" }}Alertmanager{{ end }}
-{{ define "__alertmanagerurl" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D{{ end }}
+{{ define "__alert" }}Alert{{ end }}
+{{ define "__alerturl" }}[[ .GrafanaAddress ]]/alerting/groups?alertmanager=Alertmanager&alertState=active&queryString=alertname%3D%22{{ .CommonLabels.alertname }}%22{{ end }}
 {{ define "__dashboardurl" -}}[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
-{{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
+{{ define "slack.default.username" }}{{ template "__alert" . }}{{ end }}
 {{ define "slack.default.fallback" }}{{ template "slack.default.title" . }} | {{ template "slack.default.titlelink" . }}{{ end }}
 {{ define "slack.default.pretext" }}{{ end }}
-{{ define "slack.default.titlelink" }}{{ template "__alertmanagerurl" . }}{{ end }}
+{{ define "slack.default.titlelink" }}{{ template "__alerturl" . }}{{ end }}
 {{ define "slack.default.iconemoji" }}{{ end }}
 {{ define "slack.default.iconurl" }}{{ end }}
 {{ define "slack.default.text" }}*Cluster:* {{ (index .Alerts 0).Labels.installation }}{{ if (index .Alerts 0).Labels.cluster_id }} / {{ (index .Alerts 0).Labels.cluster_id }}{{ end }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }}
@@ -24,9 +24,8 @@
 {{- end }}
 {{ end }}
 
-
 {{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
-{{ define "opsgenie.default.source" }}{{ template "__alertmanager" . }}{{ end }}
+{{ define "opsgenie.default.source" }}{{ template "__alert" . }}{{ end }}
 {{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
 * Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
 
@@ -36,7 +35,7 @@
 ---
 
 {{ if (index .Alerts 0).Annotations.opsrecipe }}📗 Runbook: {{ template "__runbookurl" . }}{{- end }}
-🔔 Alertmanager {{ template "__alertmanagerurl" . }}
+🔔 Alert {{ template "__alerturl" . }}
 {{- if (index .Alerts 0).Annotations.dashboard }}📈 Dashboard: {{ template "__dashboardurl" . }}{{- end }}
 👀 Prometheus: {{ (index .Alerts 0).GeneratorURL }}
 
@@ -50,13 +49,7 @@
 # to avoid the issue of having trailing comma separator (%2C) at the end
 # of the generated URL
 {{ define "__alert_silence_link" -}}
-    {{ .ExternalURL }}/#/silences/new?filter=%7B
-    {{- range .CommonLabels.SortedPairs -}}
-        {{- if ne .Name "alertname" -}}
-            {{- .Name }}%3D"{{- .Value -}}"%2C%20
-        {{- end -}}
-    {{- end -}}
-    alertname%3D"{{ .CommonLabels.alertname }}"%7D
+[[ .GrafanaAddress ]]/alerting/silence/new?alertmanager=Alertmanager{{- range .CommonLabels.SortedPairs -}}&matcher={{- .Name }}%3D{{- .Value -}}{{- end -}}    
 {{- end }}
 
 # Link to related PMs
