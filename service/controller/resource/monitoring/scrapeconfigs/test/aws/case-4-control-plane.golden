@@ -1793,6 +1793,10 @@
     - vault1.some-installation.test:9005
     labels:
       app: cert-exporter
+  - targets:
+    - vault1.some-installation.test:2112
+    labels:
+      app: vault-etcd-backups-exporter
   relabel_configs:
   # Add cluster_id label.
   - target_label: cluster_id
