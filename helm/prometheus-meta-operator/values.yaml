@@ -15,6 +15,11 @@ ingress:
   externalDNS: false
   className: "nginx"
 
+# Enable Kyverno PolicyException
+kyvernoPolicyExceptions:
+  enabled: true
+  namespace: giantswarm
+
 alertmanager:
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"
