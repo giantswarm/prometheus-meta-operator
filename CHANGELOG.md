@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.41.0] - 2023-06-22
+
 ### Added
 
 - Added scrape for `vault-etcd-backups-exporter` towards legacy vault VMs.
@@ -2180,7 +2182,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.40.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.41.0...HEAD
+[4.41.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.40.0...v4.41.0
 [4.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.39.0...v4.40.0
 [4.39.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.38.2...v4.39.0
 [4.38.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.38.1...v4.38.2
