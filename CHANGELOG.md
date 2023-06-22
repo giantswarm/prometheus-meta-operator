@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added scrape for `vault-etcd-backups-exporter` towards legacy vault VMs.
+
 ## [4.40.0] - 2023-06-19
 
 ### Added
