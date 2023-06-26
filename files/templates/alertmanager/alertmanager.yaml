@@ -100,7 +100,8 @@ route:
     continue: false
 
   # Team Clippy Slack
-  - receiver: team_clippy_slack
+  # ReRoute to `phoenix` until we change all team ownership labels
+  - receiver: team_phoenix_slack
     matchers:
     - severity=~"page|notify"
     - team="clippy"
@@ -216,33 +217,6 @@ receivers:
   - channel: '#alert-bigmac'
   [[- else ]]
   - channel: '#alert-bigmac-test'
-  [[- end ]]
-    send_resolved: true
-    actions:
-    - type: button
-      text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
-      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
-    - type: button
-      text: ':coffin: Linked PMs'
-      url: '{{ template "__alert_linked_postmortems" . }}'
-    - type: button
-      text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
-    - type: button
-      text: ':grafana: Dashboard'
-      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
-    - type: button
-      text: ':no_bell: Silence'
-      url: '{{ template "__alert_silence_link" . }}'
-      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
-
-- name: team_clippy_slack
-  slack_configs:
-  [[- if eq .Pipeline "stable" ]]
-  - channel: '#alert-clippy'
-  [[- else ]]
-  - channel: '#alert-clippy-test'
   [[- end ]]
     send_resolved: true
     actions:
