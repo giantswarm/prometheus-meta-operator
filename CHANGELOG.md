@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- ReRoute clippy alerts to `phoenix slack` until all team labels are changed
+
 ## [4.41.0] - 2023-06-22
 
 ### Added
