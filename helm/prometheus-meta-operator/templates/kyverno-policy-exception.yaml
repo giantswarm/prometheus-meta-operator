@@ -11,18 +11,17 @@ metadata:
   namespace: {{ .Values.kyvernoPolicyExceptions.namespace | default (include "resource.default.namespace" .) }}
 spec:
   exceptions:
+  {{- if eq .Values.managementCluster.provider.flavor "vintage" }}
+  ## Needed to access etcd certs in vintage
   - policyName: disallow-host-path
     ruleNames:
     - host-path
     - autogen-host-path
-  - policyName: disallow-capabilities-strict
+  - policyName: restrict-volume-types
     ruleNames:
-    - require-drop-all
-    - autogen-require-drop-all
-  - policyName: disallow-privilege-escalation
-    ruleNames:
-    - privilege-escalation
-    - autogen-privilege-escalation
+    - restricted-volumes
+    - autogen-restricted-volumes
+  {{- end }}
   - policyName: require-run-as-non-root-user
     ruleNames:
     - run-as-non-root-user
@@ -35,10 +34,6 @@ spec:
     ruleNames:
     - check-seccomp-strict
     - autogen-check-seccomp-strict
-  - policyName: restrict-volume-types
-    ruleNames:
-    - restricted-volumes
-    - autogen-restricted-volumes
   match:
     any:
     - resources:

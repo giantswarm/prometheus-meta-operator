@@ -20,6 +20,47 @@ spec:
       labels:
         {{- include "labels.common" . | nindent 8 }}
     spec:
+      containers:
+        - name: {{ include "name" . }}
+          image: "{{ .Values.registry.domain }}/{{ .Values.operator.image.name }}:{{ .Values.operator.image.tag }}"
+          args:
+          - daemon
+          - --config.dirs=/var/run/{{ include "name" . }}/configmap/,/var/run/{{ include "name" . }}/secret/
+          - --config.files=config,secret
+          ports:
+          - name: http
+            containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 220Mi
+            limits:
+              cpu: 100m
+              memory: 220Mi
+          securityContext: 
+            {{ toYaml .Values.operator.containerSecurityContext | nindent 12 }}
+          volumeMounts:
+          - name: {{ include "name" . }}-configmap
+            mountPath: /var/run/{{ include "name" . }}/configmap/
+          - name: {{ include "name" . }}-secret
+            mountPath: /var/run/{{ include "name" . }}/secret/
+        {{- if eq .Values.managementCluster.provider.flavor "vintage" }}
+          - mountPath: /etcd-client-certs/ca.pem
+            name: etcd-client-ca
+          - mountPath: /etcd-client-certs/crt.pem
+            name: etcd-client-crt
+          - mountPath: /etcd-client-certs/key.pem
+            name: etcd-client-key
+          {{- end }}
+      serviceAccountName: {{ include "resource.default.name"  . }}
+      securityContext:
+        {{ toYaml .Values.operator.securityContext | nindent 8 }}
       volumes:
       - name: {{ include "name" . }}-configmap
         configMap:
@@ -47,43 +88,3 @@ spec:
           path: {{ .Values.prometheus.etcdClientCertificates.key }}
           type: File
       {{- end }}
-      serviceAccountName: {{ include "resource.default.name"  . }}
-      securityContext:
-        runAsUser: {{ .Values.pod.user.id }}
-        runAsGroup: {{ .Values.pod.group.id }}
-      containers:
-      - name: {{ include "name" . }}
-        image: "{{ .Values.registry.domain }}/{{ .Values.image.name }}:{{ .Values.image.tag }}"
-        args:
-        - daemon
-        - --config.dirs=/var/run/{{ include "name" . }}/configmap/,/var/run/{{ include "name" . }}/secret/
-        - --config.files=config,secret
-        ports:
-        - name: http
-          containerPort: 8000
-        volumeMounts:
-        - name: {{ include "name" . }}-configmap
-          mountPath: /var/run/{{ include "name" . }}/configmap/
-        - name: {{ include "name" . }}-secret
-          mountPath: /var/run/{{ include "name" . }}/secret/
-       {{- if eq .Values.managementCluster.provider.flavor "vintage" }}
-        - mountPath: /etcd-client-certs/ca.pem
-          name: etcd-client-ca
-        - mountPath: /etcd-client-certs/crt.pem
-          name: etcd-client-crt
-        - mountPath: /etcd-client-certs/key.pem
-          name: etcd-client-key
-        {{- end }}
-        livenessProbe:
-          httpGet:
-            path: /healthz
-            port: 8000
-          initialDelaySeconds: 30
-          timeoutSeconds: 1
-        resources:
-          requests:
-            cpu: 100m
-            memory: 220Mi
-          limits:
-            cpu: 100m
-            memory: 220Mi

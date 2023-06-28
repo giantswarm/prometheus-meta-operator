@@ -1,15 +1,5 @@
-image:
-  name: "giantswarm/prometheus-meta-operator"
-  tag: "[[ .Version ]]"
-
 registry:
   domain: docker.io
-
-pod:
-  user:
-    id: 0
-  group:
-    id: 1000
 
 ingress:
   externalDNS: false
@@ -82,3 +72,29 @@ security:
     vpn: ""
 
 vaultHost: ""
+
+operator:
+  image:
+    name: "giantswarm/prometheus-meta-operator"
+    tag: "[[ .Version ]]"
+
+  ## SecurityContext holds pod-level security attributes and common container settings.
+  ## This defaults to non root user with uid 1000 and gid 2000. *v1.PodSecurityContext  false
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    runAsGroup: 1000
+    runAsNonRoot: false
+    # Needed for vintage etcd certs, can be set to 1000 when we support only CAPI
+    runAsUser: 0
+    fsGroup: 1000
+
+  ## Container-specific security context configuration
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  containerSecurityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+      - ALL
