@@ -9,21 +9,21 @@ var _ = flag.Bool("update", false, "update the ouput file")
 
 func TestShardComputationScaleUp(t *testing.T) {
 	expected := 1
-	result := computeShards(0, 20)
+	result := computeShards(0, float64(1_000_000))
 	if result != expected {
-		t.Errorf(`expected computeShards(0, 20) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(0, 1_000_000) to be %d, got %d`, expected, result)
 	}
 
 	expected = 2
-	result = computeShards(0, 21)
+	result = computeShards(0, float64(1_000_001))
 	if result != expected {
-		t.Errorf(`expected computeShards(0, 21) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(0, 1_000_001) to be %d, got %d`, expected, result)
 	}
 
 	expected = 3
-	result = computeShards(0, 41)
+	result = computeShards(0, float64(2_000_001))
 	if result != expected {
-		t.Errorf(`expected computeShards(0, 41) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(0, 2_000_001) to be %d, got %d`, expected, result)
 	}
 }
 
@@ -43,27 +43,27 @@ func TestShardComputationReturnsAtLeast1Shart(t *testing.T) {
 
 func TestShardComputationScaleDown(t *testing.T) {
 	expected := 2
-	result := computeShards(1, 21)
+	result := computeShards(1, 1_000_001)
 	if result != expected {
-		t.Errorf(`expected computeShards(1, 21) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(1, 1_000_001) to be %d, got %d`, expected, result)
 	}
 
 	expected = 2
-	result = computeShards(2, 19)
+	result = computeShards(2, 999_999)
 	if result != expected {
-		t.Errorf(`expected computeShards(2, 19) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(2, 999_999) to be %d, got %d`, expected, result)
 	}
 
 	expected = 2
-	result = computeShards(2, 16)
+	result = computeShards(2, 800_001)
 	if result != expected {
-		t.Errorf(`expected computeShards(2, 16) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(2, 800_001) to be %d, got %d`, expected, result)
 	}
 
 	// threshold hit
 	expected = 1
-	result = computeShards(2, 15)
+	result = computeShards(2, 800_000)
 	if result != expected {
-		t.Errorf(`expected computeShards(2, 15) to be %d, got %d`, expected, result)
+		t.Errorf(`expected computeShards(2, 800_000) to be %d, got %d`, expected, result)
 	}
 }

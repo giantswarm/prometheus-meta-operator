@@ -10,7 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/nodecounter"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheusquerier"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -131,11 +131,11 @@ func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespac
 
 // We want to compute the number of shards based on the number of nodes.
 func (r *Resource) getShardsCountForCluster(ctx context.Context, cluster metav1.Object, currentShardCount int) (int, error) {
-	nodeCount, err := nodecounter.CountClusterNodes(ctx, r.k8sClient, cluster)
+	headSeries, err := prometheusquerier.QueryTSDBHeadSeries(key.ClusterID(cluster))
 	if err != nil {
 		return 0, microerror.Mask(err)
 	}
-	return computeShards(currentShardCount, nodeCount), nil
+	return computeShards(currentShardCount, headSeries), nil
 }
 
 func (r *Resource) createConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string, version string) error {
