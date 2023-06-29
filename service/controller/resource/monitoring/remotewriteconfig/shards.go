@@ -3,19 +3,19 @@ package remotewriteconfig
 import "math"
 
 const (
-	shardNodeStep            = 20
-	shardScaleDownPercentage = float64(0.25)
-	shardScaleDownThreshold  = shardScaleDownPercentage * shardNodeStep
+	shardStep                = float64(1_000_000)
+	shardScaleDownPercentage = float64(0.20)
+	shardScaleDownThreshold  = shardScaleDownPercentage * shardStep
 )
 
-// We want to start with 1 prometheus-agent every 20 nodes with 25% threshold to scale down.
-func computeShards(currentShardCount int, nodeCount int) int {
-	desiredShardCount := int(math.Ceil(float64(nodeCount) / shardNodeStep))
+// We want to start with 1 prometheus-agent for each 1M time series with a scale down 25% threshold.
+func computeShards(currentShardCount int, timeSeries float64) int {
+	desiredShardCount := int(math.Ceil(timeSeries / shardStep))
 
 	// Compute Scale Down
 	if currentShardCount > desiredShardCount {
-		// We get the rest of a division of nodeCount by ShardNodeStep (215 % 20 = 15 and we check if the threshold is passed)
-		if float64(nodeCount%shardNodeStep) > shardNodeStep-shardScaleDownThreshold {
+		// We get the rest of a division of timeSeries by shardStep and we compare it with the scale down threshold
+		if math.Mod(timeSeries, shardStep) > shardStep-shardScaleDownThreshold {
 			desiredShardCount = currentShardCount
 		}
 	}

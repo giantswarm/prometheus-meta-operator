@@ -18,6 +18,8 @@ require (
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.14
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.62.0
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.62.0
+	github.com/prometheus/client_golang v1.12.2
+	github.com/prometheus/common v0.34.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/viper v1.15.0
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
@@ -84,9 +86,7 @@ require (
 	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	github.com/prometheus/client_golang v1.12.2 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
-	github.com/prometheus/common v0.34.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
