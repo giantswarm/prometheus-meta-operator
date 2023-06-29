@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/operatorkit/v7/pkg/resource"
+	"github.com/giantswarm/operatorkit/v8/pkg/resource"
 	v1 "k8s.io/api/core/v1"
 )
 
