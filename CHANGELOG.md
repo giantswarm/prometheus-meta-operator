@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change shard computation to be based on number of head series.
 
+### Fixed
+
+- Fix some security concerns.
+
 ## [4.42.0] - 2023-06-26
 
 ### Added

@@ -62,17 +62,6 @@
                 }
             }
         },
-        "image": {
-            "type": "object",
-            "properties": {
-                "name": {
-                    "type": "string"
-                },
-                "tag": {
-                    "type": "string"
-                }
-            }
-        },
         "ingress": {
             "type": "object",
             "properties": {
@@ -123,21 +112,55 @@
                 }
             }
         },
-        "pod": {
+        "operator": {
             "type": "object",
             "properties": {
-                "group": {
+                "containerSecurityContext": {
                     "type": "object",
                     "properties": {
-                        "id": {
-                            "type": "integer"
+                        "allowPrivilegeEscalation": {
+                            "type": "boolean"
+                        },
+                        "capabilities": {
+                            "type": "object",
+                            "properties": {
+                                "drop": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "readOnlyRootFilesystem": {
+                            "type": "boolean"
                         }
                     }
                 },
-                "user": {
+                "image": {
                     "type": "object",
                     "properties": {
-                        "id": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "securityContext": {
+                    "type": "object",
+                    "properties": {
+                        "fsGroup": {
+                            "type": "integer"
+                        },
+                        "runAsGroup": {
+                            "type": "integer"
+                        },
+                        "runAsNonRoot": {
+                            "type": "boolean"
+                        },
+                        "runAsUser": {
                             "type": "integer"
                         }
                     }
