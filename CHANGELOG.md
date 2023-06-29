@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.43.0] - 2023-06-29
+
 ### Changed
 
 - Change shard computation to be based on number of head series.
@@ -2197,7 +2199,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.42.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.43.0...HEAD
+[4.43.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.42.0...v4.43.0
 [4.42.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.41.0...v4.42.0
 [4.41.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.40.0...v4.41.0
 [4.40.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.39.0...v4.40.0
