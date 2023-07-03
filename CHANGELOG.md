@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.43.2] - 2023-07-03
+
 ### Fixed
 
 - Set number of shards to existing value if Prometheus is not reachable to avoid a race condition on cluster creation.
@@ -2205,7 +2207,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.43.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.43.2...HEAD
+[4.43.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.43.1...v4.43.2
 [4.43.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.43.0...v4.43.1
 [4.43.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.42.0...v4.43.0
 [4.42.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.41.0...v4.42.0
