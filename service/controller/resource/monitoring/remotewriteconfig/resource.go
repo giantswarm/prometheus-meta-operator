@@ -2,6 +2,8 @@ package remotewriteconfig
 
 import (
 	"context"
+	"errors"
+	"net"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -133,6 +135,12 @@ func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespac
 func (r *Resource) getShardsCountForCluster(ctx context.Context, cluster metav1.Object, currentShardCount int) (int, error) {
 	headSeries, err := prometheusquerier.QueryTSDBHeadSeries(key.ClusterID(cluster))
 	if err != nil {
+		// If prometheus is not accessible (for instance, not running because this is a new cluster, we check if prometheus is accessible)
+		var dnsError *net.DNSError
+		if errors.As(err, &dnsError) {
+			return computeShards(currentShardCount, 1), nil
+		}
+
 		return 0, microerror.Mask(err)
 	}
 	return computeShards(currentShardCount, headSeries), nil
