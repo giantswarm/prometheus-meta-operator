@@ -40,9 +40,13 @@ route:
     continue: false
 
   # Team Ops Opsgenie
+  # if the pipeline is stable-testing only page for WCs
   - receiver: opsgenie_router
     matchers:
     - severity="page"
+    [[- if eq .Pipeline "stable-testing" ]]
+    - cluster_type="management_cluster"
+    [[- end ]]
     continue: true
 
   # Service Level slack -- chooses the slack channel based on the provider
@@ -348,6 +352,8 @@ receivers:
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 inhibit_rules:
+
+
 - source_matchers:
   - inhibit_kube_state_metrics_down=true
   target_matchers:
