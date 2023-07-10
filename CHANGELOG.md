@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Changed
+
+- When the cluster pipeline is set to stable-testing, only route management cluster alerts to opsgenie. 
+
 ## [4.44.0] - 2023-07-04
 
 ### Removed
