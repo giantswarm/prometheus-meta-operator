@@ -17,6 +17,12 @@ route:
   receiver: root
 
   routes:
+  [[- if eq .Pipeline "stable-testing" ]]
+  - receiver: null
+    matchers:
+    - cluster_type="workload_cluster"
+    continue: false
+  [[- end ]]
 
   - receiver: harbor_implementation
     matchers:
@@ -40,13 +46,9 @@ route:
     continue: false
 
   # Team Ops Opsgenie
-  # if the pipeline is stable-testing only page for WCs
   - receiver: opsgenie_router
     matchers:
     - severity="page"
-    [[- if eq .Pipeline "stable-testing" ]]
-    - cluster_type="management_cluster"
-    [[- end ]]
     continue: true
 
   # Service Level slack -- chooses the slack channel based on the provider
@@ -133,6 +135,10 @@ route:
 
 receivers:
 - name: root
+
+[[- if eq .Pipeline "stable-testing" ]]
+- name: null
+[[- end ]]
 
 - name: 'harbor_implementation'
   slack_configs:
