@@ -17,6 +17,12 @@ route:
   receiver: root
 
   routes:
+  [[- if eq .Pipeline "stable-testing" ]]
+  - receiver: null
+    matchers:
+    - cluster_type="workload_cluster"
+    continue: false
+  [[- end ]]
 
   # Falco noise Slack
   - receiver: falco_noise_slack
@@ -124,6 +130,10 @@ route:
 
 receivers:
 - name: root
+
+[[- if eq .Pipeline "stable-testing" ]]
+- name: null
+[[- end ]]
 
 - name: falco_noise_slack
   slack_configs:
