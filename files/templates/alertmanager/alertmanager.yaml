@@ -135,10 +135,6 @@ receivers:
 - name: null
 [[- end ]]
 
-- name: 'harbor_implementation'
-  slack_configs:
-  - channel: '#harbor-implementation'
-
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
