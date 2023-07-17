@@ -24,11 +24,6 @@ route:
     continue: false
   [[- end ]]
 
-  - receiver: harbor_implementation
-    matchers:
-    - app="harbor"
-    continue: false
-
   # Falco noise Slack
   - receiver: falco_noise_slack
     matchers:
