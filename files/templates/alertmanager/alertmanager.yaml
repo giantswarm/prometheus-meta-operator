@@ -22,6 +22,10 @@ route:
     matchers:
     - cluster_type="workload_cluster"
     continue: false
+  - receiver: null
+    matchers:
+    - alertname=~"WorkloadClusterApp.*"
+    continue: false
   [[- end ]]
 
   # Falco noise Slack
