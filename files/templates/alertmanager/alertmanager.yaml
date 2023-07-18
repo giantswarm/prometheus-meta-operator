@@ -27,7 +27,6 @@ route:
     - alertname=~"WorkloadClusterApp.*"
     continue: false
   [[- end ]]
-  
 
   # Falco noise Slack
   - receiver: falco_noise_slack
