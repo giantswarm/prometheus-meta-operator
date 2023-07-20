@@ -56,7 +56,6 @@ route:
     - severity="page"
     continue: true
 
-
   # Service Level slack -- chooses the slack channel based on the provider
   [[- if or (eq .Provider "aws") (eq .Provider "azure") (eq .Provider "gcp") (eq .Provider "capa") (eq .Provider "capz") ]]
   - receiver: team_phoenix_slack
