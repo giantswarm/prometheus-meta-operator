@@ -6,6 +6,7 @@ var (
 	name        = "prometheus-meta-operator"
 	source      = "https://github.com/giantswarm/prometheus-meta-operator"
 	version     = "4.45.1-dev"
+	version     = "4.45.1"
 )
 
 func Description() string {
