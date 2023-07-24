@@ -324,70 +324,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-# aws-node
-- job_name: kubernetes-prometheus/aws-node-kubernetes/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: pod
-
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - target_label: __address__
-    replacement: kubernetes.default:443
-  - source_labels: [__meta_kubernetes_pod_name]
-    regex: (aws-node.*)
-    target_label: __metrics_path__
-    replacement: /api/v1/namespaces/kube-system/pods/${1}:61678/proxy/metrics
-  - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_name]
-    regex: kube-system;aws-node.*
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
-  - source_labels: [__meta_kubernetes_pod_node_name]
-    target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-  metric_relabel_configs:
-    # drop metrics with the highest cardinality as they increase Prometheus memory usage
-  - source_labels: [__name__]
-    regex: awscni_assigned_ip_per_cidr
-    action: drop
 # Add etcd configuration
 - job_name: kubernetes-prometheus/etcd-kubernetes/0
   honor_labels: true
@@ -1056,7 +992,7 @@
   - action: labeldrop
     regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
 
-# cert-operator (missing label)
+# cert-operator (missing label) (versionned so it needs to be kept)
 - job_name: kubernetes-prometheus/cert-operator-kubernetes/0
   honor_labels: true
   scheme: http
@@ -1092,151 +1028,6 @@
     target_label: __scheme__
     replacement: $1
     action: replace
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
-  - source_labels: [__meta_kubernetes_pod_node_name]
-    target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-# fluentbit
-- job_name: kubernetes-prometheus/fluentbit-kubernetes/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: fluentbit
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-  # Add namespace label.
-  - source_labels: [__meta_kubernetes_namespace]
-    target_label: namespace
-  # Add pod label.
-  - source_labels: [__meta_kubernetes_pod_name]
-    target_label: pod
-  # Add container label.
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: container
-  # Add node label.
-  - source_labels: [__meta_kubernetes_pod_node_name]
-    target_label: node
-  # Add role label.
-  - source_labels: [__meta_kubernetes_node_label_role]
-    target_label: role
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: aws
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization 
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
-# giantswarm-api (missing label)
-- job_name: kubernetes-prometheus/giantswarm-api-kubernetes/0
-  honor_labels: true
-  scheme: https
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: api
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scrape]
-    regex: true
-    action: keep
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_path]
-    regex: (.+)
-    target_label: __metrics_path__
-    replacement: $1
-    action: replace
-  - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
-    regex: (.+)(?::\d+);(\d+)
-    target_label: __address__
-    replacement: $1:$2
-    action: replace
-  - source_labels: [__meta_kubernetes_service_annotation_prometheus_io_scheme]
-    regex: (https?)
-    target_label: __scheme__
-    replacement: $1
-    action: replace
-  - source_labels: [__meta_kubernetes_pod_label_app]
-    target_label: app
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
     action: drop
@@ -1333,8 +1124,8 @@
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
     insecure_skip_verify: true
   relabel_configs:
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring]
-    regex: "true"
+  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
+    regex: .*(true).*
     action: drop
   - source_labels: [__meta_kubernetes_service_label_k8s_app]
     regex: nginx-ingress-controller.*
