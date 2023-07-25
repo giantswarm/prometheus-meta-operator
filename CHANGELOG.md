@@ -29,7 +29,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Remove #harbor-implementation integration.
+- Clean up unused targets (moved to service monitors).
+- Remove #harbor-implementation slack integration.
 
 ## [4.44.0] - 2023-07-04
 
