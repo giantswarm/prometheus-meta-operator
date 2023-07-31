@@ -24,8 +24,14 @@ route:
     continue: false
   - receiver: null
     matchers:
-    - alertname=~"WorkloadClusterApp.*"
+    - alertname="WorkloadClusterAppNotInstalled"
     continue: false
+  - receiver: null
+    matchers:
+    - alertname="Heartbeat"
+      cluster_id!=[[ .Installation ]]
+    continue: false
+    
   [[- end ]]
 
   # Falco noise Slack
