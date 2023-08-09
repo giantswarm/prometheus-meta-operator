@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Apply Kyverno policy exception to the PMO replicaset as well.
 
+### Fixed
+
+- Fix null receiver name
+
 ## [4.45.1] - 2023-07-18
 
 ## Changed

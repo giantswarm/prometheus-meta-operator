@@ -18,11 +18,11 @@ route:
 
   routes:
   [[- if eq .Pipeline "stable-testing" ]]
-  - receiver: null
+  - receiver: blackhole
     matchers:
     - cluster_type="workload_cluster"
     continue: false
-  - receiver: null
+  - receiver: blackhole
     matchers:
     - alertname=~"WorkloadClusterApp.*"
     continue: false
@@ -136,7 +136,7 @@ receivers:
 - name: root
 
 [[- if eq .Pipeline "stable-testing" ]]
-- name: null
+- name: blackhole
 [[- end ]]
 
 - name: falco_noise_slack
