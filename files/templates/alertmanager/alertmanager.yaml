@@ -18,11 +18,11 @@ route:
 
   routes:
   [[- if eq .Pipeline "stable-testing" ]]
-  - receiver: null
+  - receiver: blackhole
     matchers:
     - cluster_type="workload_cluster"
     continue: false
-  - receiver: null
+  - receiver: blackhole
     matchers:
     - alertname=~"WorkloadClusterApp.*"
     continue: false
@@ -32,6 +32,12 @@ route:
   - receiver: falco_noise_slack
     matchers:
     - alertname=~"Falco.*"
+    continue: false
+
+  - receiver: team_tinkerers_slack
+    matchers:
+    - severity=~"page|notify"
+    - team="tinkerers"
     continue: false
 
   # Team Shield Slack
@@ -136,7 +142,7 @@ receivers:
 - name: root
 
 [[- if eq .Pipeline "stable-testing" ]]
-- name: null
+- name: blackhole
 [[- end ]]
 
 - name: falco_noise_slack
@@ -318,6 +324,29 @@ receivers:
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
+- name: team_tinkerers_slack
+  slack_configs:
+  - channel: '#alert-tinkerers'
+    send_resolved: true
+    actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ (index .Alerts 0).GeneratorURL }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: '[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" .}}'
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 - name: opsgenie_router

@@ -7,9 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add team `tinkerers` slack router and receiver.
+
 ### Changed
 
 - Apply Kyverno policy exception to the PMO replicaset as well.
+
+### Fixed
+
+- Fix null receiver name
 
 ## [4.45.1] - 2023-07-18
 
@@ -25,7 +33,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Remove #harbor-implementation integration.
+- Clean up unused targets (moved to service monitors).
+- Remove #harbor-implementation slack integration.
 
 ## [4.44.0] - 2023-07-04
 

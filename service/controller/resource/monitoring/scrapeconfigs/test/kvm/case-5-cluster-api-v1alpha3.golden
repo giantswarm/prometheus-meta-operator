@@ -246,7 +246,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-# aws-node
 # Add etcd configuration
 - job_name: baz-prometheus/etcd-baz/0
   honor_labels: true
