@@ -17,7 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix null receiver name
+- Fix null receiver name.
+- Remove `aws-load-balancer-controller` from the list of ignored targets.
 
 ## [4.45.1] - 2023-07-18
 

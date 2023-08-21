@@ -404,9 +404,6 @@
   - source_labels: [app]
     regex: kube-state-metrics
     action: drop
-  - source_labels: [app]
-    regex: aws-load-balancer-controller
-    action: drop
   # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
     regex: nginx_ingress_controller_(bytes_sent_bucket|request_size_bucket|response_duration_seconds_bucket|response_size_bucket|request_duration_seconds_count|connect_duration_seconds_bucket|header_duration_seconds_bucket|bytes_sent_count|request_duration_seconds_sum|bytes_sent_sum|request_size_count|response_size_count|response_duration_seconds_sum|response_duration_seconds_count|ingress_upstream_latency_seconds|ingress_upstream_latency_seconds_sum|ingress_upstream_latency_seconds_count)
