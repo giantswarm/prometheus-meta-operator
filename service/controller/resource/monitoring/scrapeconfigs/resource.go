@@ -262,7 +262,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 	}
 
 	if version.GTE(bundleWithKSMAndExportersVersion) {
-		ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics", "aws-load-balancer-controller")
+		ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
 
 		if key.IsCAPIManagementCluster(config.Provider) {
 			ignoredTargets = append(ignoredTargets, "etcd")
