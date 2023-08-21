@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.46.0] - 2023-08-21
+
 ### Added
 
 - Add team `tinkerers` slack router and receiver.
@@ -17,7 +19,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix null receiver name
+- Fix null receiver name.
+- Remove `aws-load-balancer-controller` from the list of ignored targets.
 
 ## [4.45.1] - 2023-07-18
 
@@ -2242,7 +2245,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.45.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.46.0...HEAD
+[4.46.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.45.1...v4.46.0
 [4.45.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.45.0...v4.45.1
 [4.45.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.44.0...v4.45.0
 [4.44.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.43.2...v4.44.0
