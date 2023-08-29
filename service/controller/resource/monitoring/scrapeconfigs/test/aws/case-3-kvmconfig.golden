@@ -112,7 +112,6 @@
   - role: node
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -173,7 +172,6 @@
   - role: node
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -238,7 +236,6 @@
   - role: pod
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -370,7 +367,6 @@
       - kube-system
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -455,7 +451,6 @@
       - kube-system
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -540,7 +535,6 @@
       - kube-system
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -616,7 +610,6 @@
       - kube-system
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -696,7 +689,6 @@
 
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -766,7 +758,6 @@
   - role: pod
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
@@ -825,7 +816,6 @@
   - role: endpoints
 
     api_server: https://master.bar:443
-    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false

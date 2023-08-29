@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Support flux-managed clusters.
+
 ## [4.47.0] - 2023-09-14
 
 ### Changed
