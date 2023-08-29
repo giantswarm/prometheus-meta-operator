@@ -22,6 +22,8 @@ spec:
           - key: node-role.kubernetes.io/control-plane
             operator: DoesNotExist
   apiserverConfig:
+    authorization:
+      credentialsFile: /etc/prometheus/secrets/cluster-certificates/token
     host: https://master.foo:443
     tlsConfig:
       ca: {}

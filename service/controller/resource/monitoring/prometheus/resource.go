@@ -261,6 +261,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
+			Authorization: &promv1.Authorization{
+				CredentialsFile: fmt.Sprintf("/etc/prometheus/secrets/%s/token", key.Secret()),
+			},
 			TLSConfig: &promv1.TLSConfig{
 				CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.APIServerCertificatesSecretName),
 				CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.APIServerCertificatesSecretName),

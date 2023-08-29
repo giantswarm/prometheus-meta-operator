@@ -1,6 +1,8 @@
 [[- define "_apiserver" -]]
 [[- if ne .ClusterType "management_cluster" ]]
     api_server: https://[[ .APIServerURL ]]
+    authorization:
+      credentials_file: /etc/prometheus/secrets/[[ .SecretName ]]/token
     tls_config:
       ca_file: /etc/prometheus/secrets/[[ .SecretName ]]/ca
       cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
