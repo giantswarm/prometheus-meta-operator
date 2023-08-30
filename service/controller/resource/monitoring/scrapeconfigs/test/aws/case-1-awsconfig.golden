@@ -6,17 +6,14 @@
   - role: endpoints
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_component]
@@ -59,15 +56,14 @@
   - role: node
 
     api_server: https://master.alice:443
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
   relabel_configs:
   - target_label: __address__
@@ -116,17 +112,14 @@
   - role: node
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - target_label: app
@@ -180,17 +173,14 @@
   - role: node
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
   relabel_configs:
   - source_labels: [__address__]
@@ -248,17 +238,14 @@
   - role: pod
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: false
   relabel_configs:
   - source_labels: [__address__]
@@ -321,12 +308,10 @@
   
 
     api_server: https://master.alice:443
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -385,17 +370,14 @@
       - kube-system
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
@@ -473,17 +455,14 @@
       - kube-system
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
@@ -561,17 +540,14 @@
       - kube-system
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
@@ -640,17 +616,14 @@
       - kube-system
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
@@ -723,17 +696,14 @@
 
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__address__]
@@ -796,17 +766,14 @@
   - role: pod
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - target_label: __address__
@@ -858,17 +825,14 @@
   - role: endpoints
 
     api_server: https://master.alice:443
-    authorization:
-      credentials_file: /etc/prometheus/secrets/cluster-certificates/token
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
+  
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
     insecure_skip_verify: true
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]

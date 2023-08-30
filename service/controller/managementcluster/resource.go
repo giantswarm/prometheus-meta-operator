@@ -175,6 +175,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := prometheus.Config{
 			Address:            config.PrometheusAddress,
 			PrometheusClient:   config.PrometheusClient,
+			K8sClient:          config.K8sClient,
 			Logger:             config.Logger,
 			Customer:           config.Customer,
 			Installation:       config.Installation,

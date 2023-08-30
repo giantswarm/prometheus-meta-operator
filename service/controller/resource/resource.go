@@ -242,6 +242,7 @@ func New(config Config) ([]resource.Interface, error) {
 	{
 		c := prometheus.Config{
 			Address:            config.PrometheusAddress,
+			K8sClient:          config.K8sClient,
 			PrometheusClient:   config.PrometheusClient,
 			Logger:             config.Logger,
 			Customer:           config.Customer,

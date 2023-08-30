@@ -177,16 +177,10 @@
   [[ else ]]
   - role: node
   [[ end ]]
-[[ if ne .ClusterType "management_cluster" ]]
-    api_server: https://[[ .APIServerURL ]]
-    tls_config:
-      ca_file: /etc/prometheus/secrets/[[ .SecretName ]]/ca
-      cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
-      key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
-      insecure_skip_verify: false
-[[ else ]]
+[[ include "_apiserver" . ]]
+[[- if eq .ClusterType "management_cluster" ]]
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-[[ end ]]
+[[- end ]]
   tls_config:
     ca_file: /etc/prometheus/secrets/[[ .EtcdSecretName ]]/ca
     cert_file: /etc/prometheus/secrets/[[ .EtcdSecretName ]]/crt

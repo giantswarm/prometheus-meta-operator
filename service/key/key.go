@@ -1,9 +1,11 @@
 package key
 
 import (
+	"context"
 	"fmt"
 	"math"
 
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
@@ -297,4 +299,18 @@ func ClusterType(installation string, obj interface{}) string {
 	}
 
 	return "workload_cluster"
+}
+
+func ApiServerAuthenticationType(ctx context.Context, k8sClient k8sclient.Interface, clusterNamespace string) (string, error) {
+	secret, err := k8sClient.K8sClient().CoreV1().Secrets(clusterNamespace).Get(ctx, APIServerCertificatesSecretName, metav1.GetOptions{})
+	if err != nil {
+		return "", err
+	}
+
+	if secret.Data["token"] != nil && len(secret.Data["token"]) > 0 {
+		return "token", nil
+	} else if (secret.Data["crt"] != nil && len(secret.Data["crt"]) > 0) && (secret.Data["key"] != nil && len(secret.Data["key"]) > 0) {
+		return "certificates", nil
+	}
+	return "vintage", nil
 }
