@@ -206,6 +206,14 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		return nil, microerror.Mask(err)
 	}
 
+	var authenticationType = ""
+	if !key.IsManagementCluster(config.Installation, cluster) {
+		authenticationType, err = key.ApiServerAuthenticationType(ctx, config.K8sClient, key.Namespace(cluster))
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
