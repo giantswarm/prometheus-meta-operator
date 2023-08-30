@@ -19,13 +19,12 @@ import (
 
 type Config struct {
 	Name      string
+	Provider  string
 	Sources   []CertificateSource
-	Target    NameFuncWithoutParam
+	Target    string
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 }
-
-type NameFuncWithoutParam func() string
 
 type NameFunc func(metav1.Object) string
 
@@ -36,8 +35,9 @@ type CertificateSource struct {
 
 type Resource struct {
 	name      string
+	provider  string
 	sources   []CertificateSource
-	target    NameFuncWithoutParam
+	target    string
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
 }
@@ -45,6 +45,9 @@ type Resource struct {
 func New(config Config) (*Resource, error) {
 	if config.Name == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Name must not be empty", config)
+	}
+	if config.Provider == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
 	}
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.K8sClient must not be empty", config)
@@ -55,12 +58,13 @@ func New(config Config) (*Resource, error) {
 	if len(config.Sources) == 0 {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Sources must not be empty", config)
 	}
-	if config.Target == nil {
+	if config.Target == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Target must not be empty", config)
 	}
 
 	r := &Resource{
 		name:      config.Name,
+		provider:  config.Provider,
 		logger:    config.Logger,
 		k8sClient: config.K8sClient,
 		sources:   config.Sources,
@@ -81,7 +85,7 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:      r.target(),
+		Name:      r.target,
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
@@ -103,7 +107,7 @@ func (r *Resource) getDesiredObject(ctx context.Context, v interface{}) (*v1.Sec
 	}
 
 	secretData := sourceSecret.Data
-	if key.IsCAPICluster(cluster) {
+	if key.IsCAPIManagementCluster(r.provider) {
 		// CAPI Secret is a kubeconfig so we need to extract the certs from it
 		if kubeconfig, ok := secretData["value"]; ok {
 			capiKubeconfig, err := clientcmd.Load(kubeconfig)

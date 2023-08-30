@@ -16,7 +16,7 @@ func (sc *secretCopier) getSource(ctx context.Context, v interface{}, config Con
 	var err error
 	if key.IsCAPIManagementCluster(config.Provider) {
 		// In CAPI clusters, etcd certificates are stored in a secret
-		data, err = sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName(), key.EtcdSecretSourceNamespace())
+		data, err = sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName, key.EtcdSecretSourceNamespace)
 	} else {
 		// In Vintage clusters, etcd certificates are mounted as files on the node filesystem
 		data, err = sc.getSourceFromDisk()

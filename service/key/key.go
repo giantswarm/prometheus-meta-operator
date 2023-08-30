@@ -16,7 +16,7 @@ import (
 var capiProviders = []string{"capa", "capz", "cloud-director", "gcp", "openstack", "vsphere"}
 
 const (
-	monitoring = "monitoring"
+	MonitoringNamespace = "monitoring"
 
 	DefaultServicePriority string = "highest"
 	DefaultOrganization    string = "giantswarm"
@@ -55,6 +55,17 @@ const (
 	ProviderKey        string = "provider"
 	RegionKey          string = "region"
 	ServicePriorityKey string = "service_priority"
+	TypeKey            string = "type"
+
+	IngressClassName string = "nginx"
+
+	BearerTokenPath string = "/var/run/secrets/kubernetes.io/serviceaccount/token" // nolint:gosec
+	CAFilePath      string = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
+	EtcdSecretSourceName      string = "etcd-certs"
+	EtcdSecretSourceNamespace string = "giantswarm"
+
+	APIServerCertificatesSecretName string = "cluster-certificates" // nolint:gosec
 )
 
 func ToCluster(obj interface{}) (metav1.Object, error) {
@@ -76,14 +87,6 @@ func NamespaceDefault(cluster metav1.Object) string {
 
 func OrganizationNamespace(cluster metav1.Object) string {
 	return cluster.GetNamespace()
-}
-
-func NamespaceMonitoring() string {
-	return monitoring
-}
-
-func Secret() string {
-	return "cluster-certificates"
 }
 
 func CAPICertificateName(cluster metav1.Object) string {
@@ -114,7 +117,7 @@ func EtcdSecret(installation string, obj interface{}) string {
 		return "etcd-certificates"
 	}
 
-	return Secret()
+	return APIServerCertificatesSecretName
 }
 
 func IsCAPIManagementCluster(provider string) bool {
@@ -125,14 +128,6 @@ func IsCAPIManagementCluster(provider string) bool {
 	}
 
 	return false
-}
-
-func EtcdSecretSourceName() string {
-	return "etcd-certs"
-}
-
-func EtcdSecretSourceNamespace() string {
-	return "giantswarm"
 }
 
 func AlertmanagerLabels() map[string]string {
@@ -153,7 +148,6 @@ func PrometheusLabels(cluster metav1.Object) map[string]string {
 }
 
 func RemoteWriteAuthenticationAnnotations(baseDomain string, externalDNS bool) map[string]string {
-
 	annotations := map[string]string{
 		"nginx.ingress.kubernetes.io/auth-type":   "basic",
 		"nginx.ingress.kubernetes.io/auth-secret": RemoteWriteIngressAuthSecretName,
@@ -239,10 +233,6 @@ func ClusterID(cluster metav1.Object) string {
 	return cluster.GetName()
 }
 
-func TypeKey() string {
-	return "type"
-}
-
 func Heartbeat() string {
 	return "heartbeat"
 }
@@ -316,42 +306,4 @@ func ClusterType(installation string, obj interface{}) string {
 	}
 
 	return "workload_cluster"
-}
-
-func BearerTokenPath() string {
-	return "/var/run/secrets/kubernetes.io/serviceaccount/token"
-}
-
-func CAFilePath() string {
-	return "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt"
-}
-
-// IsCAPICluster returns false if the cluster has any of the legacy labels such as azure-operator.giantswarm.io/version.
-func IsCAPICluster(obj metav1.Object) bool {
-	// TODO once we have migrated all clusters to CAPI, we can remove this
-
-	checker := func(labels map[string]string) bool {
-		if _, ok := labels["azure-operator.giantswarm.io/version"]; ok {
-			return false
-		}
-		if _, ok := labels["cluster-operator.giantswarm.io/version"]; ok {
-			return false
-		}
-		return true
-	}
-
-	switch v := obj.(type) {
-	case *capi.Cluster:
-		return checker(v.Labels)
-	case *v1.Service:
-		// Legacy Management Clusters.
-		return false
-	default:
-		// We didn't recognize the type, we assume CAPI
-		return true
-	}
-}
-
-func IngressClassName() string {
-	return "nginx"
 }

@@ -89,6 +89,7 @@ func New(config Config) ([]resource.Interface, error) {
 	{
 		c := certificates.Config{
 			Name:      "api-certificates",
+			Provider:  config.Provider,
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 			Sources: []certificates.CertificateSource{
@@ -105,7 +106,7 @@ func New(config Config) ([]resource.Interface, error) {
 					NamespaceFunc: key.OrganizationNamespace,
 				},
 			},
-			Target: key.Secret,
+			Target: key.APIServerCertificatesSecretName,
 		}
 
 		apiCertificatesResource, err = certificates.New(c)
