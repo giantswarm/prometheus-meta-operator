@@ -81,7 +81,7 @@ func New(config Config) (*generic.Resource, error) {
 func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      key.AlertmanagerSecretName(),
-		Namespace: key.NamespaceMonitoring(),
+		Namespace: key.MonitoringNamespace,
 	}, nil
 }
 

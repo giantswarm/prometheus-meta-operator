@@ -62,7 +62,6 @@ type TemplateData struct {
 	Mayu                      string
 	Vault                     string
 	WorkloadClusterETCDDomain string
-	CAPICluster               bool
 	CAPIManagementCluster     bool
 	VintageManagementCluster  bool
 }
@@ -188,13 +187,12 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		Organization:              key.GetOrganization(cluster),
 		Provider:                  config.Provider,
 		Installation:              config.Installation,
-		SecretName:                key.Secret(),
+		SecretName:                key.APIServerCertificatesSecretName,
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
 		Vault:                     config.Vault,
 		Mayu:                      config.Mayu,
 		IgnoredTargets:            strings.Join(ignoredTargets[:], ","),
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
-		CAPICluster:               key.IsCAPICluster(cluster),
 		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
 		VintageManagementCluster:  !key.IsCAPIManagementCluster(config.Provider),
 	}

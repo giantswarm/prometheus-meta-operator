@@ -62,7 +62,7 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 
 	return metav1.ObjectMeta{
 		Name:      key.ClusterID(cluster),
-		Namespace: key.NamespaceMonitoring(),
+		Namespace: key.MonitoringNamespace,
 		Labels:    key.AlertmanagerLabels(),
 	}, nil
 }
@@ -137,7 +137,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 				Matchers: []monitoringv1alpha1.Matcher{
 					{Name: key.ClusterIDKey, Value: key.ClusterID(cluster)},
 					{Name: key.InstallationKey, Value: config.Installation},
-					{Name: key.TypeKey(), Value: key.Heartbeat()},
+					{Name: key.TypeKey, Value: key.Heartbeat()},
 				},
 				Continue: false,
 				// wait for 30s before sending the first notification to opsgenie

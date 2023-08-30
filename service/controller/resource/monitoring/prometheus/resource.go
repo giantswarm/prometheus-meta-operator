@@ -262,14 +262,14 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			TLSConfig: &promv1.TLSConfig{
-				CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.Secret()),
-				CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.Secret()),
-				KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.Secret()),
+				CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.APIServerCertificatesSecretName),
+				CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.APIServerCertificatesSecretName),
+				KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.APIServerCertificatesSecretName),
 			},
 		}
 
 		prometheus.Spec.Secrets = []string{
-			key.Secret(),
+			key.APIServerCertificatesSecretName,
 		}
 
 		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
@@ -307,9 +307,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
-			BearerTokenFile: key.BearerTokenPath(),
+			BearerTokenFile: key.BearerTokenPath,
 			TLSConfig: &promv1.TLSConfig{
-				CAFile: key.CAFilePath(),
+				CAFile: key.CAFilePath,
 				SafeTLSConfig: promv1.SafeTLSConfig{
 					InsecureSkipVerify: true,
 				},

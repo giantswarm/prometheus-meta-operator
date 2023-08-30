@@ -18,7 +18,7 @@
 [[ include "_labelingschema" . | indent 2 ]]
 [[ include "_node_role" . | indent 2 ]]
 [[- end ]]
-[[- if not .CAPICluster ]]
+[[- if not .CAPIManagementCluster ]]
 # Add scrape configuration for docker
 - job_name: [[ .ClusterID ]]-prometheus/docker-[[ .ClusterID ]]/0
   honor_labels: true
@@ -169,7 +169,7 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  [[ if .CAPICluster ]]
+  [[ if .CAPIManagementCluster ]]
   - role: pod
     namespaces:
       names:
@@ -193,7 +193,7 @@
     key_file: /etc/prometheus/secrets/[[ .EtcdSecretName ]]/key
     insecure_skip_verify: true
   relabel_configs:
-[[- if .CAPICluster ]]
+[[- if .CAPIManagementCluster ]]
   - source_labels: [__meta_kubernetes_pod_container_name]
     regex: (etcd)
     action: keep
@@ -254,7 +254,7 @@
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__address__]
-[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
+[[- if or .CAPIManagementCluster (eq .ClusterType "management_cluster") ]]
     replacement: 10257
 [[- else ]]
     replacement: 10252
@@ -277,7 +277,7 @@
   - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
     regex: (.+);(\d+)
-[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
+[[- if or .CAPIManagementCluster (eq .ClusterType "management_cluster") ]]
     replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
 [[- else ]]
     replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
@@ -306,7 +306,7 @@
 [[ include "_tlsconfig_skip" . | indent 2 ]]
   relabel_configs:
   - source_labels: [__address__]
-[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
+[[- if or .CAPIManagementCluster (eq .ClusterType "management_cluster") ]]
     replacement: 10259
 [[- else ]]
     replacement: 10251
@@ -329,7 +329,7 @@
   - source_labels: [__meta_kubernetes_pod_name, __tmp_port]
     target_label: __metrics_path__
     regex: (.+);(\d+)
-[[- if or .CAPICluster (eq .ClusterType "management_cluster") ]]
+[[- if or .CAPIManagementCluster (eq .ClusterType "management_cluster") ]]
     replacement: /api/v1/namespaces/kube-system/pods/https:${1}:${2}/proxy/metrics
 [[- else ]]
     replacement: /api/v1/namespaces/kube-system/pods/${1}:${2}/proxy/metrics
@@ -795,7 +795,7 @@
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
 [[ end ]]
-[[ if not .CAPICluster ]]
+[[ if not .CAPIManagementCluster ]]
 - job_name: [[ .ClusterID ]]-prometheus/vault-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
