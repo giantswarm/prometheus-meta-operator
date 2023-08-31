@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Enable Opsgenie alerts for Shield.
+
 ## [4.46.0] - 2023-08-21
 
 ### Added
