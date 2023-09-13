@@ -12,6 +12,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheusquerier"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -22,8 +23,10 @@ const (
 )
 
 type Config struct {
-	K8sClient    k8sclient.Interface
-	Logger       micrologger.Logger
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	OrganizationReader organization.Reader
+
 	Customer     string
 	Installation string
 	Pipeline     string
@@ -33,15 +36,16 @@ type Config struct {
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
-	logger    micrologger.Logger
+	k8sClient          k8sclient.Interface
+	logger             micrologger.Logger
+	organizationReader organization.Reader
 
-	Customer     string
-	Installation string
-	Pipeline     string
-	Provider     string
-	Region       string
-	Version      string
+	customer     string
+	installation string
+	pipeline     string
+	provider     string
+	region       string
+	version      string
 }
 
 func New(config Config) (*Resource, error) {
@@ -50,6 +54,9 @@ func New(config Config) (*Resource, error) {
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.Logger must not be empty")
+	}
+	if config.OrganizationReader == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.OrganizationReader must not be empty")
 	}
 	if config.Customer == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.Customer must not be empty")
@@ -68,15 +75,16 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		k8sClient: config.K8sClient,
-		logger:    config.Logger,
+		k8sClient:          config.K8sClient,
+		logger:             config.Logger,
+		organizationReader: config.OrganizationReader,
 
-		Customer:     config.Customer,
-		Installation: config.Installation,
-		Pipeline:     config.Pipeline,
-		Provider:     config.Provider,
-		Region:       config.Region,
-		Version:      config.Version,
+		customer:     config.Customer,
+		installation: config.Installation,
+		pipeline:     config.Pipeline,
+		provider:     config.Provider,
+		region:       config.Region,
+		version:      config.Version,
 	}
 
 	return r, nil
@@ -86,26 +94,30 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) desiredConfigMap(cluster metav1.Object, name string, namespace string, version string, shards int) (*corev1.ConfigMap, error) {
+func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string, version string, shards int) (*corev1.ConfigMap, error) {
+	organization, err := r.organizationReader.Read(ctx, cluster)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	externalLabels := map[string]string{
 		key.ClusterIDKey:       key.ClusterID(cluster),
-		key.ClusterTypeKey:     key.ClusterType(r.Installation, cluster),
-		key.CustomerKey:        r.Customer,
-		key.InstallationKey:    r.Installation,
-		key.OrganizationKey:    key.GetOrganization(cluster),
-		key.PipelineKey:        r.Pipeline,
-		key.ProviderKey:        r.Provider,
-		key.RegionKey:          r.Region,
+		key.ClusterTypeKey:     key.ClusterType(r.installation, cluster),
+		key.CustomerKey:        r.customer,
+		key.InstallationKey:    r.installation,
+		key.OrganizationKey:    organization,
+		key.PipelineKey:        r.pipeline,
+		key.ProviderKey:        r.provider,
+		key.RegionKey:          r.region,
 		key.ServicePriorityKey: key.GetServicePriority(cluster),
 	}
 
 	prometheusAgentConfig := remotewriteconfiguration.PrometheusAgentConfig{
 		ExternalLabels: externalLabels,
 		Image: remotewriteconfiguration.PrometheusAgentImage{
-			Tag: r.Version,
+			Tag: r.version,
 		},
 		Shards:  shards,
-		Version: r.Version,
+		Version: r.version,
 	}
 
 	marshalledValues, err := yaml.Marshal(remotewriteconfiguration.RemoteWriteConfig{
@@ -152,7 +164,7 @@ func (r *Resource) createConfigMap(ctx context.Context, cluster metav1.Object, n
 		return microerror.Mask(err)
 	}
 
-	configMap, err := r.desiredConfigMap(cluster, name, namespace, version, shards)
+	configMap, err := r.desiredConfigMap(ctx, cluster, name, namespace, version, shards)
 	if err != nil {
 		return microerror.Mask(err)
 	}

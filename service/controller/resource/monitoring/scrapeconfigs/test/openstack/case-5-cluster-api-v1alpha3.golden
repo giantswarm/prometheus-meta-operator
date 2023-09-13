@@ -46,7 +46,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -109,7 +109,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -192,7 +192,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -256,7 +256,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -331,7 +331,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -410,7 +410,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -491,7 +491,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -586,7 +586,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
@@ -713,7 +713,7 @@
     replacement: highest
   # Add organization label.
   - target_label: organization
-    replacement: my-organization 
+    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo

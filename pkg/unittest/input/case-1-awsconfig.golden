@@ -3,7 +3,6 @@ kind: AWSConfig
 metadata:
   labels:
     "giantswarm.io/service-priority": "highest"
-    giantswarm.io/organization: my-organization
-    "release.giantswarm.io/version": 16.0.0
+    "release.giantswarm.io/version": "16.0.0"
   name: alice
   namespace: org-my-organization

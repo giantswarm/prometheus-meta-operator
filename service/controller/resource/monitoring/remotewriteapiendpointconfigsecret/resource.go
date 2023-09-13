@@ -10,6 +10,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -19,8 +20,10 @@ const (
 )
 
 type Config struct {
-	K8sClient    k8sclient.Interface
-	Logger       micrologger.Logger
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	OrganizationReader organization.Reader
+
 	BaseDomain   string
 	Customer     string
 	Installation string
@@ -32,17 +35,18 @@ type Config struct {
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
-	logger    micrologger.Logger
+	k8sClient          k8sclient.Interface
+	logger             micrologger.Logger
+	organizationReader organization.Reader
 
-	BaseDomain   string
-	Customer     string
-	Installation string
-	InsecureCA   bool
-	Pipeline     string
-	Provider     string
-	Region       string
-	Version      string
+	baseDomain   string
+	customer     string
+	installation string
+	insecureCA   bool
+	pipeline     string
+	provider     string
+	region       string
+	version      string
 }
 
 func New(config Config) (*Resource, error) {
@@ -51,6 +55,9 @@ func New(config Config) (*Resource, error) {
 	}
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.Logger must not be empty")
+	}
+	if config.OrganizationReader == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.OrganizationReader must not be empty")
 	}
 	if config.BaseDomain == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.BaseDomain must not be empty")
@@ -72,17 +79,18 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		k8sClient: config.K8sClient,
-		logger:    config.Logger,
+		k8sClient:          config.K8sClient,
+		logger:             config.Logger,
+		organizationReader: config.OrganizationReader,
 
-		BaseDomain:   config.BaseDomain,
-		Customer:     config.Customer,
-		Installation: config.Installation,
-		InsecureCA:   config.InsecureCA,
-		Pipeline:     config.Pipeline,
-		Provider:     config.Provider,
-		Region:       config.Region,
-		Version:      config.Version,
+		baseDomain:   config.BaseDomain,
+		customer:     config.Customer,
+		installation: config.Installation,
+		insecureCA:   config.InsecureCA,
+		pipeline:     config.Pipeline,
+		provider:     config.Provider,
+		region:       config.Region,
+		version:      config.Version,
 	}
 
 	return r, nil
@@ -92,20 +100,24 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace string, password string, version string) (*corev1.Secret, error) {
+func (r *Resource) desiredSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password string, version string) (*corev1.Secret, error) {
+	organization, err := r.organizationReader.Read(ctx, cluster)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	globalConfig := remotewriteconfiguration.GlobalConfig{
 		RemoteWrite: []remotewriteconfiguration.RemoteWrite{
-			remotewriteconfiguration.DefaultRemoteWrite(key.ClusterID(cluster), r.BaseDomain, password, r.InsecureCA),
+			remotewriteconfiguration.DefaultRemoteWrite(key.ClusterID(cluster), r.baseDomain, password, r.insecureCA),
 		},
 		ExternalLabels: map[string]string{
 			key.ClusterIDKey:       key.ClusterID(cluster),
-			key.ClusterTypeKey:     key.ClusterType(r.Installation, cluster),
-			key.CustomerKey:        r.Customer,
-			key.InstallationKey:    r.Installation,
-			key.OrganizationKey:    key.GetOrganization(cluster),
-			key.PipelineKey:        r.Pipeline,
-			key.ProviderKey:        r.Provider,
-			key.RegionKey:          r.Region,
+			key.ClusterTypeKey:     key.ClusterType(r.installation, cluster),
+			key.CustomerKey:        r.customer,
+			key.InstallationKey:    r.installation,
+			key.OrganizationKey:    organization,
+			key.PipelineKey:        r.pipeline,
+			key.ProviderKey:        r.provider,
+			key.RegionKey:          r.region,
 			key.ServicePriorityKey: key.GetServicePriority(cluster),
 		},
 	}
@@ -136,7 +148,7 @@ func (r *Resource) desiredSecret(cluster metav1.Object, name string, namespace s
 }
 
 func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password, version string) error {
-	secret, err := r.desiredSecret(cluster, name, namespace, password, version)
+	secret, err := r.desiredSecret(ctx, cluster, name, namespace, password, version)
 	if err != nil {
 		return microerror.Mask(err)
 	}

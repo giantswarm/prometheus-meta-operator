@@ -16,7 +16,7 @@
   replacement: [[ .ServicePriority | default "highest"]]
 # Add organization label.
 - target_label: organization
-  replacement: [[ .Organization | default "giantswarm" ]] 
+  replacement: [[ .Organization | default "giantswarm" ]]
 # Add customer label.
 - target_label: customer
   replacement: [[ .Customer ]]

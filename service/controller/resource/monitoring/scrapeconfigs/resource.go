@@ -18,6 +18,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -31,8 +32,9 @@ const (
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	K8sClient          k8sclient.Interface
+	Logger             micrologger.Logger
+	OrganizationReader organization.Reader
 
 	AdditionalScrapeConfigs   string
 	Bastions                  []string
@@ -67,6 +69,16 @@ type TemplateData struct {
 }
 
 func New(config Config) (*generic.Resource, error) {
+	if config.K8sClient == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.K8sClient must not be empty")
+	}
+	if config.Logger == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.Logger must not be empty")
+	}
+	if config.OrganizationReader == nil {
+		return nil, microerror.Maskf(invalidConfigError, "config.OrganizationReader must not be empty")
+	}
+
 	clientFunc := func(namespace string) generic.Interface {
 		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
 		return wrappedClient{client: c}
@@ -176,6 +188,11 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		return nil, microerror.Mask(err)
 	}
 
+	organization, err := config.OrganizationReader.Read(ctx, cluster)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
@@ -184,7 +201,7 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		ClusterType:               key.ClusterType(config.Installation, cluster),
 		ServicePriority:           key.GetServicePriority(cluster),
 		Customer:                  config.Customer,
-		Organization:              key.GetOrganization(cluster),
+		Organization:              organization,
 		Provider:                  config.Provider,
 		Installation:              config.Installation,
 		SecretName:                key.APIServerCertificatesSecretName,
