@@ -10,7 +10,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -60,7 +59,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -116,7 +114,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -177,7 +174,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -242,7 +238,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -374,7 +369,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -450,7 +444,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -530,7 +523,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -600,7 +592,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -659,7 +650,6 @@
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       insecure_skip_verify: false
-  
   bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca

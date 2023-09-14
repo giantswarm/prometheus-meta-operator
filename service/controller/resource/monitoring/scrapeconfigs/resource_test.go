@@ -315,7 +315,6 @@ func TestKVMScrapeconfigs(t *testing.T) {
 
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				OrganizationReader:      FakeReader{},
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider:                "kvm",
@@ -438,7 +437,6 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				OrganizationReader:      FakeReader{},
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider:                "openstack",
@@ -561,7 +559,6 @@ func TestGCPScrapeconfigs(t *testing.T) {
 
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				OrganizationReader:      FakeReader{},
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider:                "gcp",
@@ -684,7 +681,6 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				OrganizationReader:      FakeReader{},
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider:                "capa",

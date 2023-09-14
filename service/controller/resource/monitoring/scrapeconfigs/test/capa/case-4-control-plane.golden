@@ -287,7 +287,6 @@
   
 
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
   tls_config:
     ca_file: /etc/prometheus/secrets/etcd-certificates/ca
     cert_file: /etc/prometheus/secrets/etcd-certificates/crt

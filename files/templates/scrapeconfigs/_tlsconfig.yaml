@@ -1,6 +1,6 @@
 [[- define "_tlsconfig" -]]
 [[- if ne .ClusterType "management_cluster" -]]
-[[- if eq .AuthenticationType "token" ]]
+[[- if eq .AuthenticationType "token" -]]
 bearer_token_file: /etc/prometheus/secrets/[[ .SecretName ]]/token
 [[- end ]]
 tls_config:
