@@ -201,6 +201,10 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 			return nil, microerror.Mask(err)
 		}
 	}
+	organization, err := config.OrganizationReader.Read(ctx, cluster)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 
 	d := &TemplateData{
 		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
