@@ -33,7 +33,7 @@ func countMachineDeploymentClusterNodes(ctx context.Context, k8sClient k8sclient
 		client.MatchingLabels{
 			key.ClusterLabel: key.ClusterID(cluster),
 		},
-		client.InNamespace(key.OrganizationNamespace(cluster)),
+		client.InNamespace(cluster.GetNamespace()),
 	}
 
 	err := k8sClient.CtrlClient().List(ctx, &machinedeployments, opts...)
@@ -59,7 +59,7 @@ func countMachinePoolClusterNodes(ctx context.Context, k8sClient k8sclient.Inter
 		client.MatchingLabels{
 			key.ClusterLabel: key.ClusterID(cluster),
 		},
-		client.InNamespace(key.OrganizationNamespace(cluster)),
+		client.InNamespace(cluster.GetNamespace()),
 	}
 
 	err := k8sClient.CtrlClient().List(ctx, &machinepools, opts...)

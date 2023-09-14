@@ -22,18 +22,18 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		// Get password from remote-write-secret
 		r.logger.Debugf(ctx, "looking up for secret remote write secret")
-		_, password, err := remotewriteconfiguration.GetUsernameAndPassword(r.k8sClient.K8sClient(), ctx, cluster, r.Installation, r.Provider)
+		_, password, err := remotewriteconfiguration.GetUsernameAndPassword(r.k8sClient.K8sClient(), ctx, cluster, r.installation, r.provider)
 		if err != nil {
 			r.logger.Errorf(ctx, err, "lookup for remote write secret failed")
 			return microerror.Mask(err)
 		}
 
-		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.Provider)
-		namespace := key.GetClusterAppsNamespace(cluster, r.Installation, r.Provider)
+		name := key.RemoteWriteAPIEndpointConfigSecretName(cluster, r.provider)
+		namespace := key.GetClusterAppsNamespace(cluster, r.installation, r.provider)
 		// Get the current secret if it exists.
 		current, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			err = r.createSecret(ctx, cluster, name, namespace, password, r.Version)
+			err = r.createSecret(ctx, cluster, name, namespace, password, r.version)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -42,7 +42,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		if current != nil {
-			desired, err := r.desiredSecret(cluster, name, namespace, password, r.Version)
+			desired, err := r.desiredSecret(ctx, cluster, name, namespace, password, r.version)
 			if err != nil {
 				return microerror.Mask(err)
 			}

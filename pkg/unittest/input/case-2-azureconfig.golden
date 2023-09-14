@@ -3,7 +3,6 @@ kind: AzureConfig
 metadata:
   labels:
     "giantswarm.io/service-priority": "medium"
-    giantswarm.io/organization: my-organization
-    "release.giantswarm.io/version": 18.0.0
+    "release.giantswarm.io/version": "18.0.0"
   name: foo
   namespace: org-my-organization

@@ -12,6 +12,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
@@ -99,11 +100,11 @@ func New(config Config) ([]resource.Interface, error) {
 				},
 				{
 					NameFunc:      key.Namespace,
-					NamespaceFunc: key.OrganizationNamespace,
+					NamespaceFunc: key.ClusterNamespace,
 				},
 				{
 					NameFunc:      key.CAPICertificateName,
-					NamespaceFunc: key.OrganizationNamespace,
+					NamespaceFunc: key.ClusterNamespace,
 				},
 			},
 			Target: key.APIServerCertificatesSecretName,
@@ -161,12 +162,14 @@ func New(config Config) ([]resource.Interface, error) {
 			return nil, microerror.Mask(err)
 		}
 	}
-
+	organizationReader := organization.NewNamespaceReader(config.K8sClient.K8sClient(), config.Installation, config.Provider)
 	var remoteWriteConfigResource resource.Interface
 	{
 		c := remotewriteconfig.Config{
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
+			K8sClient:          config.K8sClient,
+			Logger:             config.Logger,
+			OrganizationReader: organizationReader,
+
 			Customer:     config.Customer,
 			Installation: config.Installation,
 			Pipeline:     config.Pipeline,
@@ -202,8 +205,10 @@ func New(config Config) ([]resource.Interface, error) {
 	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
 	{
 		c := remotewriteapiendpointconfigsecret.Config{
-			K8sClient:    config.K8sClient,
-			Logger:       config.Logger,
+			K8sClient:          config.K8sClient,
+			Logger:             config.Logger,
+			OrganizationReader: organizationReader,
+
 			BaseDomain:   config.PrometheusBaseDomain,
 			Customer:     config.Customer,
 			Installation: config.Installation,
@@ -276,8 +281,9 @@ func New(config Config) ([]resource.Interface, error) {
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
-			K8sClient: config.K8sClient,
-			Logger:    config.Logger,
+			K8sClient:          config.K8sClient,
+			Logger:             config.Logger,
+			OrganizationReader: organizationReader,
 
 			AdditionalScrapeConfigs: config.AdditionalScrapeConfigs,
 			Bastions:                config.Bastions,

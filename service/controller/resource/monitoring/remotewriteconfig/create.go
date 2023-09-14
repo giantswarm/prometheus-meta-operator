@@ -24,12 +24,12 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		name := key.RemoteWriteConfigName(cluster)
-		namespace := key.GetClusterAppsNamespace(cluster, r.Installation, r.Provider)
+		namespace := key.GetClusterAppsNamespace(cluster, r.installation, r.provider)
 
 		// Get the current configmap if it exists.
 		current, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(namespace).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			err = r.createConfigMap(ctx, cluster, name, namespace, r.Version)
+			err = r.createConfigMap(ctx, cluster, name, namespace, r.version)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -48,7 +48,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			desired, err := r.desiredConfigMap(cluster, name, namespace, r.Version, shards)
+			desired, err := r.desiredConfigMap(ctx, cluster, name, namespace, r.version, shards)
 			if err != nil {
 				return microerror.Mask(err)
 			}

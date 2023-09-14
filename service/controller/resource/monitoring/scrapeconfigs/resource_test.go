@@ -10,6 +10,7 @@ import (
 	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
@@ -36,6 +37,12 @@ const additionalScrapeConfigs = `- job_name: test1
   - source_labels: [__address__]
     target_label: __param_target`
 
+type FakeReader struct{}
+
+func (r FakeReader) Read(ctx context.Context, cluster metav1.Object) (string, error) {
+	return "my-organization", nil
+}
+
 func TestAWSScrapeconfigs(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
@@ -60,11 +67,12 @@ func TestAWSScrapeconfigs(t *testing.T) {
 		}
 
 		config := Config{
-			TemplatePath: path,
-			Provider:     "aws",
-			Customer:     "pmo",
-			Vault:        "vault1.some-installation.test",
-			Installation: "test-installation",
+			TemplatePath:       path,
+			OrganizationReader: FakeReader{},
+			Provider:           "aws",
+			Customer:           "pmo",
+			Vault:              "vault1.some-installation.test",
+			Installation:       "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return toData(context.Background(), client, v, config)
@@ -118,11 +126,12 @@ func TestAzureScrapeconfigs(t *testing.T) {
 		}
 
 		config := Config{
-			TemplatePath: path,
-			Provider:     "azure",
-			Customer:     "pmo",
-			Vault:        "vault1.some-installation.test",
-			Installation: "test-installation",
+			TemplatePath:       path,
+			OrganizationReader: FakeReader{},
+			Provider:           "azure",
+			Customer:           "pmo",
+			Vault:              "vault1.some-installation.test",
+			Installation:       "test-installation",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return toData(context.Background(), client, v, config)
@@ -177,6 +186,7 @@ func TestKVMScrapeconfigs(t *testing.T) {
 
 		config := Config{
 			AdditionalScrapeConfigs: additionalScrapeConfigs,
+			OrganizationReader:      FakeReader{},
 			TemplatePath:            path,
 			Provider:                "kvm",
 			Customer:                "pmo",
@@ -259,6 +269,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 
 		config := Config{
 			AdditionalScrapeConfigs: additionalScrapeConfigs,
+			OrganizationReader:      FakeReader{},
 			TemplatePath:            path,
 			Provider:                "openstack",
 			Customer:                "pmo",
@@ -341,6 +352,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 
 		config := Config{
 			AdditionalScrapeConfigs: additionalScrapeConfigs,
+			OrganizationReader:      FakeReader{},
 			TemplatePath:            path,
 			Provider:                "gcp",
 			Customer:                "pmo",
@@ -423,6 +435,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 
 		config := Config{
 			AdditionalScrapeConfigs: additionalScrapeConfigs,
+			OrganizationReader:      FakeReader{},
 			TemplatePath:            path,
 			Provider:                "capa",
 			Customer:                "pmo",

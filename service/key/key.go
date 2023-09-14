@@ -19,11 +19,9 @@ const (
 	MonitoringNamespace = "monitoring"
 
 	DefaultServicePriority string = "highest"
-	DefaultOrganization    string = "giantswarm"
 
 	ClusterLabel                 string = "giantswarm.io/cluster"
 	MonitoringLabel              string = "giantswarm.io/monitoring"
-	OrganizationLabel            string = "giantswarm.io/organization"
 	ServicePriorityLabel         string = "giantswarm.io/service-priority"
 	TeamLabel                    string = "application.giantswarm.io/team"
 	OpsGenieApiKey               string = "opsGenieApiKey" // #nosec G101
@@ -85,7 +83,7 @@ func NamespaceDefault(cluster metav1.Object) string {
 	return v1.NamespaceDefault
 }
 
-func OrganizationNamespace(cluster metav1.Object) string {
+func ClusterNamespace(cluster metav1.Object) string {
 	return cluster.GetNamespace()
 }
 
@@ -98,13 +96,6 @@ func GetServicePriority(cluster metav1.Object) string {
 		return servicePriority
 	}
 	return DefaultServicePriority
-}
-
-func GetOrganization(cluster metav1.Object) string {
-	if organization, ok := cluster.GetLabels()[OrganizationLabel]; ok && organization != "" {
-		return organization
-	}
-	return DefaultOrganization
 }
 
 func IsMonitoringDisabled(cluster metav1.Object) bool {
