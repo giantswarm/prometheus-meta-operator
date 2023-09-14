@@ -133,7 +133,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Retention.Duration, "2w", "Retention duration for prometheus.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ScrapeInterval, "60s", "Default scrape interval for prometheus jobs.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ImageRepository, "giantswarm/prometheus", "Prometheus container image repository.")
-	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.43.0", "Prometheus container image version.")
+	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.47.0", "Prometheus container image version.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Flavor, "", "Provider flavor. One of capi or vintage.")
