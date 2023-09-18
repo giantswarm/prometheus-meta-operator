@@ -4,7 +4,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -53,7 +52,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -108,7 +106,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -168,7 +165,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -232,7 +228,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -301,7 +296,6 @@
   
   - role: node
   
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -363,7 +357,6 @@
     namespaces:
       names:
       - kube-system
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -438,7 +431,6 @@
     namespaces:
       names:
       - kube-system
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -517,7 +509,6 @@
 
       - kube-system
 
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -586,7 +577,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -644,7 +634,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
     api_server: https://master.baz:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:

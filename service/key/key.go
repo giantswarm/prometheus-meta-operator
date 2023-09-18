@@ -2,6 +2,7 @@ package key
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"math"
 
@@ -312,5 +313,5 @@ func ApiServerAuthenticationType(ctx context.Context, k8sClient k8sclient.Interf
 	} else if (secret.Data["crt"] != nil && len(secret.Data["crt"]) > 0) && (secret.Data["key"] != nil && len(secret.Data["key"]) > 0) {
 		return "certificates", nil
 	}
-	return "vintage", nil
+	return "", errors.New("no authentication found")
 }

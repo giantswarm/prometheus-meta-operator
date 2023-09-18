@@ -4,7 +4,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -48,7 +47,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -101,7 +99,6 @@
     namespaces:
       names:
       - giantswarm
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -154,7 +151,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -209,7 +205,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -268,7 +263,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -332,7 +326,6 @@
   
   - role: node
   
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /etc/prometheus/secrets/etcd-certificates/ca
@@ -396,7 +389,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -475,7 +467,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -554,7 +545,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -624,7 +614,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -698,7 +687,6 @@
 
       - monitoring
 
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -762,7 +750,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -815,7 +802,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -1342,7 +1328,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -1437,7 +1422,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt

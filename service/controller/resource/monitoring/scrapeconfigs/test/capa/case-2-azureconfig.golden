@@ -4,7 +4,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -56,7 +55,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -119,7 +117,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -186,7 +183,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -261,7 +257,6 @@
       names:
       - kube-system
   
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -325,7 +320,6 @@
     namespaces:
       names:
       - kube-system
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -412,7 +406,6 @@
     namespaces:
       names:
       - kube-system
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -499,7 +492,6 @@
     namespaces:
       names:
       - kube-system
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -577,7 +569,6 @@
     namespaces:
       names:
       - kube-system
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -659,7 +650,6 @@
 
       - kube-system
 
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -731,7 +721,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -792,7 +781,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
     api_server: https://master.foo:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
