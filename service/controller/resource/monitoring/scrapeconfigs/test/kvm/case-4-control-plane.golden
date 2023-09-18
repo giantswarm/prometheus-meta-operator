@@ -1,10 +1,8 @@
-
 - job_name: kubernetes-prometheus/kubernetes-apiserver-kubernetes/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -48,7 +46,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -101,7 +98,6 @@
     namespaces:
       names:
       - giantswarm
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -154,7 +150,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -209,7 +204,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: node
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -268,7 +262,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -329,12 +322,8 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  
   - role: node
-  
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-
   tls_config:
     ca_file: /etc/prometheus/secrets/etcd-certificates/ca
     cert_file: /etc/prometheus/secrets/etcd-certificates/crt
@@ -350,7 +339,6 @@
     target_label: __address__
     replacement: ${1}:2379
     action: replace
-
   # if the 'ip' label is present, use the value
   - source_labels: [__meta_kubernetes_node_label_ip]
     regex: (.+)
@@ -397,7 +385,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -476,7 +463,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -555,7 +541,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -625,7 +610,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -696,10 +680,7 @@
   - role: endpoints
     namespaces:
       names:
-
       - monitoring
-
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -763,7 +744,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: pod
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -816,7 +796,6 @@
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -991,7 +970,6 @@
     action: replace
   - action: labeldrop
     regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
-
 # cert-operator (missing label) (versionned so it needs to be kept)
 - job_name: kubernetes-prometheus/cert-operator-kubernetes/0
   honor_labels: true
@@ -1067,7 +1045,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-
 # installation-specific configs from config repo
 - job_name: test1
   static_configs:
@@ -1083,7 +1060,6 @@
   relabel_configs:
   - source_labels: [__address__]
     target_label: __param_target
-
 # flannel-operator (missing label)
 - job_name: kubernetes-prometheus/flannel-operator-kubernetes/0
   honor_labels: true
@@ -1293,8 +1269,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-
-
 - job_name: kubernetes-prometheus/vault-kubernetes/0
   honor_labels: true
   scheme: http
@@ -1333,7 +1307,6 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-
 # nginx-ingress-controller
 - job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0
   honor_labels: true
@@ -1343,7 +1316,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -1397,7 +1369,6 @@
   - source_labels: [__name__]
     regex: nginx_ingress_controller_(bytes_sent_bucket|request_size_bucket|response_duration_seconds_bucket|response_size_bucket|request_duration_seconds_count|connect_duration_seconds_bucket|header_duration_seconds_bucket|bytes_sent_count|request_duration_seconds_sum|bytes_sent_sum|request_size_count|response_size_count|response_duration_seconds_sum|response_duration_seconds_count|ingress_upstream_latency_seconds|ingress_upstream_latency_seconds_sum|ingress_upstream_latency_seconds_count)
     action: drop
-
 # prometheus
 - job_name: kubernetes-prometheus/prometheus-kubernetes/0
   honor_labels: true
@@ -1438,7 +1409,6 @@
     namespaces:
       names:
       - kube-system
-
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
   tls_config:
     ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -1492,4 +1462,3 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
-
