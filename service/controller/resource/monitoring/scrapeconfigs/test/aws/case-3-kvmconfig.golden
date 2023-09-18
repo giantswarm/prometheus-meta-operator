@@ -1,4 +1,3 @@
-
 - job_name: bar-prometheus/kubernetes-apiserver-bar/0
   honor_labels: true
   scheme: https
@@ -293,9 +292,7 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  
   - role: node
-  
     api_server: https://master.bar:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -316,7 +313,6 @@
     target_label: __address__
     replacement: ${1}:2379
     action: replace
-
   - target_label: app
     replacement: etcd
   - source_labels: [__address__]
@@ -672,9 +668,7 @@
   - role: endpoints
     namespaces:
       names:
-
       - kube-system
-
     api_server: https://master.bar:443
     bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
     tls_config:
@@ -979,7 +973,6 @@
     action: replace
   - action: labeldrop
     regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
-
 # prometheus
 - job_name: bar-prometheus/prometheus-bar/0
   honor_labels: true

@@ -1,4 +1,3 @@
-
 - job_name: bar-prometheus/kubernetes-apiserver-bar/0
   honor_labels: true
   scheme: https
@@ -10,7 +9,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -61,7 +59,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -118,7 +115,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -180,7 +176,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -246,7 +241,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -308,9 +302,7 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  
   - role: node
-  
     api_server: https://master.bar:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
@@ -332,7 +324,6 @@
     target_label: __address__
     replacement: ${1}:2379
     action: replace
-
   - target_label: app
     replacement: etcd
   - source_labels: [__address__]
@@ -379,7 +370,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -465,7 +455,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -551,7 +540,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -628,7 +616,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -700,16 +687,13 @@
   - role: endpoints
     namespaces:
       names:
-
       - kube-system
-
     api_server: https://master.bar:443
     tls_config:
       ca_file: /etc/prometheus/secrets/cluster-certificates/ca
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -780,7 +764,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -840,7 +823,6 @@
       cert_file: /etc/prometheus/secrets/cluster-certificates/crt
       key_file: /etc/prometheus/secrets/cluster-certificates/key
       insecure_skip_verify: false
-  
   tls_config:
     ca_file: /etc/prometheus/secrets/cluster-certificates/ca
     cert_file: /etc/prometheus/secrets/cluster-certificates/crt
@@ -1016,7 +998,6 @@
     action: replace
   - action: labeldrop
     regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
-
 # prometheus
 - job_name: bar-prometheus/prometheus-bar/0
   honor_labels: true

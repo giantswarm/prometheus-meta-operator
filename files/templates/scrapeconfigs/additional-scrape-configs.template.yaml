@@ -1,11 +1,11 @@
-[[- if not (contains "kube-apiserver" .IgnoredTargets) ]]
+[[- if not (contains "kube-apiserver" .IgnoredTargets) -]]
 - job_name: [[ .ClusterID ]]-prometheus/kubernetes-apiserver-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
   - role: endpoints
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_component]
     regex: apiserver
@@ -26,7 +26,7 @@
   kubernetes_sd_configs:
   - role: node
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
+[[- include "_tlsconfig" . ]]
   relabel_configs:
   - target_label: __address__
     replacement: [[ .APIServerURL ]]
@@ -56,7 +56,7 @@
       names:
       - giantswarm
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
     regex: falco-exporter
@@ -74,7 +74,7 @@
   kubernetes_sd_configs:
   - role: node
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - target_label: app
     replacement: kubelet
@@ -104,7 +104,7 @@
   kubernetes_sd_configs:
   - role: node
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
+[[- include "_tlsconfig" . ]]
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -145,7 +145,7 @@
   kubernetes_sd_configs:
   - role: pod
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
+[[- include "_tlsconfig" . ]]
   relabel_configs:
   - source_labels: [__address__]
     replacement: ${1}:9091
@@ -169,14 +169,14 @@
   honor_labels: true
   scheme: https
   kubernetes_sd_configs:
-  [[ if .CAPIManagementCluster ]]
+  [[- if .CAPIManagementCluster ]]
   - role: pod
     namespaces:
       names:
       - kube-system
-  [[ else ]]
+  [[- else ]]
   - role: node
-  [[ end ]]
+  [[- end ]]
 [[- include "_apiserver" . ]]
 [[- if eq .ClusterType "management_cluster" ]]
   bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -209,20 +209,20 @@
     target_label: __address__
     replacement: ${1}:2379
     action: replace
-[[ if eq .ClusterType "management_cluster" ]]
+  [[- if eq .ClusterType "management_cluster" ]]
   # if the 'ip' label is present, use the value
   - source_labels: [__meta_kubernetes_node_label_ip]
     regex: (.+)
     target_label: __address__
     replacement: ${1}:2379
     action: replace
-[[- end ]]
-[[- if and (eq .ClusterType "workload_cluster") (.WorkloadClusterETCDDomain) ]]
+  [[- end ]]
+  [[- if and (eq .ClusterType "workload_cluster") (.WorkloadClusterETCDDomain) ]]
   - source_labels: [__address__]
     target_label: __address__
     replacement: [[ .WorkloadClusterETCDDomain ]]
     action: replace
-[[- end ]]
+  [[- end ]]
 [[- end ]]
   - target_label: app
     replacement: etcd
@@ -245,7 +245,7 @@
       names:
       - kube-system
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__address__]
 [[- if or .CAPIManagementCluster (eq .ClusterType "management_cluster") ]]
@@ -297,7 +297,7 @@
       names:
       - kube-system
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__address__]
 [[- if or .CAPIManagementCluster (eq .ClusterType "management_cluster") ]]
@@ -348,7 +348,7 @@
       names:
       - kube-system
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__address__]
     replacement: $1:10249
@@ -382,7 +382,7 @@
       names:
       - kube-system
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -416,13 +416,13 @@
   - role: endpoints
     namespaces:
       names:
-[[ if eq .ClusterType "management_cluster" ]]
+[[- if eq .ClusterType "management_cluster" ]]
       - monitoring
-[[ else ]]
+[[- else ]]
       - kube-system
-[[ end ]]
+[[- end ]]
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__address__]
     target_label: instance
@@ -450,7 +450,7 @@
   kubernetes_sd_configs:
   - role: pod
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - target_label: __address__
     replacement: [[ .APIServerURL ]]
@@ -481,7 +481,7 @@
   kubernetes_sd_configs:
   - role: endpoints
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
@@ -638,7 +638,7 @@
     action: replace
   - action: labeldrop
     regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
-[[ if eq .ClusterType "management_cluster" ]]
+[[- if eq .ClusterType "management_cluster" ]]
 # cert-operator (missing label) (versionned so it needs to be kept)
 - job_name: [[ .ClusterID ]]-prometheus/cert-operator-[[ .ClusterID ]]/0
   honor_labels: true
@@ -680,7 +680,7 @@
     action: drop
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ if .Bastions ]]
+[[- if .Bastions ]]
 # bastion exporters
 - job_name: [[ .ClusterID ]]-prometheus/bastions-[[ .ClusterID ]]/0
   honor_labels: true
@@ -695,12 +695,12 @@
       role: bastion
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
+[[- end ]]
 [[- if .AdditionalScrapeConfigs ]]
 # installation-specific configs from config repo
 [[ .AdditionalScrapeConfigs ]]
 [[- end ]]
-[[ if eq .Provider "kvm" ]]
+[[- if eq .Provider "kvm" ]]
 # flannel-operator (missing label)
 - job_name: [[ .ClusterID ]]-prometheus/flannel-operator-[[ .ClusterID ]]/0
   honor_labels: true
@@ -788,8 +788,8 @@
       app: mayu
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
-[[ if not .CAPIManagementCluster ]]
+[[- end ]]
+[[- if not .CAPIManagementCluster ]]
 - job_name: [[ .ClusterID ]]-prometheus/vault-[[ .ClusterID ]]/0
   honor_labels: true
   scheme: http
@@ -808,7 +808,7 @@
       app: vault-etcd-backups-exporter
   relabel_configs:
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
+[[- end ]]
 # nginx-ingress-controller
 - job_name: [[ .ClusterID ]]-prometheus/nginx-ingress-controller-[[ .ClusterID ]]/0
   honor_labels: true
@@ -819,7 +819,7 @@
       names:
       - kube-system
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig" . | indent 2 ]]
+[[- include "_tlsconfig" . ]]
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
     regex: .*(true).*
@@ -847,7 +847,7 @@
   - source_labels: [__name__]
     regex: nginx_ingress_controller_(bytes_sent_bucket|request_size_bucket|response_duration_seconds_bucket|response_size_bucket|request_duration_seconds_count|connect_duration_seconds_bucket|header_duration_seconds_bucket|bytes_sent_count|request_duration_seconds_sum|bytes_sent_sum|request_size_count|response_size_count|response_duration_seconds_sum|response_duration_seconds_count|ingress_upstream_latency_seconds|ingress_upstream_latency_seconds_sum|ingress_upstream_latency_seconds_count)
     action: drop
-[[ end ]]
+[[- end ]]
 # prometheus
 - job_name: [[ .ClusterID ]]-prometheus/prometheus-[[ .ClusterID ]]/0
   honor_labels: true
@@ -870,7 +870,7 @@
       names:
       - kube-system
 [[- include "_apiserver" . ]]
-[[ include "_tlsconfig_skip" . | indent 2 ]]
+[[- include "_tlsconfig_skip" . ]]
   relabel_configs:
   - replacement: http
     target_label: __scheme__
@@ -886,4 +886,4 @@
     replacement: $1
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
-[[ end ]]
+[[- end ]]
