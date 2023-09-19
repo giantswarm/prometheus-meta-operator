@@ -1,10 +1,15 @@
 [[- define "_apiserver" -]]
 [[- if ne .ClusterType "management_cluster" ]]
     api_server: https://[[ .APIServerURL ]]
+[[- if eq .AuthenticationType "token" ]]
+    bearer_token_file: /etc/prometheus/secrets/[[ .SecretName ]]/token
+[[- end ]]
     tls_config:
       ca_file: /etc/prometheus/secrets/[[ .SecretName ]]/ca
+[[- if eq .AuthenticationType "certificates" ]]
       cert_file: /etc/prometheus/secrets/[[ .SecretName ]]/crt
       key_file: /etc/prometheus/secrets/[[ .SecretName ]]/key
+[[- end ]]
       insecure_skip_verify: false
 [[- end -]]
 [[- end -]]

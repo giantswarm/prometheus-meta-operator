@@ -115,10 +115,14 @@ func (r *Resource) getDesiredObject(ctx context.Context, v interface{}) (*v1.Sec
 				return nil, microerror.Mask(err)
 			}
 			kubeconfigAdminUser := fmt.Sprintf("%s-admin", cluster.GetName())
+			kubeconfigFluxCustomerUser := fmt.Sprintf("%s-capi-admin", cluster.GetName())
+
 			secretData["ca"] = capiKubeconfig.Clusters[cluster.GetName()].CertificateAuthorityData
 			if _, ok := capiKubeconfig.AuthInfos[kubeconfigAdminUser]; ok {
 				secretData["crt"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientCertificateData
 				secretData["key"] = capiKubeconfig.AuthInfos[kubeconfigAdminUser].ClientKeyData
+			} else if _, ok := capiKubeconfig.AuthInfos[kubeconfigFluxCustomerUser]; ok {
+				secretData["token"] = []byte(capiKubeconfig.AuthInfos[kubeconfigFluxCustomerUser].Token)
 			} else {
 				return nil, errors.New("no supported user found in the CAPI secret")
 			}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/url"
 
+	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"github.com/google/go-cmp/cmp"
@@ -27,6 +28,7 @@ const (
 
 type Config struct {
 	PrometheusClient promclient.Interface
+	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 
 	Address            string
@@ -262,10 +264,19 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			TLSConfig: &promv1.TLSConfig{
-				CAFile:   fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.APIServerCertificatesSecretName),
-				CertFile: fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.APIServerCertificatesSecretName),
-				KeyFile:  fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.APIServerCertificatesSecretName),
+				CAFile: fmt.Sprintf("/etc/prometheus/secrets/%s/ca", key.APIServerCertificatesSecretName),
 			},
+		}
+
+		authenticationType, err := key.ApiServerAuthenticationType(ctx, config.K8sClient, key.Namespace(cluster))
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		if authenticationType == "token" {
+			prometheus.Spec.APIServerConfig.BearerTokenFile = fmt.Sprintf("/etc/prometheus/secrets/%s/token", key.APIServerCertificatesSecretName)
+		} else if authenticationType == "certificates" {
+			prometheus.Spec.APIServerConfig.TLSConfig.CertFile = fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.APIServerCertificatesSecretName)
+			prometheus.Spec.APIServerConfig.TLSConfig.KeyFile = fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.APIServerCertificatesSecretName)
 		}
 
 		prometheus.Spec.Secrets = []string{

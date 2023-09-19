@@ -22,13 +22,12 @@ spec:
           - key: node-role.kubernetes.io/control-plane
             operator: DoesNotExist
   apiserverConfig:
+    bearerTokenFile: /etc/prometheus/secrets/cluster-certificates/token
     host: https://master.foo:443
     tlsConfig:
       ca: {}
       caFile: /etc/prometheus/secrets/cluster-certificates/ca
       cert: {}
-      certFile: /etc/prometheus/secrets/cluster-certificates/crt
-      keyFile: /etc/prometheus/secrets/cluster-certificates/key
   arbitraryFSAccessThroughSMs: {}
   enableFeatures:
   - remote-write-receiver

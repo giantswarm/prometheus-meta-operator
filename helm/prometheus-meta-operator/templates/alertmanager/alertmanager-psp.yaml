@@ -5,6 +5,8 @@ metadata:
   labels:
     {{- include "labels.common" . | nindent 4 }}
   name: alertmanager-psp
+  annotations:
+    seccomp.security.alpha.kubernetes.io/allowedProfileNames: runtime/default
 spec:
   allowPrivilegeEscalation: false
   hostNetwork: false
