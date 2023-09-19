@@ -29,7 +29,7 @@ func QueryTSDBHeadSeries(cluster string) (float64, error) {
 	api := v1.NewAPI(c)
 
 	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
-	val, _, err := api.Query(ctx, "prometheus_tsdb_head_series", time.Now()) // Ignoring warnings for now.
+	val, _, err := api.Query(ctx, "max_over_time(prometheus_tsdb_head_series[6h])", time.Now()) // Ignoring warnings for now.
 	cancel()
 	if err != nil {
 		return 0, err
