@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Adapt scrape targets to EKS clusters.
+
 ## [4.48.0] - 2023-09-19
 
 ### Changed
