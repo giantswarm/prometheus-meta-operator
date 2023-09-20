@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix api server url in case the CAPI provider sets https prefix in the CAPI CR status.
+
 ## [4.48.0] - 2023-09-19
 
 ### Changed
