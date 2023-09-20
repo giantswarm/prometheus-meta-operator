@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Support absolute Grafana dashboard URLs.
 - Fix api server url in case the CAPI provider sets https prefix in the CAPI CR status.
 
 ## [4.48.0] - 2023-09-19
@@ -52,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- When the cluster pipeline is set to stable-testing, only route management cluster alerts to opsgenie. 
+- When the cluster pipeline is set to stable-testing, only route management cluster alerts to opsgenie.
 
 ### Removed
 
@@ -426,7 +427,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Add `.provider.flavor` property in Helm chart. 
+- Add `.provider.flavor` property in Helm chart.
 
 ## [4.20.4] - 2023-02-07
 
@@ -515,7 +516,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Change HasPrometheusAgent function to ignore prometheus-agent scraping targets on CAPA and CAPVCD.
 - Do not reconcile service monitors in kube-system for CAPA and CAPVCD MCs.
-- Change label selector used to discover `PodMonitors` and `ServiceMonitors` 
+- Change label selector used to discover `PodMonitors` and `ServiceMonitors`
   to avoid a duplicate scrape introduced in https://github.com/giantswarm/observability-bundle/pull/18.
 - README: how to generate test
 
