@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- computation of number of shards: rely on max number of series over the last 6h.
+
 ### Fixed
 
 - Support absolute Grafana dashboard URLs.
