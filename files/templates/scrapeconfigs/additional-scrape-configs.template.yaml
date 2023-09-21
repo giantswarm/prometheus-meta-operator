@@ -338,6 +338,7 @@
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
     action: drop
 [[- end ]]
+[[- if not (contains "kube-proxy" .IgnoredTargets) ]]
 # kube-proxy
 - job_name: [[ .ClusterID ]]-prometheus/kube-proxy-[[ .ClusterID ]]/0
   honor_labels: true
@@ -371,6 +372,7 @@
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
     action: drop
+[[- end ]]
 [[- if not (contains "coredns" .IgnoredTargets) ]]
 # coredns
 - job_name: [[ .ClusterID ]]-prometheus/coredns-[[ .ClusterID ]]/0

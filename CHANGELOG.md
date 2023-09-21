@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed 
+
+- Ignore kube-proxy target on EKS or clusters with observability bundle >= 0.8.3 (where the kube-proxy service monitor is enabled).
+
 ## [4.49.0] - 2023-09-21
 
 ### Changed
