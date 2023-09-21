@@ -3,11 +3,11 @@ kind: Cluster
 metadata:
   labels:
     "release.giantswarm.io/version": 18.0.0
-  name: baz
+  name: eks-sample
   namespace: org-my-organization
 spec:
   controlPlaneEndpoint:
-    host: master.baz
+    host: master.eks-sample
     port: 443
   infrastructureRef:
-    kind: AWSCluster
+    kind: AWSManagedCluster

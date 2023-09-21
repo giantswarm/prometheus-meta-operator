@@ -1,0 +1,28 @@
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: eks-sample
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: eks-sample
+  name: prometheus
+  namespace: eks-sample-prometheus
+spec:
+  resourcePolicy:
+    containerPolicies:
+    - containerName: prometheus
+      controlledValues: RequestsAndLimits
+      maxAllowed:
+        cpu: "4"
+        memory: "13743895347"
+      minAllowed:
+        cpu: 100m
+        memory: "1073741824"
+      mode: Auto
+  targetRef:
+    apiVersion: apps/v1
+    kind: StatefulSet
+    name: prometheus-eks-sample
+  updatePolicy:
+    updateMode: Auto
+status: {}

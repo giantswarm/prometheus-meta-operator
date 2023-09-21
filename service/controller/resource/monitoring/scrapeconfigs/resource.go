@@ -262,38 +262,53 @@ func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Cli
 func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) ([]string, error) {
 	ignoredTargets := make([]string, 0)
 
-	appVersion, err := getObservabilityBundleAppVersion(ctx, ctrlClient, cluster, config)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+	if key.IsEKSCluster(cluster) {
+		// In case of EKS clusters, we assume scraping targets via ServiceMonitors,
+		// so we ignore them from the Prometheus scrape config
+		config.Logger.Debugf(ctx, "EKS cluster: ignoring all scraping targets in Prometheus scrape config")
+		ignoredTargets = append(ignoredTargets,
+			"prometheus-operator-app",
+			"kube-apiserver",
+			"kube-controller-manager",
+			"kube-scheduler",
+			"node-exporter",
+			"kubelet",
+			"coredns",
+			"kube-state-metrics",
+			"etcd")
+	} else {
+		appVersion, err := getObservabilityBundleAppVersion(ctx, ctrlClient, cluster, config)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	version, err := semver.Parse(appVersion)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+		version, err := semver.Parse(appVersion)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	initialBundleVersion, err := semver.Parse("0.1.0")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+		initialBundleVersion, err := semver.Parse("0.1.0")
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	bundleWithKSMAndExportersVersion, err := semver.Parse("0.4.0")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+		bundleWithKSMAndExportersVersion, err := semver.Parse("0.4.0")
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	if version.GTE(initialBundleVersion) {
-		ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler", "node-exporter")
-	}
+		if version.GTE(initialBundleVersion) {
+			ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler", "node-exporter")
+		}
 
-	if version.GTE(bundleWithKSMAndExportersVersion) {
-		ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
+		if version.GTE(bundleWithKSMAndExportersVersion) {
+			ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
 
-		if key.IsCAPIManagementCluster(config.Provider) {
-			ignoredTargets = append(ignoredTargets, "etcd")
+			if key.IsCAPIManagementCluster(config.Provider) {
+				ignoredTargets = append(ignoredTargets, "etcd")
+			}
 		}
 	}
-
 	// Vintage WC
 	if !key.IsCAPIManagementCluster(config.Provider) && !key.IsManagementCluster(config.Installation, cluster) {
 		// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore those targets.

@@ -296,6 +296,13 @@ func IsManagementCluster(installation string, obj interface{}) bool {
 	}
 }
 
+func IsEKSCluster(obj interface{}) bool {
+	if c, ok := obj.(*capi.Cluster); ok {
+		return c.Spec.InfrastructureRef.Kind == "AWSManagedCluster"
+	}
+	return false
+}
+
 func ClusterType(installation string, obj interface{}) string {
 	if IsManagementCluster(installation, obj) {
 		return "management_cluster"

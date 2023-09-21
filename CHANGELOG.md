@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Adapt scrape targets to EKS clusters.
 - computation of number of shards: rely on max number of series over the last 6h.
 
 ### Fixed

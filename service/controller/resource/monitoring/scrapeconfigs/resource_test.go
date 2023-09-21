@@ -119,6 +119,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 				K8sClient:          k8sClient,
 				Vault:              "vault1.some-installation.test",
 				Installation:       "test-installation",
+				Logger:             logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -220,6 +221,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 				K8sClient:          k8sClient,
 				Vault:              "vault1.some-installation.test",
 				Installation:       "test-installation",
+				Logger:             logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -322,6 +324,7 @@ func TestKVMScrapeconfigs(t *testing.T) {
 				K8sClient:               k8sClient,
 				Vault:                   "vault1.some-installation.test",
 				Installation:            "test-installation",
+				Logger:                  logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -444,6 +447,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 				K8sClient:               k8sClient,
 				Vault:                   "vault1.some-installation.test",
 				Installation:            "test-installation",
+				Logger:                  logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -566,6 +570,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				K8sClient:               k8sClient,
 				Vault:                   "vault1.some-installation.test",
 				Installation:            "test-installation",
+				Logger:                  logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -688,6 +693,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				K8sClient:               k8sClient,
 				Vault:                   "vault1.some-installation.test",
 				Installation:            "test-installation",
+				Logger:                  logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
