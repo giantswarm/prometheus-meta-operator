@@ -295,17 +295,10 @@ func IsManagementCluster(installation string, obj interface{}) bool {
 }
 
 func IsEKSCluster(obj interface{}) bool {
-	switch v := obj.(type) {
-	case *v1.Service:
-		return false
-	case *capi.Cluster:
-		if v.Spec.InfrastructureRef.Kind == "AWSManagedCluster" {
-			return true
-		}
-		return false
-	default:
-		return false
+	if c, ok := obj.(capi.Cluster); ok {
+		return c.Spec.InfrastructureRef.Kind == "AWSManagedCluster"
 	}
+	return false
 }
 
 func ClusterType(installation string, obj interface{}) string {

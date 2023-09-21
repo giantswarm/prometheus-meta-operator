@@ -308,18 +308,17 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 				ignoredTargets = append(ignoredTargets, "etcd")
 			}
 		}
-
-		// Vintage WC
-		if !key.IsCAPIManagementCluster(config.Provider) && !key.IsManagementCluster(config.Installation, cluster) {
-			// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore those targets.
-			release := cluster.GetLabels()["release.giantswarm.io/version"]
-			version, err := semver.Parse(release)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
-			if version.Major >= 18 {
-				ignoredTargets = append(ignoredTargets, "kube-controller-manager", "kube-scheduler")
-			}
+	}
+	// Vintage WC
+	if !key.IsCAPIManagementCluster(config.Provider) && !key.IsManagementCluster(config.Installation, cluster) {
+		// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore those targets.
+		release := cluster.GetLabels()["release.giantswarm.io/version"]
+		version, err := semver.Parse(release)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		if version.Major >= 18 {
+			ignoredTargets = append(ignoredTargets, "kube-controller-manager", "kube-scheduler")
 		}
 	}
 	return ignoredTargets, nil
