@@ -273,6 +273,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 			"kube-scheduler",
 			"node-exporter",
 			"kubelet",
+			"kube-proxy",
 			"coredns",
 			"kube-state-metrics",
 			"etcd")
@@ -296,6 +297,10 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
+		bundleWithKubeProxyExporterVersion, err := semver.Parse("0.8.3")
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
 		if version.GTE(initialBundleVersion) {
 			ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler", "node-exporter")
@@ -307,6 +312,9 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 			if key.IsCAPIManagementCluster(config.Provider) {
 				ignoredTargets = append(ignoredTargets, "etcd")
 			}
+		}
+		if version.GTE(bundleWithKubeProxyExporterVersion) {
+			ignoredTargets = append(ignoredTargets, "kube-proxy")
 		}
 	}
 	// Vintage WC
