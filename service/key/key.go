@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strings"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -272,7 +273,8 @@ func APIUrl(obj interface{}) string {
 	case *v1.Service:
 		return "kubernetes.default:443"
 	case *capi.Cluster:
-		return fmt.Sprintf("%s:%d", v.Spec.ControlPlaneEndpoint.Host, v.Spec.ControlPlaneEndpoint.Port)
+		// We remove any https:// prefix from the api-server host due to a bug in CAPA Managed EKS clusters (cf. https://gigantic.slack.com/archives/C02HLSDH3DZ/p1695213116360889)
+		return fmt.Sprintf("%s:%d", strings.TrimPrefix(v.Spec.ControlPlaneEndpoint.Host, "https://"), v.Spec.ControlPlaneEndpoint.Port)
 	case metav1.Object:
 		return fmt.Sprintf("master.%s:443", v.GetName())
 	}
