@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.49.1] - 2023-09-21
+
 ### Changed 
 
 - Ignore kube-proxy target on EKS or clusters with observability bundle >= 0.8.3 (where the kube-proxy service monitor is enabled).
@@ -2277,7 +2279,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.1...HEAD
+[4.49.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.0...v4.49.1
 [4.49.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.48.0...v4.49.0
 [4.48.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.47.0...v4.48.0
 [4.47.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.46.0...v4.47.0
