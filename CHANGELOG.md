@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
 ### Changed
 
 - Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
+
+## [4.49.2] - 2023-09-22
+
+### Fixed
+
+- Reverted support absolute Grafana dashboard URLs.
 
 ## [4.49.1] - 2023-09-21
 
@@ -2283,7 +2290,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.2...HEAD
+[4.49.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.1...v4.49.2
 [4.49.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.0...v4.49.1
 [4.49.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.48.0...v4.49.0
 [4.48.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.47.0...v4.48.0
