@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
+
 ## [4.49.1] - 2023-09-21
 
 ### Changed 
