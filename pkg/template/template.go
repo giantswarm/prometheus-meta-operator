@@ -25,6 +25,8 @@ func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, 
 		return buf.String(), nil
 	}
 
+	funcMap["hasPrefix"] = strings.HasPrefix
+
 	tpl, err := tpl.Funcs(sprig.FuncMap()).Funcs(funcMap).ParseGlob(templateLocation)
 	if err != nil {
 		return nil, microerror.Mask(err)
