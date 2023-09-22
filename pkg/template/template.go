@@ -16,6 +16,10 @@ func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, 
 	tpl := template.New("_base").Delims("[[", "]]")
 
 	var funcMap template.FuncMap = map[string]interface{}{}
+	funcMap["hasPrefix"] = func(prefix string, str string) bool {
+		return strings.HasPrefix(prefix, str)
+	}
+
 	// copied from: https://github.com/helm/helm/blob/8648ccf5d35d682dcd5f7a9c2082f0aaf071e817/pkg/engine/engine.go#L147-L154
 	funcMap["include"] = func(name string, data interface{}) (string, error) {
 		buf := bytes.NewBuffer(nil)
@@ -23,10 +27,6 @@ func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, 
 			return "", err
 		}
 		return buf.String(), nil
-	}
-
-	funcMap["hasPrefix"] = func(prefix string, str string) bool {
-		return strings.HasPrefix(prefix, str)
 	}
 
 	tpl, err := tpl.Funcs(sprig.FuncMap()).Funcs(funcMap).ParseGlob(templateLocation)
