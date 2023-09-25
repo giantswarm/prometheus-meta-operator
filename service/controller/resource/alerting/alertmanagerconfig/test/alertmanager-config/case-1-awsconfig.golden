@@ -8,7 +8,7 @@ templates:
 route:
   group_by: [alertname, cluster_id, installation, status]
   group_interval: 15m
-  group_wait: 30s
+  group_wait: 1m
   repeat_interval: 4h
   receiver: root
 
