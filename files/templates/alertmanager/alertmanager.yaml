@@ -26,6 +26,10 @@ route:
     matchers:
     - alertname=~"WorkloadClusterApp.*"
     continue: false
+  - receiver: blackhole
+    matchers:
+    - alertname="PrometheusMetaOperatorReconcileErrors"
+    continue: false
   [[- end ]]
 
   # Falco noise Slack
