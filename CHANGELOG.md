@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Ignore `PrometheusMetaOperatorReconcileErrors` alerts on `stable-testing`.
+- Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
+
+## [4.50.0] - 2023-09-25
+
+### Changed
+
 - Only send silenced page-level SLOTH alerts to `phoenix`'s slack alert channel, rather than all alerts.
 
 ## [4.49.2] - 2023-09-22
@@ -2290,7 +2296,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.50.0...HEAD
+[4.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.2...v4.50.0
 [4.49.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.1...v4.49.2
 [4.49.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.0...v4.49.1
 [4.49.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.48.0...v4.49.0
