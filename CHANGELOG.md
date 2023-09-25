@@ -66,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Apply Kyverno policy exception to the PMO replicaset as well.
+- Do not alert for `stable-testing` cluster WC heartbeats and `WorkloadClusterAppNotInstalled` alerts.
 
 ### Fixed
 
