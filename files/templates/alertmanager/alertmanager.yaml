@@ -92,9 +92,9 @@ route:
   # Team Phoenix Slack
   - receiver: team_phoenix_slack
     matchers:
-    - severity=~"page|notify"
     - team="phoenix"
-    - sloth_severity=~"page|ticket"
+    - sloth_severity="page"
+    - silence="true"
     continue: false
 
   # Team Shield Slack

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Ignore `PrometheusMetaOperatorReconcileErrors` alerts on `stable-testing`.
+- Only send silenced page-level SLOTH alerts to `phoenix`'s slack alert channel, rather than all alerts.
 
 ## [4.49.2] - 2023-09-22
 
