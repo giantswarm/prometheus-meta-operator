@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Ignore `PrometheusMetaOperatorReconcileErrors` alerts on `stable-testing`.
 - Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
 
 ## [4.50.0] - 2023-09-25
