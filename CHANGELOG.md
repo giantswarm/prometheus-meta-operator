@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Support absolute Grafana dashboard URLs.
 - Ignore `PrometheusMetaOperatorReconcileErrors` alerts on `stable-testing`.
 - Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
 
