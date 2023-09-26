@@ -216,9 +216,6 @@
                 "logLevel": {
                     "type": "string"
                 },
-                "mayu": {
-                    "type": "string"
-                },
                 "retention": {
                     "type": "object",
                     "properties": {

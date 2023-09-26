@@ -34,7 +34,6 @@ data:
         {{- end }}
         evaluationInterval: {{ .Values.prometheus.evaluationInterval }}
         logLevel: {{ .Values.prometheus.logLevel }}
-        mayu: {{ .Values.prometheus.mayu }}
         retention:
           duration: {{ .Values.prometheus.retention.duration }}
         scrapeInterval: {{ .Values.prometheus.scrapeInterval }}

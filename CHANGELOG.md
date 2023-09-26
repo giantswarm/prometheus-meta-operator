@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove KVM related things that are not used anymore.
+
 ## [4.52.0] - 2023-09-26
 
 ### Changed

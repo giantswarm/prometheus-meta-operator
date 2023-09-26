@@ -180,6 +180,7 @@ func GetClusterAppsNamespace(cluster metav1.Object, installation string, provide
 }
 
 func RemoteWriteAPIEndpointConfigSecretName(cluster metav1.Object, provider string) string {
+	// TODO remove once all clusters are on v19
 	if IsCAPIManagementCluster(provider) {
 		return fmt.Sprintf("%s-%s", ClusterID(cluster), RemoteWriteAPIEndpointConfigSecretNameKey)
 	}
@@ -275,7 +276,7 @@ func APIUrl(obj interface{}) string {
 	case *capi.Cluster:
 		// We remove any https:// prefix from the api-server host due to a bug in CAPA Managed EKS clusters (cf. https://gigantic.slack.com/archives/C02HLSDH3DZ/p1695213116360889)
 		return fmt.Sprintf("%s:%d", strings.TrimPrefix(v.Spec.ControlPlaneEndpoint.Host, "https://"), v.Spec.ControlPlaneEndpoint.Port)
-	case metav1.Object:
+	case metav1.Object: // TODO remove once all clusters are on v19
 		return fmt.Sprintf("master.%s:443", v.GetName())
 	}
 

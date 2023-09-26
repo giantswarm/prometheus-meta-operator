@@ -1,8 +1,13 @@
-apiVersion: provider.giantswarm.io/v1alpha1
-kind: AWSConfig
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
 metadata:
   labels:
-    "giantswarm.io/service-priority": "highest"
-    "release.giantswarm.io/version": "16.0.0"
+    "release.giantswarm.io/version": 16.0.0
   name: alice
   namespace: org-my-organization
+spec:
+  controlPlaneEndpoint:
+    host: master.alice
+    port: 443
+  infrastructureRef:
+    kind: AWSCluster

@@ -1,8 +1,14 @@
-apiVersion: provider.giantswarm.io/v1alpha1
-kind: AzureConfig
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
 metadata:
   labels:
     "giantswarm.io/service-priority": "medium"
-    "release.giantswarm.io/version": "18.0.0"
+    "release.giantswarm.io/version": 18.0.0
   name: foo
   namespace: org-my-organization
+spec:
+  controlPlaneEndpoint:
+    host: master.foo
+    port: 443
+  infrastructureRef:
+    kind: AzureCluster

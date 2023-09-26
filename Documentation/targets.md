@@ -50,13 +50,6 @@
 - azure-operator
 - cluster-autoscaler
 
-### KVM specific
-
-- kvm-operator
-- bridge-operator
-- flannel-operator
-- ingress-exporter
-
 ## Missing
 
 - prometheus-operator-app
@@ -87,12 +80,6 @@
 
 - azure-admission-controller
 - calico-typha
-
-### KVM specific
-
-- calico-kube-controllers
-- heapster
-- monitoring-influxdb
 
 ## Unscrapeable
 

@@ -41,7 +41,6 @@ type Config struct {
 	Customer                  string
 	Installation              string
 	Provider                  string
-	Mayu                      string
 	Vault                     string
 	TemplatePath              string
 	WorkloadClusterETCDDomain string
@@ -62,7 +61,6 @@ type TemplateData struct {
 	EtcdSecretName            string
 	Installation              string
 	IgnoredTargets            string
-	Mayu                      string
 	Vault                     string
 	WorkloadClusterETCDDomain string
 	CAPIManagementCluster     bool
@@ -129,9 +127,10 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	if key.ClusterType(config.Installation, v) == "workload_cluster" {
 		clusterID := key.ClusterID(cluster)
 		// Try to get the etcd url from the Giant Swarm way
+		// TODO remove once all clusters are on CAPI
 		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(ctx, "master", metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			// TODO we ignore ETCD for capi clusters for now. Find a way to do it later
+			// ETCD for CAPI clusters is monitored via service monitors
 		} else if err != nil {
 			return nil, microerror.Mask(err)
 		} else {
@@ -217,7 +216,6 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		SecretName:                key.APIServerCertificatesSecretName,
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
 		Vault:                     config.Vault,
-		Mayu:                      config.Mayu,
 		IgnoredTargets:            strings.Join(ignoredTargets[:], ","),
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
 		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),

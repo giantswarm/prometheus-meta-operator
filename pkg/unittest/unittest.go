@@ -35,7 +35,7 @@ type TestFunc func(interface{}) (interface{}, error)
 // with expected outputs.
 //
 // TestFunc is a function which takes the observed kubernetes object as input
-// (e.g. AWSConfig) and returns another kubernetes object (e.g. Service).
+// (e.g. Cluster) and returns another kubernetes object (e.g. Service).
 //
 // OutputDir holds yaml files, representing the yaml version of the object
 // returned by TestFunc.
