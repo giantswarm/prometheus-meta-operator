@@ -7,15 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.52.0] - 2023-09-26
+
 ### Changed
 
+- Support absolute Grafana dashboard URLs.
 - Increase `prometheus-agent` max shards to 50 to improve agent stability.
 
 ## [4.51.0] - 2023-09-25
 
 ### Changed
 
-- Support absolute Grafana dashboard URLs.
 - Ignore `PrometheusMetaOperatorReconcileErrors` alerts on `stable-testing`.
 - Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
 
@@ -2303,7 +2305,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.51.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.52.0...HEAD
+[4.52.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.51.0...v4.52.0
 [4.51.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.50.0...v4.51.0
 [4.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.2...v4.50.0
 [4.49.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.1...v4.49.2
