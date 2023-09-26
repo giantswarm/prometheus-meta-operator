@@ -71,7 +71,6 @@ type resourcesConfig struct {
 
 	ExternalDNS bool
 
-	Mayu  string
 	Vault string
 }
 
@@ -224,7 +223,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Customer:                config.Customer,
 			Provider:                config.Provider,
 			Installation:            config.Installation,
-			Mayu:                    config.Mayu,
 			Vault:                   config.Vault,
 		}
 

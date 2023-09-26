@@ -1,8 +1,0 @@
-apiVersion: provider.giantswarm.io/v1alpha1
-kind: KVMConfig
-metadata:
-  labels:
-    "giantswarm.io/service-priority": lowest
-    "release.giantswarm.io/version": "17.0.0"
-  name: bar
-  namespace: org-my-organization

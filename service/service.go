@@ -28,7 +28,6 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/clusterapi"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/legacy"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/managementcluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/remotewrite"
 )
@@ -45,7 +44,6 @@ type Service struct {
 	Version *version.Service
 
 	bootOnce                    sync.Once
-	legacyController            *legacy.Controller
 	clusterapiController        *clusterapi.Controller
 	managementclusterController *managementcluster.Controller
 	remotewriteController       *remotewrite.Controller
@@ -132,88 +130,43 @@ func New(config Config) (*Service, error) {
 	var proxyConfig = httpproxy.FromEnvironment()
 	var clusterapiController *clusterapi.Controller
 	{
-		if shouldCreateCAPIController(provider) {
-			c := clusterapi.ControllerConfig{
-				K8sClient:        k8sClient,
-				Logger:           config.Logger,
-				PrometheusClient: prometheusClient,
-				VpaClient:        vpaClient,
-				Proxy:            proxyConfig.ProxyFunc(),
+		c := clusterapi.ControllerConfig{
+			K8sClient:        k8sClient,
+			Logger:           config.Logger,
+			PrometheusClient: prometheusClient,
+			VpaClient:        vpaClient,
+			Proxy:            proxyConfig.ProxyFunc(),
 
-				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
-				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
-				Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
-				InsecureCA:              config.Viper.GetBool(config.Flag.Service.Installation.InsecureCA),
-				Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-				Provider:                provider,
-				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
-				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
+			AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
+			Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
+			Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
+			Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
+			InsecureCA:              config.Viper.GetBool(config.Flag.Service.Installation.InsecureCA),
+			Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
+			Provider:                provider,
+			Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
+			Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
 
-				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
-				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
-				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
-				PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
-				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
+			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
+			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
+			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
+			PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
+			PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
+			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
+			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
-				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
-				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
+			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
 
-				ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
-			}
-
-			clusterapiController, err = clusterapi.NewController(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
+			ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
 		}
-	}
 
-	var legacyController *legacy.Controller
-	{
-		if shouldCreateLegacyController(provider) {
-			c := legacy.ControllerConfig{
-				K8sClient:        k8sClient,
-				Logger:           config.Logger,
-				PrometheusClient: prometheusClient,
-				VpaClient:        vpaClient,
-				Proxy:            proxyConfig.ProxyFunc(),
-
-				AdditionalScrapeConfigs: config.Viper.GetString(config.Flag.Service.Prometheus.AdditionalScrapeConfigs),
-				Bastions:                config.Viper.GetStringSlice(config.Flag.Service.Prometheus.Bastions),
-				Customer:                config.Viper.GetString(config.Flag.Service.Installation.Customer),
-				Installation:            config.Viper.GetString(config.Flag.Service.Installation.Name),
-				InsecureCA:              config.Viper.GetBool(config.Flag.Service.Installation.InsecureCA),
-				Pipeline:                config.Viper.GetString(config.Flag.Service.Installation.Pipeline),
-				Provider:                provider,
-				Region:                  config.Viper.GetString(config.Flag.Service.Installation.Region),
-				Registry:                config.Viper.GetString(config.Flag.Service.Installation.Registry),
-
-				OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-
-				PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
-				PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
-				PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
-				PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-				PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
-				PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
-				PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
-				PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
-
-				RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
-				WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
-
-				ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
-			}
-			legacyController, err = legacy.NewController(c)
-			if err != nil {
-				return nil, microerror.Mask(err)
-			}
+		clusterapiController, err = clusterapi.NewController(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
 		}
 	}
 
@@ -255,7 +208,6 @@ func New(config Config) (*Service, error) {
 
 			ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
 
-			Mayu:  config.Viper.GetString(config.Flag.Service.Prometheus.Mayu),
 			Vault: config.Viper.GetString(config.Flag.Service.Vault.Host),
 		}
 		managementclusterController, err = managementcluster.NewController(c)
@@ -299,7 +251,6 @@ func New(config Config) (*Service, error) {
 		Version: versionService,
 
 		bootOnce:                    sync.Once{},
-		legacyController:            legacyController,
 		clusterapiController:        clusterapiController,
 		managementclusterController: managementclusterController,
 		remotewriteController:       remotewriteController,
@@ -308,26 +259,9 @@ func New(config Config) (*Service, error) {
 	return s, nil
 }
 
-func shouldCreateLegacyController(provider string) bool {
-	// Only KVM require the legacy controller.
-	// AWS and Azure do work with CAPI/Cluster CRs.
-	return provider == "kvm"
-}
-
-func shouldCreateCAPIController(provider string) bool {
-	// KVM installations do not currently support cluster-api clusters.
-	// This is being tracked here: https://github.com/giantswarm/roadmap/issues/441
-	return provider != "kvm"
-}
-
 func (s *Service) Boot(ctx context.Context) {
 	s.bootOnce.Do(func() {
-		if s.legacyController != nil {
-			go s.legacyController.Boot(ctx)
-		}
-		if s.clusterapiController != nil {
-			go s.clusterapiController.Boot(ctx)
-		}
+		go s.clusterapiController.Boot(ctx)
 		go s.managementclusterController.Boot(ctx)
 		go s.remotewriteController.Boot(ctx)
 	})

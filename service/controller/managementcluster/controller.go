@@ -54,7 +54,6 @@ type ControllerConfig struct {
 
 	ExternalDNS bool
 
-	Mayu  string
 	Vault string
 }
 
