@@ -9,13 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Support absolute Grafana dashboard URLs.
 - Increase `prometheus-agent` max shards to 50 to improve agent stability.
 
 ## [4.51.0] - 2023-09-25
 
 ### Changed
 
-- Support absolute Grafana dashboard URLs.
 - Ignore `PrometheusMetaOperatorReconcileErrors` alerts on `stable-testing`.
 - Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
 
