@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--Temporary avoid RemoteWriteConfig update on anteater/deu01 and anteater/seu01.
+-Temporary avoid RemoteWriteSecret update on anteater/deu01 and anteater/seu01.
 
 ### Removed
 
