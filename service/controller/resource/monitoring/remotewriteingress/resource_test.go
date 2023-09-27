@@ -11,7 +11,7 @@ import (
 var update = flag.Bool("update", false, "update the ouput file")
 
 func TestIngressDefault(t *testing.T) {
-	outputDir, err := filepath.Abs("./test")
+	outputDir, err := filepath.Abs("./test/default")
 	if err != nil {
 		t.Fatal(err)
 	}
