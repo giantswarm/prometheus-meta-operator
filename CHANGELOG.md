@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.53.0] - 2023-09-27
 
+### Changed
+
+-Temporary avoid RemoteWriteSecret update on anteater/deu01 and anteater/seu01.
+
 ### Removed
 
 - Remove KVM related things that are not used anymore.

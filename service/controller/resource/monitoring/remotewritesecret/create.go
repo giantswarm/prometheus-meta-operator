@@ -37,6 +37,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
+		// /!\ Atlas want to make some manual configuration on RemoteWriteConfig on anteater/deu01 and anteater/seu01
+		// We temporary disable the RemoteWriteConfiguration update for those two WC
+		clusterName := cluster.GetName()
+		if r.Installation == "anteater" && (clusterName == "deu01" || clusterName == "seu01") {
+			r.logger.Debugf(ctx, "We temporary avoid RemoteWriteConfig update on %s", clusterName)
+			return nil
+		}
+
 		if current != nil {
 			// As it takes a long time to apply the new password to the agent due to a built-in delay in the app-platform,
 			// we keep the already generated remote write password.
