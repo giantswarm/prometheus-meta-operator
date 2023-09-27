@@ -211,7 +211,7 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		ServicePriority:           key.GetServicePriority(cluster),
 		Customer:                  config.Customer,
 		Organization:              organization,
-		Provider:                  config.Provider,
+		Provider:                  key.ClusterProvider(cluster, config.Provider),
 		Installation:              config.Installation,
 		SecretName:                key.APIServerCertificatesSecretName,
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),

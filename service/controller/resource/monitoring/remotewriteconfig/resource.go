@@ -106,7 +106,7 @@ func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, 
 		key.InstallationKey:    r.installation,
 		key.OrganizationKey:    organization,
 		key.PipelineKey:        r.pipeline,
-		key.ProviderKey:        r.provider,
+		key.ProviderKey:        key.ClusterProvider(cluster, r.provider),
 		key.RegionKey:          r.region,
 		key.ServicePriorityKey: key.GetServicePriority(cluster),
 	}
