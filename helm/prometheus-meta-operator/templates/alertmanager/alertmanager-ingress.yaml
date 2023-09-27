@@ -2,7 +2,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    kubernetes.io/tls-acme: "{{ .Values.prometheus.letsencrypt }}"
+    {{- if .Values.prometheus.letsencrypt }}
+    kubernetes.io/tls-acme: "true"
+    {{- with .Values.prometheus.clusterIssuerName }}
+    cert-manager.io/cluster-issuer: "{{ . }}"
+    {{- end }}
+    {{- end }}
     nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
     nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
     {{- if .Values.security.restrictAccess.enabled }}
