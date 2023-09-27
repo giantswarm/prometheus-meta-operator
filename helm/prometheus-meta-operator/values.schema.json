@@ -179,6 +179,9 @@
                 "bastions": {
                     "type": "array"
                 },
+                "clusterIssuerName" :{
+                    "type": "string"
+                },
                 "etcdClientCertificates": {
                     "type": "object",
                     "properties": {

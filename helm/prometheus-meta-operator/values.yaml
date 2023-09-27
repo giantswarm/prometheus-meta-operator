@@ -53,6 +53,7 @@ prometheus:
   imageRepository: giantswarm/prometheus
   logLevel: info
   letsencrypt: false
+  clusterIssuerName: ""
 
   retention:
     ## Retention duration for prometheus.
