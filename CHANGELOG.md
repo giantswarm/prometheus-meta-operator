@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.53.0] - 2023-09-27
+
 ### Removed
 
 - Remove KVM related things that are not used anymore.
@@ -2310,7 +2312,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.52.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.53.0...HEAD
+[4.53.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.52.0...v4.53.0
 [4.52.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.51.0...v4.52.0
 [4.51.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.50.0...v4.51.0
 [4.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.2...v4.50.0
