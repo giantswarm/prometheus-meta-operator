@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Remove KVM related things that are not used anymore.
+- Revert `prometheus-agent` max shards to 10 to prevent incessant paging.
 
 ## [4.52.0] - 2023-09-26
 
