@@ -70,7 +70,7 @@ func DefaultRemoteWrite(clusterID string, baseDomain string, password string, in
 		QueueConfig: promv1.QueueConfig{
 			Capacity:          30000,
 			MaxSamplesPerSend: 150000,
-			MaxShards:         50,
+			MaxShards:         10,
 		},
 		TLSConfig: promv1.TLSConfig{
 			SafeTLSConfig: promv1.SafeTLSConfig{
