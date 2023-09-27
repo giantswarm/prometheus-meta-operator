@@ -17,6 +17,7 @@ import (
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/pvcresizing"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -38,7 +39,7 @@ type Config struct {
 	ImageRepository    string
 	Installation       string
 	Pipeline           string
-	Provider           string
+	Provider           cluster.Provider
 	Region             string
 	Registry           string
 	LogLevel           string

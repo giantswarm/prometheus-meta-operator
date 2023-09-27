@@ -14,12 +14,13 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 type Config struct {
 	Name      string
-	Provider  string
+	Provider  cluster.Provider
 	Sources   []CertificateSource
 	Target    string
 	K8sClient k8sclient.Interface
@@ -35,7 +36,7 @@ type CertificateSource struct {
 
 type Resource struct {
 	name      string
-	provider  string
+	provider  cluster.Provider
 	sources   []CertificateSource
 	target    string
 	k8sClient k8sclient.Interface
@@ -46,7 +47,7 @@ func New(config Config) (*Resource, error) {
 	if config.Name == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Name must not be empty", config)
 	}
-	if config.Provider == "" {
+	if reflect.ValueOf(config.Provider).IsZero() {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Provider must not be empty", config)
 	}
 	if config.K8sClient == nil {

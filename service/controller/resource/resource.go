@@ -12,6 +12,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
@@ -47,7 +48,7 @@ type Config struct {
 	Installation            string
 	InsecureCA              bool
 	Pipeline                string
-	Provider                string
+	Provider                cluster.Provider
 	Region                  string
 	Registry                string
 

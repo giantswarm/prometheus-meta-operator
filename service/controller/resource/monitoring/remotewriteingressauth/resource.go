@@ -11,6 +11,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
@@ -26,7 +27,7 @@ type Config struct {
 	Logger          micrologger.Logger
 	PasswordManager password.Manager
 	Installation    string
-	Provider        string
+	Provider        cluster.Provider
 }
 
 func New(config Config) (*generic.Resource, error) {

@@ -20,6 +20,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -82,7 +83,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 		}
 
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -91,7 +92,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"token": []byte("token"),
@@ -114,12 +115,15 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			config := Config{
 				TemplatePath:       path,
 				OrganizationReader: FakeReader{},
-				Provider:           "aws",
-				Customer:           "pmo",
-				K8sClient:          k8sClient,
-				Vault:              "vault1.some-installation.test",
-				Installation:       "test-installation",
-				Logger:             logger,
+				Provider: cluster.Provider{
+					Kind:   "aws",
+					Flavor: "vintage",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -183,7 +187,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 		}
 
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -192,7 +196,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -216,12 +220,15 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			config := Config{
 				TemplatePath:       path,
 				OrganizationReader: FakeReader{},
-				Provider:           "azure",
-				Customer:           "pmo",
-				K8sClient:          k8sClient,
-				Vault:              "vault1.some-installation.test",
-				Installation:       "test-installation",
-				Logger:             logger,
+				Provider: cluster.Provider{
+					Kind:   "azure",
+					Flavor: "vintage",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -305,7 +312,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -314,7 +321,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -339,12 +346,15 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
-				Provider:                "openstack",
-				Customer:                "pmo",
-				K8sClient:               k8sClient,
-				Vault:                   "vault1.some-installation.test",
-				Installation:            "test-installation",
-				Logger:                  logger,
+				Provider: cluster.Provider{
+					Kind:   "openstack",
+					Flavor: "capi",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -428,7 +438,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -437,7 +447,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -462,12 +472,15 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
-				Provider:                "gcp",
-				Customer:                "pmo",
-				K8sClient:               k8sClient,
-				Vault:                   "vault1.some-installation.test",
-				Installation:            "test-installation",
-				Logger:                  logger,
+				Provider: cluster.Provider{
+					Kind:   "gcp",
+					Flavor: "capi",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -551,7 +564,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -560,7 +573,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -585,12 +598,15 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
-				Provider:                "capa",
-				Customer:                "pmo",
-				K8sClient:               k8sClient,
-				Vault:                   "vault1.some-installation.test",
-				Installation:            "test-installation",
-				Logger:                  logger,
+				Provider: cluster.Provider{
+					Kind:   "capa",
+					Flavor: "capi",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}

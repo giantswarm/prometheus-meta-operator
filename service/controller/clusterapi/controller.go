@@ -14,6 +14,7 @@ import (
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	controllerresource "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource"
 )
@@ -31,7 +32,7 @@ type ControllerConfig struct {
 	Installation            string
 	InsecureCA              bool
 	Pipeline                string
-	Provider                string
+	Provider                cluster.Provider
 	Region                  string
 	Registry                string
 
