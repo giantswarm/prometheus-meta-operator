@@ -37,6 +37,14 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
+		// /!\ Atlas want to make some manual configuration on RemoteWriteConfig on anteater/deu01 and anteater/seu01
+		// We temporary disable the RemoteWriteConfiguration update for those two WC
+		cluster_name := cluster.GetName()
+		if cluster_name == "deu01" || cluster_name == "seu01" {
+			r.logger.Debugf(ctx, "We temporary avoid RemoteWriteConfig update on %s", cluster_name)
+			return nil
+		}
+
 		if current != nil {
 			currentShards, err := readCurrentShardsFromConfig(*current)
 			if err != nil {
