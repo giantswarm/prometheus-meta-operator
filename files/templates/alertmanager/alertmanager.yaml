@@ -30,6 +30,11 @@ route:
     matchers:
     - alertname="PrometheusMetaOperatorReconcileErrors"
     continue: false
+  - receiver: blackhole
+    matchers:
+    - alertname="ClusterUnhealthyPhase"
+    - name=~"t-.*"
+    continue: false
   [[- end ]]
 
   # Falco noise Slack

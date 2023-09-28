@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Routing rule for `ClusterUnhealthyPhase` and test clusters on stable-testing MCs to route to blackhole
+
 ## [4.54.0] - 2023-09-28
 
 ### Added
@@ -53,7 +57,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.49.1] - 2023-09-21
 
-### Changed 
+### Changed
 
 - Ignore kube-proxy target on EKS or clusters with observability bundle >= 0.8.3 (where the kube-proxy service monitor is enabled).
 
