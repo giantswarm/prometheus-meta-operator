@@ -125,6 +125,13 @@ func IsCAPIManagementCluster(provider string) bool {
 	return false
 }
 
+func ClusterProvider(cluster metav1.Object, mcProvider string) string {
+	if IsEKSCluster(cluster) {
+		return "eks"
+	}
+	return mcProvider
+}
+
 func AlertmanagerLabels() map[string]string {
 	return map[string]string{
 		"app.kubernetes.io/name":       "alertmanager",

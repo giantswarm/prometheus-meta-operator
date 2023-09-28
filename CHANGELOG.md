@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add cert-manager clusterIssuer configuration option for Ingresses.
+- Add support for EKS as a provider.
 
 ## [4.53.0] - 2023-09-27
 
