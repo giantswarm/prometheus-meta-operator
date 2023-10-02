@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add condition for PSP installation in helm chart
 
+## [4.54.1] - 2023-09-28
+
+### Added
+
+- Routing rule for `ClusterUnhealthyPhase` and test clusters on stable-testing MCs to route to blackhole
+
 ## [4.54.0] - 2023-09-28
 
 ### Added
@@ -57,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.49.1] - 2023-09-21
 
-### Changed 
+### Changed
 
 - Ignore kube-proxy target on EKS or clusters with observability bundle >= 0.8.3 (where the kube-proxy service monitor is enabled).
 
@@ -2327,7 +2333,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.1...HEAD
+[4.54.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.0...v4.54.1
 [4.54.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.53.0...v4.54.0
 [4.53.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.52.0...v4.53.0
 [4.52.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.51.0...v4.52.0
