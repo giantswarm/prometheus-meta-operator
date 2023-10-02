@@ -1,3 +1,7 @@
+global:
+  podSecurityStandards:
+    enforced: false
+
 registry:
   domain: docker.io
 

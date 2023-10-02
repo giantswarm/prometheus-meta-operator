@@ -54,6 +54,19 @@
                 }
             }
         },
+        "global": {
+            "type": "object",
+            "properties": {
+                "podSecurityStandards": {
+                    "type": "object",
+                    "properties": {
+                        "enforced": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
         "grafana": {
             "type": "object",
             "properties": {
@@ -179,7 +192,7 @@
                 "bastions": {
                     "type": "array"
                 },
-                "clusterIssuerName" :{
+                "clusterIssuerName": {
                     "type": "string"
                 },
                 "etcdClientCertificates": {
