@@ -18,6 +18,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
@@ -40,7 +41,7 @@ type Config struct {
 	Bastions                  []string
 	Customer                  string
 	Installation              string
-	Provider                  string
+	Provider                  cluster.Provider
 	Vault                     string
 	TemplatePath              string
 	WorkloadClusterETCDDomain string

@@ -7,6 +7,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -22,10 +23,10 @@ type Reader interface {
 type NamespaceReader struct {
 	client       kubernetes.Interface
 	installation string
-	provider     string
+	provider     cluster.Provider
 }
 
-func NewNamespaceReader(client kubernetes.Interface, installation string, provider string) Reader {
+func NewNamespaceReader(client kubernetes.Interface, installation string, provider cluster.Provider) Reader {
 	return NamespaceReader{client, installation, provider}
 }
 

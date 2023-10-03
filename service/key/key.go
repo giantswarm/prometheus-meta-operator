@@ -14,10 +14,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
-
-var capiProviders = []string{"capa", "capz", "cloud-director", "gcp", "openstack", "vsphere"}
 
 const (
 	MonitoringNamespace = "monitoring"
@@ -115,21 +114,15 @@ func EtcdSecret(installation string, obj interface{}) string {
 	return APIServerCertificatesSecretName
 }
 
-func IsCAPIManagementCluster(provider string) bool {
-	for _, v := range capiProviders {
-		if v == provider {
-			return true
-		}
-	}
-
-	return false
+func IsCAPIManagementCluster(provider cluster.Provider) bool {
+	return provider.Flavor == "capi"
 }
 
-func ClusterProvider(cluster metav1.Object, mcProvider string) string {
+func ClusterProvider(cluster metav1.Object, provider cluster.Provider) string {
 	if IsEKSCluster(cluster) {
 		return "eks"
 	}
-	return mcProvider
+	return provider.Kind
 }
 
 func AlertmanagerLabels() map[string]string {
@@ -177,7 +170,7 @@ func RemoteWriteSecretName(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-remote-write-secret", ClusterID(cluster))
 }
 
-func GetClusterAppsNamespace(cluster metav1.Object, installation string, provider string) string {
+func GetClusterAppsNamespace(cluster metav1.Object, installation string, provider cluster.Provider) string {
 	if IsCAPIManagementCluster(provider) {
 		return cluster.GetNamespace()
 	} else if IsManagementCluster(installation, cluster) {
@@ -186,7 +179,7 @@ func GetClusterAppsNamespace(cluster metav1.Object, installation string, provide
 	return ClusterID(cluster)
 }
 
-func RemoteWriteAPIEndpointConfigSecretName(cluster metav1.Object, provider string) string {
+func RemoteWriteAPIEndpointConfigSecretName(cluster metav1.Object, provider cluster.Provider) string {
 	// TODO remove once all clusters are on v19
 	if IsCAPIManagementCluster(provider) {
 		return fmt.Sprintf("%s-%s", ClusterID(cluster), RemoteWriteAPIEndpointConfigSecretNameKey)

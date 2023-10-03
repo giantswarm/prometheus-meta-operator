@@ -26,6 +26,7 @@ import (
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/clusterapi"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/managementcluster"
@@ -125,7 +126,10 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var provider = config.Viper.GetString(config.Flag.Service.Provider.Kind)
+	var provider = cluster.Provider{
+		Kind:   config.Viper.GetString(config.Flag.Service.Provider.Kind),
+		Flavor: config.Viper.GetString(config.Flag.Service.Provider.Flavor),
+	}
 
 	var proxyConfig = httpproxy.FromEnvironment()
 	var clusterapiController *clusterapi.Controller
