@@ -90,6 +90,8 @@ spec:
     runAsGroup: 65534
     runAsNonRoot: true
     runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
   serviceMonitorNamespaceSelector: {}
   serviceMonitorSelector:
     matchExpressions:

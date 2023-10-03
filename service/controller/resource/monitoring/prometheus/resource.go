@@ -223,6 +223,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					RunAsGroup:   &gid,
 					RunAsNonRoot: &runAsNonRoot,
 					FSGroup:      &fsGroup,
+					SeccompProfile: &corev1.SeccompProfile{
+						Type: corev1.SeccompProfileTypeRuntimeDefault,
+					},
 				},
 				Storage: &storage,
 				TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
