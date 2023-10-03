@@ -39,7 +39,7 @@ spec:
     customer: Giant Swarm
     installation: test-installation
     pipeline: testing
-    provider: provider
+    provider: aws
     region: onprem
   externalUrl: http://prometheus/kubernetes
   image: quay.io/giantswarm/prometheus:v2.28.1
