@@ -190,7 +190,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					key.CustomerKey:     config.Customer,
 					key.InstallationKey: config.Installation,
 					key.PipelineKey:     config.Pipeline,
-					key.ProviderKey:     config.Provider,
+					key.ProviderKey:     key.ClusterProvider(cluster, config.Provider),
 					key.RegionKey:       config.Region,
 				},
 				ExternalURL: externalURL.String(),

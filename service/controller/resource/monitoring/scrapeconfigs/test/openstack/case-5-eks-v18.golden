@@ -54,7 +54,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: openstack
+    replacement: eks
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -127,7 +127,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: openstack
+    replacement: eks
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -221,7 +221,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: openstack
+    replacement: eks
   # Add installation label.
   - target_label: installation
     replacement: test-installation
@@ -353,7 +353,7 @@
     replacement: workload_cluster
   # Add provider label.
   - target_label: provider
-    replacement: openstack
+    replacement: eks
   # Add installation label.
   - target_label: installation
     replacement: test-installation
