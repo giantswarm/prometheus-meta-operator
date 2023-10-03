@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.56.0] - 2023-10-03
+
 ### Fixed
 
 - Set Prometheus seccomp profile to RuntimeDefault.
@@ -2339,7 +2341,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.55.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.56.0...HEAD
+[4.56.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.55.0...v4.56.0
 [4.55.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.1...v4.55.0
 [4.54.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.0...v4.54.1
 [4.54.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.53.0...v4.54.0
