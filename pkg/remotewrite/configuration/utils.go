@@ -64,10 +64,11 @@ func extractUsernameAndPasswordFromSecret(secret *corev1.Secret) (string, string
 func DefaultRemoteWrite(clusterID string, baseDomain string, password string, insecureCA bool) RemoteWrite {
 	url := fmt.Sprintf(remoteWriteEndpointTemplateURL, baseDomain, clusterID)
 	return RemoteWrite{
-		Name:     key.PrometheusMetaOperatorRemoteWriteName,
-		URL:      url,
-		Username: clusterID,
-		Password: password,
+		Name:          key.PrometheusMetaOperatorRemoteWriteName,
+		URL:           url,
+		Username:      clusterID,
+		Password:      password,
+		RemoteTimeout: "60s",
 		QueueConfig: promv1.QueueConfig{
 			Capacity:          30000,
 			MaxSamplesPerSend: 150000,
