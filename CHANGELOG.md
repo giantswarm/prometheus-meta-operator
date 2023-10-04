@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Handle `remoteTimeout` in RemoteWrite secret and set it to 60s.
+
+### Removed
+
+- Remove the temporary code in pmo to avoid RemoteWriteSecret update on anteater/deu01 and anteater/seu01.
+
 ## [4.56.0] - 2023-10-03
 
 ### Fixed
@@ -36,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--Temporary avoid RemoteWriteSecret update on anteater/deu01 and anteater/seu01.
+- Temporary avoid RemoteWriteSecret update on anteater/deu01 and anteater/seu01.
 
 ### Removed
 

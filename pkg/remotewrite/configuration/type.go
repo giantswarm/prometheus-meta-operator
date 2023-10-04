@@ -28,10 +28,11 @@ type PrometheusAgentImage struct {
 }
 
 type RemoteWrite struct {
-	Name        string             `yaml:"name" json:"name"`
-	Password    string             `yaml:"password" json:"password"`
-	Username    string             `yaml:"username" json:"username"`
-	URL         string             `yaml:"url" json:"url"`
-	QueueConfig promv1.QueueConfig `yaml:"queueConfig" json:"queueConfig"`
-	TLSConfig   promv1.TLSConfig   `yaml:"tlsConfig" json:"tlsConfig"`
+	Name          string             `yaml:"name" json:"name"`
+	Password      string             `yaml:"password" json:"password"`
+	Username      string             `yaml:"username" json:"username"`
+	URL           string             `yaml:"url" json:"url"`
+	RemoteTimeout string             `yaml:"remoteTimeout" json:"remoteTimeout"`
+	QueueConfig   promv1.QueueConfig `yaml:"queueConfig" json:"queueConfig"`
+	TLSConfig     promv1.TLSConfig   `yaml:"tlsConfig" json:"tlsConfig"`
 }

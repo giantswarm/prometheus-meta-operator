@@ -16,6 +16,7 @@ spec:
       username:
         key: username
         name: grafana-cloud-auth-basic
+    remoteTimeout: "60s"
     queueConfig:
       capacity: 10000
       maxSamplesPerSend: 1000
