@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Handle `remoteTimeout` in RemoteWrite secret and set it to 60s.
+- Handle `remoteTimeout` in RemoteWrite secret and set it to 60s (hardcoded to 30s with `prometheus-agent < 0.6.4`).
 
 ### Removed
 
