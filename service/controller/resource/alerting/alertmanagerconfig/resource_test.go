@@ -7,7 +7,6 @@ import (
 
 	"golang.org/x/net/http/httpproxy"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
@@ -58,11 +57,7 @@ func TestRenderingOfAlertmanagerConfig(t *testing.T) {
 			OpsgenieKey:    "opsgenie-key",
 			Proxy:          proxyConfig.ProxyFunc(),
 			Pipeline:       "testing",
-			Provider: cluster.Provider{
-				Kind:   "aws",
-				Flavor: "vintage",
-			},
-			SlackApiURL: "https://slack",
+			SlackApiURL:    "https://slack",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)

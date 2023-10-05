@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove custom SLO handling in alertmanager config.
+
 ## [4.57.0] - 2023-10-04
 
 ### Fixed

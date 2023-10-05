@@ -32,12 +32,6 @@ route:
     - severity="page"
     continue: true
 
-  # Service Level slack -- chooses the slack channel based on the provider
-  - receiver: team_phoenix_slack
-    matchers:
-    - alertname="ServiceLevelBurnRateTooHigh"
-    continue: false
-
   # Team Atlas Slack
   - receiver: team_atlas_slack
     matchers:
