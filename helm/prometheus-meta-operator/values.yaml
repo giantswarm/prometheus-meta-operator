@@ -1,3 +1,7 @@
+global:
+  podSecurityStandards:
+    enforced: false
+
 registry:
   domain: docker.io
 
@@ -53,7 +57,7 @@ prometheus:
   imageRepository: giantswarm/prometheus
   logLevel: info
   letsencrypt: false
-  mayu: ""
+  clusterIssuerName: ""
 
   retention:
     ## Retention duration for prometheus.

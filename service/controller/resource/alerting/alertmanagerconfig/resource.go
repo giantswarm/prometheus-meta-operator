@@ -12,6 +12,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -29,7 +30,7 @@ type Config struct {
 	Logger    micrologger.Logger
 
 	Installation   string
-	Provider       string
+	Provider       cluster.Provider
 	Proxy          func(reqURL *url.URL) (*url.URL, error)
 	OpsgenieKey    string
 	GrafanaAddress string
@@ -149,7 +150,7 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 	}
 
 	d := &AlertmanagerTemplateData{
-		Provider:       config.Provider,
+		Provider:       config.Provider.Kind,
 		Installation:   config.Installation,
 		OpsgenieKey:    config.OpsgenieKey,
 		GrafanaAddress: config.GrafanaAddress,

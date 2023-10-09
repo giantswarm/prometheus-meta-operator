@@ -12,6 +12,9 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
+// /////////////////////////////////////////////////////////////
+// TODO: Remove this resource when all WC are migrated to V19
+// /////////////////////////////////////////////////////////////
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	r.logger.Debugf(ctx, "ensuring prometheus remote write api endpoint secret")
 	{

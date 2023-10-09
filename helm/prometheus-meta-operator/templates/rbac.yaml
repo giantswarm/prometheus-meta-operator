@@ -94,24 +94,6 @@ rules:
       - delete
       - update
   - apiGroups:
-      - provider.giantswarm.io
-    resources:
-      - awsconfigs
-      - azureconfigs
-      - kvmconfigs
-    verbs:
-      - watch
-      - get
-      - list
-      - update
-      - patch
-  - apiGroups:
-      - infrastructure.giantswarm.io
-    resources:
-      - awsclusters
-    verbs:
-      - get
-  - apiGroups:
       - rbac.authorization.k8s.io
     resources:
       - clusterroles
@@ -209,6 +191,7 @@ roleRef:
   name: {{ include "resource.default.name" . }}
   apiGroup: rbac.authorization.k8s.io
 ---
+{{- if not .Values.global.podSecurityStandards.enforced }}
 {{- if .Capabilities.APIVersions.Has "policy/v1beta1/PodSecurityPolicy" }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -244,4 +227,5 @@ roleRef:
   kind: ClusterRole
   name: {{ include "resource.psp.name" . }}
   apiGroup: rbac.authorization.k8s.io
+{{- end }}
 {{- end }}

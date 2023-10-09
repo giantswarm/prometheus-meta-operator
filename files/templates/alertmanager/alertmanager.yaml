@@ -12,7 +12,7 @@ templates:
 route:
   group_by: [alertname, cluster_id, installation, status]
   group_interval: 15m
-  group_wait: 30s
+  group_wait: 1m
   repeat_interval: 4h
   receiver: root
 
@@ -25,6 +25,15 @@ route:
   - receiver: blackhole
     matchers:
     - alertname=~"WorkloadClusterApp.*"
+    continue: false
+  - receiver: blackhole
+    matchers:
+    - alertname="PrometheusMetaOperatorReconcileErrors"
+    continue: false
+  - receiver: blackhole
+    matchers:
+    - alertname="ClusterUnhealthyPhase"
+    - name=~"t-.*"
     continue: false
   [[- end ]]
 
@@ -88,9 +97,9 @@ route:
   # Team Phoenix Slack
   - receiver: team_phoenix_slack
     matchers:
-    - severity=~"page|notify"
     - team="phoenix"
-    - sloth_severity=~"page|ticket"
+    - sloth_severity="page"
+    - silence="true"
     continue: false
 
   # Team Shield Slack
@@ -349,7 +358,7 @@ receivers:
 - name: opsgenie_router
   opsgenie_configs:
   - api_key: [[ .OpsgenieKey ]]
-    tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},[[ .Provider ]],[[ .Installation ]],[[ .Pipeline ]]"
+    tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},{{ (index .Alerts 0).Labels.provider }},{{ (index .Alerts 0).Labels.installation }},{{ (index .Alerts 0).Labels.pipeline }}"
 
 - name: team_ops_slack
   slack_configs:

@@ -20,6 +20,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -82,7 +83,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 		}
 
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -91,7 +92,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"token": []byte("token"),
@@ -114,11 +115,15 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			config := Config{
 				TemplatePath:       path,
 				OrganizationReader: FakeReader{},
-				Provider:           "aws",
-				Customer:           "pmo",
-				K8sClient:          k8sClient,
-				Vault:              "vault1.some-installation.test",
-				Installation:       "test-installation",
+				Provider: cluster.Provider{
+					Kind:   "aws",
+					Flavor: "vintage",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -182,7 +187,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 		}
 
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -191,7 +196,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -215,119 +220,21 @@ func TestAzureScrapeconfigs(t *testing.T) {
 			config := Config{
 				TemplatePath:       path,
 				OrganizationReader: FakeReader{},
-				Provider:           "azure",
-				Customer:           "pmo",
-				K8sClient:          k8sClient,
-				Vault:              "vault1.some-installation.test",
-				Installation:       "test-installation",
+				Provider: cluster.Provider{
+					Kind:   "azure",
+					Flavor: "vintage",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
 	}
 
 	outputDir, err := filepath.Abs("./test/azure")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	c := unittest.Config{
-		OutputDir:            outputDir,
-		T:                    t,
-		TestFunc:             testFunc,
-		Update:               *update,
-		TestFuncReturnsBytes: true,
-	}
-	runner, err := unittest.NewRunner(c)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = runner.Run()
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestKVMScrapeconfigs(t *testing.T) {
-	var err error
-	var logger micrologger.Logger
-	{
-		c := micrologger.Config{}
-
-		logger, err = micrologger.New(c)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	var testFunc unittest.TestFunc
-	{
-		path := path.Join(unittest.ProjectRoot(), templatePath)
-
-		var client client.Client
-		{
-			schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-				apiextensionsv1.AddToScheme,
-				appsv1alpha1.AddToScheme,
-			})
-
-			err := schemeBuilder.AddToScheme(scheme.Scheme)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			client = fake.NewClientBuilder().
-				WithScheme(scheme.Scheme).
-				WithRuntimeObjects().
-				Build()
-		}
-
-		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
-			if err != nil {
-				t.Fatal(err)
-			}
-			var secret runtime.Object
-			{
-				secret = &corev1.Secret{
-					ObjectMeta: metav1.ObjectMeta{
-						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
-					},
-					Data: map[string][]byte{
-						"crt": []byte("crt"),
-						"key": []byte("key"),
-					},
-				}
-			}
-
-			var k8sClient k8sclient.Interface
-			{
-				c := k8sclient.ClientsConfig{
-					Logger:        logger,
-					SchemeBuilder: k8sclient.SchemeBuilder(corev1.SchemeBuilder),
-				}
-				k8sClient, err = fakek8sclient.NewClients(c, secret)
-				if err != nil {
-					t.Fatal(err)
-				}
-			}
-
-			config := Config{
-				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				TemplatePath:            path,
-				OrganizationReader:      FakeReader{},
-				Provider:                "kvm",
-				Customer:                "pmo",
-				K8sClient:               k8sClient,
-				Vault:                   "vault1.some-installation.test",
-				Installation:            "test-installation",
-			}
-			return toData(context.Background(), client, v, config)
-		}
-	}
-
-	outputDir, err := filepath.Abs("./test/kvm")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -405,7 +312,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -414,7 +321,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -439,11 +346,15 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
-				Provider:                "openstack",
-				Customer:                "pmo",
-				K8sClient:               k8sClient,
-				Vault:                   "vault1.some-installation.test",
-				Installation:            "test-installation",
+				Provider: cluster.Provider{
+					Kind:   "openstack",
+					Flavor: "capi",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -527,7 +438,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -536,7 +447,7 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -561,11 +472,15 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
-				Provider:                "gcp",
-				Customer:                "pmo",
-				K8sClient:               k8sClient,
-				Vault:                   "vault1.some-installation.test",
-				Installation:            "test-installation",
+				Provider: cluster.Provider{
+					Kind:   "gcp",
+					Flavor: "capi",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}
@@ -649,7 +564,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -658,7 +573,7 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				secret = &corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"crt": []byte("crt"),
@@ -683,11 +598,15 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
-				Provider:                "capa",
-				Customer:                "pmo",
-				K8sClient:               k8sClient,
-				Vault:                   "vault1.some-installation.test",
-				Installation:            "test-installation",
+				Provider: cluster.Provider{
+					Kind:   "capa",
+					Flavor: "capi",
+				},
+				Customer:     "pmo",
+				K8sClient:    k8sClient,
+				Vault:        "vault1.some-installation.test",
+				Installation: "test-installation",
+				Logger:       logger,
 			}
 			return toData(context.Background(), client, v, config)
 		}

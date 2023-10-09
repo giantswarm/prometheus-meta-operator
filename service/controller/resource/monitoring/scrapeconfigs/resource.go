@@ -18,6 +18,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
@@ -40,8 +41,7 @@ type Config struct {
 	Bastions                  []string
 	Customer                  string
 	Installation              string
-	Provider                  string
-	Mayu                      string
+	Provider                  cluster.Provider
 	Vault                     string
 	TemplatePath              string
 	WorkloadClusterETCDDomain string
@@ -62,7 +62,6 @@ type TemplateData struct {
 	EtcdSecretName            string
 	Installation              string
 	IgnoredTargets            string
-	Mayu                      string
 	Vault                     string
 	WorkloadClusterETCDDomain string
 	CAPIManagementCluster     bool
@@ -129,9 +128,10 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	if key.ClusterType(config.Installation, v) == "workload_cluster" {
 		clusterID := key.ClusterID(cluster)
 		// Try to get the etcd url from the Giant Swarm way
+		// TODO remove once all clusters are on CAPI
 		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(ctx, "master", metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			// TODO we ignore ETCD for capi clusters for now. Find a way to do it later
+			// ETCD for CAPI clusters is monitored via service monitors
 		} else if err != nil {
 			return nil, microerror.Mask(err)
 		} else {
@@ -212,12 +212,11 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		ServicePriority:           key.GetServicePriority(cluster),
 		Customer:                  config.Customer,
 		Organization:              organization,
-		Provider:                  config.Provider,
+		Provider:                  key.ClusterProvider(cluster, config.Provider),
 		Installation:              config.Installation,
 		SecretName:                key.APIServerCertificatesSecretName,
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
 		Vault:                     config.Vault,
-		Mayu:                      config.Mayu,
 		IgnoredTargets:            strings.Join(ignoredTargets[:], ","),
 		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
 		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
@@ -262,38 +261,61 @@ func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Cli
 func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) ([]string, error) {
 	ignoredTargets := make([]string, 0)
 
-	appVersion, err := getObservabilityBundleAppVersion(ctx, ctrlClient, cluster, config)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+	if key.IsEKSCluster(cluster) {
+		// In case of EKS clusters, we assume scraping targets via ServiceMonitors,
+		// so we ignore them from the Prometheus scrape config
+		config.Logger.Debugf(ctx, "EKS cluster: ignoring all scraping targets in Prometheus scrape config")
+		ignoredTargets = append(ignoredTargets,
+			"prometheus-operator-app",
+			"kube-apiserver",
+			"kube-controller-manager",
+			"kube-scheduler",
+			"node-exporter",
+			"kubelet",
+			"kube-proxy",
+			"coredns",
+			"kube-state-metrics",
+			"etcd")
+	} else {
+		appVersion, err := getObservabilityBundleAppVersion(ctx, ctrlClient, cluster, config)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	version, err := semver.Parse(appVersion)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+		version, err := semver.Parse(appVersion)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	initialBundleVersion, err := semver.Parse("0.1.0")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+		initialBundleVersion, err := semver.Parse("0.1.0")
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	bundleWithKSMAndExportersVersion, err := semver.Parse("0.4.0")
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
+		bundleWithKSMAndExportersVersion, err := semver.Parse("0.4.0")
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		bundleWithKubeProxyExporterVersion, err := semver.Parse("0.8.3")
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
 
-	if version.GTE(initialBundleVersion) {
-		ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler", "node-exporter")
-	}
+		if version.GTE(initialBundleVersion) {
+			ignoredTargets = append(ignoredTargets, "prometheus-operator-app", "kube-apiserver", "kube-controller-manager", "kube-scheduler", "node-exporter")
+		}
 
-	if version.GTE(bundleWithKSMAndExportersVersion) {
-		ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
+		if version.GTE(bundleWithKSMAndExportersVersion) {
+			ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
 
-		if key.IsCAPIManagementCluster(config.Provider) {
-			ignoredTargets = append(ignoredTargets, "etcd")
+			if key.IsCAPIManagementCluster(config.Provider) {
+				ignoredTargets = append(ignoredTargets, "etcd")
+			}
+		}
+		if version.GTE(bundleWithKubeProxyExporterVersion) {
+			ignoredTargets = append(ignoredTargets, "kube-proxy")
 		}
 	}
-
 	// Vintage WC
 	if !key.IsCAPIManagementCluster(config.Provider) && !key.IsManagementCluster(config.Installation, cluster) {
 		// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore those targets.

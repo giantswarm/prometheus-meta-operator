@@ -14,10 +14,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
 )
-
-var capiProviders = []string{"capa", "capz", "cloud-director", "gcp", "openstack", "vsphere"}
 
 const (
 	MonitoringNamespace = "monitoring"
@@ -115,14 +114,15 @@ func EtcdSecret(installation string, obj interface{}) string {
 	return APIServerCertificatesSecretName
 }
 
-func IsCAPIManagementCluster(provider string) bool {
-	for _, v := range capiProviders {
-		if v == provider {
-			return true
-		}
-	}
+func IsCAPIManagementCluster(provider cluster.Provider) bool {
+	return provider.Flavor == "capi"
+}
 
-	return false
+func ClusterProvider(cluster metav1.Object, provider cluster.Provider) string {
+	if IsEKSCluster(cluster) {
+		return "eks"
+	}
+	return provider.Kind
 }
 
 func AlertmanagerLabels() map[string]string {
@@ -170,7 +170,7 @@ func RemoteWriteSecretName(cluster metav1.Object) string {
 	return fmt.Sprintf("%s-remote-write-secret", ClusterID(cluster))
 }
 
-func GetClusterAppsNamespace(cluster metav1.Object, installation string, provider string) string {
+func GetClusterAppsNamespace(cluster metav1.Object, installation string, provider cluster.Provider) string {
 	if IsCAPIManagementCluster(provider) {
 		return cluster.GetNamespace()
 	} else if IsManagementCluster(installation, cluster) {
@@ -179,7 +179,8 @@ func GetClusterAppsNamespace(cluster metav1.Object, installation string, provide
 	return ClusterID(cluster)
 }
 
-func RemoteWriteAPIEndpointConfigSecretName(cluster metav1.Object, provider string) string {
+func RemoteWriteAPIEndpointConfigSecretName(cluster metav1.Object, provider cluster.Provider) string {
+	// TODO remove once all clusters are on v19
 	if IsCAPIManagementCluster(provider) {
 		return fmt.Sprintf("%s-%s", ClusterID(cluster), RemoteWriteAPIEndpointConfigSecretNameKey)
 	}
@@ -275,7 +276,7 @@ func APIUrl(obj interface{}) string {
 	case *capi.Cluster:
 		// We remove any https:// prefix from the api-server host due to a bug in CAPA Managed EKS clusters (cf. https://gigantic.slack.com/archives/C02HLSDH3DZ/p1695213116360889)
 		return fmt.Sprintf("%s:%d", strings.TrimPrefix(v.Spec.ControlPlaneEndpoint.Host, "https://"), v.Spec.ControlPlaneEndpoint.Port)
-	case metav1.Object:
+	case metav1.Object: // TODO remove once all clusters are on v19
 		return fmt.Sprintf("master.%s:443", v.GetName())
 	}
 
@@ -294,6 +295,13 @@ func IsManagementCluster(installation string, obj interface{}) bool {
 	default:
 		return false
 	}
+}
+
+func IsEKSCluster(obj interface{}) bool {
+	if c, ok := obj.(*capi.Cluster); ok {
+		return c.Spec.InfrastructureRef.Kind == "AWSManagedCluster"
+	}
+	return false
 }
 
 func ClusterType(installation string, obj interface{}) string {

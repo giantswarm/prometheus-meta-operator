@@ -1,8 +1,0 @@
-apiVersion: provider.giantswarm.io/v1alpha1
-kind: AzureConfig
-metadata:
-  labels:
-    "giantswarm.io/service-priority": "medium"
-    "release.giantswarm.io/version": "18.0.0"
-  name: foo
-  namespace: org-my-organization

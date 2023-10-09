@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net"
+	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -12,6 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheusquerier"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
@@ -30,7 +32,7 @@ type Config struct {
 	Customer     string
 	Installation string
 	Pipeline     string
-	Provider     string
+	Provider     cluster.Provider
 	Region       string
 	Version      string
 }
@@ -43,7 +45,7 @@ type Resource struct {
 	customer     string
 	installation string
 	pipeline     string
-	provider     string
+	provider     cluster.Provider
 	region       string
 	version      string
 }
@@ -67,7 +69,7 @@ func New(config Config) (*Resource, error) {
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.Installation must not be empty")
 	}
-	if config.Provider == "" {
+	if reflect.ValueOf(config.Provider).IsZero() {
 		return nil, microerror.Maskf(invalidConfigError, "config.Provider must not be empty")
 	}
 	if config.Version == "" {
@@ -106,7 +108,7 @@ func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, 
 		key.InstallationKey:    r.installation,
 		key.OrganizationKey:    organization,
 		key.PipelineKey:        r.pipeline,
-		key.ProviderKey:        r.provider,
+		key.ProviderKey:        key.ClusterProvider(cluster, r.provider),
 		key.RegionKey:          r.region,
 		key.ServicePriorityKey: key.GetServicePriority(cluster),
 	}

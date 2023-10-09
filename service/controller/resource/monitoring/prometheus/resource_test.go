@@ -13,6 +13,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -39,7 +40,7 @@ func TestPrometheus(t *testing.T) {
 		OutputDir: outputDir,
 		T:         t,
 		TestFunc: func(v interface{}) (interface{}, error) {
-			cluster, err := key.ToCluster(v)
+			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -48,7 +49,7 @@ func TestPrometheus(t *testing.T) {
 				secret = &v1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
-						Namespace: key.Namespace(cluster),
+						Namespace: key.Namespace(testCluster),
 					},
 					Data: map[string][]byte{
 						"token": []byte("my-token"),
@@ -75,14 +76,17 @@ func TestPrometheus(t *testing.T) {
 				Installation:       "test-installation",
 				Pipeline:           "testing",
 				K8sClient:          k8sClient,
-				Provider:           "provider",
-				Region:             "onprem",
-				ImageRepository:    "giantswarm/prometheus",
-				LogLevel:           "debug",
-				Registry:           "quay.io",
-				RetentionDuration:  "2w",
-				ScrapeInterval:     "60s",
-				Version:            "v2.28.1",
+				Provider: cluster.Provider{
+					Kind:   "aws",
+					Flavor: "vintage",
+				},
+				Region:            "onprem",
+				ImageRepository:   "giantswarm/prometheus",
+				LogLevel:          "debug",
+				Registry:          "quay.io",
+				RetentionDuration: "2w",
+				ScrapeInterval:    "60s",
+				Version:           "v2.28.1",
 			}
 
 			return toPrometheus(context.Background(), v, config)

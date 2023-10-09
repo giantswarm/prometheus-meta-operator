@@ -7,8 +7,93 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.57.0] - 2023-10-04
+
+### Fixed
+
+- Fix Prometheus PSP by adding seccomp profile to RuntimeDefault.
+
+### Added
+
+- Handle `remoteTimeout` in RemoteWrite secret and set it to 60s (hardcoded to 30s with `prometheus-agent < 0.6.4`).
+
+### Removed
+
+- Remove the temporary code in pmo to avoid RemoteWriteSecret update on anteater/deu01 and anteater/seu01.
+
+## [4.56.0] - 2023-10-03
+
+### Fixed
+
+- Set Prometheus seccomp profile to RuntimeDefault.
+
+## [4.55.0] - 2023-10-02
+
 ### Changed
 
+- Add condition for PSP installation in helm chart
+
+## [4.54.1] - 2023-09-28
+
+### Added
+
+- Routing rule for `ClusterUnhealthyPhase` and test clusters on stable-testing MCs to route to blackhole
+
+## [4.54.0] - 2023-09-28
+
+### Added
+
+- Add cert-manager clusterIssuer configuration option for Ingresses.
+- Add support for EKS as a provider.
+
+## [4.53.0] - 2023-09-27
+
+### Changed
+
+- Temporary avoid RemoteWriteSecret update on anteater/deu01 and anteater/seu01.
+
+### Removed
+
+- Remove KVM related things that are not used anymore.
+- Revert `prometheus-agent` max shards to 10 to prevent incessant paging.
+
+## [4.52.0] - 2023-09-26
+
+### Changed
+
+- Support absolute Grafana dashboard URLs.
+- Increase `prometheus-agent` max shards to 50 to improve agent stability.
+
+## [4.51.0] - 2023-09-25
+
+### Changed
+
+- Ignore `PrometheusMetaOperatorReconcileErrors` alerts on `stable-testing`.
+- Increase `group_wait` from AlertManager config to let more time to inhibition alerts to be executed.
+
+## [4.50.0] - 2023-09-25
+
+### Changed
+
+- Only send silenced page-level SLOTH alerts to `phoenix`'s slack alert channel, rather than all alerts.
+
+## [4.49.2] - 2023-09-22
+
+### Fixed
+
+- Reverted support absolute Grafana dashboard URLs.
+
+## [4.49.1] - 2023-09-21
+
+### Changed
+
+- Ignore kube-proxy target on EKS or clusters with observability bundle >= 0.8.3 (where the kube-proxy service monitor is enabled).
+
+## [4.49.0] - 2023-09-21
+
+### Changed
+
+- Adapt scrape targets to EKS clusters.
 - computation of number of shards: rely on max number of series over the last 6h.
 
 ### Fixed
@@ -2271,7 +2356,19 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.48.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.57.0...HEAD
+[4.57.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.56.0...v4.57.0
+[4.56.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.55.0...v4.56.0
+[4.55.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.1...v4.55.0
+[4.54.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.0...v4.54.1
+[4.54.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.53.0...v4.54.0
+[4.53.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.52.0...v4.53.0
+[4.52.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.51.0...v4.52.0
+[4.51.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.50.0...v4.51.0
+[4.50.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.2...v4.50.0
+[4.49.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.1...v4.49.2
+[4.49.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.49.0...v4.49.1
+[4.49.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.48.0...v4.49.0
 [4.48.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.47.0...v4.48.0
 [4.47.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.46.0...v4.47.0
 [4.46.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.45.1...v4.46.0

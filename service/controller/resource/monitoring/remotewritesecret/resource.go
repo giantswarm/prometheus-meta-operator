@@ -2,6 +2,7 @@ package remotewritesecret
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
@@ -10,6 +11,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -26,7 +28,7 @@ type Config struct {
 	BaseDomain      string
 	InsecureCA      bool
 	Installation    string
-	Provider        string
+	Provider        cluster.Provider
 }
 
 type Resource struct {
@@ -37,7 +39,7 @@ type Resource struct {
 	BaseDomain      string
 	InsecureCA      bool
 	Installation    string
-	Provider        string
+	Provider        cluster.Provider
 }
 
 func New(config Config) (*Resource, error) {
@@ -56,7 +58,7 @@ func New(config Config) (*Resource, error) {
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "config.Installation must not be empty")
 	}
-	if config.Provider == "" {
+	if reflect.ValueOf(config.Provider).IsZero() {
 		return nil, microerror.Maskf(invalidConfigError, "config.Provider must not be empty")
 	}
 	r := &Resource{

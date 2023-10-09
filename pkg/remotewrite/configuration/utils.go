@@ -11,12 +11,13 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"sigs.k8s.io/yaml"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const remoteWriteEndpointTemplateURL = "https://%s/%s/api/v1/write"
 
-func GetUsernameAndPassword(client kubernetes.Interface, ctx context.Context, cluster v1.Object, installation string, provider string) (string, string, error) {
+func GetUsernameAndPassword(client kubernetes.Interface, ctx context.Context, cluster v1.Object, installation string, provider cluster.Provider) (string, string, error) {
 	secretName := key.RemoteWriteSecretName(cluster)
 	secretNamespace := key.GetClusterAppsNamespace(cluster, installation, provider)
 
@@ -63,10 +64,11 @@ func extractUsernameAndPasswordFromSecret(secret *corev1.Secret) (string, string
 func DefaultRemoteWrite(clusterID string, baseDomain string, password string, insecureCA bool) RemoteWrite {
 	url := fmt.Sprintf(remoteWriteEndpointTemplateURL, baseDomain, clusterID)
 	return RemoteWrite{
-		Name:     key.PrometheusMetaOperatorRemoteWriteName,
-		URL:      url,
-		Username: clusterID,
-		Password: password,
+		Name:          key.PrometheusMetaOperatorRemoteWriteName,
+		URL:           url,
+		Username:      clusterID,
+		Password:      password,
+		RemoteTimeout: "60s",
 		QueueConfig: promv1.QueueConfig{
 			Capacity:          30000,
 			MaxSamplesPerSend: 150000,

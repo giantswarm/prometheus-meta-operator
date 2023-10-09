@@ -1,8 +1,0 @@
-apiVersion: provider.giantswarm.io/v1alpha1
-kind: AWSConfig
-metadata:
-  labels:
-    "giantswarm.io/service-priority": "highest"
-    "release.giantswarm.io/version": "16.0.0"
-  name: alice
-  namespace: org-my-organization

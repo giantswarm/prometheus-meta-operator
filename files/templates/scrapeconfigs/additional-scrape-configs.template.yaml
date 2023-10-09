@@ -338,6 +338,7 @@
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
     action: drop
 [[- end ]]
+[[- if not (contains "kube-proxy" .IgnoredTargets) ]]
 # kube-proxy
 - job_name: [[ .ClusterID ]]-prometheus/kube-proxy-[[ .ClusterID ]]/0
   honor_labels: true
@@ -371,6 +372,7 @@
   - source_labels: [__name__]
     regex: rest_client_(rate_limiter_duration_seconds_bucket|request_size_bytes_bucket|response_size_bytes_bucket)
     action: drop
+[[- end ]]
 [[- if not (contains "coredns" .IgnoredTargets) ]]
 # coredns
 - job_name: [[ .ClusterID ]]-prometheus/coredns-[[ .ClusterID ]]/0
@@ -699,95 +701,6 @@
 [[- if .AdditionalScrapeConfigs ]]
 # installation-specific configs from config repo
 [[ .AdditionalScrapeConfigs ]]
-[[- end ]]
-[[- if eq .Provider "kvm" ]]
-# flannel-operator (missing label)
-- job_name: [[ .ClusterID ]]-prometheus/flannel-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: flannel-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# bridge-operator (missing label)
-- job_name: [[ .ClusterID ]]-prometheus/bridge-operator-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: bridge-operator
-    action: keep
-  - source_labels: [__meta_kubernetes_service_label_app]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# ingress-exporter (missing label)
-- job_name: [[ .ClusterID ]]-prometheus/ingress-exporter-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - monitoring
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app]
-    regex: ingress-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_pod_container_name]
-    target_label: app
-  - source_labels: [__meta_kubernetes_service_annotationpresent_giantswarm_io_monitoring, __meta_kubernetes_service_labelpresent_giantswarm_io_monitoring]
-    regex: .*(true).*
-    action: drop
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-# Mayu
-- job_name: [[ .ClusterID ]]-prometheus/mayu-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: https
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  static_configs:
-  - targets:
-    - [[ .Mayu ]]:4080
-    labels:
-      app: mayu
-  relabel_configs:
-[[ include "_labelingschema" . | indent 2 ]]
 [[- end ]]
 [[- if not .CAPIManagementCluster ]]
 - job_name: [[ .ClusterID ]]-prometheus/vault-[[ .ClusterID ]]/0

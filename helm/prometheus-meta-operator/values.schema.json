@@ -54,6 +54,19 @@
                 }
             }
         },
+        "global": {
+            "type": "object",
+            "properties": {
+                "podSecurityStandards": {
+                    "type": "object",
+                    "properties": {
+                        "enforced": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
         "grafana": {
             "type": "object",
             "properties": {
@@ -179,6 +192,9 @@
                 "bastions": {
                     "type": "array"
                 },
+                "clusterIssuerName": {
+                    "type": "string"
+                },
                 "etcdClientCertificates": {
                     "type": "object",
                     "properties": {
@@ -214,9 +230,6 @@
                     "type": "boolean"
                 },
                 "logLevel": {
-                    "type": "string"
-                },
-                "mayu": {
                     "type": "string"
                 },
                 "retention": {
