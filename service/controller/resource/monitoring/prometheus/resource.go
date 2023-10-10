@@ -106,6 +106,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	}
 
 	var replicas int32 = 1
+	var keepDroppedTargets uint64 = 5
 	// Configured following https://github.com/prometheus-operator/prometheus-operator/issues/541#issuecomment-451884171
 	// as the volume could not mount otherwise
 	var uid int64 = 1000
@@ -194,9 +195,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					key.ProviderKey:     key.ClusterProvider(cluster, config.Provider),
 					key.RegionKey:       config.Region,
 				},
-				ExternalURL: externalURL.String(),
-				Image:       &image,
-				LogLevel:    config.LogLevel,
+				ExternalURL:        externalURL.String(),
+				Image:              &image,
+				KeepDroppedTargets: &keepDroppedTargets,
+				LogLevel:           config.LogLevel,
 				PodMetadata: &promv1.EmbeddedObjectMetadata{
 					Labels: labels,
 				},

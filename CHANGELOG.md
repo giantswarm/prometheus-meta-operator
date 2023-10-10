@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade Prometheus to 2.47.1 and configure keepDroppedTargets to 5.
+
 ## [4.58.0] - 2023-10-09
 
 ### Removed

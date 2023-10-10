@@ -42,6 +42,7 @@ spec:
     region: onprem
   externalUrl: http://prometheus/eks-sample
   image: quay.io/giantswarm/prometheus:v2.28.1
+  keepDroppedTargets: 5
   logLevel: debug
   podMetadata:
     labels:
