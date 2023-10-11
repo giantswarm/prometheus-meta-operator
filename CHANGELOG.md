@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade Prometheus to 2.47.1 and configure keepDroppedTargets to 5.
 
+### Fixed
+
+- Alert template: fix newlines / whitespace trimming if opsrecipe is *not* specified or a dashboard *is* specified.
+
 ## [4.58.0] - 2023-10-09
 
 ### Removed
@@ -112,7 +116,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support absolute Grafana dashboard URLs.
 - Fix api server url in case the CAPI provider sets https prefix in the CAPI CR status.
-- Alert template: fix newlines / whitespace trimming if opsrecipe is *not* specified or a dashboard *is* specified
 
 ## [4.48.0] - 2023-09-19
 
