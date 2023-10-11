@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Upgrade Prometheus to 2.47.1 and configure keepDroppedTargets to 5.
+
+## [4.58.0] - 2023-10-09
+
+### Removed
+
+- Remove custom SLO handling in alertmanager config.
+
 ## [4.57.0] - 2023-10-04
 
 ### Fixed
@@ -2356,7 +2366,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.57.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.58.0...HEAD
+[4.58.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.57.0...v4.58.0
 [4.57.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.56.0...v4.57.0
 [4.56.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.55.0...v4.56.0
 [4.55.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.54.1...v4.55.0
