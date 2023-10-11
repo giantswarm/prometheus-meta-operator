@@ -106,7 +106,8 @@ func NewRunner(config Config) (*Runner, error) {
 func (r *Runner) Run() error {
 	for _, file := range r.files {
 		r.T.Run(file.Name(), func(t *testing.T) {
-			input, err := inputValue(filepath.Join(r.inputDir, file.Name()))
+			inputFilePath := filepath.Join(r.inputDir, file.Name())
+			input, err := inputValue(inputFilePath)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -126,21 +127,21 @@ func (r *Runner) Run() error {
 				}
 			}
 
-			outputFile := filepath.Join(r.OutputDir, file.Name())
+			outputFilePath := filepath.Join(r.OutputDir, file.Name())
 			if r.Update {
-				err := os.WriteFile(outputFile, testResult, 0644) // #nosec
+				err := os.WriteFile(outputFilePath, testResult, 0644) // #nosec
 				if err != nil {
 					t.Fatal(err)
 				}
 			}
 
-			output, err := os.ReadFile(outputFile)
+			output, err := os.ReadFile(outputFilePath)
 			if err != nil {
 				t.Fatal(err)
 			}
 
 			if !bytes.Equal(testResult, output) {
-				t.Fatalf("\n\n%s\n", cmp.Diff(string(output), string(testResult)))
+				t.Fatalf("Rendered output does not match (input: %s, expected output: %s)\n\n%s\n", inputFilePath, outputFilePath, cmp.Diff(string(output), string(testResult)))
 			}
 		})
 	}

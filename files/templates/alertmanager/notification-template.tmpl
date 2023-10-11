@@ -35,9 +35,13 @@
 
 ---
 
-{{ if (index .Alerts 0).Annotations.opsrecipe }}📗 Runbook: {{ template "__runbookurl" . }}{{- end }}
+{{ if (index .Alerts 0).Annotations.opsrecipe -}}
+📗 Runbook: {{ template "__runbookurl" . }}
+{{ end -}}
 🔔 Alertmanager {{ template "__alertmanagerurl" . }}
-{{- if (index .Alerts 0).Annotations.dashboard }}📈 Dashboard: {{ template "__dashboardurl" . }}{{- end }}
+{{ if (index .Alerts 0).Annotations.dashboard -}}
+📈 Dashboard: {{ template "__dashboardurl" . }}
+{{ end -}}
 👀 Prometheus: {{ (index .Alerts 0).GeneratorURL }}
 
 ---
