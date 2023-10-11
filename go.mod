@@ -17,7 +17,7 @@ require (
 	github.com/google/go-cmp v0.6.0
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.20
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.68.0
-	github.com/prometheus-operator/prometheus-operator/pkg/client v0.67.1
+	github.com/prometheus-operator/prometheus-operator/pkg/client v0.68.0
 	github.com/prometheus/client_golang v1.17.0
 	github.com/prometheus/common v0.44.0
 	github.com/sirupsen/logrus v1.9.3
@@ -116,7 +116,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	k8s.io/component-base v0.26.9 // indirect
 	k8s.io/klog/v2 v2.100.1 // indirect
-	k8s.io/kube-openapi v0.0.0-20230525220651-2546d827e515 // indirect
+	k8s.io/kube-openapi v0.0.0-20230905202853-d090da108d2f // indirect
 	k8s.io/utils v0.0.0-20230726121419-3b25d923346b // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.3.0 // indirect
@@ -129,6 +129,8 @@ replace (
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.26.9
 	k8s.io/apimachinery => k8s.io/apimachinery v0.26.9
 	k8s.io/client-go => k8s.io/client-go v0.26.9
+	// https://github.com/kubernetes/client-go/issues/1269#issuecomment-1613565035 Let's revisit once we upgrade to kubernetes 1.28
+	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20230525220651-2546d827e515
 
 	sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v1.4.7
 	sigs.k8s.io/controller-runtime => sigs.k8s.io/controller-runtime v0.14.5
