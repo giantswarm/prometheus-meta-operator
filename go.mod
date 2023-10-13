@@ -123,7 +123,7 @@ require (
 )
 
 replace (
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.2
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.3
 
 	k8s.io/api => k8s.io/api v0.26.9
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.26.9
