@@ -35,6 +35,12 @@ route:
     - alertname="ClusterUnhealthyPhase"
     - name=~"t-.*"
     continue: false
+  # We don't want to get alerts by workload cluster apps that are failing.
+  # We select those by checking if the App CR is in a namespace starting with 'org-'.
+  - receiver: blackhole
+    matchers:
+    - alertname="ManagementClusterAppFailed"
+    - namespace=~"org-.*"
   [[- end ]]
 
   # Falco noise Slack
