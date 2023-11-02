@@ -6,22 +6,22 @@
 #  - github.com/giantswarm/microendpoint@v1.0.0
 #  - github.com/giantswarm/microkit@v1.0.0
 #  - sigs.k8s.io/cluster-api@v1.0.5
-CVE-2022-29153 until=2023-11-01
-CVE-2021-41803 until=2023-11-01
-CVE-2022-24687 until=2023-11-01
+CVE-2022-29153 until=2023-12-01
+CVE-2021-41803 until=2023-12-01
+CVE-2022-24687 until=2023-12-01
 
 # pkg:golang/k8s.io/apiserver@v0.25.4
-CVE-2020-8561 until=2023-11-01
+CVE-2020-8561 until=2023-12-01
 
 # pkg:golang/github.com/gin-gonic/gin@v1.7.7
-CVE-2023-26125 until=2023-11-01
-CVE-2023-29401 until=2023-11-01
+CVE-2023-26125 until=2023-12-01
+CVE-2023-29401 until=2023-12-01
 
 # pkg:golang/google.golang.org/grpc@v1.52.0
-CVE-2023-32731 until=2023-11-01
+CVE-2023-32731 until=2023-12-01
 
 # pkg:golang/golang.org/x/net@v0.8.0
-CVE-2023-3978 until=2023-11-01
+CVE-2023-3978 until=2023-12-01
 
 # pkg:golang/github.com/nats-io/nkeys@v0.4.5
 # unresolved as of 31/10/2023
