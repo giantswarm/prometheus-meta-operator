@@ -64,6 +64,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/gnostic v0.6.9 // indirect
+	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/gorilla/mux v1.8.0 // indirect
@@ -130,7 +131,7 @@ replace (
 	k8s.io/apimachinery => k8s.io/apimachinery v0.26.9
 	k8s.io/client-go => k8s.io/client-go v0.26.9
 	// https://github.com/kubernetes/client-go/issues/1269#issuecomment-1613565035 Let's revisit once we upgrade to kubernetes 1.28
-	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20230525220651-2546d827e515
+	k8s.io/kube-openapi => k8s.io/kube-openapi v0.0.0-20231113174909-778a5567bc1e
 
 	sigs.k8s.io/cluster-api => sigs.k8s.io/cluster-api v1.4.7
 	sigs.k8s.io/controller-runtime => sigs.k8s.io/controller-runtime v0.14.5
