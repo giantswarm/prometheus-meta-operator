@@ -16,7 +16,7 @@ require (
 	github.com/giantswarm/versionbundle v1.0.0
 	github.com/google/go-cmp v0.6.0
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.22
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.68.0
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.69.1
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.68.0
 	github.com/prometheus/client_golang v1.17.0
 	github.com/prometheus/common v0.45.0
@@ -24,13 +24,13 @@ require (
 	github.com/spf13/viper v1.17.0
 	golang.org/x/crypto v0.14.0
 	golang.org/x/net v0.17.0
-	k8s.io/api v0.28.2
-	k8s.io/apiextensions-apiserver v0.28.2
-	k8s.io/apimachinery v0.28.2
+	k8s.io/api v0.28.3
+	k8s.io/apiextensions-apiserver v0.28.3
+	k8s.io/apimachinery v0.28.3
 	k8s.io/autoscaler/vertical-pod-autoscaler v0.14.0
 	k8s.io/client-go v0.28.2
 	sigs.k8s.io/cluster-api v1.5.2
-	sigs.k8s.io/controller-runtime v0.16.2
+	sigs.k8s.io/controller-runtime v0.16.3
 	sigs.k8s.io/yaml v1.3.0
 )
 
