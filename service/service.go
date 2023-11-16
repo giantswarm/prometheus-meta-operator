@@ -23,6 +23,8 @@ import (
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	capiexp "sigs.k8s.io/cluster-api/exp/api/v1beta1"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
 	pmov1alpha1 "github.com/giantswarm/prometheus-meta-operator/v2/api/v1alpha1"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
@@ -59,11 +61,16 @@ func New(config Config) (*Service, error) {
 	if config.Viper == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.Viper must not be empty")
 	}
-
 	// Dependencies.
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "logger must not be empty")
 	}
+
+	// Configure controller-runtime logger
+	opts := zap.Options{
+		Development: true,
+	}
+	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
 
 	var err error
 
