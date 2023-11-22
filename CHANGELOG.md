@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Group alerts by teams.
+
 ## [4.61.0] - 2023-11-22
 
 ### Changed
@@ -1071,7 +1075,6 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 ### Fixed
 
 - Prevent panic when encountering a different user in the CAPI kubeconfig.
-
 
 ## [2.1.0] - 2022-01-10
 
