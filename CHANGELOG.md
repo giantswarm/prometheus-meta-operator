@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Upgrade to go 1.21
 - Upgrade internal dependencies.
+- Increased `group_wait` in alertmanager config from 1 to 5m.
 
 ## [4.60.0] - 2023-11-02
 
