@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.61.0] - 2023-11-22
+
 ### Changed
 
 - Upgrade to go 1.21
@@ -2383,7 +2385,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.60.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.61.0...HEAD
+[4.61.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.60.0...v4.61.0
 [4.60.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.59.0...v4.60.0
 [4.59.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.58.0...v4.59.0
 [4.58.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.57.0...v4.58.0
