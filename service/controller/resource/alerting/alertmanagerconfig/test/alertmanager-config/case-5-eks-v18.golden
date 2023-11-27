@@ -6,7 +6,7 @@ templates:
 - '/etc/alertmanager/config/*.tmpl'
 
 route:
-  group_by: [alertname, cluster_id, installation, status]
+  group_by: [alertname, cluster_id, installation, status, team]
   group_interval: 15m
   group_wait: 5m
   repeat_interval: 4h
