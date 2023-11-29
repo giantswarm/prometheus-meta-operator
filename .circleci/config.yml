@@ -18,13 +18,9 @@ workflows:
           name: push-to-registries
           requires:
             - build
-            - aliyun-approval
           filters:
             tags:
               only: /^v.*/
-
-      - aliyun-approval:
-          type: approval
 
       - architect/push-to-app-catalog:
           name: app-catalog
