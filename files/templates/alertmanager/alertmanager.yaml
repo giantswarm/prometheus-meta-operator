@@ -329,6 +329,7 @@ receivers:
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 - name: team_tinkerers_slack
+  repeat_interval: 48h
   slack_configs:
   - channel: '#alert-tinkerers'
     send_resolved: true
