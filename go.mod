@@ -16,7 +16,7 @@ require (
 	github.com/giantswarm/versionbundle v1.1.0
 	github.com/google/go-cmp v0.6.0
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.22
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.69.1
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.70.0
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.69.1
 	github.com/prometheus/client_golang v1.17.0
 	github.com/prometheus/common v0.45.0
@@ -118,7 +118,7 @@ require (
 	k8s.io/component-base v0.28.4 // indirect
 	k8s.io/klog/v2 v2.110.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20231113174909-778a5567bc1e // indirect
-	k8s.io/utils v0.0.0-20230726121419-3b25d923346b // indirect
+	k8s.io/utils v0.0.0-20231127182322-b307cd553661 // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 )
