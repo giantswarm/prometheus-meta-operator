@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Change Tinkerers slack receiver repeat_interval to 2 weeks.
+
 ## [4.62.0] - 2023-11-27
 
 ### Changed
