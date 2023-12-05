@@ -3,7 +3,7 @@ global:
     enforced: false
 
 registry:
-  domain: docker.io
+  domain: gsoci.azurecr.io
 
 ingress:
   externalDNS: false
@@ -101,4 +101,4 @@ operator:
     readOnlyRootFilesystem: true
     capabilities:
       drop:
-      - ALL
+        - ALL
