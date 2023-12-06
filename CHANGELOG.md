@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.63.0] - 2023-12-06
+
 ### Changed
 
 - Change Tinkerers slack receiver repeat_interval to 2 weeks.
@@ -2394,7 +2396,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.62.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.63.0...HEAD
+[4.63.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.62.0...v4.63.0
 [4.62.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.61.0...v4.62.0
 [4.61.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.60.0...v4.61.0
 [4.60.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.59.0...v4.60.0
