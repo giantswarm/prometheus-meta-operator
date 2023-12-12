@@ -123,4 +123,4 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 )
 
-replace github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.6
+replace github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.7
