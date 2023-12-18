@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.63.1] - 2023-12-12
+
+### Fixed
+
+- Fix Tinkerers slack receiver repeat_interval config.
+
+## [4.63.0] - 2023-12-06
+
 ### Changed
 
 - Configure `gsoci.azurecr.io` as the default container image registry.
@@ -2394,7 +2402,9 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.62.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.63.1...HEAD
+[4.63.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.63.0...v4.63.1
+[4.63.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.62.0...v4.63.0
 [4.62.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.61.0...v4.62.0
 [4.61.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.60.0...v4.61.0
 [4.60.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.59.0...v4.60.0
