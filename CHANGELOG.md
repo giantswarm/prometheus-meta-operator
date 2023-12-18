@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Configure `gsoci.azurecr.io` as the default container image registry.
 - Change Tinkerers slack receiver repeat_interval to 2 weeks.
 
 ## [4.62.0] - 2023-11-27
@@ -1569,7 +1570,6 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - Avoid alerting for `MatchingNumberOfPrometheusAndCluster` when a cluster is
   being deleted.
-
 
 ## [1.24.7] - 2021-03-18
 
