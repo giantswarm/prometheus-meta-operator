@@ -1004,3 +1004,57 @@
   # Add customer label.
   - target_label: customer
     replacement: pmo
+# kyverno policy-reporter
+- job_name: alice-prometheus/kyverno-policy-reporter-alice/0
+  honor_labels: true
+  scrape_interval: 59m
+  scrape_timeout: 30s
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kyverno
+    api_server: https://master.alice:443
+    bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
+    tls_config:
+      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+      insecure_skip_verify: false
+  bearer_token_file: /etc/prometheus/secrets/cluster-certificates/token
+  tls_config:
+    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
+    insecure_skip_verify: true
+  metric_relabel_configs:
+  # keep only the summary series to avoid storing lots of extra data
+  - source_labels: [__name__]
+    regex: policy_report_summary
+    action: keep
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    regex: policy-reporter
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
+    target_label: app
+  - regex: (exported_namespace|name|status)
+    action: labelkeep
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: alice
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: workload_cluster
+  # Add provider label.
+  - target_label: provider
+    replacement: aws
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
