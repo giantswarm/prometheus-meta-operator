@@ -1,7 +1,7 @@
 package service
 
 import (
-	"github.com/giantswarm/operatorkit/v7/pkg/flag/service/kubernetes"
+	"github.com/giantswarm/operatorkit/v8/pkg/flag/service/kubernetes"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/grafana"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/ingress"
