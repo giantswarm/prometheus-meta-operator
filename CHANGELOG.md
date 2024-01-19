@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Improved the blackhole routing for `stable-testing` MCs to silence more alerts related to test WCs
+
 ## [4.63.1] - 2023-12-12
 
 ### Fixed
