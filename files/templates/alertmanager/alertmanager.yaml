@@ -24,11 +24,19 @@ route:
     continue: false
   - receiver: blackhole
     matchers:
+    - cluster_id=~"t-.*"
+    continue: false
+  - receiver: blackhole
+    matchers:
     - alertname=~"WorkloadClusterApp.*"
     continue: false
   - receiver: blackhole
     matchers:
     - alertname="PrometheusMetaOperatorReconcileErrors"
+    continue: false
+  - receiver: blackhole
+    matchers:
+    - alertname="ClusterUnhealthyPhase"
     continue: false
   - receiver: blackhole
     matchers:
@@ -41,6 +49,7 @@ route:
     matchers:
     - alertname="ManagementClusterAppFailed"
     - namespace=~"org-.*"
+    continue: false
   [[- end ]]
 
   # Falco noise Slack
