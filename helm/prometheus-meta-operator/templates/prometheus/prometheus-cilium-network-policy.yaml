@@ -1,0 +1,25 @@
+{{ if .Values.ciliumNetworkPolicy.enabled }}
+{{- if .Capabilities.APIVersions.Has "cilium.io/v2" -}}
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: prometheus
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: prometheus
+  egress:
+    - toEntities:
+      - kube-apiserver
+      - cluster
+  ingress:
+    - fromEntities:
+      - cluster
+      toPorts:
+      - ports:
+        - port: "9090"
+{{ end }}
+{{ end }}
