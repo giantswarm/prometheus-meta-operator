@@ -15,12 +15,14 @@ spec:
     - toEntities:
       - kube-apiserver
       - cluster
-    # the below allows access to the kubernetes API server - cilium seems to be mis-identifying
-    # some API server traffic and the `kube-apiserver` entity above is ignored.
+    # the below allows access to the kubernetes API server via the external
+    # loadbalancer - prometheus appears to talk to the apiserver directly on
+    # the master nodes and also via the loadbalancer.
     - toEntities:
       - world
       toPorts:
       - ports:
+        - port: "443"
         - port: "6443"
   ingress:
     - fromEntities:
