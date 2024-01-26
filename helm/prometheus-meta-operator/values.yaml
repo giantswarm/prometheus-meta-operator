@@ -5,6 +5,9 @@ global:
 registry:
   domain: gsoci.azurecr.io
 
+ciliumNetworkPolicy:
+  enabled: true
+
 ingress:
   externalDNS: false
   className: "nginx"
