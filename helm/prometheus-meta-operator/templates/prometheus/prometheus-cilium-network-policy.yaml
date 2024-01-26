@@ -15,6 +15,13 @@ spec:
     - toEntities:
       - kube-apiserver
       - cluster
+    # the below allows access to the kubernetes API server - cilium seems to be mis-identifying
+    # some API server traffic and the `kube-apiserver` entity above is ignored.
+    - toEntities:
+      - world
+      toPorts:
+      - ports:
+        - port: "6443"
   ingress:
     - fromEntities:
       - cluster
