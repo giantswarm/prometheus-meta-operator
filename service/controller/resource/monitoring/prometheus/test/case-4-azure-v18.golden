@@ -95,6 +95,7 @@ spec:
     matchExpressions:
     - key: nonexistentkey
       operator: Exists
+  shards: 1
   storage:
     volumeClaimTemplate:
       metadata: {}
