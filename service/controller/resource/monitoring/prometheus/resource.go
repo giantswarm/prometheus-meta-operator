@@ -115,6 +115,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	// Prometheus default image runs using the nobody user (65534)
 	var gid int64 = 65534
 	var walCompression bool = true
+	var prometheusShards int32 = 1
 
 	annotationValue := cluster.GetAnnotations()[key.PrometheusVolumeSizeAnnotation]
 	volumeSize := pvcresizing.PrometheusVolumeSize(annotationValue)
@@ -229,6 +230,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						Type: corev1.SeccompProfileTypeRuntimeDefault,
 					},
 				},
+				Shards:  &prometheusShards,
 				Storage: &storage,
 				TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
 					{
