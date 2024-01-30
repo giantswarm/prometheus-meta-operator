@@ -98,6 +98,7 @@ spec:
     matchExpressions:
     - key: application.giantswarm.io/team
       operator: DoesNotExist
+  shards: 1
   storage:
     volumeClaimTemplate:
       metadata: {}
