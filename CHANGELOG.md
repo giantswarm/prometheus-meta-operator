@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.64.1] - 2024-01-30
+
 ### Added
 
 - Add `CiliumNetworkPolicy` for all created Prometheuses.
@@ -2413,7 +2415,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.64.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.64.1...HEAD
+[4.64.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.64.0...v4.64.1
 [4.64.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.63.1...v4.64.0
 [4.63.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.63.0...v4.63.1
 [4.63.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.62.0...v4.63.0
