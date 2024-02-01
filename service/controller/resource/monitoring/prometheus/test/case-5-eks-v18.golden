@@ -38,7 +38,7 @@ spec:
     customer: Giant Swarm
     installation: test-installation
     pipeline: testing
-    provider: eks
+    provider: aws
     region: onprem
   externalUrl: http://prometheus/eks-sample
   image: quay.io/giantswarm/prometheus:v2.28.1

@@ -119,8 +119,30 @@ func IsCAPIManagementCluster(provider cluster.Provider) bool {
 }
 
 func ClusterProvider(cluster metav1.Object, provider cluster.Provider) string {
-	if IsEKSCluster(cluster) {
-		return "eks"
+	// We keep the existing behavior for vintage management clusters
+	if !IsCAPIManagementCluster(provider) {
+		return provider.Kind
+	}
+
+	if c, ok := cluster.(*capi.Cluster); ok {
+		switch c.Spec.InfrastructureRef.Kind {
+		case "AWSCluster":
+			return "capa"
+		case "AWSManagedCluster":
+			return "eks"
+		case "AzureCluster":
+			return "capz"
+		case "AzureManagedCluster":
+			return "aks"
+		case "VCDCluster":
+			return "cloud-director"
+		case "VSphereCluster":
+			return "vsphere"
+		case "GCPCluster":
+			return "gcp"
+		case "GCPManagedCluster²":
+			return "gke"
+		}
 	}
 	return provider.Kind
 }
