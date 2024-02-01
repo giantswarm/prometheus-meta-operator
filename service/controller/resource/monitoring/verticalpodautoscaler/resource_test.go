@@ -6,15 +6,18 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/giantswarm/micrologger"
-
+	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	k8sclientfake "github.com/giantswarm/k8sclient/v7/pkg/k8sclient/fake"
+	"github.com/giantswarm/micrologger"
 	v1 "k8s.io/api/core/v1"
+	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/runtime"
 	vpa_clientsetfake "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned/fake"
+	"k8s.io/client-go/kubernetes/scheme"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
@@ -46,20 +49,35 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 
 	var k8sClient k8sclient.Interface
 	{
+		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+			apiextensionsv1.AddToScheme,
+			appsv1alpha1.AddToScheme,
+		})
+
+		err = schemeBuilder.AddToScheme(scheme.Scheme)
+		if err != nil {
+			t.Fatal(err)
+		}
 		c := k8sclient.ClientsConfig{
 			Logger:        logger,
-			SchemeBuilder: k8sclient.SchemeBuilder(v1.SchemeBuilder),
+			SchemeBuilder: k8sclient.SchemeBuilder(schemeBuilder),
 		}
 		k8sClient, err = k8sclientfake.NewClients(c, node)
 		if err != nil {
 			t.Fatal(err)
 		}
 	}
+
 	testFunc := func(v interface{}) (interface{}, error) {
 		c := Config{
 			Logger:    logger,
 			K8sClient: k8sClient,
 			VpaClient: vpa_clientsetfake.NewSimpleClientset(),
+			Provider: cluster.Provider{
+				Kind:   "aws",
+				Flavor: "vintage",
+			},
+			Installation: "test-installation",
 		}
 		r, err := New(c)
 		if err != nil {
