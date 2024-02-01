@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix how we enable `remote-write-receiver` to avoid deprecated warnings.
+- Fix VPA to support latest Prometheus-operator version (based on observability-bundle 1.2.0) as the latest version of the Prometheus CR now supports the `scale` subresource which causes issues with VPA.
 
 ### Removed
 
