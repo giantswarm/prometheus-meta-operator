@@ -118,33 +118,35 @@ func IsCAPIManagementCluster(provider cluster.Provider) bool {
 	return provider.Flavor == "capi"
 }
 
-func ClusterProvider(cluster metav1.Object, provider cluster.Provider) string {
+func ClusterProvider(obj metav1.Object, provider cluster.Provider) (string, error) {
+	// TODO remove once all clusters are on CAPI
 	// We keep the existing behavior for vintage management clusters
-	if !IsCAPIManagementCluster(provider) {
-		return provider.Kind
+	if _, ok := obj.(*v1.Service); ok || !IsCAPIManagementCluster(provider) {
+		return provider.Kind, nil
 	}
 
-	if c, ok := cluster.(*capi.Cluster); ok {
+	if c, ok := obj.(*capi.Cluster); ok {
 		switch c.Spec.InfrastructureRef.Kind {
-		case "AWSCluster":
-			return "capa"
-		case "AWSManagedCluster":
-			return "eks"
-		case "AzureCluster":
-			return "capz"
-		case "AzureManagedCluster":
-			return "aks"
-		case "VCDCluster":
-			return "cloud-director"
-		case "VSphereCluster":
-			return "vsphere"
-		case "GCPCluster":
-			return "gcp"
-		case "GCPManagedCluster²":
-			return "gke"
+		case cluster.AWSClusterKind:
+			return cluster.AWSClusterKindProvider, nil
+		case cluster.AWSManagedClusterKind:
+			return cluster.AWSManagedClusterKindProvider, nil
+		case cluster.AzureClusterKind:
+			return cluster.AzureClusterKindProvider, nil
+		case cluster.AzureManagedClusterKind:
+			return cluster.AzureManagedClusterKindProvider, nil
+		case cluster.VCDClusterKind:
+			return cluster.VCDClusterKindProvider, nil
+		case cluster.VSphereClusterKind:
+			return cluster.VSphereClusterKindProvider, nil
+		case cluster.GCPClusterKind:
+			return cluster.GCPClusterKindProvider, nil
+		case cluster.GCPManagedClusterKind:
+			return cluster.GCPManagedClusterKindProvider, nil
 		}
 	}
-	return provider.Kind
+
+	return "", infrastructureRefNotFoundError
 }
 
 func AlertmanagerLabels() map[string]string {
@@ -321,7 +323,7 @@ func IsManagementCluster(installation string, obj interface{}) bool {
 
 func IsEKSCluster(obj interface{}) bool {
 	if c, ok := obj.(*capi.Cluster); ok {
-		return c.Spec.InfrastructureRef.Kind == "AWSManagedCluster"
+		return c.Spec.InfrastructureRef.Kind == cluster.AWSManagedClusterKind
 	}
 	return false
 }

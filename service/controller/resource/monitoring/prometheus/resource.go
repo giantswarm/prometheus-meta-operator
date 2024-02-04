@@ -148,6 +148,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 	image := fmt.Sprintf("%s/%s:%s", config.Registry, config.ImageRepository, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
+	provider, err := key.ClusterProvider(cluster, config.Provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -193,7 +197,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					key.CustomerKey:     config.Customer,
 					key.InstallationKey: config.Installation,
 					key.PipelineKey:     config.Pipeline,
-					key.ProviderKey:     key.ClusterProvider(cluster, config.Provider),
+					key.ProviderKey:     provider,
 					key.RegionKey:       config.Region,
 				},
 				ExternalURL:        externalURL.String(),

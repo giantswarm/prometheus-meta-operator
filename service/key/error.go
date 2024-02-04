@@ -12,3 +12,12 @@ var wrongTypeError = &microerror.Error{
 func IsWrongType(err error) bool {
 	return microerror.Cause(err) == wrongTypeError
 }
+
+var infrastructureRefNotFoundError = &microerror.Error{
+	Kind: "infrastructureRefNotFoundError",
+}
+
+// IsInvalidConfig asserts invalidConfigError.
+func IsInfrastructureRefNotFoundError(err error) bool {
+	return microerror.Cause(err) == infrastructureRefNotFoundError
+}
