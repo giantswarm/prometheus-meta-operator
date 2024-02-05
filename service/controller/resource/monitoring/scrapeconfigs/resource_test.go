@@ -135,11 +135,12 @@ func TestAWSScrapeconfigs(t *testing.T) {
 	}
 
 	c := unittest.Config{
+		Flavor:               "vintage",
 		OutputDir:            outputDir,
 		T:                    t,
 		TestFunc:             testFunc,
-		Update:               *update,
 		TestFuncReturnsBytes: true,
+		Update:               *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
@@ -240,11 +241,12 @@ func TestAzureScrapeconfigs(t *testing.T) {
 	}
 
 	c := unittest.Config{
+		Flavor:               "vintage",
 		OutputDir:            outputDir,
 		T:                    t,
 		TestFunc:             testFunc,
-		Update:               *update,
 		TestFuncReturnsBytes: true,
+		Update:               *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
@@ -257,7 +259,7 @@ func TestAzureScrapeconfigs(t *testing.T) {
 	}
 }
 
-func TestOpenStackScrapeconfigs(t *testing.T) {
+func TestCAPZScrapeconfigs(t *testing.T) {
 	var err error
 	var logger micrologger.Logger
 	{
@@ -347,7 +349,7 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider: cluster.Provider{
-					Kind:   "openstack",
+					Kind:   "capz",
 					Flavor: "capi",
 				},
 				Customer:     "pmo",
@@ -360,17 +362,18 @@ func TestOpenStackScrapeconfigs(t *testing.T) {
 		}
 	}
 
-	outputDir, err := filepath.Abs("./test/openstack")
+	outputDir, err := filepath.Abs("./test/capz")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	c := unittest.Config{
+		Flavor:               "capi",
 		OutputDir:            outputDir,
 		T:                    t,
 		TestFunc:             testFunc,
-		Update:               *update,
 		TestFuncReturnsBytes: true,
+		Update:               *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
@@ -492,11 +495,12 @@ func TestGCPScrapeconfigs(t *testing.T) {
 	}
 
 	c := unittest.Config{
+		Flavor:               "capi",
 		OutputDir:            outputDir,
 		T:                    t,
 		TestFunc:             testFunc,
-		Update:               *update,
 		TestFuncReturnsBytes: true,
+		Update:               *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
@@ -618,11 +622,12 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 	}
 
 	c := unittest.Config{
+		Flavor:               "capi",
 		OutputDir:            outputDir,
 		T:                    t,
 		TestFunc:             testFunc,
-		Update:               *update,
 		TestFuncReturnsBytes: true,
+		Update:               *update,
 	}
 	runner, err := unittest.NewRunner(c)
 	if err != nil {
