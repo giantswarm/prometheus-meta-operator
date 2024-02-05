@@ -154,7 +154,7 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-	if version.LT(semver.MustParse("1.2.0")) {
+	if version.LT(semver.MustParse("1.1.0")) {
 		// Set target reference to Prometheus StatefulSet
 		vpa.Spec.TargetRef = &autoscaling.CrossVersionObjectReference{
 			Kind:       "StatefulSet",
