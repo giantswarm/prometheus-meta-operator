@@ -80,13 +80,12 @@ func TestPrometheus(t *testing.T) {
 					Kind:   "aws",
 					Flavor: "vintage",
 				},
-				Region:            "onprem",
-				ImageRepository:   "giantswarm/prometheus",
-				LogLevel:          "debug",
-				Registry:          "quay.io",
-				RetentionDuration: "2w",
-				ScrapeInterval:    "60s",
-				Version:           "v2.28.1",
+				Region:          "onprem",
+				ImageRepository: "giantswarm/prometheus",
+				LogLevel:        "debug",
+				Registry:        "quay.io",
+				ScrapeInterval:  "60s",
+				Version:         "v2.28.1",
 			}
 
 			return toPrometheus(context.Background(), v, config)

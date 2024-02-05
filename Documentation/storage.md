@@ -10,8 +10,6 @@ As some installations do not support dynamic provisioning (some on-prem installa
 
 ## Retention
 
-Max Retention duration: **2 weeks**
-
 Max Retention size: **95 GB**
 
 ## Volume sizing
