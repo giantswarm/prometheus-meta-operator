@@ -194,6 +194,11 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		return nil, microerror.Mask(err)
 	}
 
+	provider, err := key.ClusterProvider(cluster, config.Provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
 	var authenticationType = ""
 	if !key.IsManagementCluster(config.Installation, cluster) {
 		authenticationType, err = key.ApiServerAuthenticationType(ctx, config.K8sClient, key.Namespace(cluster))
@@ -212,7 +217,7 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		ServicePriority:           key.GetServicePriority(cluster),
 		Customer:                  config.Customer,
 		Organization:              organization,
-		Provider:                  key.ClusterProvider(cluster, config.Provider),
+		Provider:                  provider,
 		Installation:              config.Installation,
 		SecretName:                key.APIServerCertificatesSecretName,
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),

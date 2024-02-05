@@ -107,6 +107,10 @@ func (r *Resource) desiredSecret(ctx context.Context, cluster metav1.Object, nam
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
+	provider, err := key.ClusterProvider(cluster, r.provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	globalConfig := remotewriteconfiguration.GlobalConfig{
 		RemoteWrite: []remotewriteconfiguration.RemoteWrite{
 			remotewriteconfiguration.DefaultRemoteWrite(key.ClusterID(cluster), r.baseDomain, password, r.insecureCA),
@@ -118,7 +122,7 @@ func (r *Resource) desiredSecret(ctx context.Context, cluster metav1.Object, nam
 			key.InstallationKey:    r.installation,
 			key.OrganizationKey:    organization,
 			key.PipelineKey:        r.pipeline,
-			key.ProviderKey:        key.ClusterProvider(cluster, r.provider),
+			key.ProviderKey:        provider,
 			key.RegionKey:          r.region,
 			key.ServicePriorityKey: key.GetServicePriority(cluster),
 		},
