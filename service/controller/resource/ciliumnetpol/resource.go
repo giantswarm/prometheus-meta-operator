@@ -4,8 +4,9 @@ import (
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
@@ -64,13 +65,14 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 							"kube-apiserver",
 							"cluster",
 						},
+					},
 					map[string]interface{}{
 						"toEntities": []string{
 							"world",
 						},
 						"toPorts": []map[string]interface{}{
 							map[string]interface{}{
-								"ports": []map[string]interface{}{
+								"ports": []map[string]string{
 									map[string]string{
 										"port": "443",
 									},
@@ -91,7 +93,7 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 					map[string]interface{}{
 						"fromPorts": []map[string]interface{}{
 							map[string]interface{}{
-								"ports": []map[string]interface{}{
+								"ports": []map[string]string{
 									map[string]string{
 										"port": "9090",
 									},
@@ -101,7 +103,7 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 					},
 				},
 			},
-		}
+		},
 	}
 
 	return ciliumNetworkPolicy, nil

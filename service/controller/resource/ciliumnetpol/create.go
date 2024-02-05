@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
