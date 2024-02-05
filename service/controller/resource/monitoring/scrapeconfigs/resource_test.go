@@ -25,7 +25,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
-var update = flag.Bool("update", false, "update the ouput file")
+var update = flag.Bool("update", false, "update the output file")
 
 const additionalScrapeConfigs = `- job_name: test1
   static_configs:

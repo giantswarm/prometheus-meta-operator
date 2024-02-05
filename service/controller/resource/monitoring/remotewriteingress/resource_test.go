@@ -8,7 +8,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
-var update = flag.Bool("update", false, "update the ouput file")
+var update = flag.Bool("update", false, "update the output file")
 
 func TestIngressDefault(t *testing.T) {
 	testFunc := func(v interface{}) (interface{}, error) {

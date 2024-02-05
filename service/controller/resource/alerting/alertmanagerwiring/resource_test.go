@@ -8,7 +8,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
-var update = flag.Bool("update", false, "update the ouput file")
+var update = flag.Bool("update", false, "update the output file")
 
 func TestAlertmanagerconfig(t *testing.T) {
 	for _, flavor := range unittest.ProviderFlavors {

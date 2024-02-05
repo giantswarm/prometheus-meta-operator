@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-var _ = flag.Bool("update", false, "update the ouput file")
+var _ = flag.Bool("update", false, "update the output file")
 
 func TestShardComputationScaleUp(t *testing.T) {
 	expected := 1
