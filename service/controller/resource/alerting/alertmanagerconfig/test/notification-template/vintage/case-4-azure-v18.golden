@@ -1,0 +1,69 @@
+{{ define "__alertmanager" }}Alertmanager{{ end }}
+{{ define "__alertmanagerurl" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D{{ end }}
+{{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
+{{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
+
+{{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
+{{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
+{{ define "slack.default.fallback" }}{{ template "slack.default.title" . }} | {{ template "slack.default.titlelink" . }}{{ end }}
+{{ define "slack.default.pretext" }}{{ end }}
+{{ define "slack.default.titlelink" }}{{ template "__alertmanagerurl" . }}{{ end }}
+{{ define "slack.default.iconemoji" }}{{ end }}
+{{ define "slack.default.iconurl" }}{{ end }}
+{{ define "slack.default.text" }}*Cluster:* {{ (index .Alerts 0).Labels.installation }}{{ if (index .Alerts 0).Labels.cluster_id }} / {{ (index .Alerts 0).Labels.cluster_id }}{{ end }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }}
+*Area:* {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
+{{- if (index .Alerts 0).Annotations.description }}
+*Instances*
+{{ if eq .Status "firing" }}
+{{ range .Alerts.Firing }}
+:fire: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{- end }}
+{{ else }}
+{{ range .Alerts.Resolved }}
+:success: {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{- end }}
+{{ end }}
+{{- end }}
+{{ end }}
+
+
+{{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
+{{ define "opsgenie.default.source" }}{{ template "__alertmanager" . }}{{ end }}
+{{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
+* Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
+
+* Instances:{{ range .Alerts.Firing }}
+🔥 {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
+
+---
+
+{{ if (index .Alerts 0).Annotations.opsrecipe -}}
+📗 Runbook: {{ template "__runbookurl" . }}
+{{ end -}}
+🔔 Alertmanager {{ template "__alertmanagerurl" . }}
+{{ if (index .Alerts 0).Annotations.dashboard -}}
+📈 Dashboard: {{ template "__dashboardurl" . }}
+{{ end -}}
+👀 Prometheus: {{ (index .Alerts 0).GeneratorURL }}
+
+---
+
+{{ if not (index .Alerts 0).Annotations.opsrecipe }}⚠️ There is no **runbook** for this alert, time to get your pen.{{- end }}
+{{ if not (index .Alerts 0).Annotations.dashboard }}⚠️ There is no **dashboard** for this alert, time to sketch.{{- end }}
+{{- end }}
+
+# This builds the silence URL.  We exclude the alertname in the range
+# to avoid the issue of having trailing comma separator (%2C) at the end
+# of the generated URL
+{{ define "__alert_silence_link" -}}
+    {{ .ExternalURL }}/#/silences/new?filter=%7B
+    {{- range .CommonLabels.SortedPairs -}}
+        {{- if ne .Name "alertname" -}}
+            {{- .Name }}%3D"{{- .Value -}}"%2C%20
+        {{- end -}}
+    {{- end -}}
+    alertname%3D"{{ .CommonLabels.alertname }}"%7D
+{{- end }}
+
+# Link to related PMs
+{{ define "__alert_linked_postmortems" -}}
+https://github.com/giantswarm/giantswarm/issues?q=is%3Aissue+is%3Aopen+label%3Apostmortem+label%3Aalert%2F{{ .CommonLabels.alertname }}
+{{- end }}

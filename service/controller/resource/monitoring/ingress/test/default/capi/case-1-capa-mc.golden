@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/auth-signin: https://$host/oauth2/start?rd=$escaped_request_uri
+    nginx.ingress.kubernetes.io/auth-url: https://$host/oauth2/auth
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: test-installation
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: test-installation
+  name: prometheus-test-installation
+  namespace: test-installation-prometheus
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: prometheus
+    http:
+      paths:
+      - backend:
+          service:
+            name: prometheus-operated
+            port:
+              number: 9090
+        path: /test-installation
+        pathType: ImplementationSpecific
+status:
+  loadBalancer: {}
