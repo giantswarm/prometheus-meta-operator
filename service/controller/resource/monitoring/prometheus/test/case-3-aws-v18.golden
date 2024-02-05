@@ -29,8 +29,7 @@ spec:
       caFile: /etc/prometheus/secrets/cluster-certificates/ca
       cert: {}
   arbitraryFSAccessThroughSMs: {}
-  enableFeatures:
-  - remote-write-receiver
+  enableRemoteWriteReceiver: true
   evaluationInterval: 60s
   externalLabels:
     cluster_id: baz

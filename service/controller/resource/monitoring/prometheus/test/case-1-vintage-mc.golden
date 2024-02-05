@@ -30,8 +30,7 @@ spec:
       cert: {}
       insecureSkipVerify: true
   arbitraryFSAccessThroughSMs: {}
-  enableFeatures:
-  - remote-write-receiver
+  enableRemoteWriteReceiver: true
   evaluationInterval: 60s
   externalLabels:
     cluster_id: kubernetes
