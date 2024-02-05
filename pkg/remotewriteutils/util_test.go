@@ -21,7 +21,6 @@ const (
 var _ = flag.Bool("update", false, "doing nothing")
 
 func TestToRemoteWrite(t *testing.T) {
-
 	type args struct {
 		obj interface{}
 	}

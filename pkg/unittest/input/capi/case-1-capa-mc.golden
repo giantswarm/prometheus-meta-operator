@@ -1,0 +1,12 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  # All tests set Installation = test-installation, which is why this is a MC and not a WC
+  name: test-installation
+  namespace: org-my-organization
+spec:
+  controlPlaneEndpoint:
+    host: master.test-installation
+    port: 443
+  infrastructureRef:
+    kind: AWSCluster

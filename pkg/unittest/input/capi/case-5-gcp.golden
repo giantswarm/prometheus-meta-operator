@@ -1,13 +1,11 @@
 apiVersion: cluster.x-k8s.io/v1beta1
 kind: Cluster
 metadata:
-  labels:
-    "release.giantswarm.io/version": 18.0.0
-  name: eks-sample
+  name: gcp-sample
   namespace: org-my-organization
 spec:
   controlPlaneEndpoint:
-    host: master.eks-sample
+    host: master.gcp-sample
     port: 443
   infrastructureRef:
-    kind: AWSManagedCluster
+    kind: GCPCluster
