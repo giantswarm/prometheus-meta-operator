@@ -24,7 +24,8 @@ import (
 )
 
 const (
-	Name = "verticalpodautoscaler"
+	Name                              = "verticalpodautoscaler"
+	unknownObservabilityBundleVersion = "0.0.0"
 )
 
 type Config struct {
@@ -172,8 +173,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 
 	return vpa, nil
 }
-
-const unknownObservabilityBundleVersion = "0.0.0"
 
 // We get the management cluster observability bundle app version for the management cluster to know if we need to configure the VPA CR to target the StatefulSet or the Prometheus CR.
 // We need to do this because VPA uses the scale subresource to scale the target object, and the Prometheus CR has a scale subresource since the observability-bundle 1.2.0.
