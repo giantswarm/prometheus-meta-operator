@@ -16,12 +16,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		ciliumClient, err := ciliumv2.client.NewForConfig(config)
-		if err != nil {
-			return microerror.Mask(err)
-		}
-
-		err = ciliumClient.CiliumV2().CiliumNetworkPolicies(key.Namespace(cluster)).Delete(ctx, desired.GetName(), metav1.DeleteOptions{})
+		err = r.k8sClient.K8sClient().Delete(ctx, desired.GetName(), metav1.DeleteOptions{})
 		if apierrors.IsNotFound(err) {
 			// fall through
 		} else if err != nil {

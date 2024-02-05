@@ -58,47 +58,42 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 						"app.kubernetes.io/name": "prometheus",
 					},
 				},
-				"egress": map[string]interface{}{
+				"egress": []map[string]interface{}{
 					map[string]interface{}{
-						map[string]interface{}{
-							"toEntities": []string{
-								"kube-apiserver",
-								"cluster",
-							},
+						"toEntities": []string{
+							"kube-apiserver",
+							"cluster",
 						},
-						map[string]interface{}{
-							"toEntities": []string{
-								"world",
-							},
-							"toPorts": []map[string]interface{}{
-								map[string]interface{}{
-									"ports": []map[string]interface{}{
-										map[string]string{
-											"port": "443",
-										},
-										map[string]string{
-											"port": "6443",
-										},
+					map[string]interface{}{
+						"toEntities": []string{
+							"world",
+						},
+						"toPorts": []map[string]interface{}{
+							map[string]interface{}{
+								"ports": []map[string]interface{}{
+									map[string]string{
+										"port": "443",
+									},
+									map[string]string{
+										"port": "6443",
 									},
 								},
 							},
 						},
 					},
 				},
-				"ingress": map[string]interface{}{
+				"ingress": []map[string]interface{}{
 					map[string]interface{}{
-						map[string]interface{}{
-							"fromEntities": []string{
-								"cluster",
-							},
+						"fromEntities": []string{
+							"cluster",
 						},
-						map[string]interface{}{
-							"fromPorts": []map[string]interface{}{
-								map[string]interface{}{
-									"ports": []map[string]interface{}{
-										map[string]string{
-											"port": "9090",
-										},
+					},
+					map[string]interface{}{
+						"fromPorts": []map[string]interface{}{
+							map[string]interface{}{
+								"ports": []map[string]interface{}{
+									map[string]string{
+										"port": "9090",
 									},
 								},
 							},
@@ -106,7 +101,7 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 					},
 				},
 			},
-		},
+		}
 	}
 
 	return ciliumNetworkPolicy, nil
