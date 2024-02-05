@@ -60,7 +60,6 @@ spec:
     requests:
       cpu: 100m
       memory: "1073741824"
-  retention: 2w
   retentionSize: 85GiB
   routePrefix: /foo
   ruleNamespaceSelector:

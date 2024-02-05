@@ -164,7 +164,6 @@ func New(config Config) (*Service, error) {
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-			PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
@@ -209,7 +208,6 @@ func New(config Config) (*Service, error) {
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-			PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
