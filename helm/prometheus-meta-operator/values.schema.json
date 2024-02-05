@@ -240,14 +240,6 @@
                 "logLevel": {
                     "type": "string"
                 },
-                "retention": {
-                    "type": "object",
-                    "properties": {
-                        "duration": {
-                            "type": "string"
-                        }
-                    }
-                },
                 "scrapeInterval": {
                     "type": "string"
                 }
