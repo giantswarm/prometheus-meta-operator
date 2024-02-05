@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix how we enable `remote-write-receiver` to avoid deprecated warnings.
+
 ### Removed
 
 - Free retention duration property of it's 2 weeks limitation if the free storage allows it.
