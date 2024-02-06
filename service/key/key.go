@@ -118,11 +118,35 @@ func IsCAPIManagementCluster(provider cluster.Provider) bool {
 	return provider.Flavor == "capi"
 }
 
-func ClusterProvider(cluster metav1.Object, provider cluster.Provider) string {
-	if IsEKSCluster(cluster) {
-		return "eks"
+func ClusterProvider(obj metav1.Object, provider cluster.Provider) (string, error) {
+	// TODO remove once all clusters are on CAPI
+	// We keep the existing behavior for vintage management clusters
+	if !IsCAPIManagementCluster(provider) {
+		return provider.Kind, nil
 	}
-	return provider.Kind
+
+	if c, ok := obj.(*capi.Cluster); ok {
+		switch c.Spec.InfrastructureRef.Kind {
+		case cluster.AWSClusterKind:
+			return cluster.AWSClusterKindProvider, nil
+		case cluster.AWSManagedClusterKind:
+			return cluster.AWSManagedClusterKindProvider, nil
+		case cluster.AzureClusterKind:
+			return cluster.AzureClusterKindProvider, nil
+		case cluster.AzureManagedClusterKind:
+			return cluster.AzureManagedClusterKindProvider, nil
+		case cluster.VCDClusterKind:
+			return cluster.VCDClusterKindProvider, nil
+		case cluster.VSphereClusterKind:
+			return cluster.VSphereClusterKindProvider, nil
+		case cluster.GCPClusterKind:
+			return cluster.GCPClusterKindProvider, nil
+		case cluster.GCPManagedClusterKind:
+			return cluster.GCPManagedClusterKindProvider, nil
+		}
+	}
+
+	return "", infrastructureRefNotFoundError
 }
 
 func AlertmanagerLabels() map[string]string {
@@ -299,7 +323,7 @@ func IsManagementCluster(installation string, obj interface{}) bool {
 
 func IsEKSCluster(obj interface{}) bool {
 	if c, ok := obj.(*capi.Cluster); ok {
-		return c.Spec.InfrastructureRef.Kind == "AWSManagedCluster"
+		return c.Spec.InfrastructureRef.Kind == cluster.AWSManagedClusterKind
 	}
 	return false
 }

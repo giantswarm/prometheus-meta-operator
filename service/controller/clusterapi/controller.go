@@ -16,7 +16,6 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
-	controllerresource "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource"
 )
 
 type ControllerConfig struct {
@@ -42,7 +41,6 @@ type ControllerConfig struct {
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
-	PrometheusRetentionDuration  string
 	PrometheusScrapeInterval     string
 	PrometheusImageRepository    string
 	PrometheusVersion            string
@@ -62,9 +60,9 @@ func NewController(config ControllerConfig) (*Controller, error) {
 
 	var resources []resource.Interface
 	{
-		c := controllerresource.Config(config)
+		c := Config(config)
 
-		resources, err = controllerresource.New(c)
+		resources, err = New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

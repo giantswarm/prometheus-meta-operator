@@ -1,0 +1,11 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: test-installation
+  namespace: org-my-organization
+spec:
+  controlPlaneEndpoint:
+    host: master.test-installation
+    port: 443
+  infrastructureRef:
+    kind: AWSCluster

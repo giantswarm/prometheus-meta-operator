@@ -43,7 +43,6 @@ type Config struct {
 	Region             string
 	Registry           string
 	LogLevel           string
-	RetentionDuration  string
 	ScrapeInterval     string
 	Version            string
 }
@@ -148,6 +147,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 	image := fmt.Sprintf("%s/%s:%s", config.Registry, config.ImageRepository, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
+	provider, err := key.ClusterProvider(cluster, config.Provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -186,14 +189,14 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						},
 					},
 				},
-				EnableFeatures: []string{"remote-write-receiver"},
+				EnableRemoteWriteReceiver: true,
 				ExternalLabels: map[string]string{
 					key.ClusterIDKey:    key.ClusterID(cluster),
 					key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
 					key.CustomerKey:     config.Customer,
 					key.InstallationKey: config.Installation,
 					key.PipelineKey:     config.Pipeline,
-					key.ProviderKey:     key.ClusterProvider(cluster, config.Provider),
+					key.ProviderKey:     provider,
 					key.RegionKey:       config.Region,
 				},
 				ExternalURL:        externalURL.String(),
@@ -252,7 +255,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			},
 
 			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
-			Retention:          promv1.Duration(config.RetentionDuration),
 			RetentionSize:      promv1.ByteSize(pvcresizing.GetRetentionSize(storageSize)),
 			// Fetches Prometheus rules from any namespace on the Management Cluster
 			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
