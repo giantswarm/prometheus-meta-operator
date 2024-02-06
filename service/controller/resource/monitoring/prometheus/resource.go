@@ -235,14 +235,17 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 				Shards:  &prometheusShards,
 				Storage: &storage,
-				TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
+				TopologySpreadConstraints: []promv1.TopologySpreadConstraint{
 					{
-						MaxSkew:           1,
-						TopologyKey:       "kubernetes.io/hostname",
-						WhenUnsatisfiable: corev1.ScheduleAnyway,
-						LabelSelector: &metav1.LabelSelector{
-							MatchLabels: map[string]string{
-								"app.kubernetes.io/name": "prometheus",
+						CoreV1TopologySpreadConstraint: promv1.CoreV1TopologySpreadConstraint{
+							MaxSkew:           1,
+							TopologyKey:       "kubernetes.io/hostname",
+							WhenUnsatisfiable: corev1.ScheduleAnyway,
+							// We want to spread the pods across the nodes as much as possible
+							LabelSelector: &metav1.LabelSelector{
+								MatchLabels: map[string]string{
+									"app.kubernetes.io/name": "prometheus",
+								},
 							},
 						},
 					},
