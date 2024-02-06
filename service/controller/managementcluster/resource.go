@@ -19,6 +19,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/ciliumnetpol"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/etcd-certificates"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
@@ -147,6 +148,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 
 		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var ciliumnetpolResource resource.Interface
+	{
+		c := ciliumnetpol.Config{
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
+		}
+
+		ciliumnetpolResource, err = ciliumnetpol.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -373,6 +387,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfigResource,
+		ciliumnetpolResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
 		remoteWriteConfigResource,
