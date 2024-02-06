@@ -5,7 +5,6 @@ import (
 
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
@@ -16,7 +15,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		err = r.k8sClient.K8sClient().Delete(ctx, desired.GetName(), metav1.DeleteOptions{})
+		err = r.k8sClient.CtrlClient().Delete(ctx, desired)
 		if apierrors.IsNotFound(err) {
 			// fall through
 		} else if err != nil {

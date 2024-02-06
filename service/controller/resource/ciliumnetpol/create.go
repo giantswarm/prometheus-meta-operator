@@ -5,7 +5,8 @@ import (
 
 	"github.com/giantswarm/microerror"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
@@ -16,9 +17,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		current, err := r.k8sClient.K8sClient().Get(ctx, desired.GetName(), metav1.GetOptions{})
+		var current unstructured.Unstructured
+		err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Name: desired.GetName(), Namespace: desired.GetNamespace()}, &current)
 		if apierrors.IsNotFound(err) {
-			current, err = r.k8sClient.K8sClient().Create(ctx, desired, metav1.CreateOptions{})
+			err = r.k8sClient.CtrlClient().Create(ctx, desired)
 		}
 		if err != nil {
 			return microerror.Mask(err)
