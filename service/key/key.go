@@ -121,7 +121,7 @@ func IsCAPIManagementCluster(provider cluster.Provider) bool {
 func ClusterProvider(obj metav1.Object, provider cluster.Provider) (string, error) {
 	// TODO remove once all clusters are on CAPI
 	// We keep the existing behavior for vintage management clusters
-	if _, ok := obj.(*v1.Service); ok || !IsCAPIManagementCluster(provider) {
+	if !IsCAPIManagementCluster(provider) {
 		return provider.Kind, nil
 	}
 
