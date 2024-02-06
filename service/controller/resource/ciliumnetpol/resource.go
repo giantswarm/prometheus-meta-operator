@@ -46,8 +46,10 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 
 	ciliumNetworkPolicy := &unstructured.Unstructured{
 		Object: map[string]interface{}{
+			"apiVersion": "cilium.io/v2",
+			"kind":       "CiliumNetworkPolicy",
 			"metadata": map[string]interface{}{
-				"name":      key.Namespace(cluster) + "-prometheus",
+				"name":      key.ClusterID(cluster) + "-prometheus",
 				"namespace": key.Namespace(cluster),
 				"labels": map[string]string{
 					"app.kubernetes.io/name": "prometheus",
