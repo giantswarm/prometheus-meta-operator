@@ -16,7 +16,7 @@ require (
 	github.com/giantswarm/versionbundle v1.1.0
 	github.com/google/go-cmp v0.6.0
 	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.22
-	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.70.0
+	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.71.2
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.70.0
 	github.com/prometheus/client_golang v1.18.0
 	github.com/prometheus/common v0.46.0
