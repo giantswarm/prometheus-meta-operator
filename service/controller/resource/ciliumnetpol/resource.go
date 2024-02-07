@@ -1,10 +1,10 @@
 package ciliumnetpol
 
 import (
-	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/client-go/dynamic"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
@@ -16,12 +16,12 @@ const (
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
+	K8sClient dynamic.Interface
 	Logger    micrologger.Logger
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
+	k8sClient dynamic.Interface
 	logger    micrologger.Logger
 }
 
