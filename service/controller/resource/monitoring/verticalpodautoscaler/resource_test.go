@@ -17,6 +17,7 @@ import (
 	vpa_clientsetfake "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned/fake"
 	"k8s.io/client-go/kubernetes/scheme"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
 )
 
@@ -67,24 +68,28 @@ func TestVerticalPodAutoScaler(t *testing.T) {
 		}
 	}
 
-	testFunc := func(v interface{}) (interface{}, error) {
-		c := Config{
-			Logger:       logger,
-			K8sClient:    k8sClient,
-			VpaClient:    vpa_clientsetfake.NewSimpleClientset(),
-			Installation: "test-installation",
-		}
-		r, err := New(c)
-		if err != nil {
-			return nil, err
-		}
-		return r.getObject(context.Background(), v)
-	}
-
 	for _, flavor := range unittest.ProviderFlavors {
 		outputDir, err := filepath.Abs("./test/" + flavor)
 		if err != nil {
 			t.Fatal(err)
+		}
+
+		testFunc := func(v interface{}) (interface{}, error) {
+			c := Config{
+				Logger:    logger,
+				K8sClient: k8sClient,
+				VpaClient: vpa_clientsetfake.NewSimpleClientset(),
+				Provider: cluster.Provider{
+					Kind:   "aws",
+					Flavor: flavor,
+				},
+				Installation: "test-installation",
+			}
+			r, err := New(c)
+			if err != nil {
+				return nil, err
+			}
+			return r.getObject(context.Background(), v)
 		}
 
 		c := unittest.Config{
