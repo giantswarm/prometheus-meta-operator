@@ -2,35 +2,48 @@ package verticalpodautoscaler
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/blang/semver"
+	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	autoscaling "k8s.io/api/autoscaling/v1"
 	v1 "k8s.io/api/core/v1"
 	apiequality "k8s.io/apimachinery/pkg/api/equality"
+	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	vpa_types "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/apis/autoscaling.k8s.io/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
 const (
-	Name = "verticalpodautoscaler"
+	Name                              = "verticalpodautoscaler"
+	unknownObservabilityBundleVersion = "0.0.0"
 )
 
 type Config struct {
 	K8sClient k8sclient.Interface
 	VpaClient vpa_clientset.Interface
 	Logger    micrologger.Logger
+
+	Installation string
+	Provider     cluster.Provider
 }
 
 type Resource struct {
 	k8sClient k8sclient.Interface
 	vpaClient vpa_clientset.Interface
 	logger    micrologger.Logger
+
+	installation string
+	provider     cluster.Provider
 }
 
 func New(config Config) (*Resource, error) {
@@ -44,10 +57,16 @@ func New(config Config) (*Resource, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
 
+	if config.Installation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
+	}
+
 	r := &Resource{
-		k8sClient: config.K8sClient,
-		vpaClient: config.VpaClient,
-		logger:    config.Logger,
+		k8sClient:    config.K8sClient,
+		vpaClient:    config.VpaClient,
+		logger:       config.Logger,
+		installation: config.Installation,
+		provider:     config.Provider,
 	}
 
 	return r, nil
@@ -103,11 +122,6 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 	vpa := &vpa_types.VerticalPodAutoscaler{
 		ObjectMeta: objectMeta,
 		Spec: vpa_types.VerticalPodAutoscalerSpec{
-			TargetRef: &autoscaling.CrossVersionObjectReference{
-				Kind:       "StatefulSet",
-				Name:       key.PrometheusSTSName(cluster),
-				APIVersion: "apps/v1",
-			},
 			UpdatePolicy: &vpa_types.PodUpdatePolicy{
 				UpdateMode: &updateModeAuto,
 			},
@@ -131,7 +145,63 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 		},
 	}
 
+	mcObservabilityBundleAppVersion, err := r.getManagementClusterObservabilityBundleAppVersion(ctx, cluster)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+
+	version, err := semver.Parse(mcObservabilityBundleAppVersion)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
+	if version.LT(semver.MustParse("1.2.0")) {
+		// Set target reference to Prometheus StatefulSet
+		vpa.Spec.TargetRef = &autoscaling.CrossVersionObjectReference{
+			Kind:       "StatefulSet",
+			Name:       key.PrometheusSTSName(cluster),
+			APIVersion: "apps/v1",
+		}
+	} else {
+		// Set target reference to Prometheus CR
+		vpa.Spec.TargetRef = &autoscaling.CrossVersionObjectReference{
+			Kind:       "Prometheus",
+			Name:       key.ClusterID(cluster),
+			APIVersion: "monitoring.coreos.com/v1",
+		}
+
+	}
+
 	return vpa, nil
+}
+
+// We get the management cluster observability bundle app version for the management cluster to know if we need to configure the VPA CR to target the StatefulSet or the Prometheus CR.
+// We need to do this because VPA uses the scale subresource to scale the target object, and the Prometheus CR has a scale subresource since the observability-bundle 1.2.0.
+func (r *Resource) getManagementClusterObservabilityBundleAppVersion(ctx context.Context, cluster metav1.Object) (string, error) {
+	var appName string
+	var appNamespace string
+	if key.IsCAPIManagementCluster(r.provider) {
+		appName = fmt.Sprintf("%s-observability-bundle", r.installation)
+		appNamespace = "org-giantswarm"
+	} else {
+		appName = "observability-bundle"
+		appNamespace = "giantswarm"
+	}
+
+	app := &appsv1alpha1.App{}
+	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
+	err := r.k8sClient.CtrlClient().Get(ctx, objectKey, app)
+	if err != nil {
+		if apierrors.IsNotFound(err) {
+			return unknownObservabilityBundleVersion, nil
+		}
+		return "", err
+	}
+
+	if app.Status.Version != "" {
+		return app.Status.Version, nil
+	}
+	// This avoids a race condition where the app is created for the cluster but not deployed.
+	return unknownObservabilityBundleVersion, nil
 }
 
 func (r *Resource) listWorkerNodes(ctx context.Context) (*v1.NodeList, error) {
