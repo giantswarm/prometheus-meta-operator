@@ -22,7 +22,8 @@ spec:
           - key: node-role.kubernetes.io/control-plane
             operator: DoesNotExist
   apiserverConfig:
-    bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+    authorization:
+      credentialsFile: /var/run/secrets/kubernetes.io/serviceaccount/token
     host: https://kubernetes.default:443
     tlsConfig:
       ca: {}

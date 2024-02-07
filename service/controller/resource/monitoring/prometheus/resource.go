@@ -235,14 +235,17 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 				Shards:  &prometheusShards,
 				Storage: &storage,
-				TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
+				TopologySpreadConstraints: []promv1.TopologySpreadConstraint{
 					{
-						MaxSkew:           1,
-						TopologyKey:       "kubernetes.io/hostname",
-						WhenUnsatisfiable: corev1.ScheduleAnyway,
-						LabelSelector: &metav1.LabelSelector{
-							MatchLabels: map[string]string{
-								"app.kubernetes.io/name": "prometheus",
+						CoreV1TopologySpreadConstraint: promv1.CoreV1TopologySpreadConstraint{
+							MaxSkew:           1,
+							TopologyKey:       "kubernetes.io/hostname",
+							WhenUnsatisfiable: corev1.ScheduleAnyway,
+							// We want to spread the pods across the nodes as much as possible
+							LabelSelector: &metav1.LabelSelector{
+								MatchLabels: map[string]string{
+									"app.kubernetes.io/name": "prometheus",
+								},
 							},
 						},
 					},
@@ -283,7 +286,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			return nil, microerror.Mask(err)
 		}
 		if authenticationType == "token" {
-			prometheus.Spec.APIServerConfig.BearerTokenFile = fmt.Sprintf("/etc/prometheus/secrets/%s/token", key.APIServerCertificatesSecretName)
+			prometheus.Spec.APIServerConfig.Authorization = &promv1.Authorization{
+				CredentialsFile: fmt.Sprintf("/etc/prometheus/secrets/%s/token", key.APIServerCertificatesSecretName),
+			}
 		} else if authenticationType == "certificates" {
 			prometheus.Spec.APIServerConfig.TLSConfig.CertFile = fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.APIServerCertificatesSecretName)
 			prometheus.Spec.APIServerConfig.TLSConfig.KeyFile = fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.APIServerCertificatesSecretName)
@@ -327,8 +332,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	} else {
 		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
-			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
-			BearerTokenFile: key.BearerTokenPath,
+			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
+			Authorization: &promv1.Authorization{
+				CredentialsFile: key.BearerTokenPath,
+			},
 			TLSConfig: &promv1.TLSConfig{
 				CAFile: key.CAFilePath,
 				SafeTLSConfig: promv1.SafeTLSConfig{
