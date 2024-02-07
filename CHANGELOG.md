@@ -21,12 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix how we enable `remote-write-receiver` to avoid deprecated warnings.
 - Fix test generation to split capi and vintage tests generated files.
-- Fix VPA to support latest Prometheus-operator version (based on observability-bundle 1.2.0) as the latest version of the Prometheus CR now supports the `scale` subresource which causes issues with VPA.
 
 ### Removed
 
 - Free retention duration property of it's 2 weeks limitation if the free storage allows it.
-
 
 ## [4.65.0] - 2024-01-29
 
