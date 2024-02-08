@@ -96,7 +96,7 @@ rules:
   - apiGroups:
       - cilium.io
     resources:
-      - ciliumnetworkolicies
+      - ciliumnetworkpolicies
     verbs:
       - get
       - list
