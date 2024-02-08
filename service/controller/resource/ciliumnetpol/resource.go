@@ -91,9 +91,7 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 						"fromEntities": []string{
 							"cluster",
 						},
-					},
-					map[string]interface{}{
-						"fromPorts": []map[string]interface{}{
+						"toPorts": []map[string]interface{}{
 							map[string]interface{}{
 								"ports": []map[string]string{
 									map[string]string{
