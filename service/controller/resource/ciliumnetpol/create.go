@@ -28,7 +28,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		_, err = r.k8sClient.Resource(resource).Get(ctx, desired.GetName(), metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
 			// err = r.k8sClient.CtrlClient().Resource Create(ctx, desired)
-			_, err = r.k8sClient.Resource(resource).Create(ctx, desired, metav1.CreateOptions{})
+			_, err = r.k8sClient.Resource(resource).Namespace(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 		}
 		if err != nil {
 			return microerror.Mask(err)
