@@ -11,6 +11,7 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"k8s.io/apimachinery/pkg/labels"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	"k8s.io/client-go/dynamic"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
@@ -20,6 +21,7 @@ import (
 
 type ControllerConfig struct {
 	K8sClient        k8sclient.Interface
+	DynamicK8sClient dynamic.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
 	VpaClient        vpa_clientset.Interface
