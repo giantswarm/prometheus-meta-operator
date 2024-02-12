@@ -94,6 +94,16 @@ rules:
       - delete
       - update
   - apiGroups:
+      - cilium.io
+    resources:
+      - ciliumnetworkpolicies
+    verbs:
+      - get
+      - list
+      - create
+      - delete
+      - update
+  - apiGroups:
       - rbac.authorization.k8s.io
     resources:
       - clusterroles

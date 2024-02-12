@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/operatorkit/v7/pkg/resource/wrapper/retryresource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	"k8s.io/client-go/dynamic"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
@@ -19,6 +20,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/certificates"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/ciliumnetpol"
 	ingress "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/pvcresizingresource"
@@ -37,6 +39,7 @@ import (
 
 type Config struct {
 	K8sClient        k8sclient.Interface
+	DynamicK8sClient dynamic.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
 	VpaClient        vpa_clientset.Interface
@@ -111,6 +114,19 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 
 		apiCertificatesResource, err = certificates.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
+	var ciliumnetpolResource resource.Interface
+	{
+		c := ciliumnetpol.Config{
+			DynamicK8sClient: config.DynamicK8sClient,
+			Logger:           config.Logger,
+		}
+
+		ciliumnetpolResource, err = ciliumnetpol.New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -360,6 +376,7 @@ func New(config Config) ([]resource.Interface, error) {
 	resources := []resource.Interface{
 		namespaceResource,
 		apiCertificatesResource,
+		ciliumnetpolResource,
 		rbacResource,
 		heartbeatWebhookConfigResource,
 		scrapeConfigResource,

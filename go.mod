@@ -1,6 +1,8 @@
 module github.com/giantswarm/prometheus-meta-operator/v2
 
-go 1.21
+go 1.21.0
+
+toolchain go1.21.5
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -24,14 +26,20 @@ require (
 	github.com/spf13/viper v1.18.2
 	golang.org/x/crypto v0.19.0
 	golang.org/x/net v0.21.0
-	k8s.io/api v0.28.4
+	k8s.io/api v0.29.0
 	k8s.io/apiextensions-apiserver v0.28.4
-	k8s.io/apimachinery v0.28.4
+	k8s.io/apimachinery v0.29.0
 	k8s.io/autoscaler/vertical-pod-autoscaler v1.0.0
-	k8s.io/client-go v0.28.4
+	k8s.io/client-go v0.29.0
 	sigs.k8s.io/cluster-api v1.5.3
 	sigs.k8s.io/controller-runtime v0.16.3
 	sigs.k8s.io/yaml v1.4.0
+)
+
+require (
+	github.com/onsi/gomega v1.30.0 // indirect
+	github.com/rogpeppe/go-internal v1.11.0 // indirect
+	go.uber.org/goleak v1.3.0 // indirect
 )
 
 require (
@@ -98,8 +106,8 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.25.0 // indirect
-	golang.org/x/exp v0.0.0-20231110203233-9a3e6036ecaa // indirect
+	go.uber.org/zap v1.26.0 // indirect
+	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb // indirect
 	golang.org/x/oauth2 v0.16.0 // indirect
 	golang.org/x/sync v0.5.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
@@ -114,7 +122,7 @@ require (
 	gopkg.in/resty.v1 v1.12.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/component-base v0.28.4 // indirect
+	k8s.io/component-base v0.29.0 // indirect
 	k8s.io/klog/v2 v2.110.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20231129212854-f0671cc7e66a // indirect
 	k8s.io/utils v0.0.0-20231127182322-b307cd553661 // indirect

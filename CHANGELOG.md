@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `ciliumNetworkPolicy` for all Prometheus instances on the MC.
+
 ## [4.66.1] - 2024-02-07
 
 ### Fixed
