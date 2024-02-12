@@ -23,12 +23,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		//var current unstructured.Unstructured
-		// err = r.k8sClient.CtrlClient().Get(ctx, client.ObjectKey{Name: desired.GetName(), Namespace: desired.GetNamespace()}, &current)
-		_, err = r.k8sClient.Resource(resource).Get(ctx, desired.GetName(), metav1.GetOptions{})
+		_, err = r.dynamicK8sClient.Resource(resource).Get(ctx, desired.GetName(), metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			// err = r.k8sClient.CtrlClient().Resource Create(ctx, desired)
-			_, err = r.k8sClient.Resource(resource).Namespace(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
+			_, err = r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 		}
 		if err != nil {
 			return microerror.Mask(err)

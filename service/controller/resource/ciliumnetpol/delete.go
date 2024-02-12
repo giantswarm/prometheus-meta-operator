@@ -23,8 +23,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		// err = r.k8sClient.CtrlClient().Delete(ctx, desired)
-		err = r.k8sClient.Resource(resource).Namespace(desired.GetNamespace()).Delete(ctx, desired.GetName(), metav1.DeleteOptions{})
+		err = r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Delete(ctx, desired.GetName(), metav1.DeleteOptions{})
 		if apierrors.IsNotFound(err) {
 			// fall through
 		} else if err != nil {

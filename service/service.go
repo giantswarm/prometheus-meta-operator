@@ -118,9 +118,9 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
-	var DynamicK8sClient dynamic.Interface
+	var dynamicK8sClient dynamic.Interface
 	{
-		DynamicK8sClient, err = dynamic.NewForConfig(restConfig)
+		dynamicK8sClient, err = dynamic.NewForConfig(restConfig)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -152,7 +152,7 @@ func New(config Config) (*Service, error) {
 	{
 		c := clusterapi.ControllerConfig{
 			K8sClient:        k8sClient,
-			DynamicK8sClient: DynamicK8sClient,
+			DynamicK8sClient: dynamicK8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			VpaClient:        vpaClient,
@@ -194,7 +194,7 @@ func New(config Config) (*Service, error) {
 	{
 		c := managementcluster.ControllerConfig{
 			K8sClient:        k8sClient,
-			DynamicK8sClient: DynamicK8sClient,
+			DynamicK8sClient: dynamicK8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			VpaClient:        vpaClient,

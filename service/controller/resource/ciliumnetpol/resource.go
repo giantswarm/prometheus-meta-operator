@@ -16,19 +16,19 @@ const (
 )
 
 type Config struct {
-	K8sClient dynamic.Interface
-	Logger    micrologger.Logger
+	DynamicK8sClient dynamic.Interface
+	Logger           micrologger.Logger
 }
 
 type Resource struct {
-	k8sClient dynamic.Interface
-	logger    micrologger.Logger
+	dynamicK8sClient dynamic.Interface
+	logger           micrologger.Logger
 }
 
 func New(config Config) (*Resource, error) {
 	r := &Resource{
-		k8sClient: config.K8sClient,
-		logger:    config.Logger,
+		dynamicK8sClient: config.DynamicK8sClient,
+		logger:           config.Logger,
 	}
 
 	return r, nil

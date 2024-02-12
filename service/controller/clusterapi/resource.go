@@ -122,8 +122,8 @@ func New(config Config) ([]resource.Interface, error) {
 	var ciliumnetpolResource resource.Interface
 	{
 		c := ciliumnetpol.Config{
-			K8sClient: config.DynamicK8sClient,
-			Logger:    config.Logger,
+			DynamicK8sClient: config.DynamicK8sClient,
+			Logger:           config.Logger,
 		}
 
 		ciliumnetpolResource, err = ciliumnetpol.New(c)
