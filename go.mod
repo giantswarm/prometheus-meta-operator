@@ -26,9 +26,9 @@ require (
 	github.com/spf13/viper v1.18.2
 	golang.org/x/crypto v0.19.0
 	golang.org/x/net v0.21.0
-	k8s.io/api v0.29.0-rc.1
+	k8s.io/api v0.29.0
 	k8s.io/apiextensions-apiserver v0.28.4
-	k8s.io/apimachinery v0.29.0-rc.1
+	k8s.io/apimachinery v0.29.0
 	k8s.io/autoscaler/vertical-pod-autoscaler v1.0.0
 	k8s.io/client-go v0.29.0-rc.1
 	sigs.k8s.io/cluster-api v1.5.3
