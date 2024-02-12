@@ -152,6 +152,7 @@ func New(config Config) (*Service, error) {
 	{
 		c := clusterapi.ControllerConfig{
 			K8sClient:        k8sClient,
+			DynamicK8sClient: DynamicK8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			VpaClient:        vpaClient,
