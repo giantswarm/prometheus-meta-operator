@@ -78,8 +78,13 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 									map[string]string{
 										"port": "443",
 									},
+									// Grafana cloud mimir port
 									map[string]string{
 										"port": "6443",
+									},
+									// Grafana cloud squid proxy port
+									map[string]string{
+										"port": "3128",
 									},
 								},
 							},
