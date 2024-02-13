@@ -1,6 +1,8 @@
 package ciliumnetpol
 
 import (
+	"reflect"
+
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
@@ -112,4 +114,8 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 	}
 
 	return ciliumNetworkPolicy, nil
+}
+
+func hasCiliumNetworkPolicyChanged(current *unstructured.Unstructured, desired *unstructured.Unstructured) bool {
+	return !reflect.DeepEqual(current.Object["spec"], desired.Object["spec"])
 }
