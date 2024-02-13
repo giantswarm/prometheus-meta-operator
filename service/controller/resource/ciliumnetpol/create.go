@@ -24,7 +24,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		ciliumnetpol, err := r.dynamicK8sClient.Resource(resource).Get(ctx, desired.GetName(), metav1.GetOptions{})
-		r.logger.Log(ciliumnetpol)
+		r.logger.Debugf(ctx, "ciliumnetpol: %#v", ciliumnetpol)
 		if apierrors.IsNotFound(err) {
 			_, err = r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 		}
