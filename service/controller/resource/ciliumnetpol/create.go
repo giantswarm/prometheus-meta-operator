@@ -31,7 +31,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		if hasClusterRoleBindingChanged(current, desired) {
+		if hasCiliumNetworkPolicyChanged(current, desired) {
 			updateMeta(current, desired)
 			_, err = r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 			if err != nil {

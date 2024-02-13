@@ -116,6 +116,6 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 	return ciliumNetworkPolicy, nil
 }
 
-func hasClusterRoleBindingChanged(current *unstructured.Unstructured, desired *unstructured.Unstructured) bool {
+func hasCiliumNetworkPolicyChanged(current *unstructured.Unstructured, desired *unstructured.Unstructured) bool {
 	return !reflect.DeepEqual(current.Object["spec"], desired.Object["spec"])
 }
