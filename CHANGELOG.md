@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `update` method to cilium netpol resource.
+
 ## [4.67.2] - 2024-02-13
 
 ### Fixed
