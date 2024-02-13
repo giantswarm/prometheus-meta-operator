@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.67.2] - 2024-02-13
+
 ### Fixed
 
 - Add grafana-cloud squid proxy port to prometheus CNP.
@@ -2452,7 +2454,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.2...HEAD
+[4.67.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.1...v4.67.2
 [4.67.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.0...v4.67.1
 [4.67.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.66.1...v4.67.0
 [4.66.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.66.0...v4.66.1
