@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Add grafana-cloud squid proxy port to prometheus CNP.
+
 ## [4.67.1] - 2024-02-13
 
 ### Fixed
