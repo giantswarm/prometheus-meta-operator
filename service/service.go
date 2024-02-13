@@ -20,6 +20,7 @@ import (
 	"github.com/spf13/viper"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	"k8s.io/client-go/dynamic"
 	"k8s.io/client-go/rest"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	capiexp "sigs.k8s.io/cluster-api/exp/api/v1beta1"
@@ -117,6 +118,14 @@ func New(config Config) (*Service, error) {
 		}
 	}
 
+	var dynamicK8sClient dynamic.Interface
+	{
+		dynamicK8sClient, err = dynamic.NewForConfig(restConfig)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var prometheusClient promclient.Interface
 	{
 		prometheusClient, err = promclient.NewForConfig(restConfig)
@@ -143,6 +152,7 @@ func New(config Config) (*Service, error) {
 	{
 		c := clusterapi.ControllerConfig{
 			K8sClient:        k8sClient,
+			DynamicK8sClient: dynamicK8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			VpaClient:        vpaClient,
@@ -164,7 +174,6 @@ func New(config Config) (*Service, error) {
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-			PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
@@ -185,6 +194,7 @@ func New(config Config) (*Service, error) {
 	{
 		c := managementcluster.ControllerConfig{
 			K8sClient:        k8sClient,
+			DynamicK8sClient: dynamicK8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: prometheusClient,
 			VpaClient:        vpaClient,
@@ -209,7 +219,6 @@ func New(config Config) (*Service, error) {
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
-			PrometheusRetentionDuration:  config.Viper.GetString(config.Flag.Service.Prometheus.Retention.Duration),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 

@@ -62,10 +62,6 @@ prometheus:
   letsencrypt: false
   clusterIssuerName: ""
 
-  retention:
-    ## Retention duration for prometheus.
-    duration: "2w"
-
   ## Default scrape interval for prometheus jobs.
   scrapeInterval: "60s"
 

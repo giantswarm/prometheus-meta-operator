@@ -101,6 +101,10 @@ func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, 
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
+	provider, err := key.ClusterProvider(cluster, r.provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	externalLabels := map[string]string{
 		key.ClusterIDKey:       key.ClusterID(cluster),
 		key.ClusterTypeKey:     key.ClusterType(r.installation, cluster),
@@ -108,7 +112,7 @@ func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, 
 		key.InstallationKey:    r.installation,
 		key.OrganizationKey:    organization,
 		key.PipelineKey:        r.pipeline,
-		key.ProviderKey:        key.ClusterProvider(cluster, r.provider),
+		key.ProviderKey:        provider,
 		key.RegionKey:          r.region,
 		key.ServicePriorityKey: key.GetServicePriority(cluster),
 	}

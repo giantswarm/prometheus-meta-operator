@@ -43,7 +43,6 @@ type Config struct {
 	Region             string
 	Registry           string
 	LogLevel           string
-	RetentionDuration  string
 	ScrapeInterval     string
 	Version            string
 }
@@ -125,7 +124,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		VolumeClaimTemplate: promv1.EmbeddedPersistentVolumeClaim{
 			Spec: corev1.PersistentVolumeClaimSpec{
 				AccessModes: []corev1.PersistentVolumeAccessMode{corev1.ReadWriteOnce},
-				Resources: corev1.ResourceRequirements{
+				Resources: corev1.VolumeResourceRequirements{
 					Requests: corev1.ResourceList{
 						corev1.ResourceStorage: storageSize,
 					},
@@ -148,6 +147,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 
 	image := fmt.Sprintf("%s/%s:%s", config.Registry, config.ImageRepository, config.Version)
 	pageTitle := fmt.Sprintf("%s/%s Prometheus", config.Installation, key.ClusterID(cluster))
+	provider, err := key.ClusterProvider(cluster, config.Provider)
+	if err != nil {
+		return nil, microerror.Mask(err)
+	}
 	prometheus := &promv1.Prometheus{
 		ObjectMeta: objectMeta,
 		Spec: promv1.PrometheusSpec{
@@ -186,14 +189,14 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 						},
 					},
 				},
-				EnableFeatures: []string{"remote-write-receiver"},
+				EnableRemoteWriteReceiver: true,
 				ExternalLabels: map[string]string{
 					key.ClusterIDKey:    key.ClusterID(cluster),
 					key.ClusterTypeKey:  key.ClusterType(config.Installation, cluster),
 					key.CustomerKey:     config.Customer,
 					key.InstallationKey: config.Installation,
 					key.PipelineKey:     config.Pipeline,
-					key.ProviderKey:     key.ClusterProvider(cluster, config.Provider),
+					key.ProviderKey:     provider,
 					key.RegionKey:       config.Region,
 				},
 				ExternalURL:        externalURL.String(),
@@ -232,14 +235,17 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				},
 				Shards:  &prometheusShards,
 				Storage: &storage,
-				TopologySpreadConstraints: []corev1.TopologySpreadConstraint{
+				TopologySpreadConstraints: []promv1.TopologySpreadConstraint{
 					{
-						MaxSkew:           1,
-						TopologyKey:       "kubernetes.io/hostname",
-						WhenUnsatisfiable: corev1.ScheduleAnyway,
-						LabelSelector: &metav1.LabelSelector{
-							MatchLabels: map[string]string{
-								"app.kubernetes.io/name": "prometheus",
+						CoreV1TopologySpreadConstraint: promv1.CoreV1TopologySpreadConstraint{
+							MaxSkew:           1,
+							TopologyKey:       "kubernetes.io/hostname",
+							WhenUnsatisfiable: corev1.ScheduleAnyway,
+							// We want to spread the pods across the nodes as much as possible
+							LabelSelector: &metav1.LabelSelector{
+								MatchLabels: map[string]string{
+									"app.kubernetes.io/name": "prometheus",
+								},
 							},
 						},
 					},
@@ -252,7 +258,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			},
 
 			EvaluationInterval: promv1.Duration(config.EvaluationInterval),
-			Retention:          promv1.Duration(config.RetentionDuration),
 			RetentionSize:      promv1.ByteSize(pvcresizing.GetRetentionSize(storageSize)),
 			// Fetches Prometheus rules from any namespace on the Management Cluster
 			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
@@ -281,7 +286,9 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			return nil, microerror.Mask(err)
 		}
 		if authenticationType == "token" {
-			prometheus.Spec.APIServerConfig.BearerTokenFile = fmt.Sprintf("/etc/prometheus/secrets/%s/token", key.APIServerCertificatesSecretName)
+			prometheus.Spec.APIServerConfig.Authorization = &promv1.Authorization{
+				CredentialsFile: fmt.Sprintf("/etc/prometheus/secrets/%s/token", key.APIServerCertificatesSecretName),
+			}
 		} else if authenticationType == "certificates" {
 			prometheus.Spec.APIServerConfig.TLSConfig.CertFile = fmt.Sprintf("/etc/prometheus/secrets/%s/crt", key.APIServerCertificatesSecretName)
 			prometheus.Spec.APIServerConfig.TLSConfig.KeyFile = fmt.Sprintf("/etc/prometheus/secrets/%s/key", key.APIServerCertificatesSecretName)
@@ -325,8 +332,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	} else {
 		// Management cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
-			Host:            fmt.Sprintf("https://%s", key.APIUrl(cluster)),
-			BearerTokenFile: key.BearerTokenPath,
+			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
+			Authorization: &promv1.Authorization{
+				CredentialsFile: key.BearerTokenPath,
+			},
 			TLSConfig: &promv1.TLSConfig{
 				CAFile: key.CAFilePath,
 				SafeTLSConfig: promv1.SafeTLSConfig{

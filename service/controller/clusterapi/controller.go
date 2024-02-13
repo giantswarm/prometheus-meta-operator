@@ -11,16 +11,17 @@ import (
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	"k8s.io/apimachinery/pkg/labels"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	"k8s.io/client-go/dynamic"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
-	controllerresource "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource"
 )
 
 type ControllerConfig struct {
 	K8sClient        k8sclient.Interface
+	DynamicK8sClient dynamic.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
 	VpaClient        vpa_clientset.Interface
@@ -42,7 +43,6 @@ type ControllerConfig struct {
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
-	PrometheusRetentionDuration  string
 	PrometheusScrapeInterval     string
 	PrometheusImageRepository    string
 	PrometheusVersion            string
@@ -62,9 +62,9 @@ func NewController(config ControllerConfig) (*Controller, error) {
 
 	var resources []resource.Interface
 	{
-		c := controllerresource.Config(config)
+		c := Config(config)
 
-		resources, err = controllerresource.New(c)
+		resources, err = New(c)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}

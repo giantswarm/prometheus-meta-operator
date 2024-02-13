@@ -1,0 +1,11 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: baz
+  namespace: org-my-organization
+spec:
+  controlPlaneEndpoint:
+    host: master.baz
+    port: 443
+  infrastructureRef:
+    kind: AWSCluster

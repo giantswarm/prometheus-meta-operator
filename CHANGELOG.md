@@ -7,7 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [4.64.1] - 2024-01-30
+### Fixed
+
+- Fix error for already existing `ciliumNetworkPolicy`.
+
+## [4.67.0] - 2024-02-12
+
+### Added
+
+- Add `ciliumNetworkPolicy` for all Prometheus instances on the MC.
+
+## [4.66.1] - 2024-02-07
+
+### Fixed
+
+- Fix VPA to support latest Prometheus-operator version (based on observability-bundle 1.2.0) as the latest version of the Prometheus CR now supports the `scale` subresource which causes issues with VPA.
+
+## [4.66.0] - 2024-02-06
+
+### Changed
+
+- Support multi-provider Management clusters.
+
+### Fixed
+
+- Fix how we enable `remote-write-receiver` to avoid deprecated warnings.
+- Fix test generation to split capi and vintage tests generated files.
+
+### Removed
+
+- Free retention duration property of it's 2 weeks limitation if the free storage allows it.
+
+## [4.65.0] - 2024-01-29
 
 ### Added
 
@@ -2415,8 +2446,11 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.64.1...HEAD
-[4.64.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.64.0...v4.64.1
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.0...HEAD
+[4.67.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.66.1...v4.67.0
+[4.66.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.66.0...v4.66.1
+[4.66.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.65.0...v4.66.0
+[4.65.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.64.0...v4.65.0
 [4.64.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.63.1...v4.64.0
 [4.63.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.63.0...v4.63.1
 [4.63.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.62.0...v4.63.0

@@ -11,6 +11,7 @@ import (
 	"github.com/giantswarm/operatorkit/v7/pkg/resource/wrapper/retryresource"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	vpa_clientset "k8s.io/autoscaler/vertical-pod-autoscaler/pkg/client/clientset/versioned"
+	"k8s.io/client-go/dynamic"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
@@ -19,6 +20,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/ciliumnetpol"
 	etcdcertificates "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/etcd-certificates"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/prometheus"
@@ -38,6 +40,7 @@ import (
 
 type resourcesConfig struct {
 	K8sClient        k8sclient.Interface
+	DynamicK8sClient dynamic.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
 	VpaClient        vpa_clientset.Interface
@@ -62,7 +65,6 @@ type resourcesConfig struct {
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
 	PrometheusLogLevel           string
-	PrometheusRetentionDuration  string
 	PrometheusScrapeInterval     string
 	PrometheusImageRepository    string
 	PrometheusVersion            string
@@ -153,6 +155,19 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	var ciliumnetpolResource resource.Interface
+	{
+		c := ciliumnetpol.Config{
+			DynamicK8sClient: config.DynamicK8sClient,
+			Logger:           config.Logger,
+		}
+
+		ciliumnetpolResource, err = ciliumnetpol.New(c)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+	}
+
 	var heartbeatWebhookConfigResource resource.Interface
 	{
 		c := heartbeatwebhookconfig.Config{
@@ -185,7 +200,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Registry:           config.Registry,
 			EvaluationInterval: config.PrometheusEvaluationInterval,
 			LogLevel:           config.PrometheusLogLevel,
-			RetentionDuration:  config.PrometheusRetentionDuration,
 			ImageRepository:    config.PrometheusImageRepository,
 			ScrapeInterval:     config.PrometheusScrapeInterval,
 		}
@@ -199,9 +213,11 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var verticalPodAutoScalerResource resource.Interface
 	{
 		c := verticalpodautoscaler.Config{
-			Logger:    config.Logger,
-			K8sClient: config.K8sClient,
-			VpaClient: config.VpaClient,
+			Logger:       config.Logger,
+			K8sClient:    config.K8sClient,
+			VpaClient:    config.VpaClient,
+			Installation: config.Installation,
+			Provider:     config.Provider,
 		}
 
 		verticalPodAutoScalerResource, err = verticalpodautoscaler.New(c)
@@ -375,6 +391,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		etcdCertificatesResource,
 		rbacResource,
 		alertmanagerConfigResource,
+		ciliumnetpolResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
 		remoteWriteConfigResource,

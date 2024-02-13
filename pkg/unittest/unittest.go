@@ -2,10 +2,13 @@ package unittest
 
 import (
 	"bytes"
+	"errors"
 	"os"
 	"path"
 	"path/filepath"
 	"runtime"
+	"slices"
+	"strings"
 	"testing"
 
 	"github.com/giantswarm/apiextensions/v6/pkg/apis/provider/v1alpha1"
@@ -25,6 +28,7 @@ type Config struct {
 	TestFunc             TestFunc
 	TestFuncReturnsBytes bool
 	Update               bool
+	Flavor               string
 }
 
 type Marshaller func(o interface{}) ([]byte, error)
@@ -66,6 +70,11 @@ type Value struct {
 	Output []byte
 }
 
+const capiFlavor = "capi"
+const vintageFlavor = "vintage"
+
+var ProviderFlavors = []string{capiFlavor, vintageFlavor}
+
 // NewRunner creates a new Runner given a Config.
 func NewRunner(config Config) (*Runner, error) {
 	_, filename, _, ok := runtime.Caller(0)
@@ -73,7 +82,12 @@ func NewRunner(config Config) (*Runner, error) {
 		return nil, microerror.Mask(executionError)
 	}
 
-	inputDir, err := filepath.Abs(filepath.Join(path.Dir(filename), "input"))
+	if !slices.Contains(ProviderFlavors, config.Flavor) {
+		err := errors.New("flavor must be in the list of supported flavors: [" + strings.Join(ProviderFlavors, " ,") + "]")
+		return nil, microerror.Mask(err)
+	}
+
+	inputDir, err := filepath.Abs(filepath.Join(path.Dir(filename), "input", config.Flavor))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -129,7 +143,11 @@ func (r *Runner) Run() error {
 
 			outputFilePath := filepath.Join(r.OutputDir, file.Name())
 			if r.Update {
-				err := os.WriteFile(outputFilePath, testResult, 0644) // #nosec
+				err := os.MkdirAll(r.OutputDir, os.ModePerm)
+				if err != nil {
+					t.Fatal(err)
+				}
+				err = os.WriteFile(outputFilePath, testResult, 0644) // #nosec
 				if err != nil {
 					t.Fatal(err)
 				}

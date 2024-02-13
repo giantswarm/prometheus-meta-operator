@@ -1,0 +1,32 @@
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: alertmanager
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: alertmanager
+  name: test-installation
+  namespace: monitoring
+spec:
+  receivers:
+  - name: heartbeat_test-installation_test-installation
+    webhookConfigs:
+    - httpConfig:
+        authorization:
+          credentials:
+            key: opsGenieApiKey
+            name: alertmanager-global
+          type: GenieKey
+      sendResolved: false
+      url: https://api.opsgenie.com/v2/heartbeats/test-installation-test-installation/ping
+  route:
+    groupInterval: 30s
+    groupWait: 30s
+    matchers:
+    - name: cluster_id
+      value: test-installation
+    - name: installation
+      value: test-installation
+    - name: type
+      value: heartbeat
+    receiver: heartbeat_test-installation_test-installation
+    repeatInterval: 15m

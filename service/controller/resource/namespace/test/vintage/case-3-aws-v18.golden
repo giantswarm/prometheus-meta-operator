@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: baz
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: baz
+  name: baz-prometheus
+spec: {}
+status: {}

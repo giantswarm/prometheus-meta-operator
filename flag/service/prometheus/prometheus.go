@@ -8,11 +8,6 @@ type Prometheus struct {
 	EvaluationInterval      string
 	ImageRepository         string
 	LogLevel                string
-	Retention               PrometheusRetention
 	ScrapeInterval          string
 	Version                 string
-}
-
-type PrometheusRetention struct {
-	Duration string
 }
