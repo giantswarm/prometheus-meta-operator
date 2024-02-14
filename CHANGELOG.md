@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add CNP for prometheus-meta-operator to be able to talk to the api-server in locked-down clusters.
+
 ## [4.67.3] - 2024-02-13
 
 ### Added
