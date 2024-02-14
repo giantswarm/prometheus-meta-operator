@@ -1,6 +1,8 @@
 package ciliumnetpol
 
 import (
+	"net/url"
+	"os"
 	"reflect"
 
 	"github.com/giantswarm/microerror"
@@ -19,6 +21,7 @@ const (
 
 type Config struct {
 	DynamicK8sClient dynamic.Interface
+	Proxy            func(reqURL *url.URL) (*url.URL, error)
 	Logger           micrologger.Logger
 }
 
@@ -46,6 +49,34 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 		return nil, microerror.Mask(err)
 	}
 
+	ports := []map[string]string{
+		{
+			"port": "443",
+		},
+		// Grafana cloud mimir port
+		{
+			"port": "6443",
+		},
+		// Grafana cloud squid proxy port
+		{
+			"port": "3128",
+		},
+	}
+	// We need to retrieve the proxy port from the environment variables
+	// and add it to the CiliumNetworkPolicy.
+	proxyURL := os.Getenv("HTTP_PROXY")
+	if proxyURL != "" {
+		proxyURL, err := url.Parse(proxyURL)
+		if err != nil {
+			return nil, microerror.Mask(err)
+		}
+		proxyPort := proxyURL.Port()
+		if proxyPort == "" {
+			proxyPort = "80"
+		}
+		ports = append(ports, map[string]string{"port": proxyPort})
+	}
+
 	ciliumNetworkPolicy := &unstructured.Unstructured{
 		Object: map[string]interface{}{
 			"apiVersion": "cilium.io/v2",
@@ -64,44 +95,32 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 					},
 				},
 				"egress": []map[string]interface{}{
-					map[string]interface{}{
+					{
 						"toEntities": []string{
 							"kube-apiserver",
 							"cluster",
 						},
 					},
-					map[string]interface{}{
+					{
 						"toEntities": []string{
 							"world",
 						},
 						"toPorts": []map[string]interface{}{
-							map[string]interface{}{
-								"ports": []map[string]string{
-									map[string]string{
-										"port": "443",
-									},
-									// Grafana cloud mimir port
-									map[string]string{
-										"port": "6443",
-									},
-									// Grafana cloud squid proxy port
-									map[string]string{
-										"port": "3128",
-									},
-								},
+							{
+								"ports": ports,
 							},
 						},
 					},
 				},
 				"ingress": []map[string]interface{}{
-					map[string]interface{}{
+					{
 						"fromEntities": []string{
 							"cluster",
 						},
 						"toPorts": []map[string]interface{}{
-							map[string]interface{}{
+							{
 								"ports": []map[string]string{
-									map[string]string{
+									{
 										"port": "9090",
 									},
 								},
