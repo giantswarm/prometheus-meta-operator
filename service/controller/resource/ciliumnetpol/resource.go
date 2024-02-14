@@ -21,7 +21,6 @@ const (
 
 type Config struct {
 	DynamicK8sClient dynamic.Interface
-	Proxy            func(reqURL *url.URL) (*url.URL, error)
 	Logger           micrologger.Logger
 }
 
@@ -49,7 +48,7 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	ports := []map[string]string{
+	worldPorts := []map[string]string{
 		{
 			"port": "443",
 		},
@@ -64,9 +63,18 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 	}
 	// We need to retrieve the proxy port from the environment variables
 	// and add it to the CiliumNetworkPolicy.
-	proxyURL := os.Getenv("HTTP_PROXY")
-	if proxyURL != "" {
-		proxyURL, err := url.Parse(proxyURL)
+	proxyString, ok := os.LookupEnv("HTTP_PROXY")
+	if !ok {
+		proxyString, ok = os.LookupEnv("HTTPS_PROXY")
+		if !ok {
+			proxyString, ok = os.LookupEnv("http_proxy")
+			if !ok {
+				proxyString, ok = os.LookupEnv("https_proxy")
+			}
+		}
+	}
+	if ok {
+		proxyURL, err := url.Parse(proxyString)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -74,7 +82,7 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 		if proxyPort == "" {
 			proxyPort = "80"
 		}
-		ports = append(ports, map[string]string{"port": proxyPort})
+		worldPorts = append(worldPorts, map[string]string{"port": proxyPort})
 	}
 
 	ciliumNetworkPolicy := &unstructured.Unstructured{
@@ -107,7 +115,7 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 						},
 						"toPorts": []map[string]interface{}{
 							{
-								"ports": ports,
+								"ports": worldPorts,
 							},
 						},
 					},

@@ -123,7 +123,6 @@ func New(config Config) ([]resource.Interface, error) {
 	{
 		c := ciliumnetpol.Config{
 			DynamicK8sClient: config.DynamicK8sClient,
-			Proxy:            config.Proxy,
 			Logger:           config.Logger,
 		}
 
