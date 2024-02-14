@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add proxy port to CiliumNetworkPolicy if needed.
 
+## [4.68.0] - 2024-02-14
+
+### Added
+
+- Add CNP for prometheus-meta-operator to be able to talk to the api-server in locked-down clusters.
+
 ## [4.67.3] - 2024-02-13
 
 ### Added
@@ -2464,7 +2470,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.0...HEAD
+[4.68.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.3...v4.68.0
 [4.67.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.2...v4.67.3
 [4.67.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.1...v4.67.2
 [4.67.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.0...v4.67.1
