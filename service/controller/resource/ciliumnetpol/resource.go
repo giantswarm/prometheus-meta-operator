@@ -2,11 +2,11 @@ package ciliumnetpol
 
 import (
 	"net/url"
-	"os"
 	"reflect"
 
 	"github.com/giantswarm/microerror"
 	"github.com/giantswarm/micrologger"
+	"golang.org/x/net/http/httpproxy"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/client-go/dynamic"
 
@@ -63,24 +63,21 @@ func toCiliumNetworkPolicy(v interface{}) (*unstructured.Unstructured, error) {
 	}
 	// We need to retrieve the proxy port from the environment variables
 	// and add it to the CiliumNetworkPolicy.
-	proxyString, ok := os.LookupEnv("HTTP_PROXY")
-	if !ok {
-		proxyString, ok = os.LookupEnv("HTTPS_PROXY")
-		if !ok {
-			proxyString, ok = os.LookupEnv("http_proxy")
-			if !ok {
-				proxyString, ok = os.LookupEnv("https_proxy")
-			}
-		}
+	proxyConfig := httpproxy.FromEnvironment()
+	proxyUrl := proxyConfig.HTTPProxy
+	proxyDefaultPort := "80"
+	if proxyUrl == "" {
+		proxyUrl = proxyConfig.HTTPSProxy
+		proxyDefaultPort = "443"
 	}
-	if ok {
-		proxyURL, err := url.Parse(proxyString)
+	if proxyUrl != "" {
+		proxyURL, err := url.Parse(proxyUrl)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 		proxyPort := proxyURL.Port()
 		if proxyPort == "" {
-			proxyPort = "80"
+			proxyPort = proxyDefaultPort
 		}
 		worldPorts = append(worldPorts, map[string]string{"port": proxyPort})
 	}
