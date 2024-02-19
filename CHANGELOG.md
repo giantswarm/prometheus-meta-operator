@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fix alertmanager ciliumnetworkpolicy to allow access to coredns.
+
+## [4.68.2] - 2024-02-19
+
+### Fixed
+
 - Add missing ciliumnetworkpolicy for alertmanager.
 
 ## [4.68.1] - 2024-02-15

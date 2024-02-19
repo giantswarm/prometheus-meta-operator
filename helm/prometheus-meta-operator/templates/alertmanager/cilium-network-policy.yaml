@@ -12,6 +12,23 @@ spec:
     matchLabels:
       app.kubernetes.io/name: alertmanager
   egress:
+     # Allow all DNS queries
+    - toEndpoints:
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": kube-system
+          "k8s:k8s-app": coredns
+      - matchLabels:
+          "k8s:io.kubernetes.pod.namespace": kube-system
+          "k8s:k8s-app": k8s-dns-node-cache
+      toPorts:
+        - ports:
+           - port: "1053"
+             protocol: ANY
+           - port: "53"
+             protocol: ANY
+          rules:
+            dns:
+              - matchPattern: "*"
     - toEntities:
       ## Needed to access opsgenie.
       - world
