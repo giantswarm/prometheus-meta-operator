@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.68.3] - 2024-02-19
+
+### Fixed
+
+- Fix alertmanager ciliumnetworkpolicy to allow access to coredns.
+
 ## [4.68.2] - 2024-02-19
 
 ### Fixed
@@ -2478,7 +2484,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.3...HEAD
+[4.68.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.2...v4.68.3
 [4.68.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.1...v4.68.2
 [4.68.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.0...v4.68.1
 [4.68.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.67.3...v4.68.0
