@@ -1,0 +1,26 @@
+{{- if .Values.ciliumNetworkPolicy.enabled -}}
+{{- if .Capabilities.APIVersions.Has "cilium.io/v2" -}}
+apiVersion: "cilium.io/v2"
+kind: CiliumNetworkPolicy
+metadata:
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
+  name: alertmanager
+  namespace: {{ include "resource.default.namespace" . }}
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager
+  egress:
+    - toEntities:
+      ## Needed to access opsgenie.
+      - world
+  ingress:
+    - fromEntities:
+      - cluster
+      toPorts:
+      - ports:
+        - port: "9093"
+          protocol: "TCP"
+{{ end }}
+{{ end }}
