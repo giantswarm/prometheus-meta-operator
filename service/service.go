@@ -170,6 +170,8 @@ func New(config Config) (*Service, error) {
 
 			OpsgenieKey: config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 
+			MimirEnabled: config.Viper.GetBool(config.Flag.Service.Mimir.Enabled),
+
 			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
@@ -214,6 +216,8 @@ func New(config Config) (*Service, error) {
 			GrafanaAddress: config.Viper.GetString(config.Flag.Service.Grafana.Address),
 			OpsgenieKey:    config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
 			SlackApiURL:    config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
+
+			MimirEnabled: config.Viper.GetBool(config.Flag.Service.Mimir.Enabled),
 
 			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),

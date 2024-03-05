@@ -43,6 +43,8 @@ type ControllerConfig struct {
 	OpsgenieKey    string
 	SlackApiURL    string
 
+	MimirEnabled bool
+
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string

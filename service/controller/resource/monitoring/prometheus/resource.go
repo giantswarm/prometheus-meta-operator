@@ -45,6 +45,8 @@ type Config struct {
 	LogLevel           string
 	ScrapeInterval     string
 	Version            string
+
+	MimirEnabled bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -389,6 +391,11 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		prometheus.Spec.PodMonitorNamespaceSelector = &metav1.LabelSelector{
 			MatchExpressions: []metav1.LabelSelectorRequirement{},
 		}
+	}
+
+	if config.MimirEnabled {
+		prometheus.Spec.RuleNamespaceSelector = nil
+		prometheus.Spec.RuleSelector = nil
 	}
 
 	if config.PrometheusClient != nil {

@@ -21,6 +21,8 @@ data:
           caFile: ''
           crtFile: ''
           keyFile: ''
+      mimir:
+        enabled: {{ .Values.mimir.enabled }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-

@@ -1,0 +1,113 @@
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/instance: test-installation
+    app.kubernetes.io/managed-by: prometheus-meta-operator
+    app.kubernetes.io/name: prometheus
+    giantswarm.io/cluster: test-installation
+  name: test-installation
+  namespace: test-installation-prometheus
+spec:
+  additionalAlertManagerConfigs:
+    key: alertmanager-additional.yaml
+    name: alertmanager-config
+  additionalScrapeConfigs:
+    key: prometheus-additional.yaml
+    name: additional-scrape-configs
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: node-role.kubernetes.io/control-plane
+            operator: DoesNotExist
+  apiserverConfig:
+    authorization:
+      credentialsFile: /etc/prometheus/secrets/cluster-certificates/token
+    host: https://master.test-installation:443
+    tlsConfig:
+      ca: {}
+      caFile: /etc/prometheus/secrets/cluster-certificates/ca
+      cert: {}
+  arbitraryFSAccessThroughSMs: {}
+  enableRemoteWriteReceiver: true
+  evaluationInterval: 60s
+  externalLabels:
+    cluster_id: test-installation
+    cluster_type: workload_cluster
+    customer: Giant Swarm
+    installation: test-installation
+    pipeline: testing
+    provider: capa
+    region: onprem
+  externalUrl: http://prometheus/test-installation
+  image: quay.io/giantswarm/prometheus:v2.28.1
+  keepDroppedTargets: 5
+  logLevel: debug
+  podMetadata:
+    labels:
+      app.kubernetes.io/instance: test-installation
+      app.kubernetes.io/managed-by: prometheus-meta-operator
+      app.kubernetes.io/name: prometheus
+      giantswarm.io/cluster: test-installation
+      giantswarm.io/monitoring: "true"
+  priorityClassName: prometheus
+  replicas: 1
+  resources:
+    limits:
+      cpu: 150m
+      memory: "1073741824"
+    requests:
+      cpu: 100m
+      memory: "1073741824"
+  retentionSize: 85GiB
+  routePrefix: /test-installation
+  rules:
+    alert: {}
+  scrapeInterval: 60s
+  secrets:
+  - cluster-certificates
+  securityContext:
+    fsGroup: 2000
+    runAsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 1000
+    seccompProfile:
+      type: RuntimeDefault
+  serviceMonitorNamespaceSelector:
+    matchExpressions:
+    - key: nonexistentkey
+      operator: Exists
+  serviceMonitorSelector:
+    matchExpressions:
+    - key: nonexistentkey
+      operator: Exists
+  shards: 1
+  storage:
+    volumeClaimTemplate:
+      metadata: {}
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+      status: {}
+  topologySpreadConstraints:
+  - labelSelector:
+      matchLabels:
+        app.kubernetes.io/name: prometheus
+    maxSkew: 1
+    topologyKey: kubernetes.io/hostname
+    whenUnsatisfiable: ScheduleAnyway
+  tsdb: {}
+  version: v2.28.1
+  walCompression: true
+  web:
+    pageTitle: test-installation/test-installation Prometheus
+status:
+  availableReplicas: 0
+  paused: false
+  replicas: 0
+  unavailableReplicas: 0
+  updatedReplicas: 0
