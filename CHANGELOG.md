@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove `falco-exporter` from static scrapeconfig as they are now monitored via servicemonitors.
+
 ## [4.68.3] - 2024-02-19
 
 ### Fixed
