@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Disable rule evaluation in Prometheus if mimir is enabled.
 
+## [4.68.4] - 2024-03-06
+
+### Removed
+
+- Remove `falco-exporter` from static scrapeconfig as they are now monitored via servicemonitors.
+
 ## [4.68.3] - 2024-02-19
 
 ### Fixed
@@ -2488,7 +2494,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.4...HEAD
+[4.68.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.3...v4.68.4
 [4.68.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.2...v4.68.3
 [4.68.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.1...v4.68.2
 [4.68.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.0...v4.68.1

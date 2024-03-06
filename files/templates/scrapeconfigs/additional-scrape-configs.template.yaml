@@ -45,27 +45,6 @@
     regex: (engine_daemon_image_actions_seconds_count|process_virtual_memory_bytes|process_resident_memory_bytes)
     action: keep
 [[- end ]]
-[[- if eq .ClusterType "management_cluster" ]]
-# falco-exporter
-- job_name: [[ .ClusterID ]]-prometheus/falco-exporter-[[ .ClusterID ]]/0
-  honor_labels: true
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - giantswarm
-[[- include "_apiserver" . ]]
-[[- include "_tlsconfig_skip" . ]]
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    regex: falco-exporter
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
-    target_label: app
-[[ include "_common" . | indent 2 ]]
-[[ include "_labelingschema" . | indent 2 ]]
-[[- end ]]
 [[- if not (contains "kubelet" .IgnoredTargets) ]]
 # Add kubelet configuration
 - job_name: [[ .ClusterID ]]-prometheus/kubelet-[[ .ClusterID ]]/0
