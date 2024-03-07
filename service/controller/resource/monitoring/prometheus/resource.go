@@ -394,6 +394,10 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 	}
 
 	if config.MimirEnabled {
+		emptyExternalLabels := ""
+		// Remove prometheus and prometheus_replica external labels to avoid conflicts with our existing rules.
+		prometheus.Spec.PrometheusExternalLabelName = &emptyExternalLabels
+		prometheus.Spec.ReplicaExternalLabelName = &emptyExternalLabels
 		prometheus.Spec.RuleNamespaceSelector = nil
 		prometheus.Spec.RuleSelector = nil
 	}

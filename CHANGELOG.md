@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Disable rule evaluation in Prometheus if mimir is enabled.
+- Disable rule evaluation in Prometheus when Mimir is enabled.
+
+### Removed
+
+- Remove `prometheus` and `prometheus_replica` external labels when Mimir is enable.
 
 ## [4.68.4] - 2024-03-06
 

@@ -58,6 +58,8 @@ spec:
     - key: application.giantswarm.io/team
       operator: DoesNotExist
   priorityClassName: prometheus
+  prometheusExternalLabelName: ""
+  replicaExternalLabelName: ""
   replicas: 1
   resources:
     limits:

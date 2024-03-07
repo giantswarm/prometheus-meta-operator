@@ -52,6 +52,8 @@ spec:
       giantswarm.io/cluster: eks-sample
       giantswarm.io/monitoring: "true"
   priorityClassName: prometheus
+  prometheusExternalLabelName: ""
+  replicaExternalLabelName: ""
   replicas: 1
   resources:
     limits:
