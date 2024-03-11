@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-- Remove `prometheus` and `prometheus_replica` external labels when Mimir is enable.
+- Remove `prometheus` and `prometheus_replica` external labels when Mimir is enabled.
 
 ## [4.68.4] - 2024-03-06
 
