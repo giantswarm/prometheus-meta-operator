@@ -39,6 +39,8 @@ type ControllerConfig struct {
 
 	OpsgenieKey string
 
+	MimirEnabled bool
+
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string

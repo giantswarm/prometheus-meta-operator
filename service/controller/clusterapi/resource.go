@@ -57,6 +57,8 @@ type Config struct {
 
 	OpsgenieKey string
 
+	MimirEnabled bool
+
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
@@ -272,6 +274,8 @@ func New(config Config) ([]resource.Interface, error) {
 			EvaluationInterval: config.PrometheusEvaluationInterval,
 			ImageRepository:    config.PrometheusImageRepository,
 			ScrapeInterval:     config.PrometheusScrapeInterval,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		prometheusResource, err = prometheus.New(c)

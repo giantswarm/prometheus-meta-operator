@@ -61,6 +61,8 @@ type resourcesConfig struct {
 	OpsgenieKey    string
 	SlackApiURL    string
 
+	MimirEnabled bool
+
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
 	PrometheusEvaluationInterval string
@@ -202,6 +204,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			LogLevel:           config.PrometheusLogLevel,
 			ImageRepository:    config.PrometheusImageRepository,
 			ScrapeInterval:     config.PrometheusScrapeInterval,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		prometheusResource, err = prometheus.New(c)

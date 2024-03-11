@@ -45,6 +45,9 @@ managementCluster:
     flavor: ""
   insecureCA: false
 
+mimir:
+  enabled: false
+
 prometheus:
   additionalScrapeConfigs: ""
   address: "https://prometheus:9090"
