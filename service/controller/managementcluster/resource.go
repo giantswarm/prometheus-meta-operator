@@ -33,7 +33,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/scrapeconfigs"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/verticalpodautoscaler"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/namespace"
-	noop "github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/noop"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/noop"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/rbac"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/wrapper/monitoringdisabledresource"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -148,7 +148,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var alertmanagerWiringResource resource.Interface
 	// This resource creates a static secret to connect Prometheus to Alertmanager. When using mimir, this is not needed anymore
 	if config.MimirEnabled {
-		alertmanagerWiringResource = &noop.Resource{}
+		alertmanagerWiringResource = noop.New(noop.Config{Logger: config.Logger})
 	} else {
 		c := alertmanagerwiring.Config{
 			K8sClient: config.K8sClient,
