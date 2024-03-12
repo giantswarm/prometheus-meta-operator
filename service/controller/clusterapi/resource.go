@@ -355,7 +355,7 @@ func New(config Config) ([]resource.Interface, error) {
 	var alertmanagerWiringResource resource.Interface
 	// This resource creates a static secret to connect Prometheus to Alertmanager. When using mimir, this is not needed anymore
 	if config.MimirEnabled {
-		alertmanagerWiringResource = &noop.Resource{}
+		alertmanagerWiringResource = noop.New(noop.Config{Logger: config.Logger})
 	} else {
 		c := alertmanagerwiring.Config{
 			K8sClient: config.K8sClient,

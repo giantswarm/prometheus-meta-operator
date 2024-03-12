@@ -18,12 +18,12 @@ type Resource struct {
 	logger micrologger.Logger
 }
 
-func New(config Config) (*Resource, error) {
+func New(config Config) *Resource {
 	r := &Resource{
 		logger: config.Logger,
 	}
 
-	return r, nil
+	return r
 }
 
 func (r *Resource) Name() string {
