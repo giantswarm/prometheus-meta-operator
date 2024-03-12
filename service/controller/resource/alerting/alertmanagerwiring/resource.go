@@ -73,7 +73,7 @@ func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error
 	}, nil
 }
 
-func toData(v interface{}) []byte {
+func toData() []byte {
 	return []byte(alertmanagerConfig)
 }
 
@@ -86,7 +86,7 @@ func toSecret(ctx context.Context, v interface{}) (metav1.Object, error) {
 	secret := &corev1.Secret{
 		ObjectMeta: objectMeta,
 		Data: map[string][]byte{
-			key.AlertmanagerKey(): toData(v),
+			key.AlertmanagerKey(): toData(),
 		},
 	}
 
