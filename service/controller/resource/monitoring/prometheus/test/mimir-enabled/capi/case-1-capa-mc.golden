@@ -8,9 +8,6 @@ metadata:
   name: test-installation
   namespace: test-installation-prometheus
 spec:
-  additionalAlertManagerConfigs:
-    key: alertmanager-additional.yaml
-    name: alertmanager-config
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs

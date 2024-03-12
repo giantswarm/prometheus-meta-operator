@@ -1,6 +1,6 @@
 module github.com/giantswarm/prometheus-meta-operator/v2
 
-go 1.22.1
+go 1.22.0
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
