@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.70.0] - 2024-03-12
+
 ### Removed
 
 - Remove alerting from Prometheus if mimir is enabled.
@@ -2504,7 +2506,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.69.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.0...HEAD
+[4.70.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.69.0...v4.70.0
 [4.69.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.4...v4.69.0
 [4.68.4]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.3...v4.68.4
 [4.68.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.2...v4.68.3
