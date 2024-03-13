@@ -46,12 +46,11 @@ type NotificationTemplateData struct {
 }
 
 type AlertmanagerTemplateData struct {
-	GrafanaAddress string
-	Installation   string
-	OpsgenieKey    string
-	Pipeline       string
-	ProxyURL       string
-	SlackApiURL    string
+	Installation string
+	OpsgenieKey  string
+	Pipeline     string
+	ProxyURL     string
+	SlackApiURL  string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -156,11 +155,10 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 	}
 
 	d := &AlertmanagerTemplateData{
-		Installation:   config.Installation,
-		OpsgenieKey:    config.OpsgenieKey,
-		GrafanaAddress: config.GrafanaAddress,
-		SlackApiURL:    config.SlackApiURL,
-		Pipeline:       config.Pipeline,
+		Installation: config.Installation,
+		OpsgenieKey:  config.OpsgenieKey,
+		Pipeline:     config.Pipeline,
+		SlackApiURL:  config.SlackApiURL,
 	}
 
 	if proxyURL != nil {

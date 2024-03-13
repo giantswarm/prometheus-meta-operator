@@ -129,8 +129,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var alertmanagerConfigResource resource.Interface
 	{
 		c := alertmanagerconfig.Config{
-			K8sClient:      config.K8sClient,
-			Logger:         config.Logger,
+			K8sClient: config.K8sClient,
+			Logger:    config.Logger,
 
 			BaseDomain:     config.PrometheusBaseDomain,
 			GrafanaAddress: config.GrafanaAddress,

@@ -118,17 +118,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -141,17 +141,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -164,17 +164,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -187,17 +187,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -210,17 +210,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -233,17 +233,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -256,17 +256,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'
@@ -279,17 +279,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" .}}'
@@ -307,17 +307,17 @@ receivers:
     actions:
     - type: button
       text: ':green_book: OpsRecipe'
-      url: 'https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}'
+      url: '{{ template "__runbookurl" . }}'
       style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
     - type: button
       text: ':coffin: Linked PMs'
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ (index .Alerts 0).GeneratorURL }}'
+      url: '{{ template "__prometheusurl" . }}'
     - type: button
       text: ':grafana: Dashboard'
-      url: 'https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}'
+      url: '{{ template "__dashboardurl" . }}'
     - type: button
       text: ':no_bell: Silence'
       url: '{{ template "__alert_silence_link" . }}'

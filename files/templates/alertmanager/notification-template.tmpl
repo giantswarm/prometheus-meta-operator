@@ -3,6 +3,13 @@
 {{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
 
+[[- if .MimirEnabled ]]
+{{ define "__prometheus_query_cluster_id" }}{{ if (index .Alerts 0).Labels.cluster_id }}{{ (index .Alerts 0).Labels.cluster_id }}{{ else }}{{ (index .Alerts 0).Labels.installation }}{{ end }}{{ end }}
+{{ define "__prometheusurl" }}[[ .PrometheusAddress ]]/{{ template "__prometheus_query_cluster_id" . }}{{ (index .Alerts 0).GeneratorURL }}{{end}}
+[[- else ]]
+{{ define "__prometheusurl" }}{{ (index .Alerts 0).GeneratorURL }}{{end}}
+[[- end ]]
+
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
 {{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
 {{ define "slack.default.fallback" }}{{ template "slack.default.title" . }} | {{ template "slack.default.titlelink" . }}{{ end }}
@@ -24,10 +31,6 @@
 {{- end }}
 {{ end }}
 
-[[- if .MimirEnabled ]]
-{{ define "prometheus_cluster_id" }}{{ if (index .Alerts 0).Labels.cluster_id }}{{ (index .Alerts 0).Labels.cluster_id }}{{ else }}{{ (index .Alerts 0).Labels.installation }}{{ end }}{{ end }}
-[[- end ]]
-
 {{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
 {{ define "opsgenie.default.source" }}{{ template "__alertmanager" . }}{{ end }}
 {{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
@@ -45,11 +48,7 @@
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
 {{ end -}}
-[[- if .MimirEnabled ]]
-👀 Prometheus: [[ .PrometheusAddress ]]/{{ template "prometheus_cluster_id" . }}/{{ (index .Alerts 0).GeneratorURL }}
-[[- else ]]
-👀 Prometheus: {{ (index .Alerts 0).GeneratorURL }}
-[[- end ]]
+👀 Prometheus: {{ template "__prometheusurl" . }}
 
 ---
 
