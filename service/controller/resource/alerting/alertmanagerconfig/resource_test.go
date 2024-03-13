@@ -12,7 +12,7 @@ import (
 
 var update = flag.Bool("update", false, "update the output file")
 
-func TestRenderingOfAlertmanagerNotificationTemplate(t *testing.T) {
+func TestRenderingOfAlertmanagerNotificationTemplateWithLegacyMonitoring(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
 		config := Config{
@@ -25,7 +25,7 @@ func TestRenderingOfAlertmanagerNotificationTemplate(t *testing.T) {
 	}
 
 	for _, flavor := range unittest.ProviderFlavors {
-		outputDir, err := filepath.Abs("./test/notification-template/" + flavor)
+		outputDir, err := filepath.Abs("./test/notification-template/classic/" + flavor)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -49,6 +49,47 @@ func TestRenderingOfAlertmanagerNotificationTemplate(t *testing.T) {
 		}
 	}
 }
+
+func TestRenderingOfAlertmanagerNotificationTemplateWithMimirEnabled(t *testing.T) {
+	var testFunc unittest.TestFunc
+	{
+		config := Config{
+			Installation:   "test-installation",
+			GrafanaAddress: "https://grafana",
+			MimirEnabled:   true,
+			BaseDomain:     "prometheus.installation-prometheus.svc",
+		}
+		testFunc = func(v interface{}) (interface{}, error) {
+			return renderNotificationTemplate(unittest.ProjectRoot(), config)
+		}
+	}
+
+	for _, flavor := range unittest.ProviderFlavors {
+		outputDir, err := filepath.Abs("./test/notification-template/mimir-enabled/" + flavor)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		c := unittest.Config{
+			OutputDir:            outputDir,
+			T:                    t,
+			TestFunc:             testFunc,
+			Flavor:               flavor,
+			TestFuncReturnsBytes: true,
+			Update:               *update,
+		}
+		runner, err := unittest.NewRunner(c)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = runner.Run()
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
 func TestRenderingOfAlertmanagerConfig(t *testing.T) {
 	var testFunc unittest.TestFunc
 	{
