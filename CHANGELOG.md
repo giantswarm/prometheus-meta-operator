@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.70.2] - 2024-03-13
+
 ### Fixed
 
 - Fix missing prometheus link in notification template.
@@ -2516,7 +2518,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.2...HEAD
+[4.70.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.1...v4.70.2
 [4.70.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.0...v4.70.1
 [4.70.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.69.0...v4.70.0
 [4.69.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.68.4...v4.69.0
