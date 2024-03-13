@@ -25,7 +25,7 @@
 {{ end }}
 
 [[- if .MimirEnabled ]]
-{{ define "prometheus_cluster_id" }}{{ if (index .Alerts 0).Labels.cluster_id }} / {{ (index .Alerts 0).Labels.cluster_id }}{{ else }}(index .Alerts 0).Labels.installation{{ end }}{{ end }}
+{{ define "prometheus_cluster_id" }}{{ if (index .Alerts 0).Labels.cluster_id }}{{ (index .Alerts 0).Labels.cluster_id }}{{ else }}{{ (index .Alerts 0).Labels.installation }}{{ end }}{{ end }}
 [[- end ]]
 
 {{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
