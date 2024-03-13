@@ -2,6 +2,7 @@ package alertmanagerconfig
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"path"
 	"reflect"
@@ -34,10 +35,15 @@ type Config struct {
 	GrafanaAddress string
 	SlackApiURL    string
 	Pipeline       string
+
+	MimirEnabled bool
+	BaseDomain string
 }
 
 type NotificationTemplateData struct {
 	GrafanaAddress string
+	MimirEnabled   bool
+	PrometheusAddress string
 }
 
 type AlertmanagerTemplateData struct {
@@ -112,7 +118,11 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 }
 
 func renderNotificationTemplate(templateDirectory string, config Config) ([]byte, error) {
-	templateData := NotificationTemplateData{config.GrafanaAddress}
+	templateData := NotificationTemplateData{
+		GrafanaAddress: config.GrafanaAddress,
+		MimirEnabled:   config.MimirEnabled,
+		PrometheusAddress: fmt.Sprintf("https://%s", config.BaseDomain),
+	}
 
 	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, notificationTemplatePath))
 	if err != nil {

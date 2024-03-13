@@ -24,7 +24,6 @@
 {{- end }}
 {{ end }}
 
-
 {{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
 {{ define "opsgenie.default.source" }}{{ template "__alertmanager" . }}{{ end }}
 {{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
