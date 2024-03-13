@@ -29,30 +29,29 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	Installation   string
-	Proxy          func(reqURL *url.URL) (*url.URL, error)
-	OpsgenieKey    string
+	BaseDomain     string
 	GrafanaAddress string
-	SlackApiURL    string
+	Installation   string
+	MimirEnabled   bool
+	OpsgenieKey    string
 	Pipeline       string
-
-	MimirEnabled bool
-	BaseDomain string
+	Proxy          func(reqURL *url.URL) (*url.URL, error)
+	SlackApiURL    string
 }
 
 type NotificationTemplateData struct {
-	GrafanaAddress string
-	MimirEnabled   bool
+	GrafanaAddress    string
+	MimirEnabled      bool
 	PrometheusAddress string
 }
 
 type AlertmanagerTemplateData struct {
-	Installation   string
-	ProxyURL       string
-	OpsgenieKey    string
 	GrafanaAddress string
-	SlackApiURL    string
+	Installation   string
+	OpsgenieKey    string
 	Pipeline       string
+	ProxyURL       string
+	SlackApiURL    string
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -119,8 +118,8 @@ func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
 
 func renderNotificationTemplate(templateDirectory string, config Config) ([]byte, error) {
 	templateData := NotificationTemplateData{
-		GrafanaAddress: config.GrafanaAddress,
-		MimirEnabled:   config.MimirEnabled,
+		GrafanaAddress:    config.GrafanaAddress,
+		MimirEnabled:      config.MimirEnabled,
 		PrometheusAddress: fmt.Sprintf("https://%s", config.BaseDomain),
 	}
 

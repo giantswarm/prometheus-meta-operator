@@ -131,14 +131,15 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := alertmanagerconfig.Config{
 			K8sClient:      config.K8sClient,
 			Logger:         config.Logger,
-			BaseDomain: config.PrometheusBaseDomain,
-			Installation:   config.Installation,
-			Proxy:          config.Proxy,
-			OpsgenieKey:    config.OpsgenieKey,
+
+			BaseDomain:     config.PrometheusBaseDomain,
 			GrafanaAddress: config.GrafanaAddress,
-			SlackApiURL:    config.SlackApiURL,
+			Installation:   config.Installation,
+			MimirEnabled:   config.MimirEnabled,
+			OpsgenieKey:    config.OpsgenieKey,
 			Pipeline:       config.Pipeline,
-			MimirEnabled: config.MimirEnabled,
+			Proxy:          config.Proxy,
+			SlackApiURL:    config.SlackApiURL,
 		}
 
 		alertmanagerConfigResource, err = alertmanagerconfig.New(c)
