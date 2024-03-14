@@ -779,3 +779,30 @@
 [[ include "_common" . | indent 2 ]]
 [[ include "_labelingschema" . | indent 2 ]]
 [[- end ]]
+# kyverno policy-reporter
+- job_name: [[ .ClusterID ]]-prometheus/kyverno-policy-reporter-[[ .ClusterID ]]/0
+  honor_labels: true
+  scrape_interval: 59m
+  scrape_timeout: 30s
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kyverno
+[[- include "_apiserver" . ]]
+[[- include "_tlsconfig_skip" . ]]
+  metric_relabel_configs:
+  # keep only the summary series to avoid storing lots of extra data
+  - source_labels: [__name__]
+    regex: policy_report_summary
+    action: keep
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    regex: policy-reporter
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
+    target_label: app
+  - regex: (exported_namespace|name|status)
+    action: labelkeep
+[[ include "_labelingschema" . | indent 2 ]]
