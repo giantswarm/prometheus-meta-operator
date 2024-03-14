@@ -11,8 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Scrape certain policy reporter metrics from workload clusters.
 
+<<<<<<< HEAD
 ## [4.64.0] - 2024-01-19
 
+=======
+>>>>>>> 2ce58751 (Improve stable-testing blackhole routing of alerts (#1488))
 ### Changed
 
 - Improved the blackhole routing for `stable-testing` MCs to silence more alerts related to test WCs
