@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+<<<<<<< HEAD
 ### Added
 
 - Scrape certain policy reporter metrics from workload clusters.
+=======
+## [4.64.0] - 2024-01-19
+>>>>>>> 3d6b6523 (Release v4.64.0 (#1489))
 
 <<<<<<< HEAD
 ## [4.64.0] - 2024-01-19
