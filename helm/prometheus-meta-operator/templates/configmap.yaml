@@ -59,7 +59,7 @@ data:
         customer: {{ .Values.managementCluster.customer }}
         name: {{ .Values.managementCluster.name }}
         pipeline: {{ .Values.managementCluster.pipeline }}
-        {{- $providers := list "aws" "azure" "gcp" "capa" "capz" }}
+        {{- $providers := list "aws" "gcp" "capa" "capz" }}
         {{- if has .Values.managementCluster.provider.kind $providers }}
         region: {{ .Values.managementCluster.provider.region }}
         {{- else }}
