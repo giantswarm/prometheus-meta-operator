@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix missing data in labelling schema to add missing labels to avoid issues with aggregations of data coming from prometheus agents that have some extra labels set as opposed to the existing prometheus scrape config.
+
 ## [4.70.2] - 2024-03-13
 
 ### Fixed
