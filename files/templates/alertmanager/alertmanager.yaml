@@ -153,8 +153,8 @@ route:
   # Team Honeybadger Slack
   - receiver: team_honeybadger_slack
     matchers:
-      - severity=~"page|notify"
-      - team="honeybadger"
+    - severity=~"page|notify"
+    - team="honeybadger"
     continue: false
 
 receivers:
