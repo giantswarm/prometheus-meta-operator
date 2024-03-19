@@ -150,6 +150,13 @@ route:
     - team="turtles"
     continue: false
 
+  # Team Honeybadger Slack
+  - receiver: team_honeybadger_slack
+    matchers:
+      - severity=~"page|notify"
+      - team="honeybadger"
+    continue: false
+
 receivers:
 - name: root
 
@@ -341,6 +348,29 @@ receivers:
 - name: team_tinkerers_slack
   slack_configs:
   - channel: '#alert-tinkerers'
+    send_resolved: true
+    actions:
+    - type: button
+      text: ':green_book: OpsRecipe'
+      url: '{{ template "__runbookurl" . }}'
+      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
+    - type: button
+      text: ':coffin: Linked PMs'
+      url: '{{ template "__alert_linked_postmortems" . }}'
+    - type: button
+      text: ':mag: Query'
+      url: '{{ template "__prometheusurl" . }}'
+    - type: button
+      text: ':grafana: Dashboard'
+      url: '{{ template "__dashboardurl" . }}'
+    - type: button
+      text: ':no_bell: Silence'
+      url: '{{ template "__alert_silence_link" .}}'
+      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
+
+- name: team_honeybadger_slack
+  slack_configs:
+  - channel: '#alert-honeybadger'
     send_resolved: true
     actions:
     - type: button
