@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.71.0] - 2024-03-19
+
 ### Added
 
 - Add team `honeybadger` slack router and receiver.
@@ -2532,7 +2534,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.3...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.71.0...HEAD
+[4.71.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.3...v4.71.0
 [4.70.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.2...v4.70.3
 [4.70.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.1...v4.70.2
 [4.70.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.0...v4.70.1
