@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add team `honeybadger` slack router and receiver.
+
 ### Removed
 
 - Remove the `azure` provider.
