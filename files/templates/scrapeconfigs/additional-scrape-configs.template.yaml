@@ -611,12 +611,6 @@
     target_label: nodepool
     replacement: ${1}
     action: replace
-  # Override with label for Azure clusters if exists.
-  - source_labels: [app,label_giantswarm_io_machine_pool]
-    regex: kube-state-metrics;(.+)
-    target_label: nodepool
-    replacement: ${1}
-    action: replace
   - action: labeldrop
     regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
 [[- if eq .ClusterType "management_cluster" ]]

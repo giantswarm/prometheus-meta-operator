@@ -5,19 +5,25 @@
 # Add cluster_type label.
 - target_label: cluster_type
   replacement: [[ .ClusterType ]]
-# Add provider label.
-- target_label: provider
-  replacement: [[ .Provider ]]
-# Add installation label.
-- target_label: installation
-  replacement: [[ .Installation ]]
-# Add priority label.
-- target_label: service_priority
-  replacement: [[ .ServicePriority | default "highest"]]
-# Add organization label.
-- target_label: organization
-  replacement: [[ .Organization | default "giantswarm" ]]
 # Add customer label.
 - target_label: customer
   replacement: [[ .Customer ]]
+# Add installation label.
+- target_label: installation
+  replacement: [[ .Installation ]]
+# Add organization label.
+- target_label: organization
+  replacement: [[ .Organization | default "giantswarm" ]]
+# Add pipeline label.
+- target_label: pipeline
+  replacement: [[ .Pipeline ]]
+# Add provider label.
+- target_label: provider
+  replacement: [[ .Provider ]]
+# Add provider label.
+- target_label: region
+  replacement: [[ .Region ]]
+# Add priority label.
+- target_label: service_priority
+  replacement: [[ .ServicePriority | default "highest"]]
 [[- end -]]

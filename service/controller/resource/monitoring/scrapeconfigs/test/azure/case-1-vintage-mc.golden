@@ -22,21 +22,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -67,21 +73,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -117,21 +129,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -172,21 +190,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -247,21 +271,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # Add etcd configuration
 - job_name: kubernetes-prometheus/etcd-kubernetes/0
   honor_labels: true
@@ -303,21 +333,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -379,21 +415,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop unused rest client metrics
   - source_labels: [__name__]
@@ -457,21 +499,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop unused rest client metrics
   - source_labels: [__name__]
@@ -526,21 +574,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop unused rest client metrics
   - source_labels: [__name__]
@@ -597,21 +651,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop unused coredns metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -668,21 +728,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # node-exporter
 - job_name: kubernetes-prometheus/node-exporter-kubernetes/0
   honor_labels: true
@@ -716,21 +782,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop unused metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -808,21 +880,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   # drop unused nginx metrics with the highest cardinality as they increase Prometheus memory usage
   - source_labels: [__name__]
@@ -975,21 +1053,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 - job_name: kubernetes-prometheus/vault-kubernetes/0
   honor_labels: true
   scheme: http
@@ -1013,21 +1097,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # nginx-ingress-controller
 - job_name: kubernetes-prometheus/nginx-ingress-controller-kubernetes/0
   honor_labels: true
@@ -1067,21 +1157,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   # Add role label.
   - source_labels: [__meta_kubernetes_node_label_role]
     target_label: role
@@ -1106,21 +1202,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # cilium agent and cilium operator
 - job_name: kubernetes-prometheus/cilium-kubernetes/0
   honor_labels: true
@@ -1168,67 +1270,24 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
-# kyverno policy-reporter
-- job_name: kubernetes-prometheus/kyverno-policy-reporter-kubernetes/0
-  honor_labels: true
-  scrape_interval: 59m
-  scrape_timeout: 30s
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - kyverno
-  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-  tls_config:
-    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-    insecure_skip_verify: true
-  metric_relabel_configs:
-  # keep only the summary series to avoid storing lots of extra data
-  - source_labels: [__name__]
-    regex: policy_report_result
-    action: keep
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    regex: policy-reporter
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
-    target_label: app
-  - regex: (exported_namespace|name|status)
-    action: labelkeep
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: kubernetes
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: management_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: azure
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
   # Add organization label.
   - target_label: organization
     replacement: my-organization
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: azure
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
