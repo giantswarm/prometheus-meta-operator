@@ -1285,3 +1285,58 @@
   # Add priority label.
   - target_label: service_priority
     replacement: highest
+# kyverno policy-reporter
+- job_name: kubernetes-prometheus/kyverno-policy-reporter-kubernetes/0
+  honor_labels: true
+  scrape_interval: 59m
+  scrape_timeout: 30s
+  scheme: http
+  kubernetes_sd_configs:
+  - role: endpoints
+    namespaces:
+      names:
+      - kyverno
+  bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+  tls_config:
+    ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+    insecure_skip_verify: true
+  metric_relabel_configs:
+  # keep only the summary series to avoid storing lots of extra data
+  - source_labels: [__name__]
+    regex: policy_report_result
+    action: keep
+  relabel_configs:
+  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+    regex: policy-reporter
+    action: keep
+  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
+    target_label: app
+  - regex: (exported_namespace|name|status)
+    action: labelkeep
+  # Add cluster_id label.
+  - target_label: cluster_id
+    replacement: kubernetes
+  # Add cluster_type label.
+  - target_label: cluster_type
+    replacement: management_cluster
+  # Add customer label.
+  - target_label: customer
+    replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: aws
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
