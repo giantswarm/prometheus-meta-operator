@@ -45,17 +45,11 @@
 - aws-operator
 - cluster-autoscaler
 
-### Azure specific
-
-- azure-operator
-- cluster-autoscaler
-
 ## Missing
 
 - prometheus-operator-app
 - CP prometheus
 - TC prometheus
-- azure-collector
 
 ## Not scraped
 
@@ -75,11 +69,6 @@
 - calico-typha
 - kiam
 - opa-mutator-app
-
-### Azure specific
-
-- azure-admission-controller
-- calico-typha
 
 ## Unscrapeable
 

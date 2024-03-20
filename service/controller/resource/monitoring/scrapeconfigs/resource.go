@@ -41,7 +41,9 @@ type Config struct {
 	Bastions                  []string
 	Customer                  string
 	Installation              string
+	Pipeline                  string
 	Provider                  cluster.Provider
+	Region                    string
 	Vault                     string
 	TemplatePath              string
 	WorkloadClusterETCDDomain string
@@ -52,7 +54,9 @@ type TemplateData struct {
 	APIServerURL              string
 	AuthenticationType        string
 	Bastions                  []string
+	Pipeline                  string
 	Provider                  string
+	Region                    string
 	ClusterID                 string
 	ClusterType               string
 	ServicePriority           string
@@ -218,6 +222,8 @@ func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster meta
 		Customer:                  config.Customer,
 		Organization:              organization,
 		Provider:                  provider,
+		Pipeline:                  config.Pipeline,
+		Region:                    config.Region,
 		Installation:              config.Installation,
 		SecretName:                key.APIServerCertificatesSecretName,
 		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),

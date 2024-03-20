@@ -52,21 +52,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: eks
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: eks
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 # cert-exporter
 - job_name: eks-sample-prometheus/cert-exporter-eks-sample/0
   honor_labels: true
@@ -125,21 +131,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: eks
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: eks
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
 - job_name: eks-sample-prometheus/workload-eks-sample/0
   honor_labels: true
   scheme: https
@@ -219,21 +231,27 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: eks
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
+  # Add installation label.
+  - target_label: installation
+    replacement: test-installation
+  # Add organization label.
+  - target_label: organization
+    replacement: my-organization
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: eks
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest
   metric_relabel_configs:
   - source_labels: [container]
     regex: prometheus-operator-app
@@ -327,12 +345,6 @@
     target_label: nodepool
     replacement: ${1}
     action: replace
-  # Override with label for Azure clusters if exists.
-  - source_labels: [app,label_giantswarm_io_machine_pool]
-    regex: kube-state-metrics;(.+)
-    target_label: nodepool
-    replacement: ${1}
-    action: replace
   - action: labeldrop
     regex: label_giantswarm_io_machine_pool|label_giantswarm_io_machine_deployment
 # prometheus
@@ -351,74 +363,24 @@
   # Add cluster_type label.
   - target_label: cluster_type
     replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: eks
-  # Add installation label.
-  - target_label: installation
-    replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
-  # Add organization label.
-  - target_label: organization
-    replacement: my-organization
   # Add customer label.
   - target_label: customer
     replacement: pmo
-# kyverno policy-reporter
-- job_name: eks-sample-prometheus/kyverno-policy-reporter-eks-sample/0
-  honor_labels: true
-  scrape_interval: 59m
-  scrape_timeout: 30s
-  scheme: http
-  kubernetes_sd_configs:
-  - role: endpoints
-    namespaces:
-      names:
-      - kyverno
-    api_server: https://master.eks-sample:443
-    tls_config:
-      ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-      cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-      key_file: /etc/prometheus/secrets/cluster-certificates/key
-      insecure_skip_verify: false
-  tls_config:
-    ca_file: /etc/prometheus/secrets/cluster-certificates/ca
-    cert_file: /etc/prometheus/secrets/cluster-certificates/crt
-    key_file: /etc/prometheus/secrets/cluster-certificates/key
-    insecure_skip_verify: true
-  metric_relabel_configs:
-  # keep only the summary series to avoid storing lots of extra data
-  - source_labels: [__name__]
-    regex: policy_report_result
-    action: keep
-  relabel_configs:
-  - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
-    regex: policy-reporter
-    action: keep
-  - source_labels: [__meta_kubernetes_endpoints_label_app_kubernetes_io_name]
-    target_label: app
-  - regex: (exported_namespace|name|status)
-    action: labelkeep
-  # Add cluster_id label.
-  - target_label: cluster_id
-    replacement: eks-sample
-  # Add cluster_type label.
-  - target_label: cluster_type
-    replacement: workload_cluster
-  # Add provider label.
-  - target_label: provider
-    replacement: eks
   # Add installation label.
   - target_label: installation
     replacement: test-installation
-  # Add priority label.
-  - target_label: service_priority
-    replacement: highest
   # Add organization label.
   - target_label: organization
     replacement: my-organization
-  # Add customer label.
-  - target_label: customer
-    replacement: pmo
+  # Add pipeline label.
+  - target_label: pipeline
+    replacement: test-pipeline
+  # Add provider label.
+  - target_label: provider
+    replacement: eks
+  # Add provider label.
+  - target_label: region
+    replacement: eu-central-1
+  # Add priority label.
+  - target_label: service_priority
+    replacement: highest

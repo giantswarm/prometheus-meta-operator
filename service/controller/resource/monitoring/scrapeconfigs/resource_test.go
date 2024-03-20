@@ -121,6 +121,8 @@ func TestAWSScrapeconfigs(t *testing.T) {
 				},
 				Customer:     "pmo",
 				K8sClient:    k8sClient,
+				Pipeline:     "test-pipeline",
+				Region:       "eu-central-1",
 				Vault:        "vault1.some-installation.test",
 				Installation: "test-installation",
 				Logger:       logger,
@@ -130,112 +132,6 @@ func TestAWSScrapeconfigs(t *testing.T) {
 	}
 
 	outputDir, err := filepath.Abs("./test/aws")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	c := unittest.Config{
-		Flavor:               "vintage",
-		OutputDir:            outputDir,
-		T:                    t,
-		TestFunc:             testFunc,
-		TestFuncReturnsBytes: true,
-		Update:               *update,
-	}
-	runner, err := unittest.NewRunner(c)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	err = runner.Run()
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestAzureScrapeconfigs(t *testing.T) {
-	var err error
-	var logger micrologger.Logger
-	{
-		c := micrologger.Config{}
-
-		logger, err = micrologger.New(c)
-		if err != nil {
-			t.Fatal(err)
-		}
-	}
-
-	var testFunc unittest.TestFunc
-	{
-		path := path.Join(unittest.ProjectRoot(), templatePath)
-
-		var client client.Client
-		{
-			schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-				apiextensionsv1.AddToScheme,
-				appsv1alpha1.AddToScheme,
-			})
-
-			err := schemeBuilder.AddToScheme(scheme.Scheme)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			client = fake.NewClientBuilder().
-				WithScheme(scheme.Scheme).
-				WithRuntimeObjects().
-				Build()
-		}
-
-		testFunc = func(v interface{}) (interface{}, error) {
-			testCluster, err := key.ToCluster(v)
-			if err != nil {
-				t.Fatal(err)
-			}
-			var secret runtime.Object
-			{
-				secret = &corev1.Secret{
-					ObjectMeta: metav1.ObjectMeta{
-						Name:      "cluster-certificates",
-						Namespace: key.Namespace(testCluster),
-					},
-					Data: map[string][]byte{
-						"crt": []byte("crt"),
-						"key": []byte("key"),
-					},
-				}
-			}
-
-			var k8sClient k8sclient.Interface
-			{
-				c := k8sclient.ClientsConfig{
-					Logger:        logger,
-					SchemeBuilder: k8sclient.SchemeBuilder(corev1.SchemeBuilder),
-				}
-				k8sClient, err = fakek8sclient.NewClients(c, secret)
-				if err != nil {
-					t.Fatal(err)
-				}
-			}
-
-			config := Config{
-				TemplatePath:       path,
-				OrganizationReader: FakeReader{},
-				Provider: cluster.Provider{
-					Kind:   "azure",
-					Flavor: "vintage",
-				},
-				Customer:     "pmo",
-				K8sClient:    k8sClient,
-				Vault:        "vault1.some-installation.test",
-				Installation: "test-installation",
-				Logger:       logger,
-			}
-			return toData(context.Background(), client, v, config)
-		}
-	}
-
-	outputDir, err := filepath.Abs("./test/azure")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -352,6 +248,8 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 					Kind:   "capz",
 					Flavor: "capi",
 				},
+				Pipeline:     "test-pipeline",
+				Region:       "eu-central-1",
 				Customer:     "pmo",
 				K8sClient:    k8sClient,
 				Vault:        "vault1.some-installation.test",
@@ -479,6 +377,8 @@ func TestGCPScrapeconfigs(t *testing.T) {
 					Kind:   "gcp",
 					Flavor: "capi",
 				},
+				Pipeline:     "test-pipeline",
+				Region:       "eu-central-1",
 				Customer:     "pmo",
 				K8sClient:    k8sClient,
 				Vault:        "vault1.some-installation.test",
@@ -606,6 +506,8 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 					Kind:   "capa",
 					Flavor: "capi",
 				},
+				Pipeline:     "test-pipeline",
+				Region:       "eu-central-1",
 				Customer:     "pmo",
 				K8sClient:    k8sClient,
 				Vault:        "vault1.some-installation.test",
