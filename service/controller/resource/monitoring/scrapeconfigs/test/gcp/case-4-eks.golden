@@ -391,7 +391,7 @@
   metric_relabel_configs:
   # keep only the summary series to avoid storing lots of extra data
   - source_labels: [__name__]
-    regex: policy_report_summary
+    regex: policy_report_result
     action: keep
   relabel_configs:
   - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
