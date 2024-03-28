@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- This PR adds a receiver and a route for the mimir heartbeat. We need to add them here until we use mimir's alertmanager.
+
 ## [4.71.0] - 2024-03-19
 
 ### Added

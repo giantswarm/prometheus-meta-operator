@@ -40,6 +40,7 @@ route:
     - team="atlas"
     - type!="heartbeat"
     - alertname!~"Inhibition.*"
+    - alertname!="Heartbeat"
     continue: false
 
   # Team Celestial Slack

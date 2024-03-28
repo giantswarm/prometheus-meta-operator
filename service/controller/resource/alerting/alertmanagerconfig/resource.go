@@ -51,6 +51,7 @@ type AlertmanagerTemplateData struct {
 	Pipeline     string
 	ProxyURL     string
 	SlackApiURL  string
+	MimirEnabled bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -64,10 +65,10 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:     config.Logger,
 		Name:       Name,
 		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(v, config)
+			return getObjectMeta()
 		},
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
-			return toSecret(v, config)
+			return toSecret(config)
 		},
 		HasChangedFunc: hasChanged,
 	}
@@ -80,15 +81,15 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
+func getObjectMeta() (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      key.AlertmanagerSecretName(),
 		Namespace: key.MonitoringNamespace,
 	}, nil
 }
 
-func toSecret(v interface{}, config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta(v, config)
+func toSecret(config Config) (*corev1.Secret, error) {
+	objectMeta, err := getObjectMeta()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -159,6 +160,7 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 		OpsgenieKey:  config.OpsgenieKey,
 		Pipeline:     config.Pipeline,
 		SlackApiURL:  config.SlackApiURL,
+		MimirEnabled: config.MimirEnabled,
 	}
 
 	if proxyURL != nil {
