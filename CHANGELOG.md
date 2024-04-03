@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.72.0] - 2024-04-03
+
 ### Changed
 
 - This PR adds a receiver and a route for the mimir heartbeat. We need to add them here until we use mimir's alertmanager.
@@ -2538,7 +2540,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.71.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.72.0...HEAD
+[4.72.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.71.0...v4.72.0
 [4.71.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.3...v4.71.0
 [4.70.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.2...v4.70.3
 [4.70.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.1...v4.70.2
