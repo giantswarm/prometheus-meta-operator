@@ -84,6 +84,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 	var err error
 
 	passwordManager := password.SimpleManager{}
+	organizationReader := organization.NewNamespaceReader(config.K8sClient.K8sClient(), config.Installation, config.Provider)
 
 	var namespaceResource resource.Interface
 	{
@@ -237,7 +238,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
-	organizationReader := organization.NewNamespaceReader(config.K8sClient.K8sClient(), config.Installation, config.Provider)
 	var scrapeConfigResource resource.Interface
 	{
 		c := scrapeconfigs.Config{
@@ -337,8 +337,12 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	// This resource creates a the prometheus agent remote write configuration.
+	// This is now managed by the observability-operator when mimir is enabled.
 	var remoteWriteConfigResource resource.Interface
-	{
+	if config.MimirEnabled {
+		remoteWriteConfigResource = noop.New(noop.Config{Logger: config.Logger})
+	} else {
 		c := remotewriteconfig.Config{
 			K8sClient:          config.K8sClient,
 			Logger:             config.Logger,
@@ -358,8 +362,12 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	// This resource creates a the prometheus agent remote write secret.
+	// This is now managed by the observability-operator when mimir is enabled.
 	var remoteWriteSecretResource resource.Interface
-	{
+	if config.MimirEnabled {
+		remoteWriteSecretResource = noop.New(noop.Config{Logger: config.Logger})
+	} else {
 		c := remotewritesecret.Config{
 			K8sClient:       config.K8sClient,
 			Logger:          config.Logger,
@@ -376,8 +384,11 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		}
 	}
 
+	// This resource is not used in latest observability bundle versions.
 	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
-	{
+	if config.MimirEnabled {
+		remoteWriteAPIEndpointConfigSecretResource = noop.New(noop.Config{Logger: config.Logger})
+	} else {
 		c := remotewriteapiendpointconfigsecret.Config{
 			K8sClient:          config.K8sClient,
 			Logger:             config.Logger,
@@ -407,13 +418,13 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		ciliumnetpolResource,
 		heartbeatWebhookConfigResource,
 		alertmanagerWiringResource,
+		scrapeConfigResource,
+		prometheusResource,
 		remoteWriteConfigResource,
 		remoteWriteSecretResource,
 		remoteWriteAPIEndpointConfigSecretResource,
 		remoteWriteIngressAuthResource,
 		remoteWriteIngressResource,
-		scrapeConfigResource,
-		prometheusResource,
 		verticalPodAutoScalerResource,
 		monitoringIngressResource,
 		heartbeatResource,

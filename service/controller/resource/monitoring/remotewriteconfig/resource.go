@@ -96,7 +96,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string, version string, shards int) (*corev1.ConfigMap, error) {
+func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string, shards int) (*corev1.ConfigMap, error) {
 	organization, err := r.organizationReader.Read(ctx, cluster)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -151,7 +151,7 @@ func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, 
 
 // We want to compute the number of shards based on the number of nodes.
 func (r *Resource) getShardsCountForCluster(ctx context.Context, cluster metav1.Object, currentShardCount int) (int, error) {
-	headSeries, err := prometheusquerier.QueryTSDBHeadSeries(key.ClusterID(cluster))
+	headSeries, err := prometheusquerier.QueryTSDBHeadSeries(ctx, key.ClusterID(cluster))
 	if err != nil {
 		// If prometheus is not accessible (for instance, not running because this is a new cluster, we check if prometheus is accessible)
 		var dnsError *net.DNSError
@@ -164,13 +164,13 @@ func (r *Resource) getShardsCountForCluster(ctx context.Context, cluster metav1.
 	return computeShards(currentShardCount, headSeries), nil
 }
 
-func (r *Resource) createConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string, version string) error {
+func (r *Resource) createConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string) error {
 	shards, err := r.getShardsCountForCluster(ctx, cluster, 1)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	configMap, err := r.desiredConfigMap(ctx, cluster, name, namespace, version, shards)
+	configMap, err := r.desiredConfigMap(ctx, cluster, name, namespace, shards)
 	if err != nil {
 		return microerror.Mask(err)
 	}

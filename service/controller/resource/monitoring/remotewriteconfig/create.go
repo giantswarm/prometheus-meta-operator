@@ -29,7 +29,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		// Get the current configmap if it exists.
 		current, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(namespace).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			err = r.createConfigMap(ctx, cluster, name, namespace, r.version)
+			err = r.createConfigMap(ctx, cluster, name, namespace)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -48,7 +48,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			desired, err := r.desiredConfigMap(ctx, cluster, name, namespace, r.version, shards)
+			desired, err := r.desiredConfigMap(ctx, cluster, name, namespace, shards)
 			if err != nil {
 				return microerror.Mask(err)
 			}
