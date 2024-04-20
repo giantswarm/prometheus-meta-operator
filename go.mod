@@ -19,7 +19,7 @@ require (
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.73.2
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.73.2
 	github.com/prometheus/client_golang v1.19.0
-	github.com/prometheus/common v0.52.3
+	github.com/prometheus/common v0.53.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.18.2
 	golang.org/x/crypto v0.22.0
