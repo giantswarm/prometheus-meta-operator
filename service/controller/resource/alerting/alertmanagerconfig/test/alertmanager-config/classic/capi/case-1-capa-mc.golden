@@ -1,6 +1,6 @@
 global:
   resolve_timeout: 5m
-  slack_api_url: https://slack
+  slack_api_url: "https://slack.com/api/chat.postMessage"
 
 templates:
 - '/etc/alertmanager/config/*.tmpl'
@@ -122,6 +122,10 @@ receivers:
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
