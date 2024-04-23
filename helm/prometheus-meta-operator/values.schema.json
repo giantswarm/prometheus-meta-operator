@@ -20,7 +20,7 @@
                 "slack": {
                     "type": "object",
                     "properties": {
-                        "apiURL": {
+                        "apiToken": {
                             "type": "string"
                         }
                     }

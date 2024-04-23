@@ -23,7 +23,7 @@ alertmanager:
   imageRepository: giantswarm/alertmanager
   logLevel: info
   slack:
-    apiURL: ""
+    apiToken: ""
   storage:
     size: 1Gi
   version: "v0.26.0"
