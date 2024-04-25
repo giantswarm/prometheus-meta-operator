@@ -215,7 +215,7 @@ func New(config Config) (*Service, error) {
 
 			GrafanaAddress: config.Viper.GetString(config.Flag.Service.Grafana.Address),
 			OpsgenieKey:    config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
-			SlackApiToken:  config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
+			SlackApiToken:  config.Viper.GetString(config.Flag.Service.Slack.ApiToken),
 
 			MimirEnabled: config.Viper.GetBool(config.Flag.Service.Mimir.Enabled),
 
