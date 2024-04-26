@@ -42,6 +42,7 @@ type ControllerConfig struct {
 	GrafanaAddress string
 	OpsgenieKey    string
 	SlackApiToken  string
+	SlackApiUrl    string
 
 	MimirEnabled bool
 

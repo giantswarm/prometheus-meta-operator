@@ -22,6 +22,9 @@
                     "properties": {
                         "apiToken": {
                             "type": "string"
+                        },
+                        "apiUrl": {
+                            "type": "string"
                         }
                     }
                 },

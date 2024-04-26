@@ -102,7 +102,7 @@ func TestRenderingOfAlertmanagerConfigWithLegacyMonitoring(t *testing.T) {
 			OpsgenieKey:    "opsgenie-key",
 			Proxy:          proxyConfig.ProxyFunc(),
 			Pipeline:       "testing",
-			SlackApiToken:  "some-token",
+			SlackApiUrl:    "https://slack",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
@@ -148,7 +148,7 @@ func TestRenderingOfAlertmanagerConfigWithMimirEnabled(t *testing.T) {
 			MimirEnabled:   true,
 			Proxy:          proxyConfig.ProxyFunc(),
 			Pipeline:       "testing",
-			SlackApiToken:  "some-token",
+			SlackUrl:       "https://slack",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
@@ -157,6 +157,52 @@ func TestRenderingOfAlertmanagerConfigWithMimirEnabled(t *testing.T) {
 
 	for _, flavor := range unittest.ProviderFlavors {
 		outputDir, err := filepath.Abs("./test/alertmanager-config/mimir-enabled/" + flavor)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		c := unittest.Config{
+			OutputDir:            outputDir,
+			T:                    t,
+			TestFunc:             testFunc,
+			TestFuncReturnsBytes: true,
+			Flavor:               flavor,
+			Update:               *update,
+		}
+		runner, err := unittest.NewRunner(c)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		err = runner.Run()
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+}
+
+func TestRenderingOfAlertmanagerConfigSlackToken(t *testing.T) {
+	var testFunc unittest.TestFunc
+	{
+
+		proxyConfig := httpproxy.Config{}
+
+		config := Config{
+			GrafanaAddress: "https://grafana",
+			Installation:   "test-installation",
+			OpsgenieKey:    "opsgenie-key",
+			Proxy:          proxyConfig.ProxyFunc(),
+			Pipeline:       "testing",
+			SlackApiUrl:    "https://slack",
+			SlackApiToken:  "some-token",
+		}
+		testFunc = func(v interface{}) (interface{}, error) {
+			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
+		}
+	}
+
+	for _, flavor := range unittest.ProviderFlavors {
+		outputDir, err := filepath.Abs("./test/alertmanager-config/slack-token/" + flavor)
 		if err != nil {
 			t.Fatal(err)
 		}

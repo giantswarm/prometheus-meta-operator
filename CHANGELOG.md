@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Removed
+### Added
 
-- Remove the `SlackApiUrl` configuration directive and replace it with `SlackApiToken`
+- Add `SlackApiToken` configuration directive.
 
 ## [4.72.0] - 2024-04-03
 
