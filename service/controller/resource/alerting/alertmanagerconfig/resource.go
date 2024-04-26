@@ -158,15 +158,12 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 	}
 
 	d := &AlertmanagerTemplateData{
-		Installation: config.Installation,
-		OpsgenieKey:  config.OpsgenieKey,
-		Pipeline:     config.Pipeline,
-		SlackApiURL:  config.SlackApiURL,
-		MimirEnabled: config.MimirEnabled,
-	}
-
-	if config.SlackApiToken != "" {
-		d.SlackApiToken = config.SlackApiToken
+		Installation:  config.Installation,
+		OpsgenieKey:   config.OpsgenieKey,
+		Pipeline:      config.Pipeline,
+		SlackApiToken: config.SlackApiToken,
+		SlackApiURL:   config.SlackApiURL,
+		MimirEnabled:  config.MimirEnabled,
 	}
 
 	if proxyURL != nil {
