@@ -148,7 +148,7 @@ func TestRenderingOfAlertmanagerConfigWithMimirEnabled(t *testing.T) {
 			MimirEnabled:   true,
 			Proxy:          proxyConfig.ProxyFunc(),
 			Pipeline:       "testing",
-			SlackUrl:       "https://slack",
+			SlackApiUrl:    "https://slack",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
