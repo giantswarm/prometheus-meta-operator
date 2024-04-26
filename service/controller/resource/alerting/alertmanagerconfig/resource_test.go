@@ -102,7 +102,7 @@ func TestRenderingOfAlertmanagerConfigWithLegacyMonitoring(t *testing.T) {
 			OpsgenieKey:    "opsgenie-key",
 			Proxy:          proxyConfig.ProxyFunc(),
 			Pipeline:       "testing",
-			SlackApiUrl:    "https://slack",
+			SlackApiURL:    "https://slack",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
@@ -148,7 +148,7 @@ func TestRenderingOfAlertmanagerConfigWithMimirEnabled(t *testing.T) {
 			MimirEnabled:   true,
 			Proxy:          proxyConfig.ProxyFunc(),
 			Pipeline:       "testing",
-			SlackApiUrl:    "https://slack",
+			SlackApiURL:    "https://slack",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
 			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
@@ -193,7 +193,7 @@ func TestRenderingOfAlertmanagerConfigSlackToken(t *testing.T) {
 			OpsgenieKey:    "opsgenie-key",
 			Proxy:          proxyConfig.ProxyFunc(),
 			Pipeline:       "testing",
-			SlackApiUrl:    "https://slack",
+			SlackApiURL:    "https://slack",
 			SlackApiToken:  "some-token",
 		}
 		testFunc = func(v interface{}) (interface{}, error) {

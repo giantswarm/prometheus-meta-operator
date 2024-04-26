@@ -61,7 +61,7 @@ type resourcesConfig struct {
 	GrafanaAddress string
 	OpsgenieKey    string
 	SlackApiToken  string
-	SlackApiUrl    string
+	SlackApiURL    string
 
 	MimirEnabled bool
 
@@ -141,7 +141,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Pipeline:       config.Pipeline,
 			Proxy:          config.Proxy,
 			SlackApiToken:  config.SlackApiToken,
-			SlackApiUrl:    config.SlackApiUrl,
+			SlackApiURL:    config.SlackApiURL,
 		}
 
 		alertmanagerConfigResource, err = alertmanagerconfig.New(c)

@@ -7,7 +7,7 @@ global:
 [[- if .SlackApiToken ]]
   slack_api_url: "https://slack.com/api/chat.postMessage"
 [[- else ]]
-  slack_api_url: [[ .SlackApiUrl ]]
+  slack_api_url: [[ .SlackApiURL ]]
 [[- end ]]
 
 templates:

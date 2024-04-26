@@ -23,7 +23,7 @@
                         "apiToken": {
                             "type": "string"
                         },
-                        "apiUrl": {
+                        "apiURL": {
                             "type": "string"
                         }
                     }

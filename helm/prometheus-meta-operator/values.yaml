@@ -24,7 +24,7 @@ alertmanager:
   logLevel: info
   slack:
     apiToken: ""
-    apiUrl: ""
+    apiURL: ""
   storage:
     size: 1Gi
   version: "v0.26.0"

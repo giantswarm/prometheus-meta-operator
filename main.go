@@ -141,7 +141,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Security.RestrictedAccess.Subnets, "", "List of subnets to restrict the access to.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiToken, "", "Slack api token.")
-	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiUrl, "", "Slack api url.")
+	daemonCommand.PersistentFlags().String(f.Service.Slack.ApiURL, "", "Slack api url.")
 
 	daemonCommand.PersistentFlags().String(f.Service.Vault.Host, "", "Host used to connect to Vault.")
 
