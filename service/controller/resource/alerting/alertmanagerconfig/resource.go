@@ -161,8 +161,8 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 		Installation: config.Installation,
 		OpsgenieKey:  config.OpsgenieKey,
 		Pipeline:     config.Pipeline,
-		MimirEnabled: config.MimirEnabled,
 		SlackApiURL:  config.SlackApiURL,
+		MimirEnabled: config.MimirEnabled,
 	}
 
 	if config.SlackApiToken != "" {
