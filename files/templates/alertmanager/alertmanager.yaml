@@ -226,6 +226,10 @@ receivers:
   [[- else ]]
   - channel: '#alert-atlas-test'
   [[- end ]]
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -253,6 +257,10 @@ receivers:
   [[- else ]]
   - channel: '#alert-phoenix-test'
   [[- end ]]
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -280,6 +288,10 @@ receivers:
   [[- else ]]
   - channel: '#alert-bigmac-test'
   [[- end ]]
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -307,6 +319,10 @@ receivers:
   [[- else ]]
   - channel: '#alert-rocket-test'
   [[- end ]]
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -330,6 +346,10 @@ receivers:
 - name: team_shield_slack
   slack_configs:
   - channel: '#alert-shield'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -357,6 +377,10 @@ receivers:
   [[- else ]]
   - channel: '#alert-turtles-test'
   [[- end ]]
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -380,6 +404,10 @@ receivers:
 - name: team_tinkerers_slack
   slack_configs:
   - channel: '#alert-tinkerers'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -403,6 +431,10 @@ receivers:
 - name: team_honeybadger_slack
   slack_configs:
   - channel: '#alert-honeybadger'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
@@ -435,6 +467,10 @@ receivers:
   [[- else ]]
   - channel: '#alert-test-[[ .Installation ]]'
   [[- end ]]
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: [[ .SlackApiToken ]]
     send_resolved: true
     actions:
     - type: button
