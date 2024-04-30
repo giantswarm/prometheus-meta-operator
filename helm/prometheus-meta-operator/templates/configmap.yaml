@@ -42,6 +42,7 @@ data:
         version: {{ .Values.prometheus.version }}
         {{- end }}
       slack:
+        apiToken: {{ .Values.alertmanager.slack.apiToken }}
         apiURL: {{ .Values.alertmanager.slack.apiURL }}
       grafana:
         address: {{ .Values.grafana.address }}

@@ -36,6 +36,7 @@ type Config struct {
 	OpsgenieKey    string
 	Pipeline       string
 	Proxy          func(reqURL *url.URL) (*url.URL, error)
+	SlackApiToken  string
 	SlackApiURL    string
 }
 
@@ -46,12 +47,13 @@ type NotificationTemplateData struct {
 }
 
 type AlertmanagerTemplateData struct {
-	Installation string
-	OpsgenieKey  string
-	Pipeline     string
-	ProxyURL     string
-	SlackApiURL  string
-	MimirEnabled bool
+	Installation  string
+	OpsgenieKey   string
+	Pipeline      string
+	ProxyURL      string
+	SlackApiToken string
+	SlackApiURL   string
+	MimirEnabled  bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -156,11 +158,12 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 	}
 
 	d := &AlertmanagerTemplateData{
-		Installation: config.Installation,
-		OpsgenieKey:  config.OpsgenieKey,
-		Pipeline:     config.Pipeline,
-		SlackApiURL:  config.SlackApiURL,
-		MimirEnabled: config.MimirEnabled,
+		Installation:  config.Installation,
+		OpsgenieKey:   config.OpsgenieKey,
+		Pipeline:      config.Pipeline,
+		SlackApiToken: config.SlackApiToken,
+		SlackApiURL:   config.SlackApiURL,
+		MimirEnabled:  config.MimirEnabled,
 	}
 
 	if proxyURL != nil {
