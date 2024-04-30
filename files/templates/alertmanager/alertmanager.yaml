@@ -204,6 +204,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -237,6 +240,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -270,6 +276,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -303,6 +312,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -336,6 +348,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -365,6 +380,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -398,6 +416,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -427,6 +448,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -456,6 +480,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:
@@ -494,6 +521,9 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     [[- end ]]
     send_resolved: true
     actions:

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Ensure proxy url is set when needed within slack_configs
+
 ## [4.73.0] - 2024-04-30
 
 ### Changed
