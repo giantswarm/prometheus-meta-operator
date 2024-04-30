@@ -60,6 +60,7 @@ type resourcesConfig struct {
 
 	GrafanaAddress string
 	OpsgenieKey    string
+	SlackApiToken  string
 	SlackApiURL    string
 
 	MimirEnabled bool
@@ -139,6 +140,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			OpsgenieKey:    config.OpsgenieKey,
 			Pipeline:       config.Pipeline,
 			Proxy:          config.Proxy,
+			SlackApiToken:  config.SlackApiToken,
 			SlackApiURL:    config.SlackApiURL,
 		}
 

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `SlackApiToken` configuration directive.
+
 ## [4.72.0] - 2024-04-03
 
 ### Changed

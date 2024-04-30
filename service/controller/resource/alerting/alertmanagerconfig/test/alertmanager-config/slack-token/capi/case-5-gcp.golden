@@ -1,14 +1,6 @@
 global:
   resolve_timeout: 5m
-[[- if .ProxyURL ]]
-  http_config:
-    proxy_url:  [[ .ProxyURL ]]
-[[- end ]]
-[[- if .SlackApiToken ]]
   slack_api_url: "https://slack.com/api/chat.postMessage"
-[[- else ]]
-  slack_api_url: [[ .SlackApiURL ]]
-[[- end ]]
 
 templates:
 - '/etc/alertmanager/config/*.tmpl'
@@ -21,51 +13,6 @@ route:
   receiver: root
 
   routes:
-  [[- if .MimirEnabled ]]
-  - receiver: heartbeat
-    matchers:
-    - alertname="Heartbeat"
-    # TODO(@team-atlas): This label is needed for now because we support legacy and new heartbeat alerts. Lets remove it when we remove https://github.com/giantswarm/prometheus-rules/pull/1094/files#diff-2cc8f3328e242b6c86769bfb52b286c7146e074dd244ebb76a0025c838f33d0fR21
-    - type="mimir-heartbeat"
-    continue: true
-    group_wait: 30s
-    group_interval: 30s
-    repeat_interval: 15m
-  [[- end ]]
-  [[- if eq .Pipeline "stable-testing" ]]
-  - receiver: blackhole
-    matchers:
-    - cluster_type="workload_cluster"
-    continue: false
-  - receiver: blackhole
-    matchers:
-    - cluster_id=~"t-.*"
-    continue: false
-  - receiver: blackhole
-    matchers:
-    - alertname=~"WorkloadClusterApp.*"
-    continue: false
-  - receiver: blackhole
-    matchers:
-    - alertname="PrometheusMetaOperatorReconcileErrors"
-    continue: false
-  - receiver: blackhole
-    matchers:
-    - alertname="ClusterUnhealthyPhase"
-    continue: false
-  - receiver: blackhole
-    matchers:
-    - alertname="ClusterUnhealthyPhase"
-    - name=~"t-.*"
-    continue: false
-  # We don't want to get alerts by workload cluster apps that are failing.
-  # We select those by checking if the App CR is in a namespace starting with 'org-'.
-  - receiver: blackhole
-    matchers:
-    - alertname="ManagementClusterAppFailed"
-    - namespace=~"org-.*"
-    continue: false
-  [[- end ]]
 
   # Falco noise Slack
   - receiver: falco_noise_slack
@@ -89,11 +36,7 @@ route:
   # Team Atlas Slack
   - receiver: team_atlas_slack
     matchers:
-    [[- if eq .Pipeline "stable" ]]
-    - severity="notify"
-    [[- else ]]
     - severity=~"page|notify"
-    [[- end ]]
     - team="atlas"
     - type!="heartbeat"
     - alertname!~"Inhibition.*"
@@ -176,35 +119,13 @@ route:
 receivers:
 - name: root
 
-[[- if .MimirEnabled ]]
-- name: heartbeat
-  webhook_configs:
-  - send_resolved: false
-    http_config:
-      authorization:
-        type: GenieKey
-        credentials: [[ .OpsgenieKey ]]
-      follow_redirects: true
-      enable_http2: true
-      [[- if .ProxyURL ]]
-      proxy_url:  [[ .ProxyURL ]]
-      [[- end ]]
-    url: https://api.opsgenie.com/v2/heartbeats/[[ .Installation ]]/ping
-[[- end ]]
-
-[[- if eq .Pipeline "stable-testing" ]]
-- name: blackhole
-[[- end ]]
-
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -227,17 +148,11 @@ receivers:
 
 - name: team_atlas_slack
   slack_configs:
-  [[- if eq .Pipeline "stable" ]]
-  - channel: '#alert-atlas'
-  [[- else ]]
   - channel: '#alert-atlas-test'
-  [[- end ]]
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -260,17 +175,11 @@ receivers:
 
 - name: team_phoenix_slack
   slack_configs:
-  [[- if eq .Pipeline "stable" ]]
-  - channel: '#alert-phoenix'
-  [[- else ]]
   - channel: '#alert-phoenix-test'
-  [[- end ]]
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -293,17 +202,11 @@ receivers:
 
 - name: team_bigmac_slack
   slack_configs:
-  [[- if eq .Pipeline "stable" ]]
-  - channel: '#alert-bigmac'
-  [[- else ]]
   - channel: '#alert-bigmac-test'
-  [[- end ]]
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -326,17 +229,11 @@ receivers:
 
 - name: team_rocket_slack
   slack_configs:
-  [[- if eq .Pipeline "stable" ]]
-  - channel: '#alert-rocket'
-  [[- else ]]
   - channel: '#alert-rocket-test'
-  [[- end ]]
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -360,12 +257,10 @@ receivers:
 - name: team_shield_slack
   slack_configs:
   - channel: '#alert-shield'
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -388,17 +283,11 @@ receivers:
 
 - name: team_turtles_slack
   slack_configs:
-  [[- if eq .Pipeline "stable" ]]
-  - channel: '#alert-turtles'
-  [[- else ]]
   - channel: '#alert-turtles-test'
-  [[- end ]]
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -422,12 +311,10 @@ receivers:
 - name: team_tinkerers_slack
   slack_configs:
   - channel: '#alert-tinkerers'
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -451,12 +338,10 @@ receivers:
 - name: team_honeybadger_slack
   slack_configs:
   - channel: '#alert-honeybadger'
-    [[- if .SlackApiToken ]]
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -479,22 +364,16 @@ receivers:
 
 - name: opsgenie_router
   opsgenie_configs:
-  - api_key: [[ .OpsgenieKey ]]
+  - api_key: opsgenie-key
     tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},{{ (index .Alerts 0).Labels.provider }},{{ (index .Alerts 0).Labels.installation }},{{ (index .Alerts 0).Labels.pipeline }}"
 
 - name: team_ops_slack
   slack_configs:
-  [[- if eq .Pipeline "stable" ]]
-  - channel: '#alert'
-  [[- else ]]
-  - channel: '#alert-test-[[ .Installation ]]'
-  [[- end ]]
-    [[- if .SlackApiToken ]]
+  - channel: '#alert-test-test-installation'
     http_config:
       authorization:
         type: Bearer
-        credentials: [[ .SlackApiToken ]]
-    [[- end ]]
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -524,7 +403,7 @@ inhibit_rules:
 
 - source_matchers:
   - inhibit_kube_state_metrics_down=true
-  - cluster_id=[[ .Installation ]]
+  - cluster_id=test-installation
   target_matchers:
   - cancel_if_mc_kube_state_metrics_down=true
 
