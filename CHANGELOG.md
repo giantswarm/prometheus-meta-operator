@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- To ensure that customers can define their own AlertmanagerConfig CRs, we need to remove the default alertmanager matcher injection (cf. upstream https://github.com/prometheus-operator/prometheus-operator/issues/4033)
+
 ## [4.72.0] - 2024-04-03
 
 ### Changed
