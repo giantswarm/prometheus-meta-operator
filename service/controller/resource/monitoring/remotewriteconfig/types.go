@@ -9,7 +9,7 @@ type PrometheusAgentShardingStrategy struct {
 	ShardScaleDownPercentage float64
 }
 
-// We want to start with 1 prometheus-agent for each 1M time series with a scale down 25% threshold.
+// We want to start with 1 prometheus-agent for each 1M time series with a scale down 20% threshold.
 func (pass PrometheusAgentShardingStrategy) ComputeShards(currentShardCount int, timeSeries float64) int {
 	shardScaleDownThreshold := pass.ShardScaleDownPercentage * pass.ShardScaleUpSeriesCount
 	desiredShardCount := int(math.Ceil(timeSeries / pass.ShardScaleUpSeriesCount))
