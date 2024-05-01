@@ -68,6 +68,8 @@ type Config struct {
 	PrometheusImageRepository    string
 	PrometheusVersion            string
 
+	PrometheusAgentShardingStrategy remotewriteconfig.PrometheusAgentShardingStrategy
+
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
 
@@ -195,6 +197,8 @@ func New(config Config) ([]resource.Interface, error) {
 			Provider:     config.Provider,
 			Region:       config.Region,
 			Version:      config.PrometheusVersion,
+
+			PrometheusAgentShardingStrategy: config.PrometheusAgentShardingStrategy,
 		}
 
 		remoteWriteConfigResource, err = remotewriteconfig.New(c)

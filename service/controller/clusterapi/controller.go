@@ -17,6 +17,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 )
 
 type ControllerConfig struct {
@@ -48,6 +49,8 @@ type ControllerConfig struct {
 	PrometheusScrapeInterval     string
 	PrometheusImageRepository    string
 	PrometheusVersion            string
+
+	PrometheusAgentShardingStrategy remotewriteconfig.PrometheusAgentShardingStrategy
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string

@@ -34,6 +34,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/clusterapi"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/managementcluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/remotewrite"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/monitoring/remotewriteconfig"
 )
 
 // Config represents the configuration used to create a new service.
@@ -147,6 +148,10 @@ func New(config Config) (*Service, error) {
 		Flavor: config.Viper.GetString(config.Flag.Service.Provider.Flavor),
 	}
 
+	var prometheusAgentShardingStrategy = remotewriteconfig.PrometheusAgentShardingStrategy{
+		ShardScaleUpSeriesCount:  config.Viper.GetFloat64(config.Flag.Service.PrometheusAgent.ShardScaleUpSeriesCount),
+		ShardScaleDownPercentage: config.Viper.GetFloat64(config.Flag.Service.PrometheusAgent.ShardScaleDownPercentage),
+	}
 	var proxyConfig = httpproxy.FromEnvironment()
 	var clusterapiController *clusterapi.Controller
 	{
@@ -179,6 +184,8 @@ func New(config Config) (*Service, error) {
 			PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+
+			PrometheusAgentShardingStrategy: prometheusAgentShardingStrategy,
 
 			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
@@ -225,11 +232,13 @@ func New(config Config) (*Service, error) {
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
+			PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
-			RestrictedAccessEnabled:  config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
-			PrometheusScrapeInterval: config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
-			WhitelistedSubnets:       config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+			PrometheusAgentShardingStrategy: prometheusAgentShardingStrategy,
+
+			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
+			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
 
 			ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
 
