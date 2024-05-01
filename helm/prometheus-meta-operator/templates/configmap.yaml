@@ -41,7 +41,7 @@ data:
         {{- if .Values.prometheus.version }}
         version: {{ .Values.prometheus.version }}
         {{- end }}
-      {{- if (.Values.prometheusAgent).shardScaleUpSeriesCount (.Values.prometheusAgent).shardScaleDownPercentage }}
+      {{- if or (.Values.prometheusAgent).shardScaleUpSeriesCount (.Values.prometheusAgent).shardScaleDownPercentage }}
       prometheusAgent:
         {{- if .Values.prometheusAgent.shardScaleUpSeriesCount }}
         shardScaleUpSeriesCount: {{ .Values.prometheusAgent.shardScaleUpSeriesCount }}
