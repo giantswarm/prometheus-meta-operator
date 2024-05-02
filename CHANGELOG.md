@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.73.1] - 2024-05-01
+
 ### Fixed
 
 - Ensure proxy url is set when needed within slack_configs
@@ -2554,7 +2556,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.1...HEAD
+[4.73.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.0...v4.73.1
 [4.73.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.72.0...v4.73.0
 [4.72.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.71.0...v4.72.0
 [4.71.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.3...v4.71.0
