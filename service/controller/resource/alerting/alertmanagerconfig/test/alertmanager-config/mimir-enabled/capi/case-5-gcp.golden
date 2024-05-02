@@ -440,6 +440,12 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
+  - cluster_control_plane_unhealthy=true
+  target_matchers:
+  - cancel_if_cluster_control_plane_unhealthy=true
+  equal: [cluster_id]
+
+- source_matchers:
   - instance_state_not_running=true
   target_matchers:
   - cancel_if_instance_state_not_running=true
