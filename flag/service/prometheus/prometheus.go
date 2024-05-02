@@ -11,3 +11,8 @@ type Prometheus struct {
 	ScrapeInterval          string
 	Version                 string
 }
+
+type PrometheusAgent struct {
+	ShardScaleUpSeriesCount  string
+	ShardScaleDownPercentage string
+}

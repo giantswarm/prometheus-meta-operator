@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Expose prometheus agent sharding strategies as prometheus-meta-operator configuration parameters so we can experiment with the scaling strategies.
+- 
 ## [4.73.1] - 2024-05-01
 
 ### Fixed
