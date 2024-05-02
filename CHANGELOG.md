@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.74.0] - 2024-05-02
+
 ### Changed
 
 - Expose prometheus agent sharding strategies as prometheus-meta-operator configuration parameters so we can experiment with the scaling strategies.
@@ -2560,7 +2562,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.74.0...HEAD
+[4.74.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.1...v4.74.0
 [4.73.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.0...v4.73.1
 [4.73.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.72.0...v4.73.0
 [4.72.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.71.0...v4.72.0
