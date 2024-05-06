@@ -41,6 +41,15 @@ data:
         {{- if .Values.prometheus.version }}
         version: {{ .Values.prometheus.version }}
         {{- end }}
+      {{- if or (.Values.prometheusAgent).shardScaleUpSeriesCount (.Values.prometheusAgent).shardScaleDownPercentage }}
+      prometheusAgent:
+        {{- if .Values.prometheusAgent.shardScaleUpSeriesCount }}
+        shardScaleUpSeriesCount: {{ .Values.prometheusAgent.shardScaleUpSeriesCount }}
+        {{- end }}
+        {{- if .Values.prometheusAgent.shardScaleDownPercentage }}
+        shardScaleDownPercentage: {{ .Values.prometheusAgent.shardScaleDownPercentage }}
+        {{- end }}
+      {{- end }}
       slack:
         apiToken: {{ .Values.alertmanager.slack.apiToken }}
         apiURL: {{ .Values.alertmanager.slack.apiURL }}

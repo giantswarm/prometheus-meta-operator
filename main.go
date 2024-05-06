@@ -134,6 +134,9 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.ImageRepository, "giantswarm/prometheus", "Prometheus container image repository.")
 	daemonCommand.PersistentFlags().String(f.Service.Prometheus.Version, "v2.47.1", "Prometheus container image version.")
 
+	daemonCommand.PersistentFlags().Float64(f.Service.PrometheusAgent.ShardScaleUpSeriesCount, 1_000_000, "Prometheus agent shard scale up series count to know when to add a shard.")
+	daemonCommand.PersistentFlags().Float64(f.Service.PrometheusAgent.ShardScaleDownPercentage, 0.20, "Prometheus agent shard scale down percentage to know when to scale down the number of shards.")
+
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Kind, "", "Provider of the installation. One of aws, azure, kvm.")
 	daemonCommand.PersistentFlags().String(f.Service.Provider.Flavor, "", "Provider flavor. One of capi or vintage.")
 

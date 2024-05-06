@@ -17,15 +17,16 @@ import (
 
 // Service is an intermediate data structure for command line configuration flags.
 type Service struct {
-	Grafana      grafana.Grafana
-	Ingress      ingress.Ingress
-	Installation installation.Installation
-	Kubernetes   kubernetes.Kubernetes
-	Opsgenie     opsgenie.Opsgenie
-	Mimir        mimir.Mimir
-	Prometheus   prometheus.Prometheus
-	Provider     provider.Provider
-	Security     security.Security
-	Slack        slack.Slack
-	Vault        vault.Vault
+	Grafana         grafana.Grafana
+	Ingress         ingress.Ingress
+	Installation    installation.Installation
+	Kubernetes      kubernetes.Kubernetes
+	Opsgenie        opsgenie.Opsgenie
+	Mimir           mimir.Mimir
+	Prometheus      prometheus.Prometheus
+	PrometheusAgent prometheus.PrometheusAgent
+	Provider        provider.Provider
+	Security        security.Security
+	Slack           slack.Slack
+	Vault           vault.Vault
 }
