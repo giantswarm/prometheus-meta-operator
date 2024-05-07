@@ -123,7 +123,7 @@ To be able to ingest metrics without disrupting the workload running in the clus
 
 The default configuration is defined in PMO itself PMO add a new shard every 1M time series present in the WC prometheus running on the management cluster. To avoid scaling down too abruptly, we defined a scale down threshold of 20%.
 
-As this default value was not enough to avoid workload disruption, we added 2 ways to be able to override the scale up series count target and the scale down percentage.
+As this default value was not enough to avoid workload disruptions, we added 2 ways to be able to override the scale up series count target and the scale down percentage.
 
 1. Those values can be configured at the installation level by overriding the following values:
 
