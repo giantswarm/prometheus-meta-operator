@@ -114,3 +114,28 @@ The retention size of prometheis will be set according to the volume size: we ap
 * `large` (200 Gi) => retentionSize = 180Gi
 
 Check [Prometheus Volume Sizing](https://docs.giantswarm.io/getting-started/observability/monitoring/prometheus/volume-size/) for more details.
+
+# Prometheus Agent Sharding
+
+Prometheus Meta Operator configures the Prometheus Agent instances running in workload clusters (pre-mimir setup cf. observability-operator).
+
+To be able to ingest metrics without disrupting the workload running in the clusters, Prometheus Meta Operator can shard the number of running Prometheus Agents.
+
+The default configuration is defined in PMO itself PMO add a new shard every 1M time series present in the WC prometheus running on the management cluster. To avoid scaling down too abruptly, we defined a scale down threshold of 20%.
+
+As this default value was not enough to avoid workload disruption, we added 2 ways to be able to override the scale up series count target and the scale down percentage.
+
+1. Those values can be configured at the installation level by overriding the following values:
+
+```yaml
+prometheusAgent:
+  shardScaleUpSeriesCount: 1000000
+  shardScaleDownPercentage: 0.20
+```
+
+2. Those values can also be set per cluster using the following cluster annotations:
+
+```yaml
+monitoring.giantswarm.io/prometheus-agent-scale-up-series-count: 1000000
+monitoring.giantswarm.io/prometheus-agent-scale-down-percentage: 0.20
+```
