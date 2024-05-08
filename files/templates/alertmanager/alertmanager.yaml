@@ -677,17 +677,6 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
-  - apiserver_down=true
-  target_matchers:
-  - cancel_if_apiserver_down=true
-  equal: [cluster_id]
-
-- source_matchers:
-  - apiserver_down=true
-  target_matchers:
-  - cancel_if_any_apiserver_down=true
-
-- source_matchers:
   - outside_working_hours=true
   target_matchers:
   - cancel_if_outside_working_hours=true
