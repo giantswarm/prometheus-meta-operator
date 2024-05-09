@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed `apiserver_down` inhibition.
 
+### Fixed
+
+- Use `kubernetes.io/tls` type for TLS secrets.
+
 ## [4.74.0] - 2024-05-02
 
 ### Changed
