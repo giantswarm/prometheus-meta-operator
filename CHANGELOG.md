@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Add `cluster_control_plane_unhealthy` inhibition.
+- Allow Prometheus Agent Sharding strategy to be overridden per cluster.
 
 ### Removed
 

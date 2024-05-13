@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"strconv"
 	"strings"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -16,6 +17,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheus/agent"
 )
 
 const (
@@ -251,6 +253,25 @@ func PrometheusPort() int32 {
 
 func ClusterID(cluster metav1.Object) string {
 	return cluster.GetName()
+}
+
+func GetClusterShardingStrategy(cluster metav1.Object) (*agent.ShardingStrategy, error) {
+	var err error
+	var scaleUpSeriesCount, scaleDownPercentage float64
+	if value, ok := cluster.GetAnnotations()["monitoring.giantswarm.io/prometheus-agent-scale-up-series-count"]; ok {
+		if scaleUpSeriesCount, err = strconv.ParseFloat(value, 64); err != nil {
+			return nil, err
+		}
+	}
+	if value, ok := cluster.GetAnnotations()["monitoring.giantswarm.io/prometheus-agent-scale-down-percentage"]; ok {
+		if scaleDownPercentage, err = strconv.ParseFloat(value, 64); err != nil {
+			return nil, err
+		}
+	}
+	return &agent.ShardingStrategy{
+		ScaleUpSeriesCount:  scaleUpSeriesCount,
+		ScaleDownPercentage: scaleDownPercentage,
+	}, nil
 }
 
 func Heartbeat() string {
