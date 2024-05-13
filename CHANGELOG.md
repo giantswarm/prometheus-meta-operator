@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.75.0] - 2024-05-13
+
 ### Added
 
 - Add `cluster_control_plane_unhealthy` inhibition.
@@ -2575,7 +2577,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.74.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.75.0...HEAD
+[4.75.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.74.0...v4.75.0
 [4.74.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.1...v4.74.0
 [4.73.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.0...v4.73.1
 [4.73.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.72.0...v4.73.0
