@@ -43,7 +43,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 
-			shards, err := r.getShardsCountForCluster(cluster, currentShards)
+			shards, err := r.getShardsCountForCluster(ctx, cluster, currentShards)
 			if err != nil {
 				return microerror.Mask(err)
 			}
