@@ -421,6 +421,17 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
+  - cluster_control_plane_unhealthy=true
+  target_matchers:
+  - cancel_if_cluster_control_plane_unhealthy=true
+  equal: [cluster_id]
+
+- source_matchers:
+  - cluster_control_plane_unhealthy=true
+  target_matchers:
+  - cancel_if_any_cluster_control_plane_unhealthy=true
+
+- source_matchers:
   - instance_state_not_running=true
   target_matchers:
   - cancel_if_instance_state_not_running=true
@@ -473,17 +484,6 @@ inhibit_rules:
   target_matchers:
   - cancel_if_control_plane_node_down=true
   equal: [cluster_id]
-
-- source_matchers:
-  - apiserver_down=true
-  target_matchers:
-  - cancel_if_apiserver_down=true
-  equal: [cluster_id]
-
-- source_matchers:
-  - apiserver_down=true
-  target_matchers:
-  - cancel_if_any_apiserver_down=true
 
 - source_matchers:
   - outside_working_hours=true

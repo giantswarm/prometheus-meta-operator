@@ -11,6 +11,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Remove prometheus remote write agent configuration when mimir is enabled.
 
+## [4.75.0] - 2024-05-13
+
+### Added
+
+- Add `cluster_control_plane_unhealthy` inhibition.
+- Allow Prometheus Agent Sharding strategy to be overridden per cluster.
+
+### Removed
+
+- Removed `apiserver_down` inhibition.
+
+### Fixed
+
+- Use `kubernetes.io/tls` type for TLS secrets.
+
+## [4.74.0] - 2024-05-02
+
+### Changed
+
+- Expose prometheus agent sharding strategies as prometheus-meta-operator configuration parameters so we can experiment with the scaling strategies.
+
+## [4.73.1] - 2024-05-01
+
+### Fixed
+
+- Ensure proxy url is set when needed within slack_configs
+
+## [4.73.0] - 2024-04-30
+
+### Changed
+
+- To ensure that customers can define their own AlertmanagerConfig CRs, we need to remove the default alertmanager matcher injection (cf. upstream https://github.com/prometheus-operator/prometheus-operator/issues/4033)
+
+### Added
+
+- Add `SlackApiToken` configuration directive.
+
 ## [4.72.0] - 2024-04-03
 
 ### Changed
@@ -2544,7 +2581,11 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.72.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.75.0...HEAD
+[4.75.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.74.0...v4.75.0
+[4.74.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.1...v4.74.0
+[4.73.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.73.0...v4.73.1
+[4.73.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.72.0...v4.73.0
 [4.72.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.71.0...v4.72.0
 [4.71.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.3...v4.71.0
 [4.70.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.70.2...v4.70.3

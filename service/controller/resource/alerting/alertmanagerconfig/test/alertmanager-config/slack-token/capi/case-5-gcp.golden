@@ -1,6 +1,6 @@
 global:
   resolve_timeout: 5m
-  slack_api_url: https://slack
+  slack_api_url: "https://slack.com/api/chat.postMessage"
 
 templates:
 - '/etc/alertmanager/config/*.tmpl'
@@ -13,15 +13,6 @@ route:
   receiver: root
 
   routes:
-  - receiver: heartbeat
-    matchers:
-    - alertname="Heartbeat"
-    # TODO(@team-atlas): This label is needed for now because we support legacy and new heartbeat alerts. Lets remove it when we remove https://github.com/giantswarm/prometheus-rules/pull/1094/files#diff-2cc8f3328e242b6c86769bfb52b286c7146e074dd244ebb76a0025c838f33d0fR21
-    - type="mimir-heartbeat"
-    continue: true
-    group_wait: 30s
-    group_interval: 30s
-    repeat_interval: 15m
 
   # Falco noise Slack
   - receiver: falco_noise_slack
@@ -127,20 +118,14 @@ route:
 
 receivers:
 - name: root
-- name: heartbeat
-  webhook_configs:
-  - send_resolved: false
-    http_config:
-      authorization:
-        type: GenieKey
-        credentials: opsgenie-key
-      follow_redirects: true
-      enable_http2: true
-    url: https://api.opsgenie.com/v2/heartbeats/test-installation/ping
 
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -164,6 +149,10 @@ receivers:
 - name: team_atlas_slack
   slack_configs:
   - channel: '#alert-atlas-test'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -187,6 +176,10 @@ receivers:
 - name: team_phoenix_slack
   slack_configs:
   - channel: '#alert-phoenix-test'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -210,6 +203,10 @@ receivers:
 - name: team_bigmac_slack
   slack_configs:
   - channel: '#alert-bigmac-test'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -233,6 +230,10 @@ receivers:
 - name: team_rocket_slack
   slack_configs:
   - channel: '#alert-rocket-test'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -256,6 +257,10 @@ receivers:
 - name: team_shield_slack
   slack_configs:
   - channel: '#alert-shield'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -279,6 +284,10 @@ receivers:
 - name: team_turtles_slack
   slack_configs:
   - channel: '#alert-turtles-test'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -302,6 +311,10 @@ receivers:
 - name: team_tinkerers_slack
   slack_configs:
   - channel: '#alert-tinkerers'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -325,6 +338,10 @@ receivers:
 - name: team_honeybadger_slack
   slack_configs:
   - channel: '#alert-honeybadger'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button
@@ -353,6 +370,10 @@ receivers:
 - name: team_ops_slack
   slack_configs:
   - channel: '#alert-test-test-installation'
+    http_config:
+      authorization:
+        type: Bearer
+        credentials: some-token
     send_resolved: true
     actions:
     - type: button

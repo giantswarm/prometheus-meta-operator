@@ -15,6 +15,7 @@ import (
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheus/agent"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheusquerier"
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
@@ -35,6 +36,8 @@ type Config struct {
 	Provider     cluster.Provider
 	Region       string
 	Version      string
+
+	ShardingStrategy agent.ShardingStrategy
 }
 
 type Resource struct {
@@ -48,6 +51,8 @@ type Resource struct {
 	provider     cluster.Provider
 	region       string
 	version      string
+
+	shardingStrategy agent.ShardingStrategy
 }
 
 func New(config Config) (*Resource, error) {
@@ -87,6 +92,8 @@ func New(config Config) (*Resource, error) {
 		provider:     config.Provider,
 		region:       config.Region,
 		version:      config.Version,
+
+		shardingStrategy: config.ShardingStrategy,
 	}
 
 	return r, nil
@@ -150,22 +157,28 @@ func (r *Resource) desiredConfigMap(ctx context.Context, cluster metav1.Object, 
 }
 
 // We want to compute the number of shards based on the number of nodes.
-func (r *Resource) getShardsCountForCluster(ctx context.Context, cluster metav1.Object, currentShardCount int) (int, error) {
-	headSeries, err := prometheusquerier.QueryTSDBHeadSeries(ctx, key.ClusterID(cluster))
+func (r *Resource) getShardsCountForCluster(cluster metav1.Object, currentShardCount int) (int, error) {
+	clusterShardingStrategy, err := key.GetClusterShardingStrategy(cluster)
+	if err != nil {
+		return 0, microerror.Mask(err)
+	}
+
+	shardingStrategy := r.shardingStrategy.Merge(clusterShardingStrategy)
+	headSeries, err := prometheusquerier.QueryTSDBHeadSeries(key.ClusterID(cluster))
 	if err != nil {
 		// If prometheus is not accessible (for instance, not running because this is a new cluster, we check if prometheus is accessible)
 		var dnsError *net.DNSError
 		if errors.As(err, &dnsError) {
-			return computeShards(currentShardCount, 1), nil
+			return shardingStrategy.ComputeShards(currentShardCount, 1), nil
 		}
 
 		return 0, microerror.Mask(err)
 	}
-	return computeShards(currentShardCount, headSeries), nil
+	return shardingStrategy.ComputeShards(currentShardCount, headSeries), nil
 }
 
-func (r *Resource) createConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string) error {
-	shards, err := r.getShardsCountForCluster(ctx, cluster, 1)
+func (r *Resource) createConfigMap(ctx context.Context, cluster metav1.Object, name string, namespace string, version string) error {
+	shards, err := r.getShardsCountForCluster(cluster, 1)
 	if err != nil {
 		return microerror.Mask(err)
 	}

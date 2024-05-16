@@ -31,6 +31,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/project"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheus/agent"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/clusterapi"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/managementcluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/remotewrite"
@@ -147,6 +148,10 @@ func New(config Config) (*Service, error) {
 		Flavor: config.Viper.GetString(config.Flag.Service.Provider.Flavor),
 	}
 
+	var shardingStrategy = agent.ShardingStrategy{
+		ScaleUpSeriesCount:  config.Viper.GetFloat64(config.Flag.Service.PrometheusAgent.ShardScaleUpSeriesCount),
+		ScaleDownPercentage: config.Viper.GetFloat64(config.Flag.Service.PrometheusAgent.ShardScaleDownPercentage),
+	}
 	var proxyConfig = httpproxy.FromEnvironment()
 	var clusterapiController *clusterapi.Controller
 	{
@@ -179,6 +184,8 @@ func New(config Config) (*Service, error) {
 			PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
+
+			ShardingStrategy: shardingStrategy,
 
 			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
 			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
@@ -215,6 +222,7 @@ func New(config Config) (*Service, error) {
 
 			GrafanaAddress: config.Viper.GetString(config.Flag.Service.Grafana.Address),
 			OpsgenieKey:    config.Viper.GetString(config.Flag.Service.Opsgenie.Key),
+			SlackApiToken:  config.Viper.GetString(config.Flag.Service.Slack.ApiToken),
 			SlackApiURL:    config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
 
 			MimirEnabled: config.Viper.GetBool(config.Flag.Service.Mimir.Enabled),
@@ -224,11 +232,13 @@ func New(config Config) (*Service, error) {
 			PrometheusEvaluationInterval: config.Viper.GetString(config.Flag.Service.Prometheus.EvaluationInterval),
 			PrometheusLogLevel:           config.Viper.GetString(config.Flag.Service.Prometheus.LogLevel),
 			PrometheusImageRepository:    config.Viper.GetString(config.Flag.Service.Prometheus.ImageRepository),
+			PrometheusScrapeInterval:     config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
 			PrometheusVersion:            config.Viper.GetString(config.Flag.Service.Prometheus.Version),
 
-			RestrictedAccessEnabled:  config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
-			PrometheusScrapeInterval: config.Viper.GetString(config.Flag.Service.Prometheus.ScrapeInterval),
-			WhitelistedSubnets:       config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
+			ShardingStrategy: shardingStrategy,
+
+			RestrictedAccessEnabled: config.Viper.GetBool(config.Flag.Service.Security.RestrictedAccess.Enabled),
+			WhitelistedSubnets:      config.Viper.GetString(config.Flag.Service.Security.RestrictedAccess.Subnets),
 
 			ExternalDNS: config.Viper.GetBool(config.Flag.Service.Ingress.ExternalDNS.Enabled),
 

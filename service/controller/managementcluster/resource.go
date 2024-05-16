@@ -16,6 +16,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheus/agent"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerconfig"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
@@ -60,6 +61,7 @@ type resourcesConfig struct {
 
 	GrafanaAddress string
 	OpsgenieKey    string
+	SlackApiToken  string
 	SlackApiURL    string
 
 	MimirEnabled bool
@@ -71,6 +73,8 @@ type resourcesConfig struct {
 	PrometheusScrapeInterval     string
 	PrometheusImageRepository    string
 	PrometheusVersion            string
+
+	ShardingStrategy agent.ShardingStrategy
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
@@ -140,6 +144,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			OpsgenieKey:    config.OpsgenieKey,
 			Pipeline:       config.Pipeline,
 			Proxy:          config.Proxy,
+			SlackApiToken:  config.SlackApiToken,
 			SlackApiURL:    config.SlackApiURL,
 		}
 
@@ -354,6 +359,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Provider:     config.Provider,
 			Region:       config.Region,
 			Version:      config.PrometheusVersion,
+
+			ShardingStrategy: config.ShardingStrategy,
 		}
 
 		remoteWriteConfigResource, err = remotewriteconfig.New(c)

@@ -16,6 +16,7 @@ import (
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/password"
+	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/prometheus/agent"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/alertmanagerwiring"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeat"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/alerting/heartbeatwebhookconfig"
@@ -67,6 +68,8 @@ type Config struct {
 	PrometheusScrapeInterval     string
 	PrometheusImageRepository    string
 	PrometheusVersion            string
+
+	ShardingStrategy agent.ShardingStrategy
 
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
@@ -200,6 +203,8 @@ func New(config Config) ([]resource.Interface, error) {
 			Provider:     config.Provider,
 			Region:       config.Region,
 			Version:      config.PrometheusVersion,
+
+			ShardingStrategy: config.ShardingStrategy,
 		}
 
 		remoteWriteConfigResource, err = remotewriteconfig.New(c)

@@ -19,6 +19,8 @@ spec:
     matchLabels:
       app.kubernetes.io/instance: alertmanager
       app.kubernetes.io/name: alertmanager
+  alertmanagerConfigMatcherStrategy:
+    type: None
   configSecret: alertmanager-config
   externalUrl: {{ .Values.alertmanager.address }}
   image: {{ printf "%s/%s:%s" .Values.registry.domain .Values.alertmanager.imageRepository .Values.alertmanager.version }}
