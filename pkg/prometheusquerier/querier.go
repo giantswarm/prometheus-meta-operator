@@ -13,7 +13,7 @@ import (
 )
 
 // QueryInstant performs an instant query against a Prometheus server.
-func QueryTSDBHeadSeries(ctx context.Context, cluster string) (float64, error) {
+func QueryTSDBHeadSeries(cluster string) (float64, error) {
 	config := api.Config{
 		Address:      fmt.Sprintf("http://prometheus-operated.%s-prometheus.svc:9090/%s", cluster, cluster),
 		RoundTripper: http.DefaultTransport,
@@ -28,7 +28,7 @@ func QueryTSDBHeadSeries(ctx context.Context, cluster string) (float64, error) {
 	// Run query against client.
 	api := v1.NewAPI(c)
 
-	ctx, cancel := context.WithTimeout(ctx, 2*time.Minute)
+	ctx, cancel := context.WithTimeout(context.Background(), 2*time.Minute)
 	val, _, err := api.Query(ctx, "max_over_time(prometheus_tsdb_head_series[6h])", time.Now()) // Ignoring warnings for now.
 	cancel()
 	if err != nil {
