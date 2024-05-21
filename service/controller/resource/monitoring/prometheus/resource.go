@@ -164,22 +164,6 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					},
 					Key: key.PrometheusAdditionalScrapeConfigsName(),
 				},
-				Affinity: &corev1.Affinity{
-					NodeAffinity: &corev1.NodeAffinity{
-						RequiredDuringSchedulingIgnoredDuringExecution: &corev1.NodeSelector{
-							NodeSelectorTerms: []corev1.NodeSelectorTerm{
-								{
-									MatchExpressions: []corev1.NodeSelectorRequirement{
-										{
-											Key:      "node-role.kubernetes.io/control-plane",
-											Operator: corev1.NodeSelectorOpDoesNotExist,
-										},
-									},
-								},
-							},
-						},
-					},
-				},
 				EnableRemoteWriteReceiver: true,
 				ExternalLabels: map[string]string{
 					key.ClusterIDKey:    key.ClusterID(cluster),

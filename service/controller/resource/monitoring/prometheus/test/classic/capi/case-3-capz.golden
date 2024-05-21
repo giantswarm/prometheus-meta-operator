@@ -14,13 +14,6 @@ spec:
   additionalScrapeConfigs:
     key: prometheus-additional.yaml
     name: additional-scrape-configs
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: node-role.kubernetes.io/control-plane
-            operator: DoesNotExist
   apiserverConfig:
     authorization:
       credentialsFile: /etc/prometheus/secrets/cluster-certificates/token
