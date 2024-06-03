@@ -76,7 +76,7 @@ func DefaultRemoteWrite(clusterID string, baseDomain string, password string, in
 		},
 		TLSConfig: promv1.TLSConfig{
 			SafeTLSConfig: promv1.SafeTLSConfig{
-				InsecureSkipVerify: insecureCA,
+				InsecureSkipVerify: &insecureCA,
 			},
 		},
 	}

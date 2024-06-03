@@ -306,6 +306,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		}
 	} else {
 		// Management cluster
+		insecureSkipVerify := true
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
 			Authorization: &promv1.Authorization{
@@ -314,7 +315,7 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 			TLSConfig: &promv1.TLSConfig{
 				CAFile: key.CAFilePath,
 				SafeTLSConfig: promv1.SafeTLSConfig{
-					InsecureSkipVerify: true,
+					InsecureSkipVerify: &insecureSkipVerify,
 				},
 			},
 		}
