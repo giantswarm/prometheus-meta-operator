@@ -290,6 +290,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Logger:       config.Logger,
 			OpsgenieKey:  config.OpsgenieKey,
 			Pipeline:     config.Pipeline,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)
