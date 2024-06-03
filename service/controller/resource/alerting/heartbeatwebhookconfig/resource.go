@@ -9,11 +9,9 @@ import (
 	monitoringv1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1"
 	monitoringv1alpha1 "github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring/v1alpha1"
 	monitoringclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
-	"golang.org/x/net/context"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -26,35 +24,39 @@ type Config struct {
 	Logger       micrologger.Logger
 	Installation string
 	Proxy        func(reqURL *url.URL) (*url.URL, error)
+
+	MimirEnabled bool
 }
 
-func New(config Config) (*generic.Resource, error) {
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.Client.MonitoringV1alpha1().AlertmanagerConfigs(namespace)
-		return wrappedClient{client: c}
+type Resource struct {
+	client       monitoringclient.Interface
+	logger       micrologger.Logger
+	installation string
+	proxy        func(reqURL *url.URL) (*url.URL, error)
+
+	mimirEnabled bool
+}
+
+func New(config Config) (*Resource, error) {
+	if config.Logger == nil {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
+	}
+	if config.Installation == "" {
+		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
 	}
 
-	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
-		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(v)
-		},
-		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
-			return toAlertmanagerConfig(v, config)
-		},
-		HasChangedFunc: hasChanged,
-	}
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
+	r := &Resource{
+		client:       config.Client,
+		logger:       config.Logger,
+		installation: config.Installation,
+		proxy:        config.Proxy,
+		mimirEnabled: config.MimirEnabled,
 	}
 
 	return r, nil
 }
 
-func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
+func (r Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -67,12 +69,12 @@ func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
+func (r Resource) toAlertmanagerConfig(v interface{}) (*monitoringv1alpha1.AlertmanagerConfig, error) {
 	if v == nil {
 		return nil, nil
 	}
 
-	objectMeta, err := getObjectMeta(v)
+	objectMeta, err := r.getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -88,7 +90,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	sendResolved := false
-	urlAddress, err := url.Parse(key.HeartbeatAPI(cluster, config.Installation))
+	urlAddress, err := url.Parse(key.HeartbeatAPI(cluster, r.installation))
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -110,7 +112,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	if err != nil {
 		return nil, err
 	}
-	proxyURL, err := config.Proxy(opsgenieUrl)
+	proxyURL, err := r.proxy(opsgenieUrl)
 	if err != nil {
 		return nil, err
 	}
@@ -119,7 +121,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	}
 
 	receiver := monitoringv1alpha1.Receiver{
-		Name: key.HeartbeatReceiverName(cluster, config.Installation),
+		Name: key.HeartbeatReceiverName(cluster, r.installation),
 		WebhookConfigs: []monitoringv1alpha1.WebhookConfig{
 			{
 				URL:          &address,
@@ -133,10 +135,10 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 		ObjectMeta: objectMeta,
 		Spec: monitoringv1alpha1.AlertmanagerConfigSpec{
 			Route: &monitoringv1alpha1.Route{
-				Receiver: key.HeartbeatReceiverName(cluster, config.Installation),
+				Receiver: key.HeartbeatReceiverName(cluster, r.installation),
 				Matchers: []monitoringv1alpha1.Matcher{
 					{Name: key.ClusterIDKey, Value: key.ClusterID(cluster)},
-					{Name: key.InstallationKey, Value: config.Installation},
+					{Name: key.InstallationKey, Value: r.installation},
 					{Name: key.TypeKey, Value: key.Heartbeat()},
 				},
 				Continue: false,
@@ -154,9 +156,13 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 	return alertmanagerConfig, nil
 }
 
-func hasChanged(current, desired metav1.Object) bool {
+func (r Resource) hasChanged(current, desired metav1.Object) bool {
 	c := current.(*monitoringv1alpha1.AlertmanagerConfig)
 	d := desired.(*monitoringv1alpha1.AlertmanagerConfig)
 
 	return !reflect.DeepEqual(c.Spec, d.Spec)
+}
+
+func (r *Resource) Name() string {
+	return Name
 }

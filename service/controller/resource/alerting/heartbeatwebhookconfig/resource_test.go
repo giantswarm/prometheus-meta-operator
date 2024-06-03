@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/giantswarm/micrologger"
 	"golang.org/x/net/http/httpproxy"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
@@ -12,11 +13,28 @@ import (
 
 var update = flag.Bool("update", false, "update the output file")
 
-func TestAlertmanager(t *testing.T) {
+func TestAlertmanagerConfig(t *testing.T) {
+	var err error
+	var logger micrologger.Logger
+	{
+		c := micrologger.Config{}
+
+		logger, err = micrologger.New(c)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
 	proxyConfig := httpproxy.Config{}
 	config := Config{
 		Proxy:        proxyConfig.ProxyFunc(),
+		Logger:       logger,
 		Installation: "test-installation",
+	}
+
+	resource, err := New(config)
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	for _, flavor := range unittest.ProviderFlavors {
@@ -29,7 +47,7 @@ func TestAlertmanager(t *testing.T) {
 			Flavor:    flavor,
 			T:         t,
 			TestFunc: func(v interface{}) (interface{}, error) {
-				return toAlertmanagerConfig(v, config)
+				return resource.toAlertmanagerConfig(v)
 			},
 			Update: *update,
 		}
