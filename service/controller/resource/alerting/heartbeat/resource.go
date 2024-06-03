@@ -25,6 +25,8 @@ type Config struct {
 	Installation string
 	OpsgenieKey  string
 	Pipeline     string
+
+	MimirEnabled bool
 }
 
 type Resource struct {
@@ -32,6 +34,8 @@ type Resource struct {
 	heartbeatClient *heartbeat.Client
 	installation    string
 	pipeline        string
+
+	mimirEnabled bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -64,6 +68,7 @@ func New(config Config) (*Resource, error) {
 		heartbeatClient: client,
 		installation:    config.Installation,
 		pipeline:        config.Pipeline,
+		mimirEnabled:    config.MimirEnabled,
 	}
 
 	return r, nil

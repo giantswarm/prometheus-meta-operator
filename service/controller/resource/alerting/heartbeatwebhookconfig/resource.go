@@ -39,7 +39,7 @@ func New(config Config) (*generic.Resource, error) {
 		Logger:     config.Logger,
 		Name:       Name,
 		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(v, config)
+			return getObjectMeta(v)
 		},
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toAlertmanagerConfig(v, config)
@@ -54,7 +54,7 @@ func New(config Config) (*generic.Resource, error) {
 	return r, nil
 }
 
-func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
+func getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -72,7 +72,7 @@ func toAlertmanagerConfig(v interface{}, config Config) (metav1.Object, error) {
 		return nil, nil
 	}
 
-	objectMeta, err := getObjectMeta(v, config)
+	objectMeta, err := getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

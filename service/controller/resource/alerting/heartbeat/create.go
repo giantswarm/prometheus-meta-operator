@@ -8,6 +8,11 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
+	if r.mimirEnabled {
+		r.logger.Debugf(ctx, "mimir is enabled, deleting heartbeat if it exists")
+		return r.EnsureDeleted(ctx, obj)
+	}
+
 	desired, err := toHeartbeat(obj, r.installation, r.pipeline)
 	if err != nil {
 		return microerror.Mask(err)

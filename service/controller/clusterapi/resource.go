@@ -363,6 +363,8 @@ func New(config Config) ([]resource.Interface, error) {
 			Installation: config.Installation,
 			OpsgenieKey:  config.OpsgenieKey,
 			Pipeline:     config.Pipeline,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		heartbeatResource, err = heartbeat.New(c)
