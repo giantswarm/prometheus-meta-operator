@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Delete per cluster heartbeats when Mimir is enabled.
+- Delete per cluster heartbeat alertmanager wiring when Mimir is enabled.
 
 ## [4.75.1] - 2024-05-23
 

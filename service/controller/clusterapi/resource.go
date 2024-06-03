@@ -146,6 +146,8 @@ func New(config Config) ([]resource.Interface, error) {
 
 			Installation: config.Installation,
 			Proxy:        config.Proxy,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		heartbeatWebhookConfigResource, err = heartbeatwebhookconfig.New(c)
