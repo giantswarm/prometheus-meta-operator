@@ -1,7 +1,6 @@
 package ingress
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 
@@ -11,7 +10,6 @@ import (
 	networkingv1 "k8s.io/api/networking/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -28,33 +26,31 @@ type Config struct {
 	ExternalDNS             bool
 }
 
-func New(config Config) (*generic.Resource, error) {
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().NetworkingV1().Ingresses(namespace)
-		return wrappedClient{client: c}
-	}
-
-	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
-		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta(v, config)
-		},
-		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
-			return toIngress(v, config)
-		},
-		HasChangedFunc: hasChanged,
-	}
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return r, nil
+type Resource struct {
+	k8sClient               k8sclient.Interface
+	logger                  micrologger.Logger
+	baseDomain              string
+	restrictedAccessEnabled bool
+	whitelistedSubnets      string
+	externalDNS             bool
 }
 
-func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
+func New(config Config) (*Resource, error) {
+	return &Resource{
+		k8sClient:               config.K8sClient,
+		logger:                  config.Logger,
+		baseDomain:              config.BaseDomain,
+		restrictedAccessEnabled: config.RestrictedAccessEnabled,
+		whitelistedSubnets:      config.WhitelistedSubnets,
+		externalDNS:             config.ExternalDNS,
+	}, nil
+}
+
+func (r *Resource) Name() string {
+	return Name
+}
+
+func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -65,13 +61,13 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 		"nginx.ingress.kubernetes.io/auth-url":    "https://$host/oauth2/auth",
 	}
 
-	if config.ExternalDNS {
-		annotations["external-dns.alpha.kubernetes.io/hostname"] = config.BaseDomain
+	if r.externalDNS {
+		annotations["external-dns.alpha.kubernetes.io/hostname"] = r.baseDomain
 		annotations["giantswarm.io/external-dns"] = "managed"
 	}
 
-	if config.RestrictedAccessEnabled {
-		annotations["nginx.ingress.kubernetes.io/whitelist-source-range"] = config.WhitelistedSubnets
+	if r.restrictedAccessEnabled {
+		annotations["nginx.ingress.kubernetes.io/whitelist-source-range"] = r.whitelistedSubnets
 	}
 
 	return metav1.ObjectMeta{
@@ -82,12 +78,12 @@ func getObjectMeta(v interface{}, config Config) (metav1.ObjectMeta, error) {
 	}, nil
 }
 
-func toIngress(v interface{}, config Config) (metav1.Object, error) {
+func (r *Resource) toIngress(v interface{}) (*networkingv1.Ingress, error) {
 	if v == nil {
 		return nil, nil
 	}
 
-	objectMeta, err := getObjectMeta(v, config)
+	objectMeta, err := r.getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -124,7 +120,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 			IngressClassName: &ingressClassName,
 			Rules: []networkingv1.IngressRule{
 				{
-					Host: config.BaseDomain,
+					Host: r.baseDomain,
 					IngressRuleValue: networkingv1.IngressRuleValue{
 						HTTP: &networkingv1.HTTPIngressRuleValue{
 							Paths: []networkingv1.HTTPIngressPath{
@@ -151,7 +147,7 @@ func toIngress(v interface{}, config Config) (metav1.Object, error) {
 	return ingress, nil
 }
 
-func hasChanged(current, desired metav1.Object) bool {
+func (r *Resource) hasChanged(current, desired metav1.Object) bool {
 	c := current.(*networkingv1.Ingress)
 	d := desired.(*networkingv1.Ingress)
 
