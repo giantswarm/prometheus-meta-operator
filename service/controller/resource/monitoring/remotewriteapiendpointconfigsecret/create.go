@@ -16,6 +16,11 @@ import (
 // TODO: Remove this resource when all WC are migrated to V19
 // /////////////////////////////////////////////////////////////
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
+	if r.mimirEnabled {
+		r.logger.Debugf(ctx, "mimir is enabled, deleting")
+		return r.EnsureDeleted(ctx, obj)
+	}
+
 	r.logger.Debugf(ctx, "ensuring prometheus remote write api endpoint secret")
 	{
 		cluster, err := key.ToCluster(obj)
@@ -36,7 +41,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		// Get the current secret if it exists.
 		current, err := r.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			err = r.createSecret(ctx, cluster, name, namespace, password, r.version)
+			err = r.createSecret(ctx, cluster, name, namespace, password)
 			if err != nil {
 				return microerror.Mask(err)
 			}
@@ -45,7 +50,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		if current != nil {
-			desired, err := r.desiredSecret(ctx, cluster, name, namespace, password, r.version)
+			desired, err := r.desiredSecret(ctx, cluster, name, namespace, password)
 			if err != nil {
 				return microerror.Mask(err)
 			}

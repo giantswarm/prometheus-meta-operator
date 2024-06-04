@@ -14,11 +14,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
@@ -64,24 +61,6 @@ func TestAWSScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 
-		var client client.Client
-		{
-			schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-				apiextensionsv1.AddToScheme,
-				appsv1alpha1.AddToScheme,
-			})
-
-			err := schemeBuilder.AddToScheme(scheme.Scheme)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			client = fake.NewClientBuilder().
-				WithScheme(scheme.Scheme).
-				WithRuntimeObjects().
-				Build()
-		}
-
 		testFunc = func(v interface{}) (interface{}, error) {
 			testCluster, err := key.ToCluster(v)
 			if err != nil {
@@ -102,9 +81,18 @@ func TestAWSScrapeconfigs(t *testing.T) {
 
 			var k8sClient k8sclient.Interface
 			{
+				schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+					apiextensionsv1.AddToScheme,
+					appsv1alpha1.AddToScheme,
+				})
+
+				err = schemeBuilder.AddToScheme(scheme.Scheme)
+				if err != nil {
+					t.Fatal(err)
+				}
 				c := k8sclient.ClientsConfig{
 					Logger:        logger,
-					SchemeBuilder: k8sclient.SchemeBuilder(corev1.SchemeBuilder),
+					SchemeBuilder: k8sclient.SchemeBuilder(schemeBuilder),
 				}
 				k8sClient, err = fakek8sclient.NewClients(c, secret)
 				if err != nil {
@@ -113,7 +101,6 @@ func TestAWSScrapeconfigs(t *testing.T) {
 			}
 
 			config := Config{
-				TemplatePath:       path,
 				OrganizationReader: FakeReader{},
 				Provider: cluster.Provider{
 					Kind:   "aws",
@@ -127,7 +114,15 @@ func TestAWSScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			resource.templatePath = path
+
+			return resource.toData(context.Background(), v)
 		}
 	}
 
@@ -167,45 +162,6 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 		}
 	}
 
-	var apps = []runtime.Object{
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.2.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.4.0",
-			},
-		},
-	}
-
-	var client client.Client
-	{
-		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-			apiextensionsv1.AddToScheme,
-			appsv1alpha1.AddToScheme,
-		})
-
-		err = schemeBuilder.AddToScheme(scheme.Scheme)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		client = fake.NewClientBuilder().
-			WithScheme(scheme.Scheme).
-			WithRuntimeObjects(apps...).
-			Build()
-	}
-
 	var testFunc unittest.TestFunc
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
@@ -214,9 +170,27 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			var secret runtime.Object
-			{
-				secret = &corev1.Secret{
+
+			var objects = []runtime.Object{
+				&appsv1alpha1.App{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "baz-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.2.0",
+					},
+				},
+				&appsv1alpha1.App{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "kubernetes-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.4.0",
+					},
+				},
+				&corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
 						Namespace: key.Namespace(testCluster),
@@ -225,16 +199,25 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 						"crt": []byte("crt"),
 						"key": []byte("key"),
 					},
-				}
+				},
 			}
 
 			var k8sClient k8sclient.Interface
 			{
+				schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+					apiextensionsv1.AddToScheme,
+					appsv1alpha1.AddToScheme,
+				})
+
+				err = schemeBuilder.AddToScheme(scheme.Scheme)
+				if err != nil {
+					t.Fatal(err)
+				}
 				c := k8sclient.ClientsConfig{
 					Logger:        logger,
-					SchemeBuilder: k8sclient.SchemeBuilder(corev1.SchemeBuilder),
+					SchemeBuilder: k8sclient.SchemeBuilder(schemeBuilder),
 				}
-				k8sClient, err = fakek8sclient.NewClients(c, secret)
+				k8sClient, err = fakek8sclient.NewClients(c, objects...)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -242,7 +225,6 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider: cluster.Provider{
 					Kind:   "capz",
@@ -256,7 +238,15 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			resource.templatePath = path
+
+			return resource.toData(context.Background(), v)
 		}
 	}
 
@@ -296,45 +286,6 @@ func TestGCPScrapeconfigs(t *testing.T) {
 		}
 	}
 
-	var apps = []runtime.Object{
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.2.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.4.0",
-			},
-		},
-	}
-
-	var client client.Client
-	{
-		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-			apiextensionsv1.AddToScheme,
-			appsv1alpha1.AddToScheme,
-		})
-
-		err = schemeBuilder.AddToScheme(scheme.Scheme)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		client = fake.NewClientBuilder().
-			WithScheme(scheme.Scheme).
-			WithRuntimeObjects(apps...).
-			Build()
-	}
-
 	var testFunc unittest.TestFunc
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
@@ -343,9 +294,27 @@ func TestGCPScrapeconfigs(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			var secret runtime.Object
-			{
-				secret = &corev1.Secret{
+
+			var objects = []runtime.Object{
+				&appsv1alpha1.App{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "baz-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.2.0",
+					},
+				},
+				&appsv1alpha1.App{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "kubernetes-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.4.0",
+					},
+				},
+				&corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
 						Namespace: key.Namespace(testCluster),
@@ -354,16 +323,25 @@ func TestGCPScrapeconfigs(t *testing.T) {
 						"crt": []byte("crt"),
 						"key": []byte("key"),
 					},
-				}
+				},
 			}
 
 			var k8sClient k8sclient.Interface
 			{
+				schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+					apiextensionsv1.AddToScheme,
+					appsv1alpha1.AddToScheme,
+				})
+
+				err = schemeBuilder.AddToScheme(scheme.Scheme)
+				if err != nil {
+					t.Fatal(err)
+				}
 				c := k8sclient.ClientsConfig{
 					Logger:        logger,
-					SchemeBuilder: k8sclient.SchemeBuilder(corev1.SchemeBuilder),
+					SchemeBuilder: k8sclient.SchemeBuilder(schemeBuilder),
 				}
-				k8sClient, err = fakek8sclient.NewClients(c, secret)
+				k8sClient, err = fakek8sclient.NewClients(c, objects...)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -371,7 +349,6 @@ func TestGCPScrapeconfigs(t *testing.T) {
 
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider: cluster.Provider{
 					Kind:   "gcp",
@@ -385,7 +362,15 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			resource.templatePath = path
+
+			return resource.toData(context.Background(), v)
 		}
 	}
 
@@ -425,45 +410,6 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 		}
 	}
 
-	var apps = []runtime.Object{
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.2.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.4.0",
-			},
-		},
-	}
-
-	var client client.Client
-	{
-		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-			apiextensionsv1.AddToScheme,
-			appsv1alpha1.AddToScheme,
-		})
-
-		err = schemeBuilder.AddToScheme(scheme.Scheme)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		client = fake.NewClientBuilder().
-			WithScheme(scheme.Scheme).
-			WithRuntimeObjects(apps...).
-			Build()
-	}
-
 	var testFunc unittest.TestFunc
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
@@ -472,9 +418,27 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			var secret runtime.Object
-			{
-				secret = &corev1.Secret{
+
+			var objects = []runtime.Object{
+				&appsv1alpha1.App{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "baz-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.2.0",
+					},
+				},
+				&appsv1alpha1.App{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "kubernetes-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.4.0",
+					},
+				},
+				&corev1.Secret{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "cluster-certificates",
 						Namespace: key.Namespace(testCluster),
@@ -483,16 +447,25 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 						"crt": []byte("crt"),
 						"key": []byte("key"),
 					},
-				}
+				},
 			}
 
 			var k8sClient k8sclient.Interface
 			{
+				schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
+					apiextensionsv1.AddToScheme,
+					appsv1alpha1.AddToScheme,
+				})
+
+				err = schemeBuilder.AddToScheme(scheme.Scheme)
+				if err != nil {
+					t.Fatal(err)
+				}
 				c := k8sclient.ClientsConfig{
 					Logger:        logger,
-					SchemeBuilder: k8sclient.SchemeBuilder(corev1.SchemeBuilder),
+					SchemeBuilder: k8sclient.SchemeBuilder(schemeBuilder),
 				}
-				k8sClient, err = fakek8sclient.NewClients(c, secret)
+				k8sClient, err = fakek8sclient.NewClients(c, objects...)
 				if err != nil {
 					t.Fatal(err)
 				}
@@ -500,7 +473,6 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
-				TemplatePath:            path,
 				OrganizationReader:      FakeReader{},
 				Provider: cluster.Provider{
 					Kind:   "capa",
@@ -514,7 +486,15 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			resource.templatePath = path
+
+			return resource.toData(context.Background(), v)
 		}
 	}
 

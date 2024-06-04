@@ -22,6 +22,7 @@ type Config struct {
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
 	Proxy            func(reqURL *url.URL) (*url.URL, error)
+	MimirEnabled     bool
 }
 
 type Resource struct {
@@ -29,7 +30,8 @@ type Resource struct {
 	logger           micrologger.Logger
 	prometheusClient promclient.Interface
 
-	Proxy func(reqURL *url.URL) (*url.URL, error)
+	proxy        func(reqURL *url.URL) (*url.URL, error)
+	mimirEnabled bool
 }
 
 type prometheusAndMetadata struct {
@@ -44,7 +46,8 @@ func New(config Config) (*Resource, error) {
 		logger:           config.Logger,
 		prometheusClient: config.PrometheusClient,
 
-		Proxy: config.Proxy,
+		proxy:        config.Proxy,
+		mimirEnabled: config.MimirEnabled,
 	}
 
 	return r, nil

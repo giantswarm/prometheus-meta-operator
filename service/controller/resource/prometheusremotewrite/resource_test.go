@@ -27,7 +27,7 @@ func TestEnsurePrometheusRemoteWrite(t *testing.T) {
 	expectedEmptyPrometheus := expectedPrometheusEmptyRemoteWrite(rw, prom)
 
 	rwAppend := remoteWrite("remotewrite-append", namespace, clusterSelector)
-	expectedPrometheusAppend := expectedPrometheusAppend(rwAppend, *expectedEmptyPrometheus.p.DeepCopy(), false)
+	expectedPrometheusAppend := expectedPrometheusAppend(rwAppend, *expectedEmptyPrometheus.p.DeepCopy())
 
 	rwUpdate := *rw.DeepCopy()
 	rwUpdate.Spec.RemoteWrite.URL = "http://my-proxy-url/needs-update"
@@ -216,7 +216,7 @@ func expectedPrometheusEmptyRemoteWrite(rw pmov1alpha1.RemoteWrite, prom promv1.
 	}{p: &prom, ok: ok}
 }
 
-func expectedPrometheusAppend(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus, proxy bool) struct {
+func expectedPrometheusAppend(rw pmov1alpha1.RemoteWrite, prom promv1.Prometheus) struct {
 	p  *promv1.Prometheus
 	ok bool
 } {

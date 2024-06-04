@@ -1,4 +1,4 @@
-package rbac
+package remotewriteingressauth
 
 import (
 	"context"
@@ -14,27 +14,26 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return r.EnsureDeleted(ctx, obj)
 	}
 
+	desired, err := r.toSecret(ctx, obj)
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
 	r.logger.Debugf(ctx, "creating")
-	{
-		desired, err := toClusterRoleBinding(obj)
+	current, err := r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
+	if apierrors.IsNotFound(err) {
+		current, err = r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
+	}
+
+	if err != nil {
+		return microerror.Mask(err)
+	}
+
+	if r.hasChanged(current, desired) {
+		updateMeta(current, desired)
+		_, err = r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
-		}
-
-		current, err := r.k8sClient.K8sClient().RbacV1().ClusterRoleBindings().Get(ctx, desired.GetName(), metav1.GetOptions{})
-		if apierrors.IsNotFound(err) {
-			current, err = r.k8sClient.K8sClient().RbacV1().ClusterRoleBindings().Create(ctx, desired, metav1.CreateOptions{})
-		}
-		if err != nil {
-			return microerror.Mask(err)
-		}
-
-		if hasClusterRoleBindingChanged(current, desired) {
-			updateMeta(current, desired)
-			_, err = r.k8sClient.K8sClient().RbacV1().ClusterRoleBindings().Update(ctx, desired, metav1.UpdateOptions{})
-			if err != nil {
-				return microerror.Mask(err)
-			}
 		}
 	}
 	r.logger.Debugf(ctx, "created")
@@ -51,8 +50,14 @@ func updateMeta(c, d metav1.Object) {
 	d.SetCreationTimestamp(c.GetCreationTimestamp())
 	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
 	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	d.SetLabels(c.GetLabels())
-	d.SetAnnotations(c.GetAnnotations())
+	// without this, it's impossible to change labels on resources
+	if len(d.GetLabels()) == 0 {
+		d.SetLabels(c.GetLabels())
+	}
+	// without this, it's impossible to change annotations on resources
+	if len(d.GetAnnotations()) == 0 {
+		d.SetAnnotations(c.GetAnnotations())
+	}
 	d.SetFinalizers(c.GetFinalizers())
 	d.SetOwnerReferences(c.GetOwnerReferences())
 	d.SetManagedFields(c.GetManagedFields())

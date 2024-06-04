@@ -19,6 +19,8 @@ func newResources(config ControllerConfig) ([]resource.Interface, error) {
 			PrometheusClient: config.PrometheusClient,
 
 			Proxy: config.Proxy,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		prometheusRemoteWrite, err = prometheusremotewrite.New(c)
@@ -33,6 +35,7 @@ func newResources(config ControllerConfig) ([]resource.Interface, error) {
 			K8sClient:        config.K8sClient,
 			Logger:           config.Logger,
 			PrometheusClient: config.PrometheusClient,
+			MimirEnabled:     config.MimirEnabled,
 		}
 
 		rwSecretResource, err = remotewritesecret.New(c)

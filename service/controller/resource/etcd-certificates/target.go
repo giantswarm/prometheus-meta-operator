@@ -30,7 +30,7 @@ func (sc *secretCopier) ToSecret(ctx context.Context, v interface{}, config Conf
 		return nil, microerror.Mask(err)
 	}
 
-	data, err := sc.getSource(ctx, v, config)
+	data, err := sc.getSource(ctx, config)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

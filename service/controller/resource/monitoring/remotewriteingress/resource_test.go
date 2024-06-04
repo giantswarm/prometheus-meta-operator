@@ -11,8 +11,13 @@ import (
 var update = flag.Bool("update", false, "update the output file")
 
 func TestIngressDefault(t *testing.T) {
+	resource, err := New(Config{BaseDomain: "prometheus"})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	testFunc := func(v interface{}) (interface{}, error) {
-		return toIngress(v, Config{BaseDomain: "prometheus"})
+		return resource.toIngress(v)
 	}
 	for _, flavor := range unittest.ProviderFlavors {
 		outputDir, err := filepath.Abs("./test/default/" + flavor)
@@ -40,8 +45,16 @@ func TestIngressDefault(t *testing.T) {
 }
 
 func TestIngressExternalDNS(t *testing.T) {
+	resource, err := New(Config{
+		BaseDomain:  "prometheus",
+		ExternalDNS: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	testFunc := func(v interface{}) (interface{}, error) {
-		return toIngress(v, Config{BaseDomain: "prometheus", ExternalDNS: true})
+		return resource.toIngress(v)
 	}
 	for _, flavor := range unittest.ProviderFlavors {
 		outputDir, err := filepath.Abs("./test/externaldns/" + flavor)

@@ -92,7 +92,12 @@ func TestPrometheus(t *testing.T) {
 					Version:         "v2.28.1",
 				}
 
-				return toPrometheus(context.Background(), v, config)
+				resource, err := New(config)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				return resource.toPrometheus(context.Background(), v)
 			},
 			Update: *update,
 		}
@@ -181,7 +186,12 @@ func TestPrometheusWithMimirEnabled(t *testing.T) {
 					Version:         "v2.28.1",
 				}
 
-				return toPrometheus(context.Background(), v, config)
+				resource, err := New(config)
+				if err != nil {
+					t.Fatal(err)
+				}
+
+				return resource.toPrometheus(context.Background(), v)
 			},
 			Update: *update,
 		}

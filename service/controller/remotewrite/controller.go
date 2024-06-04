@@ -21,6 +21,8 @@ type ControllerConfig struct {
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
 	Proxy            func(reqURL *url.URL) (*url.URL, error)
+
+	MimirEnabled bool
 }
 
 type Controller struct {

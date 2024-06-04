@@ -9,6 +9,11 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
+	if r.mimirEnabled {
+		r.logger.Debugf(ctx, "mimir is enabled, deleting")
+		return r.EnsureDeleted(ctx, obj)
+	}
+
 	desired, err := r.getObject(ctx, obj)
 	if err != nil {
 		return microerror.Mask(err)

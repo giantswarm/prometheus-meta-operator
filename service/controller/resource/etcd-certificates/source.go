@@ -11,7 +11,7 @@ import (
 )
 
 // getSource retrieves data for the desired Secret.
-func (sc *secretCopier) getSource(ctx context.Context, v interface{}, config Config) (map[string]string, error) {
+func (sc *secretCopier) getSource(ctx context.Context, config Config) (map[string]string, error) {
 	var data map[string]string
 	var err error
 	if key.IsCAPIManagementCluster(config.Provider) {

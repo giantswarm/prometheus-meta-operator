@@ -35,6 +35,8 @@ type Config struct {
 
 	Installation string
 	Provider     cluster.Provider
+
+	MimirEnabled bool
 }
 
 type Resource struct {
@@ -44,6 +46,8 @@ type Resource struct {
 
 	installation string
 	provider     cluster.Provider
+
+	mimirEnabled bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -56,7 +60,6 @@ func New(config Config) (*Resource, error) {
 	if config.Logger == nil {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Logger must not be empty", config)
 	}
-
 	if config.Installation == "" {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
 	}
@@ -67,6 +70,8 @@ func New(config Config) (*Resource, error) {
 		logger:       config.Logger,
 		installation: config.Installation,
 		provider:     config.Provider,
+
+		mimirEnabled: config.MimirEnabled,
 	}
 
 	return r, nil
@@ -145,7 +150,7 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 		},
 	}
 
-	mcObservabilityBundleAppVersion, err := r.getManagementClusterObservabilityBundleAppVersion(ctx, cluster)
+	mcObservabilityBundleAppVersion, err := r.getManagementClusterObservabilityBundleAppVersion(ctx)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -176,7 +181,7 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 
 // We get the management cluster observability bundle app version for the management cluster to know if we need to configure the VPA CR to target the StatefulSet or the Prometheus CR.
 // We need to do this because VPA uses the scale subresource to scale the target object, and the Prometheus CR has a scale subresource since the observability-bundle 1.2.0.
-func (r *Resource) getManagementClusterObservabilityBundleAppVersion(ctx context.Context, cluster metav1.Object) (string, error) {
+func (r *Resource) getManagementClusterObservabilityBundleAppVersion(ctx context.Context) (string, error) {
 	var appName string
 	var appNamespace string
 	if key.IsCAPIManagementCluster(r.provider) {
@@ -284,9 +289,6 @@ func (r *Resource) getMaxMemory(nodes *v1.NodeList) (*resource.Quantity, error) 
 
 	// Memory must be a whole number of bytes
 	q.Set(int64(q.AsApproximateFloat64()))
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
 
 	return q, nil
 }

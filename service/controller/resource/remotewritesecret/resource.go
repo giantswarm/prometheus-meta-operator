@@ -21,12 +21,15 @@ type Config struct {
 	K8sClient        k8sclient.Interface
 	Logger           micrologger.Logger
 	PrometheusClient promclient.Interface
+	MimirEnabled     bool
 }
 
 type Resource struct {
 	k8sClient        k8sclient.Interface
 	logger           micrologger.Logger
 	prometheusClient promclient.Interface
+
+	mimirEnabled bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -34,6 +37,8 @@ func New(config Config) (*Resource, error) {
 		k8sClient:        config.K8sClient,
 		logger:           config.Logger,
 		prometheusClient: config.PrometheusClient,
+
+		mimirEnabled: config.MimirEnabled,
 	}
 
 	return r, nil

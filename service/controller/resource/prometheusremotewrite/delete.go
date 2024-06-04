@@ -26,7 +26,7 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		if err != nil {
 			return microerror.Mask(err)
 		}
-		if prometheusList == nil && len(prometheusList.Items) == 0 {
+		if prometheusList == nil || len(prometheusList.Items) == 0 {
 			r.logger.Debugf(ctx, "no prometheus found, cancel reconciliation")
 			resourcecanceledcontext.SetCanceled(ctx)
 			return nil

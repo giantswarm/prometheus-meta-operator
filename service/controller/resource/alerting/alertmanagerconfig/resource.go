@@ -1,7 +1,6 @@
 package alertmanagerconfig
 
 import (
-	"context"
 	"fmt"
 	"net/url"
 	"path"
@@ -14,7 +13,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -40,6 +38,21 @@ type Config struct {
 	SlackApiURL    string
 }
 
+type Resource struct {
+	k8sClient k8sclient.Interface
+	logger    micrologger.Logger
+
+	baseDomain     string
+	grafanaAddress string
+	installation   string
+	mimirEnabled   bool
+	opsgenieKey    string
+	pipeline       string
+	proxy          func(reqURL *url.URL) (*url.URL, error)
+	slackApiToken  string
+	slackApiURL    string
+}
+
 type NotificationTemplateData struct {
 	GrafanaAddress    string
 	MimirEnabled      bool
@@ -56,52 +69,46 @@ type AlertmanagerTemplateData struct {
 	MimirEnabled  bool
 }
 
-func New(config Config) (*generic.Resource, error) {
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
-		return wrappedClient{client: c}
-	}
+func New(config Config) (*Resource, error) {
+	return &Resource{
+		k8sClient: config.K8sClient,
+		logger:    config.Logger,
 
-	c := generic.Config{
-		ClientFunc: clientFunc,
-		Logger:     config.Logger,
-		Name:       Name,
-		GetObjectMeta: func(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
-			return getObjectMeta()
-		},
-		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
-			return toSecret(config)
-		},
-		HasChangedFunc: hasChanged,
-	}
-
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return r, nil
+		baseDomain:     config.BaseDomain,
+		grafanaAddress: config.GrafanaAddress,
+		installation:   config.Installation,
+		mimirEnabled:   config.MimirEnabled,
+		opsgenieKey:    config.OpsgenieKey,
+		pipeline:       config.Pipeline,
+		proxy:          config.Proxy,
+		slackApiToken:  config.SlackApiToken,
+		slackApiURL:    config.SlackApiURL,
+	}, nil
 }
 
-func getObjectMeta() (metav1.ObjectMeta, error) {
+func (r *Resource) Name() string {
+	return Name
+}
+
+func (r *Resource) getObjectMeta() (metav1.ObjectMeta, error) {
 	return metav1.ObjectMeta{
 		Name:      key.AlertmanagerSecretName(),
 		Namespace: key.MonitoringNamespace,
 	}, nil
 }
 
-func toSecret(config Config) (*corev1.Secret, error) {
-	objectMeta, err := getObjectMeta()
+func (r *Resource) toSecret() (*corev1.Secret, error) {
+	objectMeta, err := r.getObjectMeta()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	notificationTemplate, err := renderNotificationTemplate(templateDirectory, config)
+	notificationTemplate, err := r.renderNotificationTemplate(templateDirectory)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	alertmanagerConfigSecret, err := renderAlertmanagerConfig(templateDirectory, config)
+	alertmanagerConfigSecret, err := r.renderAlertmanagerConfig(templateDirectory)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -118,11 +125,11 @@ func toSecret(config Config) (*corev1.Secret, error) {
 	return secret, nil
 }
 
-func renderNotificationTemplate(templateDirectory string, config Config) ([]byte, error) {
+func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte, error) {
 	templateData := NotificationTemplateData{
-		GrafanaAddress:    config.GrafanaAddress,
-		MimirEnabled:      config.MimirEnabled,
-		PrometheusAddress: fmt.Sprintf("https://%s", config.BaseDomain),
+		GrafanaAddress:    r.grafanaAddress,
+		MimirEnabled:      r.mimirEnabled,
+		PrometheusAddress: fmt.Sprintf("https://%s", r.baseDomain),
 	}
 
 	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, notificationTemplatePath))
@@ -133,8 +140,8 @@ func renderNotificationTemplate(templateDirectory string, config Config) ([]byte
 	return data, nil
 }
 
-func renderAlertmanagerConfig(templateDirectory string, config Config) ([]byte, error) {
-	templateData, err := getTemplateData(config)
+func (r *Resource) renderAlertmanagerConfig(templateDirectory string) ([]byte, error) {
+	templateData, err := r.getTemplateData()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -147,23 +154,23 @@ func renderAlertmanagerConfig(templateDirectory string, config Config) ([]byte, 
 	return data, nil
 }
 
-func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
+func (r *Resource) getTemplateData() (*AlertmanagerTemplateData, error) {
 	opsgenieUrl, err := url.Parse("https://api.opsgenie.com/v2/heartbeats")
 	if err != nil {
 		return nil, err
 	}
-	proxyURL, err := config.Proxy(opsgenieUrl)
+	proxyURL, err := r.proxy(opsgenieUrl)
 	if err != nil {
 		return nil, err
 	}
 
 	d := &AlertmanagerTemplateData{
-		Installation:  config.Installation,
-		OpsgenieKey:   config.OpsgenieKey,
-		Pipeline:      config.Pipeline,
-		SlackApiToken: config.SlackApiToken,
-		SlackApiURL:   config.SlackApiURL,
-		MimirEnabled:  config.MimirEnabled,
+		Installation:  r.installation,
+		OpsgenieKey:   r.opsgenieKey,
+		Pipeline:      r.pipeline,
+		SlackApiToken: r.slackApiToken,
+		SlackApiURL:   r.slackApiURL,
+		MimirEnabled:  r.mimirEnabled,
 	}
 
 	if proxyURL != nil {
@@ -173,7 +180,7 @@ func getTemplateData(config Config) (*AlertmanagerTemplateData, error) {
 	return d, nil
 }
 
-func hasChanged(current, desired metav1.Object) bool {
+func (r *Resource) hasChanged(current, desired metav1.Object) bool {
 	c := current.(*corev1.Secret)
 	d := desired.(*corev1.Secret)
 

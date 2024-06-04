@@ -19,8 +19,12 @@ func TestRenderingOfAlertmanagerNotificationTemplateWithLegacyMonitoring(t *test
 			Installation:   "test-installation",
 			GrafanaAddress: "https://grafana",
 		}
+		resource, err := New(config)
+		if err != nil {
+			t.Fatal(err)
+		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return renderNotificationTemplate(unittest.ProjectRoot(), config)
+			return resource.renderNotificationTemplate(unittest.ProjectRoot())
 		}
 	}
 
@@ -59,8 +63,13 @@ func TestRenderingOfAlertmanagerNotificationTemplateWithMimirEnabled(t *testing.
 			MimirEnabled:   true,
 			BaseDomain:     "prometheus.installation-prometheus.svc",
 		}
+
+		resource, err := New(config)
+		if err != nil {
+			t.Fatal(err)
+		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return renderNotificationTemplate(unittest.ProjectRoot(), config)
+			return resource.renderNotificationTemplate(unittest.ProjectRoot())
 		}
 	}
 
@@ -104,8 +113,12 @@ func TestRenderingOfAlertmanagerConfigWithLegacyMonitoring(t *testing.T) {
 			Pipeline:       "testing",
 			SlackApiURL:    "https://slack",
 		}
+		resource, err := New(config)
+		if err != nil {
+			t.Fatal(err)
+		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
+			return resource.renderAlertmanagerConfig(unittest.ProjectRoot())
 		}
 	}
 
@@ -150,8 +163,12 @@ func TestRenderingOfAlertmanagerConfigWithMimirEnabled(t *testing.T) {
 			Pipeline:       "testing",
 			SlackApiURL:    "https://slack",
 		}
+		resource, err := New(config)
+		if err != nil {
+			t.Fatal(err)
+		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
+			return resource.renderAlertmanagerConfig(unittest.ProjectRoot())
 		}
 	}
 
@@ -196,8 +213,12 @@ func TestRenderingOfAlertmanagerConfigSlackToken(t *testing.T) {
 			SlackApiURL:    "https://slack",
 			SlackApiToken:  "some-token",
 		}
+		resource, err := New(config)
+		if err != nil {
+			t.Fatal(err)
+		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return renderAlertmanagerConfig(unittest.ProjectRoot(), config)
+			return resource.renderAlertmanagerConfig(unittest.ProjectRoot())
 		}
 	}
 

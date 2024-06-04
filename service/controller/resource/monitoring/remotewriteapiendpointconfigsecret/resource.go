@@ -34,6 +34,8 @@ type Config struct {
 	Provider     cluster.Provider
 	Region       string
 	Version      string
+
+	MimirEnabled bool
 }
 
 type Resource struct {
@@ -49,6 +51,8 @@ type Resource struct {
 	provider     cluster.Provider
 	region       string
 	version      string
+
+	mimirEnabled bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -102,7 +106,7 @@ func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) desiredSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password string, version string) (*corev1.Secret, error) {
+func (r *Resource) desiredSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password string) (*corev1.Secret, error) {
 	organization, err := r.organizationReader.Read(ctx, cluster)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -153,8 +157,8 @@ func (r *Resource) desiredSecret(ctx context.Context, cluster metav1.Object, nam
 	}, nil
 }
 
-func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password, version string) error {
-	secret, err := r.desiredSecret(ctx, cluster, name, namespace, password, version)
+func (r *Resource) createSecret(ctx context.Context, cluster metav1.Object, name string, namespace string, password string) error {
+	secret, err := r.desiredSecret(ctx, cluster, name, namespace, password)
 	if err != nil {
 		return microerror.Mask(err)
 	}

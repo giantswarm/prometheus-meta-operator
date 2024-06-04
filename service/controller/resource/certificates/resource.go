@@ -25,6 +25,8 @@ type Config struct {
 	Target    string
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
+
+	MimirEnabled bool
 }
 
 type NameFunc func(metav1.Object) string
@@ -41,6 +43,8 @@ type Resource struct {
 	target    string
 	k8sClient k8sclient.Interface
 	logger    micrologger.Logger
+
+	mimirEnabled bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -64,12 +68,13 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		name:      config.Name,
-		provider:  config.Provider,
-		logger:    config.Logger,
-		k8sClient: config.K8sClient,
-		sources:   config.Sources,
-		target:    config.Target,
+		name:         config.Name,
+		provider:     config.Provider,
+		logger:       config.Logger,
+		k8sClient:    config.K8sClient,
+		sources:      config.Sources,
+		target:       config.Target,
+		mimirEnabled: config.MimirEnabled,
 	}
 
 	return r, nil

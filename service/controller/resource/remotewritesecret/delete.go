@@ -14,6 +14,11 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
+	if r.mimirEnabled {
+		r.logger.Debugf(ctx, "mimir is enabled, deleting")
+		return r.EnsureDeleted(ctx, obj)
+	}
+
 	r.logger.Debugf(ctx, "deleting prometheus remoteWrite secrets")
 	{
 		remoteWrite, err := remotewriteutils.ToRemoteWrite(obj)

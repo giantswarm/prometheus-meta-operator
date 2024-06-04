@@ -87,6 +87,8 @@ func New(config Config) ([]resource.Interface, error) {
 		c := namespace.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		namespaceResource, err = namespace.New(c)
@@ -102,6 +104,9 @@ func New(config Config) ([]resource.Interface, error) {
 			Provider:  config.Provider,
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
+
+			MimirEnabled: config.MimirEnabled,
+
 			Sources: []certificates.CertificateSource{
 				{
 					NameFunc:      key.Namespace,
@@ -130,6 +135,8 @@ func New(config Config) ([]resource.Interface, error) {
 		c := ciliumnetpol.Config{
 			DynamicK8sClient: config.DynamicK8sClient,
 			Logger:           config.Logger,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		ciliumnetpolResource, err = ciliumnetpol.New(c)
@@ -164,6 +171,8 @@ func New(config Config) ([]resource.Interface, error) {
 			PasswordManager: passwordManager,
 			Installation:    config.Installation,
 			Provider:        config.Provider,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		remoteWriteIngressAuthResource, err = remotewriteingressauth.New(c)
@@ -179,6 +188,8 @@ func New(config Config) ([]resource.Interface, error) {
 			Logger:      config.Logger,
 			BaseDomain:  config.PrometheusBaseDomain,
 			ExternalDNS: config.ExternalDNS,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		remoteWriteIngressResource, err = remotewriteingress.New(c)
@@ -237,11 +248,9 @@ func New(config Config) ([]resource.Interface, error) {
 		}
 	}
 
-	// This resource is not used in latest observability bundle versions.
+	// This resource is not used in latest observability bundle versions (after v19)
 	var remoteWriteAPIEndpointConfigSecretResource resource.Interface
-	if config.MimirEnabled {
-		remoteWriteAPIEndpointConfigSecretResource = noop.New(noop.Config{Logger: config.Logger})
-	} else {
+	{
 		c := remotewriteapiendpointconfigsecret.Config{
 			K8sClient:          config.K8sClient,
 			Logger:             config.Logger,
@@ -255,6 +264,8 @@ func New(config Config) ([]resource.Interface, error) {
 			Provider:     config.Provider,
 			Region:       config.Region,
 			Version:      config.PrometheusVersion,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		remoteWriteAPIEndpointConfigSecretResource, err = remotewriteapiendpointconfigsecret.New(c)
@@ -268,6 +279,8 @@ func New(config Config) ([]resource.Interface, error) {
 		c := rbac.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		rbacResource, err = rbac.New(c)
@@ -312,6 +325,8 @@ func New(config Config) ([]resource.Interface, error) {
 			VpaClient:    config.VpaClient,
 			Installation: config.Installation,
 			Provider:     config.Provider,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		verticalPodAutoScalerResource, err = verticalpodautoscaler.New(c)
@@ -334,6 +349,8 @@ func New(config Config) ([]resource.Interface, error) {
 			Provider:                config.Provider,
 			Region:                  config.Region,
 			Installation:            config.Installation,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		scrapeConfigResource, err = scrapeconfigs.New(c)
@@ -350,6 +367,8 @@ func New(config Config) ([]resource.Interface, error) {
 			RestrictedAccessEnabled: config.RestrictedAccessEnabled,
 			WhitelistedSubnets:      config.WhitelistedSubnets,
 			ExternalDNS:             config.ExternalDNS,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		ingressResource, err = ingress.New(c)
@@ -376,13 +395,12 @@ func New(config Config) ([]resource.Interface, error) {
 	}
 
 	var alertmanagerWiringResource resource.Interface
-	// This resource creates a static secret to connect Prometheus to Alertmanager. When using mimir, this is not needed anymore
-	if config.MimirEnabled {
-		alertmanagerWiringResource = noop.New(noop.Config{Logger: config.Logger})
-	} else {
+	{
 		c := alertmanagerwiring.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		alertmanagerWiringResource, err = alertmanagerwiring.New(c)
@@ -392,7 +410,9 @@ func New(config Config) ([]resource.Interface, error) {
 	}
 
 	var pvcResizeResource resource.Interface
-	{
+	if config.MimirEnabled {
+		pvcResizeResource = noop.New(noop.Config{Logger: config.Logger})
+	} else {
 		c := pvcresizingresource.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,

@@ -22,17 +22,23 @@ const (
 type Config struct {
 	DynamicK8sClient dynamic.Interface
 	Logger           micrologger.Logger
+
+	MimirEnabled bool
 }
 
 type Resource struct {
 	dynamicK8sClient dynamic.Interface
 	logger           micrologger.Logger
+
+	mimirEnabled bool
 }
 
 func New(config Config) (*Resource, error) {
 	r := &Resource{
 		dynamicK8sClient: config.DynamicK8sClient,
 		logger:           config.Logger,
+
+		mimirEnabled: config.MimirEnabled,
 	}
 
 	return r, nil
