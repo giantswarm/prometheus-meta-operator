@@ -1,4 +1,4 @@
-package generic
+package etcdcertificates
 
 import (
 	"context"
@@ -9,25 +9,24 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	desired, err := r.getDesiredObject(ctx, obj)
+	desired, err := r.toSecret(ctx, obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	r.logger.Debugf(ctx, "creating")
-	c := r.clientFunc(desired.GetNamespace())
-	current, err := c.Get(ctx, desired.GetName(), metav1.GetOptions{})
+	current, err := r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		current, err = c.Create(ctx, desired, metav1.CreateOptions{})
+		current, err = r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 	}
 
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	if r.hasChangedFunc(current, desired) {
+	if r.hasChanged(current, desired) {
 		updateMeta(current, desired)
-		_, err = c.Update(ctx, desired, metav1.UpdateOptions{})
+		_, err = r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
