@@ -11,15 +11,15 @@ import (
 )
 
 // getSource retrieves data for the desired Secret.
-func (sc *secretCopier) getSource(ctx context.Context, v interface{}, config Config) (map[string]string, error) {
+func (r *Resource) getSource(ctx context.Context) (map[string]string, error) {
 	var data map[string]string
 	var err error
-	if key.IsCAPIManagementCluster(config.Provider) {
+	if key.IsCAPIManagementCluster(r.config.Provider) {
 		// In CAPI clusters, etcd certificates are stored in a secret
-		data, err = sc.getSourceFromSecret(ctx, key.EtcdSecretSourceName, key.EtcdSecretSourceNamespace)
+		data, err = r.getSourceFromSecret(ctx, key.EtcdSecretSourceName, key.EtcdSecretSourceNamespace)
 	} else {
 		// In Vintage clusters, etcd certificates are mounted as files on the node filesystem
-		data, err = sc.getSourceFromDisk()
+		data, err = r.getSourceFromDisk()
 	}
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -28,8 +28,8 @@ func (sc *secretCopier) getSource(ctx context.Context, v interface{}, config Con
 }
 
 // getSourceFromSecret retrieves etcd certificates from a kubernetes secret.
-func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace string) (map[string]string, error) {
-	secret, err := sc.k8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
+func (r *Resource) getSourceFromSecret(ctx context.Context, name, namespace string) (map[string]string, error) {
+	secret, err := r.config.K8sClient.K8sClient().CoreV1().Secrets(namespace).Get(ctx, name, metav1.GetOptions{})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -57,7 +57,7 @@ func (sc *secretCopier) getSourceFromSecret(ctx context.Context, name, namespace
 }
 
 // getSourceFromDisk retrieves etcd certificates from the filesystem.
-func (sc *secretCopier) getSourceFromDisk() (map[string]string, error) {
+func (r *Resource) getSourceFromDisk() (map[string]string, error) {
 	ca, err := os.ReadFile("/etcd-client-certs/ca.pem")
 	if err != nil {
 		return nil, microerror.Mask(err)
