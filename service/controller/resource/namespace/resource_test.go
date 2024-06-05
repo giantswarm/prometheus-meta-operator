@@ -1,7 +1,6 @@
 package namespace
 
 import (
-	"context"
 	"flag"
 	"path/filepath"
 	"testing"
@@ -12,8 +11,12 @@ import (
 var update = flag.Bool("update", false, "update the output file")
 
 func TestNamespace(t *testing.T) {
+	resource, err := New(Config{})
+	if err != nil {
+		t.Fatal(err)
+	}
 	testFunc := func(v interface{}) (interface{}, error) {
-		return toNamespace(context.Background(), v)
+		return resource.toNamespace(v)
 	}
 
 	for _, flavor := range unittest.ProviderFlavors {
