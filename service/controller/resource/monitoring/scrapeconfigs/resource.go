@@ -16,12 +16,10 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/types"
-	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/organization"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/template"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/generic"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -49,6 +47,10 @@ type Config struct {
 	WorkloadClusterETCDDomain string
 }
 
+type Resource struct {
+	config Config
+}
+
 type TemplateData struct {
 	AdditionalScrapeConfigs   string
 	APIServerURL              string
@@ -72,7 +74,7 @@ type TemplateData struct {
 	VintageManagementCluster  bool
 }
 
-func New(config Config) (*generic.Resource, error) {
+func New(config Config) (*Resource, error) {
 	if config.K8sClient == nil {
 		return nil, microerror.Maskf(invalidConfigError, "config.K8sClient must not be empty")
 	}
@@ -83,34 +85,18 @@ func New(config Config) (*generic.Resource, error) {
 		return nil, microerror.Maskf(invalidConfigError, "config.OrganizationReader must not be empty")
 	}
 
-	clientFunc := func(namespace string) generic.Interface {
-		c := config.K8sClient.K8sClient().CoreV1().Secrets(namespace)
-		return wrappedClient{client: c}
-	}
-
 	if config.TemplatePath == "" {
 		config.TemplatePath = path.Join(templateDirectory, templatePath)
 	}
 
-	c := generic.Config{
-		ClientFunc:    clientFunc,
-		Logger:        config.Logger,
-		Name:          Name,
-		GetObjectMeta: getObjectMeta,
-		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
-			return toSecret(ctx, v, config)
-		},
-		HasChangedFunc: hasChanged,
-	}
-	r, err := generic.New(c)
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	return r, nil
+	return &Resource{config}, nil
 }
 
-func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error) {
+func (r *Resource) Name() string {
+	return Name
+}
+
+func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return metav1.ObjectMeta{}, microerror.Mask(err)
@@ -122,18 +108,18 @@ func getObjectMeta(ctx context.Context, v interface{}) (metav1.ObjectMeta, error
 	}, nil
 }
 
-func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret, error) {
+func (r *Resource) toSecret(ctx context.Context, v interface{}) (*corev1.Secret, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	var workloadClusterETCDDomain string = ""
-	if key.ClusterType(config.Installation, v) == "workload_cluster" {
+	if key.ClusterType(r.config.Installation, v) == "workload_cluster" {
 		clusterID := key.ClusterID(cluster)
 		// Try to get the etcd url from the Giant Swarm way
 		// TODO remove once all clusters are on CAPI
-		service, err := config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(ctx, "master", metav1.GetOptions{})
+		service, err := r.config.K8sClient.K8sClient().CoreV1().Services(clusterID).Get(ctx, "master", metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
 			// ETCD for CAPI clusters is monitored via service monitors
 		} else if err != nil {
@@ -144,14 +130,14 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 			}
 		}
 	}
-	config.WorkloadClusterETCDDomain = workloadClusterETCDDomain
+	r.config.WorkloadClusterETCDDomain = workloadClusterETCDDomain
 
-	scrapeConfigs, err := toData(ctx, config.K8sClient.CtrlClient(), v, config)
+	scrapeConfigs, err := r.toData(ctx, v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	objectMeta, err := getObjectMeta(ctx, v)
+	objectMeta, err := r.getObjectMeta(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -167,18 +153,18 @@ func toSecret(ctx context.Context, v interface{}, config Config) (*corev1.Secret
 	return scrapeConfigsSecret, nil
 }
 
-func toData(ctx context.Context, ctrlClient client.Client, v interface{}, config Config) ([]byte, error) {
+func (r *Resource) toData(ctx context.Context, v interface{}) ([]byte, error) {
 	cluster, err := key.ToCluster(v)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	templateData, err := getTemplateData(ctx, ctrlClient, cluster, config)
+	templateData, err := r.getTemplateData(ctx, cluster)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	scrapeConfigs, err := template.RenderTemplate(templateData, config.TemplatePath)
+	scrapeConfigs, err := template.RenderTemplate(templateData, r.config.TemplatePath)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -186,63 +172,63 @@ func toData(ctx context.Context, ctrlClient client.Client, v interface{}, config
 	return scrapeConfigs, nil
 }
 
-func getTemplateData(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (*TemplateData, error) {
-	ignoredTargets, err := listTargetsToIgnore(ctx, ctrlClient, cluster, config)
+func (r *Resource) getTemplateData(ctx context.Context, cluster metav1.Object) (*TemplateData, error) {
+	ignoredTargets, err := r.listTargetsToIgnore(ctx, cluster)
 
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	organization, err := config.OrganizationReader.Read(ctx, cluster)
+	organization, err := r.config.OrganizationReader.Read(ctx, cluster)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	provider, err := key.ClusterProvider(cluster, config.Provider)
+	provider, err := key.ClusterProvider(cluster, r.config.Provider)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
 	var authenticationType = ""
-	if !key.IsManagementCluster(config.Installation, cluster) {
-		authenticationType, err = key.ApiServerAuthenticationType(ctx, config.K8sClient, key.Namespace(cluster))
+	if !key.IsManagementCluster(r.config.Installation, cluster) {
+		authenticationType, err = key.ApiServerAuthenticationType(ctx, r.config.K8sClient, key.Namespace(cluster))
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
 	}
 
 	d := &TemplateData{
-		AdditionalScrapeConfigs:   config.AdditionalScrapeConfigs,
+		AdditionalScrapeConfigs:   r.config.AdditionalScrapeConfigs,
 		APIServerURL:              key.APIUrl(cluster),
 		AuthenticationType:        authenticationType,
-		Bastions:                  config.Bastions,
+		Bastions:                  r.config.Bastions,
 		ClusterID:                 key.ClusterID(cluster),
-		ClusterType:               key.ClusterType(config.Installation, cluster),
+		ClusterType:               key.ClusterType(r.config.Installation, cluster),
 		ServicePriority:           key.GetServicePriority(cluster),
-		Customer:                  config.Customer,
+		Customer:                  r.config.Customer,
 		Organization:              organization,
 		Provider:                  provider,
-		Pipeline:                  config.Pipeline,
-		Region:                    config.Region,
-		Installation:              config.Installation,
+		Pipeline:                  r.config.Pipeline,
+		Region:                    r.config.Region,
+		Installation:              r.config.Installation,
 		SecretName:                key.APIServerCertificatesSecretName,
-		EtcdSecretName:            key.EtcdSecret(config.Installation, cluster),
-		Vault:                     config.Vault,
+		EtcdSecretName:            key.EtcdSecret(r.config.Installation, cluster),
+		Vault:                     r.config.Vault,
 		IgnoredTargets:            strings.Join(ignoredTargets[:], ","),
-		WorkloadClusterETCDDomain: config.WorkloadClusterETCDDomain,
-		CAPIManagementCluster:     key.IsCAPIManagementCluster(config.Provider),
-		VintageManagementCluster:  !key.IsCAPIManagementCluster(config.Provider),
+		WorkloadClusterETCDDomain: r.config.WorkloadClusterETCDDomain,
+		CAPIManagementCluster:     key.IsCAPIManagementCluster(r.config.Provider),
+		VintageManagementCluster:  !key.IsCAPIManagementCluster(r.config.Provider),
 	}
 
 	return d, nil
 }
 
-func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) (string, error) {
+func (r *Resource) getObservabilityBundleAppVersion(ctx context.Context, cluster metav1.Object) (string, error) {
 	appName := fmt.Sprintf("%s-observability-bundle", key.ClusterID(cluster))
 	appNamespace := cluster.GetNamespace()
 
-	if !key.IsCAPIManagementCluster(config.Provider) {
-		if key.IsManagementCluster(config.Installation, cluster) {
+	if !key.IsCAPIManagementCluster(r.config.Provider) {
+		if key.IsManagementCluster(r.config.Installation, cluster) {
 			// Vintage MC
 			appName = "observability-bundle"
 			appNamespace = "giantswarm"
@@ -253,7 +239,7 @@ func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Cli
 
 	app := &appsv1alpha1.App{}
 	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
-	err := ctrlClient.Get(ctx, objectKey, app)
+	err := r.config.K8sClient.CtrlClient().Get(ctx, objectKey, app)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
 			return unknownObservabilityBundleVersion, nil
@@ -269,13 +255,13 @@ func getObservabilityBundleAppVersion(ctx context.Context, ctrlClient client.Cli
 }
 
 // List of targets we ignore in the scrape config (because they may be scraped by the agent or not scrappable)
-func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster metav1.Object, config Config) ([]string, error) {
+func (r *Resource) listTargetsToIgnore(ctx context.Context, cluster metav1.Object) ([]string, error) {
 	ignoredTargets := make([]string, 0)
 
 	if key.IsEKSCluster(cluster) {
 		// In case of EKS clusters, we assume scraping targets via ServiceMonitors,
 		// so we ignore them from the Prometheus scrape config
-		config.Logger.Debugf(ctx, "EKS cluster: ignoring all scraping targets in Prometheus scrape config")
+		r.config.Logger.Debugf(ctx, "EKS cluster: ignoring all scraping targets in Prometheus scrape config")
 		ignoredTargets = append(ignoredTargets,
 			"prometheus-operator-app",
 			"kube-apiserver",
@@ -288,7 +274,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 			"kube-state-metrics",
 			"etcd")
 	} else {
-		appVersion, err := getObservabilityBundleAppVersion(ctx, ctrlClient, cluster, config)
+		appVersion, err := r.getObservabilityBundleAppVersion(ctx, cluster)
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -319,7 +305,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 		if version.GTE(bundleWithKSMAndExportersVersion) {
 			ignoredTargets = append(ignoredTargets, "kubelet", "coredns", "kube-state-metrics")
 
-			if key.IsCAPIManagementCluster(config.Provider) {
+			if key.IsCAPIManagementCluster(r.config.Provider) {
 				ignoredTargets = append(ignoredTargets, "etcd")
 			}
 		}
@@ -328,7 +314,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 		}
 	}
 	// Vintage WC
-	if !key.IsCAPIManagementCluster(config.Provider) && !key.IsManagementCluster(config.Installation, cluster) {
+	if !key.IsCAPIManagementCluster(r.config.Provider) && !key.IsManagementCluster(r.config.Installation, cluster) {
 		// Since 18.0.0 we cannot scrape k8s endpoints externally so we ignore those targets.
 		release := cluster.GetLabels()["release.giantswarm.io/version"]
 		version, err := semver.Parse(release)
@@ -342,7 +328,7 @@ func listTargetsToIgnore(ctx context.Context, ctrlClient client.Client, cluster 
 	return ignoredTargets, nil
 }
 
-func hasChanged(current, desired metav1.Object) bool {
+func (r *Resource) hasChanged(current, desired metav1.Object) bool {
 	c := current.(*corev1.Secret)
 	d := desired.(*corev1.Secret)
 
