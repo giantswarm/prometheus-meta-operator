@@ -12,13 +12,9 @@ import (
 	fakek8sclient "github.com/giantswarm/k8sclient/v7/pkg/k8sclient/fake"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
-	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/kubernetes/scheme"
-	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/cluster"
 	"github.com/giantswarm/prometheus-meta-operator/v2/pkg/unittest"
@@ -64,24 +60,6 @@ func TestAWSScrapeconfigs(t *testing.T) {
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 
-		var client client.Client
-		{
-			schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-				apiextensionsv1.AddToScheme,
-				appsv1alpha1.AddToScheme,
-			})
-
-			err := schemeBuilder.AddToScheme(scheme.Scheme)
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			client = fake.NewClientBuilder().
-				WithScheme(scheme.Scheme).
-				WithRuntimeObjects().
-				Build()
-		}
-
 		testFunc = func(v interface{}) (interface{}, error) {
 			testCluster, err := key.ToCluster(v)
 			if err != nil {
@@ -111,6 +89,7 @@ func TestAWSScrapeconfigs(t *testing.T) {
 					t.Fatal(err)
 				}
 			}
+			k8sClient.CtrlClient().Scheme().AddKnownTypes(appsv1alpha1.SchemeGroupVersion, &appsv1alpha1.App{})
 
 			config := Config{
 				TemplatePath:       path,
@@ -127,7 +106,11 @@ func TestAWSScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return resource.toData(context.Background(), v)
 		}
 	}
 
@@ -167,49 +150,32 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 		}
 	}
 
-	var apps = []runtime.Object{
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.2.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.4.0",
-			},
-		},
-	}
-
-	var client client.Client
-	{
-		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-			apiextensionsv1.AddToScheme,
-			appsv1alpha1.AddToScheme,
-		})
-
-		err = schemeBuilder.AddToScheme(scheme.Scheme)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		client = fake.NewClientBuilder().
-			WithScheme(scheme.Scheme).
-			WithRuntimeObjects(apps...).
-			Build()
-	}
-
 	var testFunc unittest.TestFunc
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
+			var apps = []*appsv1alpha1.App{
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "baz-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.2.0",
+					},
+				},
+				{
+					ObjectMeta: metav1.ObjectMeta{
+
+						Name:      "kubernetes-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.4.0",
+					},
+				},
+			}
+
 			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
@@ -240,6 +206,15 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 				}
 			}
 
+			k8sClient.CtrlClient().Scheme().AddKnownTypes(appsv1alpha1.SchemeGroupVersion, &appsv1alpha1.App{})
+			for _, app := range apps {
+				app := app // Create a new variable inside the loop and assign the value of app to it
+				err = k8sClient.CtrlClient().Create(context.Background(), app)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
@@ -256,7 +231,12 @@ func TestCAPZScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return resource.toData(context.Background(), v)
 		}
 	}
 
@@ -296,49 +276,32 @@ func TestGCPScrapeconfigs(t *testing.T) {
 		}
 	}
 
-	var apps = []runtime.Object{
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.2.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.4.0",
-			},
-		},
-	}
-
-	var client client.Client
-	{
-		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-			apiextensionsv1.AddToScheme,
-			appsv1alpha1.AddToScheme,
-		})
-
-		err = schemeBuilder.AddToScheme(scheme.Scheme)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		client = fake.NewClientBuilder().
-			WithScheme(scheme.Scheme).
-			WithRuntimeObjects(apps...).
-			Build()
-	}
-
 	var testFunc unittest.TestFunc
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
+
+			var apps = []*appsv1alpha1.App{
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "baz-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.2.0",
+					},
+				},
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "kubernetes-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.4.0",
+					},
+				},
+			}
+
 			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
@@ -369,6 +332,14 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				}
 			}
 
+			k8sClient.CtrlClient().Scheme().AddKnownTypes(appsv1alpha1.SchemeGroupVersion, &appsv1alpha1.App{})
+			for _, app := range apps {
+				err = k8sClient.CtrlClient().Create(context.Background(), app)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
@@ -385,7 +356,13 @@ func TestGCPScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			return resource.toData(context.Background(), v)
 		}
 	}
 
@@ -425,49 +402,32 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 		}
 	}
 
-	var apps = []runtime.Object{
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "baz-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.2.0",
-			},
-		},
-		&appsv1alpha1.App{
-			ObjectMeta: v1.ObjectMeta{
-				Name:      "kubernetes-observability-bundle",
-				Namespace: "org-my-organization",
-			},
-			Status: appsv1alpha1.AppStatus{
-				Version: "0.4.0",
-			},
-		},
-	}
-
-	var client client.Client
-	{
-		schemeBuilder := runtime.SchemeBuilder(k8sclient.SchemeBuilder{
-			apiextensionsv1.AddToScheme,
-			appsv1alpha1.AddToScheme,
-		})
-
-		err = schemeBuilder.AddToScheme(scheme.Scheme)
-		if err != nil {
-			t.Fatal(err)
-		}
-
-		client = fake.NewClientBuilder().
-			WithScheme(scheme.Scheme).
-			WithRuntimeObjects(apps...).
-			Build()
-	}
-
 	var testFunc unittest.TestFunc
 	{
 		path := path.Join(unittest.ProjectRoot(), templatePath)
 		testFunc = func(v interface{}) (interface{}, error) {
+
+			var apps = []*appsv1alpha1.App{
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "baz-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.2.0",
+					},
+				},
+				{
+					ObjectMeta: metav1.ObjectMeta{
+						Name:      "kubernetes-observability-bundle",
+						Namespace: "org-my-organization",
+					},
+					Status: appsv1alpha1.AppStatus{
+						Version: "0.4.0",
+					},
+				},
+			}
+
 			testCluster, err := key.ToCluster(v)
 			if err != nil {
 				t.Fatal(err)
@@ -498,6 +458,14 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				}
 			}
 
+			k8sClient.CtrlClient().Scheme().AddKnownTypes(appsv1alpha1.SchemeGroupVersion, &appsv1alpha1.App{})
+			for _, app := range apps {
+				err = k8sClient.CtrlClient().Create(context.Background(), app)
+				if err != nil {
+					t.Fatal(err)
+				}
+			}
+
 			config := Config{
 				AdditionalScrapeConfigs: additionalScrapeConfigs,
 				TemplatePath:            path,
@@ -514,7 +482,12 @@ func TestCAPAScrapeconfigs(t *testing.T) {
 				Installation: "test-installation",
 				Logger:       logger,
 			}
-			return toData(context.Background(), client, v, config)
+
+			resource, err := New(config)
+			if err != nil {
+				t.Fatal(err)
+			}
+			return resource.toData(context.Background(), v)
 		}
 	}
 
