@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Remove unused scrape_timeout inhibition.
+
 ## [4.76.0] - 2024-06-03
 
 ### Changed
