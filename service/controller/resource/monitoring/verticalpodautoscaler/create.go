@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/resourceutils"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -31,7 +32,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	r.logger.Debugf(ctx, "checking if vpa cr needs to be updated")
 	if hasChanged(current, desired) {
 		r.logger.Debugf(ctx, "updating")
-		updateMeta(current, desired)
+		resourceutils.UpdateMeta(current, desired)
 		_, err = r.vpaClient.AutoscalingV1().VerticalPodAutoscalers(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
@@ -40,20 +41,4 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	return nil
-}
-
-func updateMeta(c, d metav1.Object) {
-	d.SetGenerateName(c.GetGenerateName())
-	d.SetUID(c.GetUID())
-	d.SetResourceVersion(c.GetResourceVersion())
-	d.SetGeneration(c.GetGeneration())
-	d.SetSelfLink(c.GetSelfLink())
-	d.SetCreationTimestamp(c.GetCreationTimestamp())
-	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
-	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	d.SetLabels(c.GetLabels())
-	d.SetAnnotations(c.GetAnnotations())
-	d.SetFinalizers(c.GetFinalizers())
-	d.SetOwnerReferences(c.GetOwnerReferences())
-	d.SetManagedFields(c.GetManagedFields())
 }

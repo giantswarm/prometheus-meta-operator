@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/resourceutils"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
@@ -14,10 +15,10 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.Debugf(ctx, "creating")
-	current, err := r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
+	r.config.Logger.Debugf(ctx, "creating")
+	current, err := r.config.K8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		current, err = r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
+		current, err = r.config.K8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 	}
 
 	if err != nil {
@@ -25,35 +26,13 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	}
 
 	if r.hasChanged(current, desired) {
-		updateMeta(current, desired)
-		_, err = r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
+		resourceutils.UpdateMeta(current, desired)
+		_, err = r.config.K8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}
 	}
-	r.logger.Debugf(ctx, "created")
+	r.config.Logger.Debugf(ctx, "created")
 
 	return nil
-}
-
-func updateMeta(c, d metav1.Object) {
-	d.SetGenerateName(c.GetGenerateName())
-	d.SetUID(c.GetUID())
-	d.SetResourceVersion(c.GetResourceVersion())
-	d.SetGeneration(c.GetGeneration())
-	d.SetSelfLink(c.GetSelfLink())
-	d.SetCreationTimestamp(c.GetCreationTimestamp())
-	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
-	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	// without this, it's impossible to change labels on resources
-	if len(d.GetLabels()) == 0 {
-		d.SetLabels(c.GetLabels())
-	}
-	// without this, it's impossible to change annotations on resources
-	if len(d.GetAnnotations()) == 0 {
-		d.SetAnnotations(c.GetAnnotations())
-	}
-	d.SetFinalizers(c.GetFinalizers())
-	d.SetOwnerReferences(c.GetOwnerReferences())
-	d.SetManagedFields(c.GetManagedFields())
 }

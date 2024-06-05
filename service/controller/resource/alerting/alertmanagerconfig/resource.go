@@ -39,18 +39,7 @@ type Config struct {
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
-	logger    micrologger.Logger
-
-	baseDomain     string
-	grafanaAddress string
-	installation   string
-	mimirEnabled   bool
-	opsgenieKey    string
-	pipeline       string
-	proxy          func(reqURL *url.URL) (*url.URL, error)
-	slackApiToken  string
-	slackApiURL    string
+	config Config
 }
 
 type NotificationTemplateData struct {
@@ -70,27 +59,14 @@ type AlertmanagerTemplateData struct {
 }
 
 func New(config Config) (*Resource, error) {
-	return &Resource{
-		k8sClient: config.K8sClient,
-		logger:    config.Logger,
-
-		baseDomain:     config.BaseDomain,
-		grafanaAddress: config.GrafanaAddress,
-		installation:   config.Installation,
-		mimirEnabled:   config.MimirEnabled,
-		opsgenieKey:    config.OpsgenieKey,
-		pipeline:       config.Pipeline,
-		proxy:          config.Proxy,
-		slackApiToken:  config.SlackApiToken,
-		slackApiURL:    config.SlackApiURL,
-	}, nil
+	return &Resource{config}, nil
 }
 
 func (r *Resource) Name() string {
 	return Name
 }
 
-func (r *Resource) getObjectMeta() metav1.ObjectMeta {
+func getObjectMeta() metav1.ObjectMeta {
 	return metav1.ObjectMeta{
 		Name:      key.AlertmanagerSecretName(),
 		Namespace: key.MonitoringNamespace,
@@ -98,8 +74,6 @@ func (r *Resource) getObjectMeta() metav1.ObjectMeta {
 }
 
 func (r *Resource) toSecret() (*corev1.Secret, error) {
-	objectMeta := r.getObjectMeta()
-
 	notificationTemplate, err := r.renderNotificationTemplate(templateDirectory)
 	if err != nil {
 		return nil, microerror.Mask(err)
@@ -111,7 +85,7 @@ func (r *Resource) toSecret() (*corev1.Secret, error) {
 	}
 
 	secret := &corev1.Secret{
-		ObjectMeta: objectMeta,
+		ObjectMeta: getObjectMeta(),
 		Data: map[string][]byte{
 			"alertmanager.yaml":          alertmanagerConfigSecret,
 			"notification-template.tmpl": notificationTemplate,
@@ -124,9 +98,9 @@ func (r *Resource) toSecret() (*corev1.Secret, error) {
 
 func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte, error) {
 	templateData := NotificationTemplateData{
-		GrafanaAddress:    r.grafanaAddress,
-		MimirEnabled:      r.mimirEnabled,
-		PrometheusAddress: fmt.Sprintf("https://%s", r.baseDomain),
+		GrafanaAddress:    r.config.GrafanaAddress,
+		MimirEnabled:      r.config.MimirEnabled,
+		PrometheusAddress: fmt.Sprintf("https://%s", r.config.BaseDomain),
 	}
 
 	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, notificationTemplatePath))
@@ -156,18 +130,18 @@ func (r *Resource) getTemplateData() (*AlertmanagerTemplateData, error) {
 	if err != nil {
 		return nil, err
 	}
-	proxyURL, err := r.proxy(opsgenieUrl)
+	proxyURL, err := r.config.Proxy(opsgenieUrl)
 	if err != nil {
 		return nil, err
 	}
 
 	d := &AlertmanagerTemplateData{
-		Installation:  r.installation,
-		OpsgenieKey:   r.opsgenieKey,
-		Pipeline:      r.pipeline,
-		SlackApiToken: r.slackApiToken,
-		SlackApiURL:   r.slackApiURL,
-		MimirEnabled:  r.mimirEnabled,
+		Installation:  r.config.Installation,
+		OpsgenieKey:   r.config.OpsgenieKey,
+		Pipeline:      r.config.Pipeline,
+		SlackApiToken: r.config.SlackApiToken,
+		SlackApiURL:   r.config.SlackApiURL,
+		MimirEnabled:  r.config.MimirEnabled,
 	}
 
 	if proxyURL != nil {
