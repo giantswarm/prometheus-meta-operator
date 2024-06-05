@@ -11,8 +11,14 @@ import (
 var update = flag.Bool("update", false, "update the output file")
 
 func TestIngressDefault(t *testing.T) {
+	resource, err := New(Config{
+		BaseDomain: "prometheus",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	testFunc := func(v interface{}) (interface{}, error) {
-		return toIngress(v, Config{BaseDomain: "prometheus"})
+		return resource.toIngress(v)
 	}
 
 	for _, flavor := range unittest.ProviderFlavors {
@@ -41,8 +47,16 @@ func TestIngressDefault(t *testing.T) {
 }
 
 func TestIngressRestrictedAccess(t *testing.T) {
+	resource, err := New(Config{
+		BaseDomain:              "prometheus",
+		RestrictedAccessEnabled: true,
+		WhitelistedSubnets:      "21.10.178/24",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	testFunc := func(v interface{}) (interface{}, error) {
-		return toIngress(v, Config{BaseDomain: "prometheus", RestrictedAccessEnabled: true, WhitelistedSubnets: "21.10.178/24"})
+		return resource.toIngress(v)
 	}
 	for _, flavor := range unittest.ProviderFlavors {
 		outputDir, err := filepath.Abs("./test/restricted-access/" + flavor)
@@ -70,8 +84,15 @@ func TestIngressRestrictedAccess(t *testing.T) {
 }
 
 func TestIngressExternalDNS(t *testing.T) {
+	resource, err := New(Config{
+		BaseDomain:  "prometheus",
+		ExternalDNS: true,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	testFunc := func(v interface{}) (interface{}, error) {
-		return toIngress(v, Config{BaseDomain: "prometheus", ExternalDNS: true})
+		return resource.toIngress(v)
 	}
 	for _, flavor := range unittest.ProviderFlavors {
 		outputDir, err := filepath.Abs("./test/externaldns/" + flavor)
@@ -99,8 +120,17 @@ func TestIngressExternalDNS(t *testing.T) {
 }
 
 func TestIngressExternalDNSWithRestrictedAccess(t *testing.T) {
+	resource, err := New(Config{
+		BaseDomain:              "prometheus.3lkdj.test.gigantic.io",
+		ExternalDNS:             true,
+		RestrictedAccessEnabled: true,
+		WhitelistedSubnets:      "21.10.178/24",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
 	testFunc := func(v interface{}) (interface{}, error) {
-		return toIngress(v, Config{BaseDomain: "prometheus.3lkdj.test.gigantic.io", ExternalDNS: true, RestrictedAccessEnabled: true, WhitelistedSubnets: "21.10.178/24"})
+		return resource.toIngress(v)
 	}
 	for _, flavor := range unittest.ProviderFlavors {
 		outputDir, err := filepath.Abs("./test/externaldns-with-restricted-access/" + flavor)
