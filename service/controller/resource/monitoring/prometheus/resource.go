@@ -49,49 +49,11 @@ type Config struct {
 }
 
 type Resource struct {
-	prometheusClient promclient.Interface
-	k8sClient        k8sclient.Interface
-	logger           micrologger.Logger
-
-	address            string
-	bastions           []string
-	customer           string
-	evaluationInterval string
-	imageRepository    string
-	installation       string
-	pipeline           string
-	provider           cluster.Provider
-	region             string
-	registry           string
-	logLevel           string
-	scrapeInterval     string
-	version            string
-
-	mimirEnabled bool
+	config Config
 }
 
 func New(config Config) (*Resource, error) {
-	return &Resource{
-		prometheusClient: config.PrometheusClient,
-		k8sClient:        config.K8sClient,
-		logger:           config.Logger,
-
-		address:            config.Address,
-		bastions:           config.Bastions,
-		customer:           config.Customer,
-		evaluationInterval: config.EvaluationInterval,
-		imageRepository:    config.ImageRepository,
-		installation:       config.Installation,
-		pipeline:           config.Pipeline,
-		provider:           config.Provider,
-		region:             config.Region,
-		registry:           config.Registry,
-		logLevel:           config.LogLevel,
-		scrapeInterval:     config.ScrapeInterval,
-		version:            config.Version,
-
-		mimirEnabled: config.MimirEnabled,
-	}, nil
+	return &Resource{config}, nil
 }
 
 func (r *Resource) Name() string {
@@ -126,7 +88,7 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 		return nil, microerror.Mask(err)
 	}
 
-	address, err := url.Parse(r.address)
+	address, err := url.Parse(r.config.Address)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -172,9 +134,9 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 
 	labels[key.MonitoringLabel] = "true"
 
-	image := fmt.Sprintf("%s/%s:%s", r.registry, r.imageRepository, r.version)
-	pageTitle := fmt.Sprintf("%s/%s Prometheus", r.installation, key.ClusterID(cluster))
-	provider, err := key.ClusterProvider(cluster, r.provider)
+	image := fmt.Sprintf("%s/%s:%s", r.config.Registry, r.config.ImageRepository, r.config.Version)
+	pageTitle := fmt.Sprintf("%s/%s Prometheus", r.config.Installation, key.ClusterID(cluster))
+	provider, err := key.ClusterProvider(cluster, r.config.Provider)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -192,17 +154,17 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 				EnableRemoteWriteReceiver: true,
 				ExternalLabels: map[string]string{
 					key.ClusterIDKey:    key.ClusterID(cluster),
-					key.ClusterTypeKey:  key.ClusterType(r.installation, cluster),
-					key.CustomerKey:     r.customer,
-					key.InstallationKey: r.installation,
-					key.PipelineKey:     r.pipeline,
+					key.ClusterTypeKey:  key.ClusterType(r.config.Installation, cluster),
+					key.CustomerKey:     r.config.Customer,
+					key.InstallationKey: r.config.Installation,
+					key.PipelineKey:     r.config.Pipeline,
 					key.ProviderKey:     provider,
-					key.RegionKey:       r.region,
+					key.RegionKey:       r.config.Region,
 				},
 				ExternalURL:        externalURL.String(),
 				Image:              &image,
 				KeepDroppedTargets: &keepDroppedTargets,
-				LogLevel:           r.logLevel,
+				LogLevel:           r.config.LogLevel,
 				PodMetadata: &promv1.EmbeddedObjectMetadata{
 					Labels: labels,
 				},
@@ -223,7 +185,7 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 					},
 				},
 				RoutePrefix:    fmt.Sprintf("/%s", key.ClusterID(cluster)),
-				ScrapeInterval: promv1.Duration(r.scrapeInterval),
+				ScrapeInterval: promv1.Duration(r.config.ScrapeInterval),
 				SecurityContext: &corev1.PodSecurityContext{
 					RunAsUser:    &uid,
 					RunAsGroup:   &gid,
@@ -250,14 +212,14 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 						},
 					},
 				},
-				Version:        r.version,
+				Version:        r.config.Version,
 				WALCompression: &walCompression,
 				Web: &promv1.PrometheusWebSpec{
 					PageTitle: &pageTitle,
 				},
 			},
 
-			EvaluationInterval: promv1.Duration(r.evaluationInterval),
+			EvaluationInterval: promv1.Duration(r.config.EvaluationInterval),
 			RetentionSize:      promv1.ByteSize(pvcresizing.GetRetentionSize(storageSize)),
 			// Fetches Prometheus rules from any namespace on the Management Cluster
 			// using https://v1-22.docs.kubernetes.io/docs/reference/labels-annotations-taints/#kubernetes-io-metadata-name
@@ -272,7 +234,7 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 		},
 	}
 
-	if !key.IsManagementCluster(r.installation, cluster) {
+	if !key.IsManagementCluster(r.config.Installation, cluster) {
 		// Workload cluster
 		prometheus.Spec.APIServerConfig = &promv1.APIServerConfig{
 			Host: fmt.Sprintf("https://%s", key.APIUrl(cluster)),
@@ -281,7 +243,7 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 			},
 		}
 
-		authenticationType, err := key.ApiServerAuthenticationType(ctx, r.k8sClient, key.Namespace(cluster))
+		authenticationType, err := key.ApiServerAuthenticationType(ctx, r.config.K8sClient, key.Namespace(cluster))
 		if err != nil {
 			return nil, microerror.Mask(err)
 		}
@@ -346,7 +308,7 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 		}
 
 		prometheus.Spec.Secrets = []string{
-			key.EtcdSecret(r.installation, cluster),
+			key.EtcdSecret(r.config.Installation, cluster),
 		}
 
 		prometheus.Spec.RuleSelector = &metav1.LabelSelector{
@@ -392,7 +354,7 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 		}
 	}
 
-	if r.mimirEnabled {
+	if r.config.MimirEnabled {
 		emptyExternalLabels := ""
 		// Remove prometheus and prometheus_replica external labels to avoid conflicts with our existing rules.
 		prometheus.Spec.PrometheusExternalLabelName = &emptyExternalLabels
@@ -415,7 +377,7 @@ func (r *Resource) toPrometheus(ctx context.Context, v interface{}) (*promv1.Pro
 		}
 	}
 
-	if r.prometheusClient != nil {
+	if r.config.PrometheusClient != nil {
 		err = r.currentRemoteWrite(ctx, prometheus)
 		if err != nil {
 			return nil, microerror.Mask(err)
@@ -434,7 +396,7 @@ func (r *Resource) hasChanged(current, desired metav1.Object) bool {
 
 // Fetch current Prometheus CR and update RemoteWrite field
 func (r *Resource) currentRemoteWrite(ctx context.Context, p *promv1.Prometheus) error {
-	current, err := r.prometheusClient.MonitoringV1().Prometheuses(p.GetNamespace()).Get(ctx, p.GetName(), metav1.GetOptions{})
+	current, err := r.config.PrometheusClient.MonitoringV1().Prometheuses(p.GetNamespace()).Get(ctx, p.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		return nil
 	}
