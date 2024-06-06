@@ -1,4 +1,4 @@
-package ingress
+package alertmanagerconfig
 
 import (
 	"context"
@@ -11,15 +11,15 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	desired, err := r.toIngress(obj)
+	desired, err := r.toSecret()
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
 	r.config.Logger.Debugf(ctx, "creating")
-	current, err := r.config.K8sClient.K8sClient().NetworkingV1().Ingresses(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
+	current, err := r.config.K8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
-		current, err = r.config.K8sClient.K8sClient().NetworkingV1().Ingresses(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
+		current, err = r.config.K8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 	}
 
 	if err != nil {
@@ -28,7 +28,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 	if r.hasChanged(current, desired) {
 		resourceutils.UpdateMeta(current, desired)
-		_, err = r.config.K8sClient.K8sClient().NetworkingV1().Ingresses(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
+		_, err = r.config.K8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 		if err != nil {
 			return microerror.Mask(err)
 		}

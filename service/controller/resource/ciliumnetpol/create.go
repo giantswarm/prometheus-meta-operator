@@ -7,6 +7,8 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/resourceutils"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
@@ -32,7 +34,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 		}
 
 		if hasCiliumNetworkPolicyChanged(current, desired) {
-			updateMeta(current, desired)
+			resourceutils.UpdateMeta(current, desired)
 			_, err = r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
@@ -42,20 +44,4 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 	r.logger.Debugf(ctx, "created")
 
 	return nil
-}
-
-func updateMeta(c, d metav1.Object) {
-	d.SetGenerateName(c.GetGenerateName())
-	d.SetUID(c.GetUID())
-	d.SetResourceVersion(c.GetResourceVersion())
-	d.SetGeneration(c.GetGeneration())
-	d.SetSelfLink(c.GetSelfLink())
-	d.SetCreationTimestamp(c.GetCreationTimestamp())
-	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
-	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	d.SetLabels(c.GetLabels())
-	d.SetAnnotations(c.GetAnnotations())
-	d.SetFinalizers(c.GetFinalizers())
-	d.SetOwnerReferences(c.GetOwnerReferences())
-	d.SetManagedFields(c.GetManagedFields())
 }

@@ -1,4 +1,4 @@
-package ingress
+package alertmanagerconfig
 
 import (
 	"context"
@@ -9,13 +9,10 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	object, err := r.getObjectMeta(obj)
-	if err != nil {
-		return microerror.Mask(err)
-	}
+	object := getObjectMeta()
 
 	r.config.Logger.Debugf(ctx, "deleting")
-	err = r.config.K8sClient.K8sClient().NetworkingV1().Ingresses(object.GetNamespace()).Delete(ctx, object.GetName(), metav1.DeleteOptions{})
+	err := r.config.K8sClient.K8sClient().CoreV1().Secrets(object.GetNamespace()).Delete(ctx, object.GetName(), metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {

@@ -27,23 +27,11 @@ type Config struct {
 }
 
 type Resource struct {
-	k8sClient               k8sclient.Interface
-	logger                  micrologger.Logger
-	baseDomain              string
-	restrictedAccessEnabled bool
-	whitelistedSubnets      string
-	externalDNS             bool
+	config Config
 }
 
 func New(config Config) (*Resource, error) {
-	return &Resource{
-		k8sClient:               config.K8sClient,
-		logger:                  config.Logger,
-		baseDomain:              config.BaseDomain,
-		restrictedAccessEnabled: config.RestrictedAccessEnabled,
-		whitelistedSubnets:      config.WhitelistedSubnets,
-		externalDNS:             config.ExternalDNS,
-	}, nil
+	return &Resource{config}, nil
 }
 
 func (r *Resource) Name() string {
@@ -61,13 +49,13 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 		"nginx.ingress.kubernetes.io/auth-url":    "https://$host/oauth2/auth",
 	}
 
-	if r.externalDNS {
-		annotations["external-dns.alpha.kubernetes.io/hostname"] = r.baseDomain
+	if r.config.ExternalDNS {
+		annotations["external-dns.alpha.kubernetes.io/hostname"] = r.config.BaseDomain
 		annotations["giantswarm.io/external-dns"] = "managed"
 	}
 
-	if r.restrictedAccessEnabled {
-		annotations["nginx.ingress.kubernetes.io/whitelist-source-range"] = r.whitelistedSubnets
+	if r.config.RestrictedAccessEnabled {
+		annotations["nginx.ingress.kubernetes.io/whitelist-source-range"] = r.config.WhitelistedSubnets
 	}
 
 	return metav1.ObjectMeta{
@@ -120,7 +108,7 @@ func (r *Resource) toIngress(v interface{}) (*networkingv1.Ingress, error) {
 			IngressClassName: &ingressClassName,
 			Rules: []networkingv1.IngressRule{
 				{
-					Host: r.baseDomain,
+					Host: r.config.BaseDomain,
 					IngressRuleValue: networkingv1.IngressRuleValue{
 						HTTP: &networkingv1.HTTPIngressRuleValue{
 							Paths: []networkingv1.HTTPIngressPath{
