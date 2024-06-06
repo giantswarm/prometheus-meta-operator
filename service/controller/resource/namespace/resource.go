@@ -20,15 +20,11 @@ type Config struct {
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
-	logger    micrologger.Logger
+	config Config
 }
 
 func New(config Config) (*Resource, error) {
-	return &Resource{
-		k8sClient: config.K8sClient,
-		logger:    config.Logger,
-	}, nil
+	return &Resource{config}, nil
 }
 
 func (r *Resource) Name() string {
