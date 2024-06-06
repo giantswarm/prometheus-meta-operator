@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Internal rework to remove the use generic resource to ease out the migration to Mimir.
+- Remove unused scrape_timeout inhibition.
+
 ## [4.76.0] - 2024-06-03
 
 ### Changed
