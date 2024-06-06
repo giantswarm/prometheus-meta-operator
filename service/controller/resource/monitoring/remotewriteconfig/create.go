@@ -11,6 +11,7 @@ import (
 	"sigs.k8s.io/yaml"
 
 	remotewriteconfiguration "github.com/giantswarm/prometheus-meta-operator/v2/pkg/remotewrite/configuration"
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/resourceutils"
 	"github.com/giantswarm/prometheus-meta-operator/v2/service/key"
 )
 
@@ -53,7 +54,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 				return microerror.Mask(err)
 			}
 			if !reflect.DeepEqual(current.Data, desired.Data) {
-				updateMeta(current, desired)
+				resourceutils.UpdateMeta(current, desired)
 				_, err := r.k8sClient.K8sClient().CoreV1().ConfigMaps(namespace).Update(ctx, desired, metav1.UpdateOptions{})
 				if err != nil {
 					return microerror.Mask(err)
@@ -75,20 +76,4 @@ func readCurrentShardsFromConfig(configMap corev1.ConfigMap) (int, error) {
 	}
 
 	return remoteWriteConfig.PrometheusAgentConfig.Shards, nil
-}
-
-func updateMeta(c, d metav1.Object) {
-	d.SetGenerateName(c.GetGenerateName())
-	d.SetUID(c.GetUID())
-	d.SetResourceVersion(c.GetResourceVersion())
-	d.SetGeneration(c.GetGeneration())
-	d.SetSelfLink(c.GetSelfLink())
-	d.SetCreationTimestamp(c.GetCreationTimestamp())
-	d.SetDeletionTimestamp(c.GetDeletionTimestamp())
-	d.SetDeletionGracePeriodSeconds(c.GetDeletionGracePeriodSeconds())
-	d.SetLabels(c.GetLabels())
-	d.SetAnnotations(c.GetAnnotations())
-	d.SetFinalizers(c.GetFinalizers())
-	d.SetOwnerReferences(c.GetOwnerReferences())
-	d.SetManagedFields(c.GetManagedFields())
 }
