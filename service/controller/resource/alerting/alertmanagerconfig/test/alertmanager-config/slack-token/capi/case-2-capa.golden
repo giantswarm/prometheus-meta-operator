@@ -514,12 +514,6 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
-  - scrape_timeout=true
-  target_matchers:
-  - cancel_if_scrape_timeout=true
-  equal: [cluster_id, instance]
-
-- source_matchers:
   - control_plane_node_down=true
   target_matchers:
   - cancel_if_control_plane_node_down=true
