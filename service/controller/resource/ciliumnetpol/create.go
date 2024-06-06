@@ -4,10 +4,11 @@ import (
 	"context"
 
 	"github.com/giantswarm/microerror"
-	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/resourceutils"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
+
+	"github.com/giantswarm/prometheus-meta-operator/v2/service/controller/resource/resourceutils"
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
