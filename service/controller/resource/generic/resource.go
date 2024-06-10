@@ -42,15 +42,18 @@ type Config struct {
 	// the given resource and returns true if there is a difference between
 	// them and therefore state needs to be reconciled to match the desired.
 	HasChangedFunc func(metav1.Object, metav1.Object) bool
+
+	DeleteIfMimirEnabled bool
 }
 
 type Resource struct {
-	clientFunc       func(string) Interface
-	logger           micrologger.Logger
-	name             string
-	getObjectMeta    func(context.Context, interface{}) (metav1.ObjectMeta, error)
-	getDesiredObject func(context.Context, interface{}) (metav1.Object, error)
-	hasChangedFunc   func(metav1.Object, metav1.Object) bool
+	clientFunc           func(string) Interface
+	logger               micrologger.Logger
+	name                 string
+	getObjectMeta        func(context.Context, interface{}) (metav1.ObjectMeta, error)
+	getDesiredObject     func(context.Context, interface{}) (metav1.Object, error)
+	hasChangedFunc       func(metav1.Object, metav1.Object) bool
+	deleteIfMimirEnabled bool
 }
 
 func New(config Config) (*Resource, error) {
@@ -74,12 +77,13 @@ func New(config Config) (*Resource, error) {
 	}
 
 	r := &Resource{
-		clientFunc:       config.ClientFunc,
-		logger:           config.Logger,
-		name:             config.Name,
-		getObjectMeta:    config.GetObjectMeta,
-		getDesiredObject: config.GetDesiredObject,
-		hasChangedFunc:   config.HasChangedFunc,
+		clientFunc:           config.ClientFunc,
+		logger:               config.Logger,
+		name:                 config.Name,
+		getObjectMeta:        config.GetObjectMeta,
+		getDesiredObject:     config.GetDesiredObject,
+		hasChangedFunc:       config.HasChangedFunc,
+		deleteIfMimirEnabled: config.DeleteIfMimirEnabled,
 	}
 
 	return r, nil

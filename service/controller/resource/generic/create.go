@@ -11,6 +11,9 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
+	if r.deleteIfMimirEnabled {
+		return r.EnsureDeleted(ctx, obj)
+	}
 	desired, err := r.getDesiredObject(ctx, obj)
 	if err != nil {
 		return microerror.Mask(err)
