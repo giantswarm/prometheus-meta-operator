@@ -14,15 +14,15 @@ func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
 		return microerror.Mask(err)
 	}
 
-	r.logger.Debugf(ctx, "deleting")
-	c := r.k8sClient.K8sClient().CoreV1().Secrets(object.GetNamespace())
+	r.config.Logger.Debugf(ctx, "deleting")
+	c := r.config.K8sClient.K8sClient().CoreV1().Secrets(object.GetNamespace())
 	err = c.Delete(ctx, object.GetName(), metav1.DeleteOptions{})
 	if apierrors.IsNotFound(err) {
 		// fall through
 	} else if err != nil {
 		return microerror.Mask(err)
 	}
-	r.logger.Debugf(ctx, "deleted")
+	r.config.Logger.Debugf(ctx, "deleted")
 
 	return nil
 }

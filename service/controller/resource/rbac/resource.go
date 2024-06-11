@@ -17,22 +17,17 @@ const (
 )
 
 type Config struct {
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	K8sClient    k8sclient.Interface
+	Logger       micrologger.Logger
+	MimirEnabled bool
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
-	logger    micrologger.Logger
+	config Config
 }
 
 func New(config Config) (*Resource, error) {
-	r := &Resource{
-		k8sClient: config.K8sClient,
-		logger:    config.Logger,
-	}
-
-	return r, nil
+	return &Resource{config}, nil
 }
 
 func (r *Resource) Name() string {

@@ -26,6 +26,8 @@ type Config struct {
 	RestrictedAccessEnabled bool
 	WhitelistedSubnets      string
 	ExternalDNS             bool
+
+	MimirEnabled bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -44,7 +46,8 @@ func New(config Config) (*generic.Resource, error) {
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toIngress(v, config)
 		},
-		HasChangedFunc: hasChanged,
+		HasChangedFunc:       hasChanged,
+		DeleteIfMimirEnabled: config.MimirEnabled,
 	}
 	r, err := generic.New(c)
 	if err != nil {

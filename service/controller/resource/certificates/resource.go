@@ -19,12 +19,13 @@ import (
 )
 
 type Config struct {
-	Name      string
-	Provider  cluster.Provider
-	Sources   []CertificateSource
-	Target    string
-	K8sClient k8sclient.Interface
-	Logger    micrologger.Logger
+	Name         string
+	Provider     cluster.Provider
+	Sources      []CertificateSource
+	Target       string
+	K8sClient    k8sclient.Interface
+	Logger       micrologger.Logger
+	MimirEnabled bool
 }
 
 type NameFunc func(metav1.Object) string
@@ -35,12 +36,7 @@ type CertificateSource struct {
 }
 
 type Resource struct {
-	name      string
-	provider  cluster.Provider
-	sources   []CertificateSource
-	target    string
-	k8sClient k8sclient.Interface
-	logger    micrologger.Logger
+	config Config
 }
 
 func New(config Config) (*Resource, error) {
@@ -63,20 +59,11 @@ func New(config Config) (*Resource, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Target must not be empty", config)
 	}
 
-	r := &Resource{
-		name:      config.Name,
-		provider:  config.Provider,
-		logger:    config.Logger,
-		k8sClient: config.K8sClient,
-		sources:   config.Sources,
-		target:    config.Target,
-	}
-
-	return r, nil
+	return &Resource{config}, nil
 }
 
 func (r *Resource) Name() string {
-	return r.name
+	return r.config.Name
 }
 
 func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
@@ -86,7 +73,7 @@ func (r *Resource) getObjectMeta(v interface{}) (metav1.ObjectMeta, error) {
 	}
 
 	return metav1.ObjectMeta{
-		Name:      r.target,
+		Name:      r.config.Target,
 		Namespace: key.Namespace(cluster),
 	}, nil
 }
@@ -108,7 +95,7 @@ func (r *Resource) getDesiredObject(ctx context.Context, v interface{}) (*v1.Sec
 	}
 
 	secretData := sourceSecret.Data
-	if key.IsCAPIManagementCluster(r.provider) {
+	if key.IsCAPIManagementCluster(r.config.Provider) {
 		// CAPI Secret is a kubeconfig so we need to extract the certs from it
 		if kubeconfig, ok := secretData["value"]; ok {
 			capiKubeconfig, err := clientcmd.Load(kubeconfig)
@@ -147,16 +134,16 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*v1.Secret, er
 	}
 
 	var secret *v1.Secret
-	for _, source := range r.sources {
+	for _, source := range r.config.Sources {
 		secretName := source.NameFunc(cluster)
 		secretNamespace := source.NamespaceFunc(cluster)
 
-		r.logger.Debugf(ctx, "searching for secret %v/%v", secretNamespace, secretName)
+		r.config.Logger.Debugf(ctx, "searching for secret %v/%v", secretNamespace, secretName)
 
-		secret, err = r.k8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
+		secret, err = r.config.K8sClient.K8sClient().CoreV1().Secrets(secretNamespace).Get(ctx, secretName, metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
 			// fallthrough
-			r.logger.Debugf(ctx, "did not find secret %v/%v", secretNamespace, secretName)
+			r.config.Logger.Debugf(ctx, "did not find secret %v/%v", secretNamespace, secretName)
 			secret = nil
 		} else if err != nil {
 			return nil, microerror.Mask(err)
@@ -164,7 +151,7 @@ func (r *Resource) getSource(ctx context.Context, v interface{}) (*v1.Secret, er
 
 		if secret != nil {
 			// We return the first secret we find
-			r.logger.Debugf(ctx, "found secret %v/%v", secretNamespace, secretName)
+			r.config.Logger.Debugf(ctx, "found secret %v/%v", secretNamespace, secretName)
 			return secret, nil
 		}
 	}

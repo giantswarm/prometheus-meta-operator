@@ -63,7 +63,8 @@ func New(config Config) (*generic.Resource, error) {
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toPrometheus(ctx, v, config)
 		},
-		HasChangedFunc: hasChanged,
+		HasChangedFunc:       hasChanged,
+		DeleteIfMimirEnabled: config.MimirEnabled,
 	}
 	r, err := generic.New(c)
 	if err != nil {
@@ -367,27 +368,18 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 		}
 	}
 
-	if config.MimirEnabled {
-		emptyExternalLabels := ""
-		// Remove prometheus and prometheus_replica external labels to avoid conflicts with our existing rules.
-		prometheus.Spec.PrometheusExternalLabelName = &emptyExternalLabels
-		prometheus.Spec.ReplicaExternalLabelName = &emptyExternalLabels
-		prometheus.Spec.RuleNamespaceSelector = nil
-		prometheus.Spec.RuleSelector = nil
-	} else {
-		// We need to use this to connect each WC prometheus with the central alertmanager instead of the alerting section of the Prometheus CR
-		// because the alerting section tries to find the alertmanager service in the workload cluster and not in the management cluster
-		// as it is using the secrets defined under prometheus.Spec.APIServerConfig.
-		//
-		// This forces us to use the static config defined in resource/alerting/alertmanagerwiring.
+	// We need to use this to connect each WC prometheus with the central alertmanager instead of the alerting section of the Prometheus CR
+	// because the alerting section tries to find the alertmanager service in the workload cluster and not in the management cluster
+	// as it is using the secrets defined under prometheus.Spec.APIServerConfig.
+	//
+	// This forces us to use the static config defined in resource/alerting/alertmanagerwiring.
 
-		// We enable alertmanager on Prometheus only if mimir is not enabled
-		prometheus.Spec.AdditionalAlertManagerConfigs = &corev1.SecretKeySelector{
-			LocalObjectReference: corev1.LocalObjectReference{
-				Name: key.AlertmanagerSecretName(),
-			},
-			Key: key.AlertmanagerKey(),
-		}
+	// We enable alertmanager on Prometheus only if mimir is not enabled
+	prometheus.Spec.AdditionalAlertManagerConfigs = &corev1.SecretKeySelector{
+		LocalObjectReference: corev1.LocalObjectReference{
+			Name: key.AlertmanagerSecretName(),
+		},
+		Key: key.AlertmanagerKey(),
 	}
 
 	if config.PrometheusClient != nil {

@@ -18,10 +18,11 @@ const (
 )
 
 type Config struct {
-	K8sClient   k8sclient.Interface
-	Logger      micrologger.Logger
-	BaseDomain  string
-	ExternalDNS bool
+	K8sClient    k8sclient.Interface
+	Logger       micrologger.Logger
+	BaseDomain   string
+	ExternalDNS  bool
+	MimirEnabled bool
 }
 
 type Resource struct {
