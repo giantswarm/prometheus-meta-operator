@@ -9,21 +9,21 @@ import (
 )
 
 func (r *Resource) EnsureDeleted(ctx context.Context, obj interface{}) error {
-	r.logger.Debugf(ctx, "deleting")
+	r.config.Logger.Debugf(ctx, "deleting")
 	{
 		desired, err := toClusterRoleBinding(obj)
 		if err != nil {
 			return microerror.Mask(err)
 		}
 
-		err = r.k8sClient.K8sClient().RbacV1().ClusterRoleBindings().Delete(ctx, desired.GetName(), metav1.DeleteOptions{})
+		err = r.config.K8sClient.K8sClient().RbacV1().ClusterRoleBindings().Delete(ctx, desired.GetName(), metav1.DeleteOptions{})
 		if apierrors.IsNotFound(err) {
 			// fall through
 		} else if err != nil {
 			return microerror.Mask(err)
 		}
 	}
-	r.logger.Debugf(ctx, "deleted")
+	r.config.Logger.Debugf(ctx, "deleted")
 
 	return nil
 }

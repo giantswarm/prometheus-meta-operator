@@ -12,7 +12,12 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
-	r.logger.Debugf(ctx, "creating")
+	if r.config.MimirEnabled {
+		r.config.Logger.Debugf(ctx, "mimir is enabled, deleting heartbeat if it exists")
+		return r.EnsureDeleted(ctx, obj)
+	}
+
+	r.config.Logger.Debugf(ctx, "creating")
 	{
 		resource := schema.GroupVersionResource{
 			Group:    "cilium.io",
@@ -25,9 +30,9 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 
-		current, err := r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
+		current, err := r.config.DynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Get(ctx, desired.GetName(), metav1.GetOptions{})
 		if apierrors.IsNotFound(err) {
-			current, err = r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
+			current, err = r.config.DynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Create(ctx, desired, metav1.CreateOptions{})
 		}
 		if err != nil {
 			return microerror.Mask(err)
@@ -35,13 +40,13 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 
 		if hasCiliumNetworkPolicyChanged(current, desired) {
 			resourceutils.UpdateMeta(current, desired)
-			_, err = r.dynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
+			_, err = r.config.DynamicK8sClient.Resource(resource).Namespace(desired.GetNamespace()).Update(ctx, desired, metav1.UpdateOptions{})
 			if err != nil {
 				return microerror.Mask(err)
 			}
 		}
 	}
-	r.logger.Debugf(ctx, "created")
+	r.config.Logger.Debugf(ctx, "created")
 
 	return nil
 }

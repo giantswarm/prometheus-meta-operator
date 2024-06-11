@@ -35,15 +35,12 @@ type Config struct {
 
 	Installation string
 	Provider     cluster.Provider
+
+	MimirEnabled bool
 }
 
 type Resource struct {
-	k8sClient k8sclient.Interface
-	vpaClient vpa_clientset.Interface
-	logger    micrologger.Logger
-
-	installation string
-	provider     cluster.Provider
+	config Config
 }
 
 func New(config Config) (*Resource, error) {
@@ -61,15 +58,7 @@ func New(config Config) (*Resource, error) {
 		return nil, microerror.Maskf(invalidConfigError, "%T.Installation must not be empty", config)
 	}
 
-	r := &Resource{
-		k8sClient:    config.K8sClient,
-		vpaClient:    config.VpaClient,
-		logger:       config.Logger,
-		installation: config.Installation,
-		provider:     config.Provider,
-	}
-
-	return r, nil
+	return &Resource{config}, nil
 }
 
 func (r *Resource) Name() string {
@@ -179,8 +168,8 @@ func (r *Resource) getObject(ctx context.Context, v interface{}) (*vpa_types.Ver
 func (r *Resource) getManagementClusterObservabilityBundleAppVersion(ctx context.Context, cluster metav1.Object) (string, error) {
 	var appName string
 	var appNamespace string
-	if key.IsCAPIManagementCluster(r.provider) {
-		appName = fmt.Sprintf("%s-observability-bundle", r.installation)
+	if key.IsCAPIManagementCluster(r.config.Provider) {
+		appName = fmt.Sprintf("%s-observability-bundle", r.config.Installation)
 		appNamespace = "org-giantswarm"
 	} else {
 		appName = "observability-bundle"
@@ -189,7 +178,7 @@ func (r *Resource) getManagementClusterObservabilityBundleAppVersion(ctx context
 
 	app := &appsv1alpha1.App{}
 	objectKey := types.NamespacedName{Namespace: appNamespace, Name: appName}
-	err := r.k8sClient.CtrlClient().Get(ctx, objectKey, app)
+	err := r.config.K8sClient.CtrlClient().Get(ctx, objectKey, app)
 	if err != nil {
 		if apierrors.IsNotFound(err) {
 			return unknownObservabilityBundleVersion, nil
@@ -207,7 +196,7 @@ func (r *Resource) getManagementClusterObservabilityBundleAppVersion(ctx context
 func (r *Resource) listWorkerNodes(ctx context.Context) (*v1.NodeList, error) {
 	// Selects only worker nodes
 	selector := "node-role.kubernetes.io/control-plane!="
-	nodeList, err := r.k8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
+	nodeList, err := r.config.K8sClient.K8sClient().CoreV1().Nodes().List(ctx, metav1.ListOptions{LabelSelector: selector})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}

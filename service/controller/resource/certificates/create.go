@@ -11,13 +11,17 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
+	if r.config.MimirEnabled {
+		r.config.Logger.Debugf(ctx, "mimir is enabled, deleting heartbeat if it exists")
+		return r.EnsureDeleted(ctx, obj)
+	}
 	desired, err := r.getDesiredObject(ctx, obj)
 	if err != nil {
 		return microerror.Mask(err)
 	}
 
-	r.logger.Debugf(ctx, "creating")
-	c := r.k8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace())
+	r.config.Logger.Debugf(ctx, "creating")
+	c := r.config.K8sClient.K8sClient().CoreV1().Secrets(desired.GetNamespace())
 	current, err := c.Get(ctx, desired.GetName(), metav1.GetOptions{})
 	if apierrors.IsNotFound(err) {
 		current, err = c.Create(ctx, desired, metav1.CreateOptions{})
@@ -33,7 +37,7 @@ func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
 			return microerror.Mask(err)
 		}
 	}
-	r.logger.Debugf(ctx, "created")
+	r.config.Logger.Debugf(ctx, "created")
 
 	return nil
 }

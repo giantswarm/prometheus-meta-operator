@@ -31,6 +31,8 @@ var (
 type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
+
+	MimirEnabled bool
 }
 
 func New(config Config) (*generic.Resource, error) {
@@ -46,12 +48,13 @@ func New(config Config) (*generic.Resource, error) {
 	}
 
 	c := generic.Config{
-		ClientFunc:       clientFunc,
-		Logger:           config.Logger,
-		Name:             Name,
-		GetObjectMeta:    getObjectMeta,
-		GetDesiredObject: toSecret,
-		HasChangedFunc:   hasChanged,
+		ClientFunc:           clientFunc,
+		Logger:               config.Logger,
+		Name:                 Name,
+		GetObjectMeta:        getObjectMeta,
+		GetDesiredObject:     toSecret,
+		HasChangedFunc:       hasChanged,
+		DeleteIfMimirEnabled: config.MimirEnabled,
 	}
 	r, err := generic.New(c)
 	if err != nil {

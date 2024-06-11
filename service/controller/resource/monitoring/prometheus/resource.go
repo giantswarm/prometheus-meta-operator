@@ -63,7 +63,8 @@ func New(config Config) (*generic.Resource, error) {
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return toPrometheus(ctx, v, config)
 		},
-		HasChangedFunc: hasChanged,
+		HasChangedFunc:       hasChanged,
+		DeleteIfMimirEnabled: config.MimirEnabled,
 	}
 	r, err := generic.New(c)
 	if err != nil {

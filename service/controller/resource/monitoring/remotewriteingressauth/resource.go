@@ -27,6 +27,7 @@ type Config struct {
 	PasswordManager password.Manager
 	Installation    string
 	Provider        cluster.Provider
+	MimirEnabled    bool
 }
 
 type Resource struct {

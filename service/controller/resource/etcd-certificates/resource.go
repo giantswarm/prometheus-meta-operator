@@ -24,6 +24,8 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 	Provider  cluster.Provider
+
+	MimirEnabled bool
 }
 
 // secretCopier provides a way to create a new secret from different data source.
@@ -68,7 +70,8 @@ func New(config Config) (*generic.Resource, error) {
 		GetDesiredObject: func(ctx context.Context, v interface{}) (metav1.Object, error) {
 			return sc.ToSecret(ctx, v, config)
 		},
-		HasChangedFunc: hasChanged,
+		HasChangedFunc:       hasChanged,
+		DeleteIfMimirEnabled: config.MimirEnabled,
 	}
 	r, err := generic.New(c)
 	if err != nil {
