@@ -61,7 +61,6 @@ func TestRenderingOfAlertmanagerNotificationTemplateWithMimirEnabled(t *testing.
 			Installation:   "test-installation",
 			GrafanaAddress: "https://grafana",
 			MimirEnabled:   true,
-			BaseDomain:     "prometheus.installation-prometheus.svc",
 		}
 		resource, err := New(config)
 		if err != nil {

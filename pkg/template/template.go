@@ -30,6 +30,10 @@ func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, 
 		return buf.String(), nil
 	}
 
+	// We add mimir specific functions to the template
+	funcMap["grafanaExploreURL"] = grafanaExploreURL
+	funcMap["queryFromGeneratorURL"] = queryFromGeneratorURL
+
 	tpl, err := tpl.Funcs(funcMap).ParseGlob(templateLocation)
 	if err != nil {
 		return nil, microerror.Mask(err)

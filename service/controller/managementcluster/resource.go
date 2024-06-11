@@ -137,7 +137,6 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 
-			BaseDomain:     config.PrometheusBaseDomain,
 			GrafanaAddress: config.GrafanaAddress,
 			Installation:   config.Installation,
 			MimirEnabled:   config.MimirEnabled,

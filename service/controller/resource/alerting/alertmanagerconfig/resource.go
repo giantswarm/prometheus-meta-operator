@@ -1,7 +1,6 @@
 package alertmanagerconfig
 
 import (
-	"fmt"
 	"net/url"
 	"path"
 	"reflect"
@@ -27,7 +26,6 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
-	BaseDomain     string
 	GrafanaAddress string
 	Installation   string
 	MimirEnabled   bool
@@ -43,9 +41,7 @@ type Resource struct {
 }
 
 type NotificationTemplateData struct {
-	GrafanaAddress    string
-	MimirEnabled      bool
-	PrometheusAddress string
+	GrafanaAddress string
 }
 
 type AlertmanagerTemplateData struct {
@@ -98,9 +94,7 @@ func (r *Resource) toSecret() (*corev1.Secret, error) {
 
 func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte, error) {
 	templateData := NotificationTemplateData{
-		GrafanaAddress:    r.config.GrafanaAddress,
-		MimirEnabled:      r.config.MimirEnabled,
-		PrometheusAddress: fmt.Sprintf("https://%s", r.config.BaseDomain),
+		GrafanaAddress: r.config.GrafanaAddress,
 	}
 
 	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, notificationTemplatePath))
