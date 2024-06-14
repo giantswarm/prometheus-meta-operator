@@ -2,7 +2,7 @@
 #
 #    devctl
 #
-#    https://github.com/giantswarm/devctl/blob/7a2bb1c2403407b720ec16e047f804471a57209e/pkg/gen/input/makefile/internal/file/Makefile.gen.k8sapi.mk.template
+#    https://github.com/giantswarm/devctl/blob/4c09e629d5ccd51a8d9247011315c2e35d4613d3/pkg/gen/input/makefile/internal/file/Makefile.gen.k8sapi.mk.template
 #
 
 # Directories.
