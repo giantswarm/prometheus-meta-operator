@@ -42,7 +42,7 @@
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
 {{ end -}}
-👀 Prometheus: {{ template "__prometheusurl" . }}
+👀 Query: {{ template "__prometheusurl" . }}
 
 ---
 
