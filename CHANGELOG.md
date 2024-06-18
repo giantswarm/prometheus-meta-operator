@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Internal rework to remove the use generic resource to ease out the migration to Mimir.
   - Update generic resource so we can delete resources when mimir is enabled.
   - Remove legacy prometheus resources when Mimir is enabled.
+  - Remove alertmanager ingress when Mimir is enabled.
 - Change Alert link to point to Mimir alerting UI when Mimir is enabled.
   - Rename Prometheus link to Source
 
