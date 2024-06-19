@@ -34,7 +34,7 @@ func FetchPrometheusList(ctx context.Context, r *ResourceWrapper, rw *pmov1alpha
 	ignoreAgentExp := metav1.LabelSelectorRequirement{
 		Key:      "app.kubernetes.io/name",
 		Operator: metav1.LabelSelectorOpNotIn,
-		Values:   []string{"prometheus-agent"},
+		Values:   []string{"prometheus-agent", "prometheus-remotewrite"},
 	}
 	specSelector.MatchExpressions = append(specSelector.MatchExpressions, ignoreAgentExp)
 	selector, err := metav1.LabelSelectorAsSelector(specSelector)
