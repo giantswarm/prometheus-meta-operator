@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Pass over mimir enabled to managementcluster `remotewriteingressauth` and `remotewriteingress` resources.
+
 ## [4.77.2] - 2024-06-19
 
 ### Fixed

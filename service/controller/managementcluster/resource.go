@@ -338,6 +338,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			PasswordManager: passwordManager,
 			Installation:    config.Installation,
 			Provider:        config.Provider,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		remoteWriteIngressAuthResource, err = remotewriteingressauth.New(c)
@@ -353,6 +355,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			Logger:      config.Logger,
 			BaseDomain:  config.PrometheusBaseDomain,
 			ExternalDNS: config.ExternalDNS,
+
+			MimirEnabled: config.MimirEnabled,
 		}
 
 		remoteWriteIngressResource, err = remotewriteingress.New(c)
