@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Remove line-breaks in alerting links which suppress links in notifications.
+
 ## [4.77.1] - 2024-06-19
 
 ### Fixed

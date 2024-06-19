@@ -1,22 +1,22 @@
 {{ define "__alertmanager" }}Alertmanager{{ end }}
 
 {{ define "__alerturl" }}
-[[- if .MimirEnabled ]]
+[[- if .MimirEnabled -]]
 [[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
-[[- else ]]
+[[- else -]]
 {{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D
-[[- end ]]
+[[- end -]]
 {{ end }}
 
 {{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
 
 {{ define "__queryurl" }}
-[[- if .MimirEnabled ]]
+[[- if .MimirEnabled -]]
 [[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
-[[- else ]]
+[[- else -]]
 {{ (index .Alerts 0).GeneratorURL }}
-[[- end ]]
+[[- end -]]
 {{ end }}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
