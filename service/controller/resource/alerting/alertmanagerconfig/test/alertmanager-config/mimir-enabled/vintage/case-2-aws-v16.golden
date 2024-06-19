@@ -152,7 +152,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -175,7 +175,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -198,7 +198,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -221,7 +221,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -244,7 +244,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -267,7 +267,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -290,7 +290,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -313,7 +313,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -336,7 +336,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
@@ -364,7 +364,7 @@ receivers:
       url: '{{ template "__alert_linked_postmortems" . }}'
     - type: button
       text: ':mag: Query'
-      url: '{{ template "__prometheusurl" . }}'
+      url: '{{ template "__alerturl" . }}'
     - type: button
       text: ':grafana: Dashboard'
       url: '{{ template "__dashboardurl" . }}'
