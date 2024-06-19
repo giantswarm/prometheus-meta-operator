@@ -48,7 +48,7 @@ https://grafana/alerting/Mimir/{{ .CommonLabels.alertname }}/find
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
 {{ end -}}
-👀 Details: {{ template "__queryurl" . }}
+👀 Explore: {{ template "__queryurl" . }}
 
 ---
 
