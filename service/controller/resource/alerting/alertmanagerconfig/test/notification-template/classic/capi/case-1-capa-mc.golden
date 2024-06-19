@@ -1,14 +1,21 @@
 {{ define "__alertmanager" }}Alertmanager{{ end }}
-{{ define "__alertmanagerurl" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D{{ end }}
+
+{{ define "__alerturl" }}
+{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D
+{{ end }}
+
 {{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
-{{ define "__queryurl" }}{{ (index .Alerts 0).GeneratorURL }}{{end}}
+
+{{ define "__queryurl" }}
+{{ (index .Alerts 0).GeneratorURL }}
+{{ end }}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
 {{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
 {{ define "slack.default.fallback" }}{{ template "slack.default.title" . }} | {{ template "slack.default.titlelink" . }}{{ end }}
 {{ define "slack.default.pretext" }}{{ end }}
-{{ define "slack.default.titlelink" }}{{ template "__alertmanagerurl" . }}{{ end }}
+{{ define "slack.default.titlelink" }}{{ template "__alerturl" . }}{{ end }}
 {{ define "slack.default.iconemoji" }}{{ end }}
 {{ define "slack.default.iconurl" }}{{ end }}
 {{ define "slack.default.text" }}*Cluster:* {{ (index .Alerts 0).Labels.installation }}{{ if (index .Alerts 0).Labels.cluster_id }} / {{ (index .Alerts 0).Labels.cluster_id }}{{ end }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }}
@@ -38,10 +45,10 @@
 {{ if (index .Alerts 0).Annotations.opsrecipe -}}
 📗 Runbook: {{ template "__runbookurl" . }}
 {{ end -}}
-🔔 Alertmanager {{ template "__alertmanagerurl" . }}
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
 {{ end -}}
+🔔 Alertmanager {{ template "__alerturl" . }}
 👀 Query: {{ template "__queryurl" . }}
 
 ---
