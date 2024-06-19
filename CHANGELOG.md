@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove AlertManager link in opsgenie and slack templating.
+
 ### Changed
 
 - Remove unused scrape_timeout inhibition.

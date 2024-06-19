@@ -1,13 +1,23 @@
 {{ define "__alertmanager" }}Alertmanager{{ end }}
-{{ define "__alertmanagerurl" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D{{ end }}
+
+{{ define "__alertmanagerurl" }}
+[[- if .MimirEnabled ]]
+[[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
+[[- else ]]
+{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D
+[[- end ]]
+{{ end }}
+
 {{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
 
+{{ define "__queryurl" }}
 [[- if .MimirEnabled ]]
-{{ define "__queryurl" }}[[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find{{end}}
+[[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
 [[- else ]]
-{{ define "__queryurl" }}{{ (index .Alerts 0).GeneratorURL }}{{end}}
+{{ (index .Alerts 0).GeneratorURL }}
 [[- end ]]
+{{ end }}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
 {{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
@@ -43,11 +53,15 @@
 {{ if (index .Alerts 0).Annotations.opsrecipe -}}
 📗 Runbook: {{ template "__runbookurl" . }}
 {{ end -}}
-🔔 Alertmanager {{ template "__alertmanagerurl" . }}
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
 {{ end -}}
+[[- if .MimirEnabled ]]
+👀 Details: {{ template "__queryurl" . }}
+[[- else ]]
+🔔 Alertmanager {{ template "__alertmanagerurl" . }}
 👀 Query: {{ template "__queryurl" . }}
+[[- end ]]
 
 ---
 
