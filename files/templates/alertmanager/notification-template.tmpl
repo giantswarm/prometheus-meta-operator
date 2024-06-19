@@ -57,7 +57,7 @@
 📈 Dashboard: {{ template "__dashboardurl" . }}
 {{ end -}}
 [[- if .MimirEnabled ]]
-👀 Details: {{ template "__queryurl" . }}
+👀 Explore: {{ template "__queryurl" . }}
 [[- else ]]
 🔔 Alertmanager {{ template "__alerturl" . }}
 👀 Query: {{ template "__queryurl" . }}
