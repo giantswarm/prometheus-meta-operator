@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.77.2] - 2024-06-19
+
 ### Fixed
 
 - Remove line-breaks in alerting links which suppress links in notifications.
@@ -2619,7 +2621,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.77.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.77.2...HEAD
+[4.77.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.77.1...v4.77.2
 [4.77.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.77.0...v4.77.1
 [4.77.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.76.0...v4.77.0
 [4.76.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.75.1...v4.76.0
