@@ -2,7 +2,7 @@
 {{ define "__alertmanagerurl" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D{{ end }}
 {{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
-{{ define "__prometheusurl" }}{{ (index .Alerts 0).GeneratorURL }}{{end}}
+{{ define "__queryurl" }}{{ (index .Alerts 0).GeneratorURL }}{{end}}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
 {{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
@@ -42,7 +42,7 @@
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
 {{ end -}}
-👀 Query: {{ template "__prometheusurl" . }}
+👀 Query: {{ template "__queryurl" . }}
 
 ---
 
