@@ -1,3 +1,4 @@
+{{- if .Values.mimir.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -46,3 +47,4 @@ spec:
   - hosts:
     - {{ .Values.alertmanager.host }}
     secretName: alertmanager-tls
+{{- end }}
