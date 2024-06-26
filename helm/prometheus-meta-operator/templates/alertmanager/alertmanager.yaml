@@ -1,3 +1,4 @@
+{{- if .Values.alertmanager.enabled -}}
 apiVersion: monitoring.coreos.com/v1
 kind: Alertmanager
 metadata:
@@ -62,3 +63,4 @@ spec:
       topologyKey: kubernetes.io/hostname
       whenUnsatisfiable: ScheduleAnyway
   version: {{ .Values.alertmanager.version }}
+{{- end }}

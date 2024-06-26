@@ -27,6 +27,8 @@ type Config struct {
 	K8sClient k8sclient.Interface
 	Logger    micrologger.Logger
 
+	AlertmanagerEnabled bool
+
 	BaseDomain     string
 	GrafanaAddress string
 	Installation   string
