@@ -3,6 +3,7 @@ package service
 import (
 	"github.com/giantswarm/operatorkit/v7/pkg/flag/service/kubernetes"
 
+	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/alertmanager"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/grafana"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/ingress"
 	"github.com/giantswarm/prometheus-meta-operator/v2/flag/service/installation"
@@ -17,6 +18,7 @@ import (
 
 // Service is an intermediate data structure for command line configuration flags.
 type Service struct {
+	Alertmanager    alertmanager.Alertmanager
 	Grafana         grafana.Grafana
 	Ingress         ingress.Ingress
 	Installation    installation.Installation

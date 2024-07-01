@@ -225,7 +225,8 @@ func New(config Config) (*Service, error) {
 			SlackApiToken:  config.Viper.GetString(config.Flag.Service.Slack.ApiToken),
 			SlackApiURL:    config.Viper.GetString(config.Flag.Service.Slack.ApiURL),
 
-			MimirEnabled: config.Viper.GetBool(config.Flag.Service.Mimir.Enabled),
+			AlertmanagerEnabled: config.Viper.GetBool(config.Flag.Service.Alertmanager.Enabled),
+			MimirEnabled:        config.Viper.GetBool(config.Flag.Service.Mimir.Enabled),
 
 			PrometheusAddress:            config.Viper.GetString(config.Flag.Service.Prometheus.Address),
 			PrometheusBaseDomain:         config.Viper.GetString(config.Flag.Service.Prometheus.BaseDomain),

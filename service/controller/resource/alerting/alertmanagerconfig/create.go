@@ -11,6 +11,10 @@ import (
 )
 
 func (r *Resource) EnsureCreated(ctx context.Context, obj interface{}) error {
+	if !r.config.AlertmanagerEnabled {
+		r.config.Logger.Debugf(ctx, "alertmanager is disabled, deleting alertmanager config if it exists")
+		return r.EnsureDeleted(ctx, obj)
+	}
 	desired, err := r.toSecret()
 	if err != nil {
 		return microerror.Mask(err)

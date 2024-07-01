@@ -1,3 +1,4 @@
+{{- if .Values.alertmanager.enabled -}}
 {{- if not .Values.mimir.enabled }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -35,4 +36,5 @@ spec:
             name: alertmanager-operated
             port:
               number: 9093
+{{- end }}
 {{- end }}

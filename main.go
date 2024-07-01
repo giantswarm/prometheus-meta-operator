@@ -121,6 +121,7 @@ func mainE(ctx context.Context) error {
 	daemonCommand.PersistentFlags().String(f.Service.Installation.Registry, "", "Container image registry.")
 	daemonCommand.PersistentFlags().Bool(f.Service.Installation.InsecureCA, false, "Is the management cluter CA insecure?")
 
+	daemonCommand.PersistentFlags().Bool(f.Service.Alertmanager.Enabled, true, "Is Alertmanager enabled?")
 	daemonCommand.PersistentFlags().Bool(f.Service.Mimir.Enabled, false, "Is Mimir enabled?")
 	daemonCommand.PersistentFlags().String(f.Service.Opsgenie.Key, "", "Opsgenie Key used for API authentication.")
 

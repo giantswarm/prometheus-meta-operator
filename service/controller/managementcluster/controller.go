@@ -45,7 +45,8 @@ type ControllerConfig struct {
 	SlackApiToken  string
 	SlackApiURL    string
 
-	MimirEnabled bool
+	AlertmanagerEnabled bool
+	MimirEnabled        bool
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string

@@ -64,7 +64,8 @@ type resourcesConfig struct {
 	SlackApiToken  string
 	SlackApiURL    string
 
-	MimirEnabled bool
+	AlertmanagerEnabled bool
+	MimirEnabled        bool
 
 	PrometheusAddress            string
 	PrometheusBaseDomain         string
@@ -142,6 +143,8 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 		c := alertmanagerconfig.Config{
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
+
+			AlertmanagerEnabled: config.AlertmanagerEnabled && config.MimirEnabled,
 
 			BaseDomain:     config.PrometheusBaseDomain,
 			GrafanaAddress: config.GrafanaAddress,
