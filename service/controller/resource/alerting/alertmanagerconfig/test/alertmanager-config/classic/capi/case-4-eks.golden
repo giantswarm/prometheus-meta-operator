@@ -450,30 +450,6 @@ inhibit_rules:
   equal: [cluster_id, ip]
 
 - source_matchers:
-  - kubelet_down=true
-  target_matchers:
-  - cancel_if_any_kubelet_down=true
-  equal: [cluster_id]
-
-- source_matchers:
-  - kubelet_not_ready=true
-  target_matchers:
-  - cancel_if_kubelet_not_ready=true
-  equal: [cluster_id, ip]
-
-- source_matchers:
-  - kubelet_not_ready=true
-  target_matchers:
-  - cancel_if_any_kubelet_not_ready=true
-  equal: [cluster_id]
-
-- source_matchers:
-  - nodes_down=true
-  target_matchers:
-  - cancel_if_nodes_down=true
-  equal: [cluster_id]
-
-- source_matchers:
   - control_plane_node_down=true
   target_matchers:
   - cancel_if_control_plane_node_down=true
