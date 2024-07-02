@@ -525,3 +525,17 @@ inhibit_rules:
     - stack_failed=true
   target_matchers:
     - cancel_if_stack_failed=true
+
+# Source: https://github.com/giantswarm/prometheus-rules/blob/main/helm/prometheus-rules/templates/kaas/turtles/alerting-rules/inhibit.nodes.rules.yml
+- source_matchers:
+    - node_not_ready=true
+  target_matchers:
+    - cancel_if_node_not_ready=true
+  equal: [cluster_id, node]
+
+# Source: https://github.com/giantswarm/prometheus-rules/blob/main/helm/prometheus-rules/templates/kaas/turtles/alerting-rules/inhibit.nodes.rules.yml
+- source_matchers:
+    - node_unschedulable=true
+  target_matchers:
+    - cancel_if_node_unschedulable=true
+  equal: [cluster_id, node]
