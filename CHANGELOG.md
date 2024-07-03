@@ -15,6 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added support to be able to disable alertmanager on mimir installations.
 
+### Removed
+
+- Clean up unused configured inhibitions.
+
 ## [4.77.3] - 2024-06-19
 
 ### Fixed
