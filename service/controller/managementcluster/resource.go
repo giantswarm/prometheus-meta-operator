@@ -144,7 +144,7 @@ func newResources(config resourcesConfig) ([]resource.Interface, error) {
 			K8sClient: config.K8sClient,
 			Logger:    config.Logger,
 
-			AlertmanagerEnabled: config.AlertmanagerEnabled && config.MimirEnabled,
+			AlertmanagerEnabled: config.AlertmanagerEnabled || !key.IsCAPIManagementCluster(config.Provider),
 
 			BaseDomain:     config.PrometheusBaseDomain,
 			GrafanaAddress: config.GrafanaAddress,

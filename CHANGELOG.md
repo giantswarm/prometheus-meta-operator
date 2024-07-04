@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix AlertManager configuration generation on Vintage.
+
 ## [4.78.0] - 2024-07-03
 
 ### Added
