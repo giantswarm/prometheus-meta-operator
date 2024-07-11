@@ -29,7 +29,7 @@ require (
 	k8s.io/apimachinery v0.29.5
 	k8s.io/autoscaler/vertical-pod-autoscaler v1.0.0
 	k8s.io/client-go v0.29.5
-	sigs.k8s.io/cluster-api v1.7.3
+	sigs.k8s.io/cluster-api v1.7.4
 	sigs.k8s.io/controller-runtime v0.17.3
 	sigs.k8s.io/yaml v1.4.0
 )
