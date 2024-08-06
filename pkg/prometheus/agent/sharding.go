@@ -2,6 +2,17 @@ package agent
 
 import "math"
 
+// ShardingStrategy is a struct that holds the configuration on how to scale prometheus agent shards up and down.
+// It is used to compute the number of shards needed based on the number of time series.
+// It works as follow:
+//
+//	ScaleUpSeriesCount = 1_000_000
+//	ScaleDownPercentage = 0.20
+//
+//	time series = 1_000_000           => 1 shard
+//	time series increase to 1_000_001 => 2 shards
+//	time series decrease to 800_001   => 2 shards
+//	time series decrease to 800_000   => 1 shard
 type ShardingStrategy struct {
 	// Configures the number of series needed to add a new shard. Computation is number of series / ScaleUpSeriesCount
 	ScaleUpSeriesCount float64
