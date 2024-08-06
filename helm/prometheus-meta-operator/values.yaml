@@ -18,6 +18,7 @@ kyvernoPolicyExceptions:
   namespace: giantswarm
 
 alertmanager:
+  enabled: true
   address: "https://alertmanager:9093"
   host: "alertmanager:9093"
   imageRepository: giantswarm/alertmanager

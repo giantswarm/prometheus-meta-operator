@@ -15,22 +15,22 @@ require (
 	github.com/giantswarm/operatorkit/v7 v7.2.0
 	github.com/giantswarm/versionbundle v1.1.0
 	github.com/google/go-cmp v0.6.0
-	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.22
+	github.com/opsgenie/opsgenie-go-sdk-v2 v1.2.23
 	github.com/prometheus-operator/prometheus-operator/pkg/apis/monitoring v0.74.0
 	github.com/prometheus-operator/prometheus-operator/pkg/client v0.74.0
 	github.com/prometheus/client_golang v1.19.1
 	github.com/prometheus/common v0.55.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
-	golang.org/x/crypto v0.24.0
-	golang.org/x/net v0.26.0
+	golang.org/x/crypto v0.25.0
+	golang.org/x/net v0.27.0
 	k8s.io/api v0.29.5
 	k8s.io/apiextensions-apiserver v0.29.5
 	k8s.io/apimachinery v0.29.5
 	k8s.io/autoscaler/vertical-pod-autoscaler v1.0.0
 	k8s.io/client-go v0.29.5
-	sigs.k8s.io/cluster-api v1.5.3
-	sigs.k8s.io/controller-runtime v0.17.2
+	sigs.k8s.io/cluster-api v1.7.4
+	sigs.k8s.io/controller-runtime v0.17.3
 	sigs.k8s.io/yaml v1.4.0
 )
 
@@ -38,14 +38,13 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/blang/semver/v4 v4.0.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/emicklei/go-restful/v3 v3.12.0 // indirect
 	github.com/evanphx/json-patch v5.9.0+incompatible // indirect
-	github.com/evanphx/json-patch/v5 v5.8.0 // indirect
+	github.com/evanphx/json-patch/v5 v5.9.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/getsentry/sentry-go v0.25.0 // indirect
 	github.com/giantswarm/backoff v1.0.0 // indirect
@@ -102,8 +101,8 @@ require (
 	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb // indirect
 	golang.org/x/oauth2 v0.21.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.21.0 // indirect
-	golang.org/x/term v0.21.0 // indirect
+	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/term v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.4.0 // indirect
@@ -122,6 +121,6 @@ require (
 )
 
 replace (
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.17
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.18
 	google.golang.org/protobuf => google.golang.org/protobuf v1.34.2
 )

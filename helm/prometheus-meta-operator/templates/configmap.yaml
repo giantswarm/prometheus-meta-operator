@@ -23,6 +23,8 @@ data:
           keyFile: ''
       mimir:
         enabled: {{ .Values.mimir.enabled }}
+      alertmanager:
+        enabled: {{ .Values.alertmanager.enabled }}
       prometheus:
         {{- if .Values.prometheus.additionalScrapeConfigs }}
         additionalScrapeConfigs: |-
