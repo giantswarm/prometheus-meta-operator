@@ -121,6 +121,6 @@ require (
 )
 
 replace (
-	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.19
+	github.com/nats-io/nats-server/v2 => github.com/nats-io/nats-server/v2 v2.10.20
 	google.golang.org/protobuf => google.golang.org/protobuf v1.34.2
 )
