@@ -105,12 +105,6 @@ route:
     - team="rocket"
     continue: false
 
-  # Team Ops Slack
-  - receiver: team_ops_slack
-    matchers:
-    - severity=~"page|notify"
-    continue: true
-
   # Team Turtles Slack
   - receiver: team_turtles_slack
     matchers:
@@ -349,29 +343,6 @@ receivers:
   opsgenie_configs:
   - api_key: opsgenie-key
     tags: "{{ (index .Alerts 0).Labels.alertname }},{{ (index .Alerts 0).Labels.cluster_type }},{{ (index .Alerts 0).Labels.severity }},{{ (index .Alerts 0).Labels.team }},{{ (index .Alerts 0).Labels.area }},{{ (index .Alerts 0).Labels.service_priority }},{{ (index .Alerts 0).Labels.provider }},{{ (index .Alerts 0).Labels.installation }},{{ (index .Alerts 0).Labels.pipeline }}"
-
-- name: team_ops_slack
-  slack_configs:
-  - channel: '#alert-test-test-installation'
-    send_resolved: true
-    actions:
-    - type: button
-      text: ':green_book: OpsRecipe'
-      url: '{{ template "__runbookurl" . }}'
-      style: '{{ if eq .Status "firing" }}primary{{ else }}default{{ end }}'
-    - type: button
-      text: ':coffin: Linked PMs'
-      url: '{{ template "__alert_linked_postmortems" . }}'
-    - type: button
-      text: ':mag: Query'
-      url: '{{ template "__alerturl" . }}'
-    - type: button
-      text: ':grafana: Dashboard'
-      url: '{{ template "__dashboardurl" . }}'
-    - type: button
-      text: ':no_bell: Silence'
-      url: '{{ template "__alert_silence_link" . }}'
-      style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
 inhibit_rules:
 - source_matchers:
