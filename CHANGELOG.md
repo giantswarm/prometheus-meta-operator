@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+
+- Remove unused `#alert` and `#alert-test-installation` slack integration.
+
 ## [4.78.1] - 2024-07-04
 
 ### Fixed
