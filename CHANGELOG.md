@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.78.2] - 2024-09-16
+
 ### Removed
 
 - Remove unused `#alert` and `#alert-test-installation` slack integration.
@@ -2651,7 +2653,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.1...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.2...HEAD
+[4.78.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.1...v4.78.2
 [4.78.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.0...v4.78.1
 [4.78.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.77.3...v4.78.0
 [4.77.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.77.2...v4.77.3
