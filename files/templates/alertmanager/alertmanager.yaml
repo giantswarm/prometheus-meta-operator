@@ -73,11 +73,11 @@ route:
     - alertname=~"Falco.*"
     continue: false
 
-  - receiver: team_tinkerers_slack
+  - receiver: team_tenet_slack
     repeat_interval: 14d
     matchers:
     - severity=~"page|notify"
-    - team="tinkerers"
+    - team=~"tenet|tinkerers"
     continue: false
 
   # Team Ops Opsgenie
@@ -434,9 +434,9 @@ receivers:
       url: '{{ template "__alert_silence_link" . }}'
       style: '{{ if eq .Status "firing" }}danger{{ else }}default{{ end }}'
 
-- name: team_tinkerers_slack
+- name: team_tenet_slack
   slack_configs:
-  - channel: '#alert-tinkerers'
+  - channel: '#alert-tenet'
     [[- if .SlackApiToken ]]
     http_config:
       authorization:
