@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.78.3] - 2024-09-17
+
 ### Changed
 
 - Ranemd Team Tinkerers to Team Tenet
@@ -2657,7 +2659,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.2...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.3...HEAD
+[4.78.3]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.2...v4.78.3
 [4.78.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.1...v4.78.2
 [4.78.1]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.0...v4.78.1
 [4.78.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.77.3...v4.78.0
