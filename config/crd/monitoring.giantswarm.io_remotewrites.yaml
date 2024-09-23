@@ -6,6 +6,8 @@ metadata:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
   name: remotewrites.monitoring.giantswarm.io
+  labels:
+    {{- include "labels.common" . | nindent 4 }}
 spec:
   group: monitoring.giantswarm.io
   names:
