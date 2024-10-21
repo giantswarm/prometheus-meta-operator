@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Ranemd Team Tinkerers to Team Tenet
+- Renamed Team Tinkerers to Team Tenet
 
 ## [4.78.2] - 2024-09-16
 
