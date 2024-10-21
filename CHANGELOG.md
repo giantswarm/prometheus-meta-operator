@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add `customer` label to OpsGenie alerts.
+
 ## [4.79.0] - 2024-09-17
 
 ### Changed
