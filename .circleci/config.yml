@@ -5,121 +5,129 @@ orbs:
 workflows:
   build:
     jobs:
-      - architect/go-build:
-          name: build
-          binary: prometheus-meta-operator
-          resource_class: large
-          filters:
-            tags:
-              only: /^v.*/
+    - architect/go-build:
+        name: build
+        binary: prometheus-meta-operator
+        resource_class: large
+        filters:
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-registries:
-          context: architect
-          name: push-to-registries
-          requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
+    - architect/push-to-registries:
+        context: architect
+        name: push-to-registries
+        requires:
+        - build
+        filters:
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-app-catalog:
-          name: app-catalog
-          context: "architect"
-          app_catalog: "control-plane-catalog"
-          app_catalog_test: "control-plane-test-catalog"
-          chart: "prometheus-meta-operator"
-          requires:
-            - build
-          filters:
-            tags:
-              only: /^v.*/
+          branches:
+            ignore:
+            - main
+            - master
+    - architect/push-to-app-catalog:
+        name: app-catalog
+        context: architect
+        app_catalog: control-plane-catalog
+        app_catalog_test: control-plane-test-catalog
+        chart: prometheus-meta-operator
+        requires:
+        - build
+        filters:
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-app-collection:
-          name: aws-app-collection
-          context: "architect"
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "aws-app-collection"
-          requires:
-            - app-catalog
-            - push-to-registries
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+          branches:
+            ignore:
+            - main
+            - master
+    - architect/push-to-app-collection:
+        name: aws-app-collection
+        context: architect
+        app_name: prometheus-meta-operator
+        app_namespace: monitoring
+        app_collection_repo: aws-app-collection
+        requires:
+        - app-catalog
+        - push-to-registries
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-to-capa-app-collection
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "capa-app-collection"
-          requires:
-            - app-catalog
-            - push-to-registries
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+    - architect/push-to-app-collection:
+        context: architect
+        name: push-to-capa-app-collection
+        app_name: prometheus-meta-operator
+        app_namespace: monitoring
+        app_collection_repo: capa-app-collection
+        requires:
+        - app-catalog
+        - push-to-registries
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-to-capz-app-collection
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "capz-app-collection"
-          requires:
-            - app-catalog
-            - push-to-registries
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+    - architect/push-to-app-collection:
+        context: architect
+        name: push-to-capz-app-collection
+        app_name: prometheus-meta-operator
+        app_namespace: monitoring
+        app_collection_repo: capz-app-collection
+        requires:
+        - app-catalog
+        - push-to-registries
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-to-cloud-director-app-collection
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "cloud-director-app-collection"
-          requires:
-            - app-catalog
-            - push-to-registries
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+    - architect/push-to-app-collection:
+        context: architect
+        name: push-to-cloud-director-app-collection
+        app_name: prometheus-meta-operator
+        app_namespace: monitoring
+        app_collection_repo: cloud-director-app-collection
+        requires:
+        - app-catalog
+        - push-to-registries
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-app-collection:
-          context: architect
-          name: push-to-gcp-app-collection
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "gcp-app-collection"
-          requires:
-            - app-catalog
-            - push-to-registries
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+    - architect/push-to-app-collection:
+        context: architect
+        name: push-to-gcp-app-collection
+        app_name: prometheus-meta-operator
+        app_namespace: monitoring
+        app_collection_repo: gcp-app-collection
+        requires:
+        - app-catalog
+        - push-to-registries
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
 
-      - architect/push-to-app-collection:
-          name: vsphere-app-collection
-          context: "architect"
-          app_name: "prometheus-meta-operator"
-          app_namespace: "monitoring"
-          app_collection_repo: "vsphere-app-collection"
-          requires:
-            - app-catalog
-            - push-to-registries
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^v.*/
+    - architect/push-to-app-collection:
+        name: vsphere-app-collection
+        context: architect
+        app_name: prometheus-meta-operator
+        app_namespace: monitoring
+        app_collection_repo: vsphere-app-collection
+        requires:
+        - app-catalog
+        - push-to-registries
+        filters:
+          branches:
+            ignore: /.*/
+          tags:
+            only: /^v.*/
