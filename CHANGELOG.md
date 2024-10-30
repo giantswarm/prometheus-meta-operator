@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Create new `monitoring-agent` inhibitions based on the `prometheus-agent` inhibitions to be agnostic to the tool used to monitor targets.
+
 ## [4.80.0] - 2024-10-21
 
 ### Added
