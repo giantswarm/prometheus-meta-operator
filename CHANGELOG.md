@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.81.0] - 2024-10-30
+
 ### Changed
 
 - Create new `monitoring-agent` inhibitions based on the `prometheus-agent` inhibitions to be agnostic to the tool used to monitor targets.
@@ -2669,7 +2671,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.80.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.81.0...HEAD
+[4.81.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.80.0...v4.81.0
 [4.80.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.79.0...v4.80.0
 [4.79.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.2...v4.79.0
 [4.78.2]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.78.1...v4.78.2
