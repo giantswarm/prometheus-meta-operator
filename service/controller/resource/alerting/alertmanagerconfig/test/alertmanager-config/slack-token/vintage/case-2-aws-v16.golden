@@ -474,18 +474,6 @@ inhibit_rules:
   equal: [cluster_id]
 
 - source_matchers:
-    - cluster_is_not_running_prometheus_agent=true
-  target_matchers:
-    - cancel_if_cluster_is_not_running_prometheus_agent=true
-  equal: [cluster_id]
-
-- source_matchers:
-    - inhibit_prometheus_agent_down=true
-  target_matchers:
-    - cancel_if_prometheus_agent_down=true
-  equal: [cluster_id]
-
-- source_matchers:
     - cluster_is_not_running_monitoring_agent=true
   target_matchers:
     - cancel_if_cluster_is_not_running_monitoring_agent=true
