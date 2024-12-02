@@ -2,7 +2,7 @@
 
 {{ define "__alerturl" }}
 [[- if .MimirEnabled -]]
-[[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
+[[ .GrafanaAddress ]]/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager
 [[- else -]]
 {{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D
 [[- end -]]
@@ -13,7 +13,7 @@
 
 {{ define "__queryurl" }}
 [[- if .MimirEnabled -]]
-[[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
+[[ .GrafanaAddress ]]/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager
 [[- else -]]
 {{ (index .Alerts 0).GeneratorURL }}
 [[- end -]]
@@ -42,19 +42,16 @@
 
 {{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
 {{ define "opsgenie.default.source" }}{{ template "__alertmanager" . }}{{ end }}
-{{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
-* Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
-
-* Instances:{{ range .Alerts.Firing }}
-🔥 {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
-
----
-
+{{ define "opsgenie.default.description" }}
 {{ if (index .Alerts 0).Annotations.opsrecipe -}}
 📗 Runbook: {{ template "__runbookurl" . }}
-{{ end -}}
+{{ else -}}
+📗 Runbook: ⚠️ There is no **runbook** for this alert, time to get your pen.
+{{- end }}
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
+{{ else -}}
+📈 Dashboard: ⚠️ There is no **dashboard** for this alert, time to sketch.
 {{ end -}}
 [[- if .MimirEnabled ]]
 👀 Explore: {{ template "__queryurl" . }}
@@ -65,8 +62,10 @@
 
 ---
 
-{{ if not (index .Alerts 0).Annotations.opsrecipe }}⚠️ There is no **runbook** for this alert, time to get your pen.{{- end }}
-{{ if not (index .Alerts 0).Annotations.dashboard }}⚠️ There is no **dashboard** for this alert, time to sketch.{{- end }}
+* Team: {{ (index .Alerts 0).Labels.team }}
+* Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
+* Instances:{{ range .Alerts.Firing }}
+🔥 {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
 {{- end }}
 
 # This builds the silence URL.  We exclude the alertname in the range

@@ -1,11 +1,11 @@
 {{ define "__alertmanager" }}Alertmanager{{ end }}
 
-{{ define "__alerturl" }}https://grafana/alerting/Mimir/{{ .CommonLabels.alertname }}/find{{ end }}
+{{ define "__alerturl" }}https://grafana/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager{{ end }}
 
 {{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
 
-{{ define "__queryurl" }}https://grafana/alerting/Mimir/{{ .CommonLabels.alertname }}/find{{ end }}
+{{ define "__queryurl" }}https://grafana/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager{{ end }}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
 {{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
@@ -30,26 +30,25 @@
 
 {{ define "opsgenie.default.message" }}{{ .GroupLabels.installation }} / {{ .GroupLabels.cluster_id }}{{ if (index .Alerts 0).Labels.service }} / {{ (index .Alerts 0).Labels.service }}{{ end }} - {{ index (index .Alerts.Firing 0).Labels `alertname`}}{{ end }}
 {{ define "opsgenie.default.source" }}{{ template "__alertmanager" . }}{{ end }}
-{{ define "opsgenie.default.description" }}* Team: {{ (index .Alerts 0).Labels.team }}
-* Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
-
-* Instances:{{ range .Alerts.Firing }}
-🔥 {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
-
----
-
+{{ define "opsgenie.default.description" }}
 {{ if (index .Alerts 0).Annotations.opsrecipe -}}
 📗 Runbook: {{ template "__runbookurl" . }}
-{{ end -}}
+{{ else -}}
+📗 Runbook: ⚠️ There is no **runbook** for this alert, time to get your pen.
+{{- end }}
 {{ if (index .Alerts 0).Annotations.dashboard -}}
 📈 Dashboard: {{ template "__dashboardurl" . }}
+{{ else -}}
+📈 Dashboard: ⚠️ There is no **dashboard** for this alert, time to sketch.
 {{ end -}}
 👀 Explore: {{ template "__queryurl" . }}
 
 ---
 
-{{ if not (index .Alerts 0).Annotations.opsrecipe }}⚠️ There is no **runbook** for this alert, time to get your pen.{{- end }}
-{{ if not (index .Alerts 0).Annotations.dashboard }}⚠️ There is no **dashboard** for this alert, time to sketch.{{- end }}
+* Team: {{ (index .Alerts 0).Labels.team }}
+* Area: {{ (index .Alerts 0).Labels.area }} / {{ (index .Alerts 0).Labels.topic }}
+* Instances:{{ range .Alerts.Firing }}
+🔥 {{ if .Labels.instance }}{{ .Labels.instance }}: {{ end }}{{ .Annotations.description }}{{ end }}
 {{- end }}
 
 # This builds the silence URL.  We exclude the alertname in the range
