@@ -9,11 +9,8 @@ import (
 	"github.com/giantswarm/microerror"
 )
 
-// RenderTemplate render all template files matching templateLocation glob filter, using templateData.
-// template files are using [[ and ]] as delimiters.
-// There's an additional 'include' template function provided taken from helm: https://helm.sh/docs/howto/charts_tips_and_tricks/#using-the-include-function
-func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, error) {
-	tpl := template.New("_base").Delims("[[", "]]")
+func New(name string) *template.Template {
+	tpl := template.New(name).Delims("[[", "]]")
 
 	// Clone the func map because we are adding context-specific functions.
 	var funcMap template.FuncMap = map[string]interface{}{}
@@ -30,11 +27,23 @@ func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, 
 		return buf.String(), nil
 	}
 
-	tpl, err := tpl.Funcs(funcMap).ParseGlob(templateLocation)
+	return tpl.Funcs(funcMap)
+}
+
+// RenderTemplate render all template files matching templateLocation glob filter, using templateData.
+// template files are using [[ and ]] as delimiters.
+// There's an additional 'include' template function provided taken from helm: https://helm.sh/docs/howto/charts_tips_and_tricks/#using-the-include-function
+func RenderTemplate(templateData interface{}, templateLocation string) ([]byte, error) {
+	tpl := New("_base")
+	tpl, err := tpl.ParseGlob(templateLocation)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
+	return Render(tpl, templateData)
+}
+
+func Render(tpl *template.Template, templateData interface{}) ([]byte, error) {
 	var b bytes.Buffer
 	for _, t := range tpl.Templates() {
 		if strings.HasPrefix(t.Name(), "_") {

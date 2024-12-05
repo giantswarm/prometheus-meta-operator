@@ -24,7 +24,7 @@ func TestRenderingOfAlertmanagerNotificationTemplateWithLegacyMonitoring(t *test
 			t.Fatal(err)
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return resource.renderNotificationTemplate(unittest.ProjectRoot())
+			return resource.RenderNotificationTemplate()
 		}
 	}
 
@@ -68,7 +68,7 @@ func TestRenderingOfAlertmanagerNotificationTemplateWithMimirEnabled(t *testing.
 			t.Fatal(err)
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return resource.renderNotificationTemplate(unittest.ProjectRoot())
+			return resource.RenderNotificationTemplate()
 		}
 	}
 
@@ -117,7 +117,7 @@ func TestRenderingOfAlertmanagerConfigWithLegacyMonitoring(t *testing.T) {
 			t.Fatal(err)
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return resource.renderAlertmanagerConfig(unittest.ProjectRoot())
+			return resource.RenderAlertmanagerConfig()
 		}
 	}
 
@@ -167,7 +167,7 @@ func TestRenderingOfAlertmanagerConfigWithMimirEnabled(t *testing.T) {
 			t.Fatal(err)
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return resource.renderAlertmanagerConfig(unittest.ProjectRoot())
+			return resource.RenderAlertmanagerConfig()
 		}
 	}
 
@@ -217,7 +217,7 @@ func TestRenderingOfAlertmanagerConfigSlackToken(t *testing.T) {
 			t.Fatal(err)
 		}
 		testFunc = func(v interface{}) (interface{}, error) {
-			return resource.renderAlertmanagerConfig(unittest.ProjectRoot())
+			return resource.RenderAlertmanagerConfig()
 		}
 	}
 

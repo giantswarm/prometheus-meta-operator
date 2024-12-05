@@ -1,9 +1,10 @@
 package alertmanagerconfig
 
 import (
+	_ "embed"
 	"fmt"
+	htmltemplate "html/template"
 	"net/url"
-	"path"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -18,10 +19,24 @@ import (
 
 const (
 	Name                     = "alertmanagerconfig"
-	templateDirectory        = "/opt/prometheus-meta-operator"
 	alertmanagerTemplatePath = "files/templates/alertmanager/alertmanager.yaml"
 	notificationTemplatePath = "files/templates/alertmanager/notification-template.tmpl"
 )
+
+var (
+	//go:embed templates/alertmanager.yaml
+	alertmanagerConfig         string
+	alertmanagerConfigTemplate *htmltemplate.Template
+
+	//go:embed templates/notification-template.tmpl
+	notificationTemplate         string
+	notificationTemplateTemplate *htmltemplate.Template
+)
+
+func init() {
+	alertmanagerConfigTemplate = htmltemplate.Must(template.New("alertmanager.yaml").Parse(alertmanagerConfig))
+	notificationTemplateTemplate = htmltemplate.Must(template.New("notification-template.tmpl").Parse(notificationTemplate))
+}
 
 type Config struct {
 	K8sClient k8sclient.Interface
@@ -76,12 +91,12 @@ func getObjectMeta() metav1.ObjectMeta {
 }
 
 func (r *Resource) toSecret() (*corev1.Secret, error) {
-	notificationTemplate, err := r.renderNotificationTemplate(templateDirectory)
+	notificationTemplate, err := r.RenderNotificationTemplate()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	alertmanagerConfigSecret, err := r.renderAlertmanagerConfig(templateDirectory)
+	alertmanagerConfigSecret, err := r.RenderAlertmanagerConfig()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -98,14 +113,14 @@ func (r *Resource) toSecret() (*corev1.Secret, error) {
 	return secret, nil
 }
 
-func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte, error) {
+func (r *Resource) RenderNotificationTemplate() ([]byte, error) {
 	templateData := NotificationTemplateData{
 		GrafanaAddress:    r.config.GrafanaAddress,
 		MimirEnabled:      r.config.MimirEnabled,
 		PrometheusAddress: fmt.Sprintf("https://%s", r.config.BaseDomain),
 	}
 
-	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, notificationTemplatePath))
+	data, err := template.Render(notificationTemplateTemplate, templateData)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -113,13 +128,13 @@ func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte,
 	return data, nil
 }
 
-func (r *Resource) renderAlertmanagerConfig(templateDirectory string) ([]byte, error) {
+func (r *Resource) RenderAlertmanagerConfig() ([]byte, error) {
 	templateData, err := r.getTemplateData()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, alertmanagerTemplatePath))
+	data, err := template.Render(alertmanagerConfigTemplate, templateData)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
