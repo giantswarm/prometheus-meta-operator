@@ -92,12 +92,12 @@ func getObjectMeta() metav1.ObjectMeta {
 }
 
 func (r *Resource) toSecret() (*corev1.Secret, error) {
-	notificationTemplate, err := r.renderNotificationTemplate(templateDirectory)
+	notificationTemplate, err := r.RenderNotificationTemplate(templateDirectory)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	alertmanagerConfigSecret, err := r.renderAlertmanagerConfig(templateDirectory)
+	alertmanagerConfigSecret, err := r.RenderAlertmanagerConfig(templateDirectory)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -114,7 +114,7 @@ func (r *Resource) toSecret() (*corev1.Secret, error) {
 	return secret, nil
 }
 
-func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte, error) {
+func (r *Resource) RenderNotificationTemplate(templateDirectory string) ([]byte, error) {
 	templateData := NotificationTemplateData{
 		GrafanaAddress:    r.config.GrafanaAddress,
 		MimirEnabled:      r.config.MimirEnabled,
@@ -129,7 +129,7 @@ func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte,
 	return data, nil
 }
 
-func (r *Resource) renderAlertmanagerConfig(templateDirectory string) ([]byte, error) {
+func (r *Resource) RenderAlertmanagerConfig(templateDirectory string) ([]byte, error) {
 	templateData, err := r.getTemplateData()
 	if err != nil {
 		return nil, microerror.Mask(err)
