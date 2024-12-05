@@ -19,7 +19,6 @@ import (
 
 const (
 	Name                     = "alertmanagerconfig"
-	templateDirectory        = "/opt/prometheus-meta-operator"
 	alertmanagerTemplatePath = "files/templates/alertmanager/alertmanager.yaml"
 	notificationTemplatePath = "files/templates/alertmanager/notification-template.tmpl"
 )
@@ -92,12 +91,12 @@ func getObjectMeta() metav1.ObjectMeta {
 }
 
 func (r *Resource) toSecret() (*corev1.Secret, error) {
-	notificationTemplate, err := r.RenderNotificationTemplate(templateDirectory)
+	notificationTemplate, err := r.RenderNotificationTemplate()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
 
-	alertmanagerConfigSecret, err := r.RenderAlertmanagerConfig(templateDirectory)
+	alertmanagerConfigSecret, err := r.RenderAlertmanagerConfig()
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -114,7 +113,7 @@ func (r *Resource) toSecret() (*corev1.Secret, error) {
 	return secret, nil
 }
 
-func (r *Resource) RenderNotificationTemplate(templateDirectory string) ([]byte, error) {
+func (r *Resource) RenderNotificationTemplate() ([]byte, error) {
 	templateData := NotificationTemplateData{
 		GrafanaAddress:    r.config.GrafanaAddress,
 		MimirEnabled:      r.config.MimirEnabled,
@@ -129,7 +128,7 @@ func (r *Resource) RenderNotificationTemplate(templateDirectory string) ([]byte,
 	return data, nil
 }
 
-func (r *Resource) RenderAlertmanagerConfig(templateDirectory string) ([]byte, error) {
+func (r *Resource) RenderAlertmanagerConfig() ([]byte, error) {
 	templateData, err := r.getTemplateData()
 	if err != nil {
 		return nil, microerror.Mask(err)
