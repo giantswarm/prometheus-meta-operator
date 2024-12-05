@@ -1,9 +1,10 @@
 package alertmanagerconfig
 
 import (
+	_ "embed"
 	"fmt"
+	htmltemplate "html/template"
 	"net/url"
-	"path"
 	"reflect"
 
 	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
@@ -22,6 +23,21 @@ const (
 	alertmanagerTemplatePath = "files/templates/alertmanager/alertmanager.yaml"
 	notificationTemplatePath = "files/templates/alertmanager/notification-template.tmpl"
 )
+
+var (
+	//go:embed templates/alertmanager.yaml
+	alertmanagerConfig         string
+	alertmanagerConfigTemplate *htmltemplate.Template
+
+	//go:embed templates/notification-template.tmpl
+	notificationTemplate         string
+	notificationTemplateTemplate *htmltemplate.Template
+)
+
+func init() {
+	alertmanagerConfigTemplate = htmltemplate.Must(template.New("alertmanager.yaml").Parse(alertmanagerConfig))
+	notificationTemplateTemplate = htmltemplate.Must(template.New("notification-template.tmpl").Parse(notificationTemplate))
+}
 
 type Config struct {
 	K8sClient k8sclient.Interface
@@ -105,7 +121,7 @@ func (r *Resource) renderNotificationTemplate(templateDirectory string) ([]byte,
 		PrometheusAddress: fmt.Sprintf("https://%s", r.config.BaseDomain),
 	}
 
-	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, notificationTemplatePath))
+	data, err := template.Render(notificationTemplateTemplate, templateData)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
@@ -119,7 +135,7 @@ func (r *Resource) renderAlertmanagerConfig(templateDirectory string) ([]byte, e
 		return nil, microerror.Mask(err)
 	}
 
-	data, err := template.RenderTemplate(templateData, path.Join(templateDirectory, alertmanagerTemplatePath))
+	data, err := template.Render(alertmanagerConfigTemplate, templateData)
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
