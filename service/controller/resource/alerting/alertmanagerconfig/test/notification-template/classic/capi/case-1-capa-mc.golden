@@ -41,8 +41,8 @@
 {{ else -}}
 📈 Dashboard: ⚠️ There is no **dashboard** for this alert, time to sketch.
 {{ end -}}
-🔔 Alertmanager {{ template "__alerturl" . }}
 👀 Query: {{ template "__queryurl" . }}
+🔔 Silence: https://github.com/giantswarm/silences#silences
 
 ---
 

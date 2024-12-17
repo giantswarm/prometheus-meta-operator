@@ -56,9 +56,9 @@
 [[- if .MimirEnabled ]]
 👀 Explore: {{ template "__queryurl" . }}
 [[- else ]]
-🔔 Alertmanager {{ template "__alerturl" . }}
 👀 Query: {{ template "__queryurl" . }}
 [[- end ]]
+🔔 Silence: https://github.com/giantswarm/silences#silences
 
 ---
 
