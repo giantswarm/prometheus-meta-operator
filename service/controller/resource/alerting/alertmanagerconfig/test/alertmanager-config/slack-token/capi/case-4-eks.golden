@@ -1,5 +1,7 @@
 global:
   resolve_timeout: 5m
+  http_config:
+    proxy_from_environment: true
   slack_api_url: "https://slack.com/api/chat.postMessage"
 
 templates:
