@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Update Alertmanager notification template
+  - Update alert and query URLs for Mimir to point to the Active notification rather than the rule page
+  - Move link section (runbook, dashboard, explors) before instance to avoid them being lost due to OpsGenie max description being reached
+  - Move the warnings for missing runbook and dashboard up into the link section
+
+
 ### Removed
 
 - Get rid of useless `prometheus-agent` after the migration to the new `monitoring-agent` inhibitions.
