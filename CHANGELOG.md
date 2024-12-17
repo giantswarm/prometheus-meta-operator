@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- Use `proxy_from_environment: true` in Alertmanager configuration to read proxy settings from the environment.
+
 ## [4.83.0] - 2024-12-17
 
 ### Changed
