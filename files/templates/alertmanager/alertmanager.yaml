@@ -178,6 +178,7 @@ receivers:
         credentials: [[ .OpsgenieKey ]]
       follow_redirects: true
       enable_http2: true
+      proxy_from_environment: true
     url: https://api.opsgenie.com/v2/heartbeats/[[ .Installation ]]/ping
 [[- end ]]
 
@@ -193,6 +194,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -226,6 +228,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -259,6 +262,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -292,6 +296,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -325,6 +330,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -354,6 +360,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -387,6 +394,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -416,6 +424,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:
@@ -445,6 +454,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      proxy_from_environment: true
     [[- end ]]
     send_resolved: true
     actions:

@@ -132,6 +132,7 @@ receivers:
         credentials: opsgenie-key
       follow_redirects: true
       enable_http2: true
+      proxy_from_environment: true
     url: https://api.opsgenie.com/v2/heartbeats/test-installation/ping
 
 - name: falco_noise_slack

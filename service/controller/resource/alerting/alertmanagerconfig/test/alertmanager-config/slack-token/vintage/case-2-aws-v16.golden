@@ -122,6 +122,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -149,6 +150,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -176,6 +178,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -203,6 +206,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -230,6 +234,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -257,6 +262,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -284,6 +290,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -311,6 +318,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -338,6 +346,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
