@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Replace the silence link on Slack with silence repository link
+
 ## [4.82.0] - 2024-12-17
 
 ### Changed
