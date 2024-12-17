@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.83.0] - 2024-12-17
+
 ### Changed
 
 - Replace the silence link on Slack with silence repository link
@@ -2689,7 +2691,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.82.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.83.0...HEAD
+[4.83.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.82.0...v4.83.0
 [4.82.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.81.0...v4.82.0
 [4.81.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.80.0...v4.81.0
 [4.80.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.79.0...v4.80.0
