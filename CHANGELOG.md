@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix CVE-2024-45338 by updating golang.org/x/net to v0.33.0
+
 ## [4.83.0] - 2024-12-17
 
 ### Changed
