@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
 - Restore previous link for alerts, as the new one breaks the `see source` link in Grafana, leading to a page not found.
 
 ## [4.83.0] - 2024-12-17
