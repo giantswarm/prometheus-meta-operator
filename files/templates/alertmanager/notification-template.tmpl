@@ -2,7 +2,7 @@
 
 {{ define "__alerturl" }}
 [[- if .MimirEnabled -]]
-[[ .GrafanaAddress ]]/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager
+[[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
 [[- else -]]
 {{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D
 [[- end -]]
@@ -13,7 +13,7 @@
 
 {{ define "__queryurl" }}
 [[- if .MimirEnabled -]]
-[[ .GrafanaAddress ]]/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager
+[[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
 [[- else -]]
 {{ (index .Alerts 0).GeneratorURL }}
 [[- end -]]
