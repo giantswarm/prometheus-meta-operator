@@ -1,5 +1,7 @@
 global:
   resolve_timeout: 5m
+  http_config:
+    proxy_from_environment: true
   slack_api_url: "https://slack.com/api/chat.postMessage"
 
 templates:
@@ -120,6 +122,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -147,6 +150,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -174,6 +178,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -201,6 +206,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -228,6 +234,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -255,6 +262,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -282,6 +290,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -309,6 +318,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -336,6 +346,7 @@ receivers:
       authorization:
         type: Bearer
         credentials: some-token
+      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
