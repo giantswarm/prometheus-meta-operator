@@ -1,11 +1,11 @@
 {{ define "__alertmanager" }}Alertmanager{{ end }}
 
-{{ define "__alerturl" }}https://grafana/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager{{ end }}
+{{ define "__alerturl" }}https://grafana/alerting/Mimir/{{ .CommonLabels.alertname }}/find{{ end }}
 
 {{ define "__dashboardurl" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboard }}{{ (index .Alerts 0).Annotations.dashboard }}{{ else }}https://grafana/d/{{ (index .Alerts 0).Annotations.dashboard }}{{ end }}{{- end }}
 {{ define "__runbookurl" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.opsrecipe }}{{- end }}
 
-{{ define "__queryurl" }}https://grafana/alerting/groups?queryString=alertname%3D%22{{ .CommonLabels.alertname}}%22&alertmanager=Alertmanager{{ end }}
+{{ define "__queryurl" }}https://grafana/alerting/Mimir/{{ .CommonLabels.alertname }}/find{{ end }}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
 {{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}

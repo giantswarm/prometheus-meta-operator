@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix CVE-2024-45338 by updating golang.org/x/net to v0.33.0
+- Restore previous link for alerts, as the new one breaks the `see source` link in Grafana, leading to a page not found.
 
 ## [4.83.0] - 2024-12-17
 
