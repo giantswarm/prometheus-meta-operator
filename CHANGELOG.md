@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Use `proxy_from_environment: true` in Alertmanager configuration to read proxy settings from the environment.
+
 ### Fixed
 
 - Fix CVE-2024-45338 by updating golang.org/x/net to v0.33.0
