@@ -1,7 +1,5 @@
 global:
   resolve_timeout: 5m
-  http_config:
-    proxy_from_environment: true
   slack_api_url: https://slack
 
 templates:
@@ -118,8 +116,6 @@ receivers:
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -143,8 +139,6 @@ receivers:
 - name: team_atlas_slack
   slack_configs:
   - channel: '#alert-atlas-test'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -168,8 +162,6 @@ receivers:
 - name: team_phoenix_slack
   slack_configs:
   - channel: '#alert-phoenix-test'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -193,8 +185,6 @@ receivers:
 - name: team_bigmac_slack
   slack_configs:
   - channel: '#alert-bigmac-test'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -218,8 +208,6 @@ receivers:
 - name: team_rocket_slack
   slack_configs:
   - channel: '#alert-rocket-test'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -243,8 +231,6 @@ receivers:
 - name: team_shield_slack
   slack_configs:
   - channel: '#alert-shield'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -268,8 +254,6 @@ receivers:
 - name: team_turtles_slack
   slack_configs:
   - channel: '#alert-turtles-test'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -293,8 +277,6 @@ receivers:
 - name: team_tenet_slack
   slack_configs:
   - channel: '#alert-tenet'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button
@@ -318,8 +300,6 @@ receivers:
 - name: team_honeybadger_slack
   slack_configs:
   - channel: '#alert-honeybadger'
-    http_config:
-      proxy_from_environment: true
     send_resolved: true
     actions:
     - type: button

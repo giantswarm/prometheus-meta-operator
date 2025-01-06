@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Revert `proxy_from_environment: true`, as this is only compatible with observability-bundle >= v1.8.0.
+
 ## [4.84.0] - 2025-01-06
 
 ### Changed
