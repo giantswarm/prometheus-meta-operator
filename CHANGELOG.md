@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.85.0] - 2025-01-06
+
 ### Changed
 
 - Revert `proxy_from_environment: true`, as this is only compatible with observability-bundle >= v1.8.0.
@@ -2706,7 +2708,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.84.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.85.0...HEAD
+[4.85.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.84.0...v4.85.0
 [4.84.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.83.0...v4.84.0
 [4.83.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.82.0...v4.83.0
 [4.82.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.81.0...v4.82.0
