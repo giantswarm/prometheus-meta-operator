@@ -1,7 +1,9 @@
 global:
   resolve_timeout: 5m
+[[- if .ProxyURL ]]
   http_config:
-    proxy_from_environment: true
+    proxy_url:  [[ .ProxyURL ]]
+[[- end ]]
 [[- if .SlackApiToken ]]
   slack_api_url: "https://slack.com/api/chat.postMessage"
 [[- else ]]
@@ -178,7 +180,9 @@ receivers:
         credentials: [[ .OpsgenieKey ]]
       follow_redirects: true
       enable_http2: true
-      proxy_from_environment: true
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
+      [[- end ]]
     url: https://api.opsgenie.com/v2/heartbeats/[[ .Installation ]]/ping
 [[- end ]]
 
@@ -189,13 +193,15 @@ receivers:
 - name: falco_noise_slack
   slack_configs:
   - channel: '#noise-falco'
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -223,13 +229,15 @@ receivers:
   [[- else ]]
   - channel: '#alert-atlas-test'
   [[- end ]]
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -257,13 +265,15 @@ receivers:
   [[- else ]]
   - channel: '#alert-phoenix-test'
   [[- end ]]
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -291,13 +301,15 @@ receivers:
   [[- else ]]
   - channel: '#alert-bigmac-test'
   [[- end ]]
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -325,13 +337,15 @@ receivers:
   [[- else ]]
   - channel: '#alert-rocket-test'
   [[- end ]]
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -355,13 +369,15 @@ receivers:
 - name: team_shield_slack
   slack_configs:
   - channel: '#alert-shield'
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -389,13 +405,15 @@ receivers:
   [[- else ]]
   - channel: '#alert-turtles-test'
   [[- end ]]
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -419,13 +437,15 @@ receivers:
 - name: team_tenet_slack
   slack_configs:
   - channel: '#alert-tenet'
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
@@ -449,13 +469,15 @@ receivers:
 - name: team_honeybadger_slack
   slack_configs:
   - channel: '#alert-honeybadger'
+    [[- if .SlackApiToken ]]
     http_config:
-      [[- if .SlackApiToken ]]
       authorization:
         type: Bearer
         credentials: [[ .SlackApiToken ]]
+      [[- if .ProxyURL ]]
+      proxy_url:  [[ .ProxyURL ]]
       [[- end ]]
-      proxy_from_environment: true
+    [[- end ]]
     send_resolved: true
     actions:
     - type: button
