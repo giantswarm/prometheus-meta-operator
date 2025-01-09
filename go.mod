@@ -11,7 +11,7 @@ require (
 	github.com/giantswarm/microendpoint v1.1.0
 	github.com/giantswarm/microerror v0.4.1
 	github.com/giantswarm/microkit v1.0.2
-	github.com/giantswarm/micrologger v1.1.1
+	github.com/giantswarm/micrologger v1.1.2
 	github.com/giantswarm/operatorkit/v7 v7.2.0
 	github.com/giantswarm/versionbundle v1.1.0
 	github.com/google/go-cmp v0.6.0
