@@ -1,5 +1,9 @@
 [![CircleCI](https://circleci.com/gh/giantswarm/prometheus-meta-operator.svg?&style=shield)](https://circleci.com/gh/giantswarm/prometheus-meta-operator) [![Docker Repository on Quay](https://quay.io/repository/giantswarm/prometheus-meta-operator/status "Docker Repository on Quay")](https://quay.io/repository/giantswarm/prometheus-meta-operator)
 
+## [DEPRECATED]: This repository is deprecated
+
+It is largely replaced by [observability-operator](https://github.com/giantswarm/observability-operator/), more information at [observability/architecture](https://intranet.giantswarm.io/docs/observability/architecture/)
+
 # prometheus-meta-operator
 
 The prometheus-meta-operator watches Cluster CRs and creates [prometheus-operator] CRs. It is implemented
