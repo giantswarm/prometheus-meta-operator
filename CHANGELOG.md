@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add deprecation notice.
+
+### Removed
+
+- Remove deployment to CAPI installations.
+
 ## [4.85.0] - 2025-01-06
 
 ### Changed
