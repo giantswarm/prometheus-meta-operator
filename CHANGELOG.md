@@ -11,6 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add deprecation notice.
 
+### Changed
+
+- update the notification template to take into account the new alert annotations
+  - `opsrecipe` => `runbook_url`
+  - `dashboard` => `dashboardUid`
+
 ### Removed
 
 - Remove deployment to CAPI installations.
