@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- update the notification template to take into account the changes in the alert annotations
+  - `runbook_url` is now the full url to the runbook
+  - `dashboardUid` is now split between `__dashboardUid__` and `dashboardQueryParams`.
+
 ## [4.86.0] - 2025-02-20
 
 ### Added

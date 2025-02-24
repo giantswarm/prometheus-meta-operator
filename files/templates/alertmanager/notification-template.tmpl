@@ -8,10 +8,10 @@
 [[- end -]]
 {{ end }}
 
-{{ define "__dashboard_url" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboardUid }}{{ (index .Alerts 0).Annotations.dashboardUid }}{{ else }}[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.dashboardUid }}{{ end }}{{- end }}
-{{ define "__runbook_url" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.runbook_url }}{{- end }}
+{{ define "__dashboard_url" -}}{{ if (index .Alerts 0).Annotations.dashboardExternalUrl }}{{ (index .Alerts 0).Annotations.dashboardExternalUrl }}{{ else }}[[ .GrafanaAddress ]]/d/{{ (index .Alerts 0).Annotations.__dashboardUid__ }}?{{ (index .Alerts 0).Annotations.dashboardQueryParams }}{{ end }}{{- end }}
+{{ define "__runbook_url" -}}{{ (index .Alerts 0).Annotations.runbook_url }}{{- end }}
 
-{{ define "__queryurl" }}
+{{ define "__query_url" }}
 [[- if .MimirEnabled -]]
 [[ .GrafanaAddress ]]/alerting/Mimir/{{ .CommonLabels.alertname }}/find
 [[- else -]]
@@ -48,15 +48,15 @@
 {{ else -}}
 📗 Runbook: ⚠️ There is no **runbook** for this alert, time to get your pen.
 {{- end }}
-{{ if (index .Alerts 0).Annotations.dashboardUid -}}
+{{ if or ((index .Alerts 0).Annotations.__dashboardUid__) ((index .Alerts 0).Annotations.dashboardExternalUrl) -}}
 📈 Dashboard: {{ template "__dashboard_url" . }}
 {{ else -}}
 📈 Dashboard: ⚠️ There is no **dashboard** for this alert, time to sketch.
 {{ end -}}
 [[- if .MimirEnabled ]]
-👀 Explore: {{ template "__queryurl" . }}
+👀 Explore: {{ template "__query_url" . }}
 [[- else ]]
-👀 Query: {{ template "__queryurl" . }}
+👀 Query: {{ template "__query_url" . }}
 [[- end ]]
 🔔 Silence: {{ template "__alert_silence_link" . }}
 

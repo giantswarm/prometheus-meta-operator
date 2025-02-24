@@ -2,10 +2,10 @@
 
 {{ define "__alert_url" }}{{ .ExternalURL }}/#/alerts?receiver={{ .Receiver }}&silenced=false&inhibited=false&active=true&filter=%7Balertname%3D%22{{ .CommonLabels.alertname }}%22%7D{{ end }}
 
-{{ define "__dashboard_url" -}}{{ if match "^https://.+" (index .Alerts 0).Annotations.dashboardUid }}{{ (index .Alerts 0).Annotations.dashboardUid }}{{ else }}https://grafana/d/{{ (index .Alerts 0).Annotations.dashboardUid }}{{ end }}{{- end }}
-{{ define "__runbook_url" -}}https://intranet.giantswarm.io/docs/support-and-ops/ops-recipes/{{ (index .Alerts 0).Annotations.runbook_url }}{{- end }}
+{{ define "__dashboard_url" -}}{{ if (index .Alerts 0).Annotations.dashboardExternalUrl }}{{ (index .Alerts 0).Annotations.dashboardExternalUrl }}{{ else }}https://grafana/d/{{ (index .Alerts 0).Annotations.__dashboardUid__ }}?{{ (index .Alerts 0).Annotations.dashboardQueryParams }}{{ end }}{{- end }}
+{{ define "__runbook_url" -}}{{ (index .Alerts 0).Annotations.runbook_url }}{{- end }}
 
-{{ define "__queryurl" }}{{ (index .Alerts 0).GeneratorURL }}{{ end }}
+{{ define "__query_url" }}{{ (index .Alerts 0).GeneratorURL }}{{ end }}
 
 {{ define "slack.default.title" }}{{ .Status | toUpper }}[{{ if eq .Status "firing" }}{{ .Alerts.Firing | len }}{{- else }}{{ .Alerts.Resolved | len }}{{- end }}] {{ (index .Alerts 0).Labels.alertname }} - Team {{ (index .Alerts 0).Labels.team }}{{ end }}
 {{ define "slack.default.username" }}{{ template "__alertmanager" . }}{{ end }}
@@ -36,12 +36,12 @@
 {{ else -}}
 📗 Runbook: ⚠️ There is no **runbook** for this alert, time to get your pen.
 {{- end }}
-{{ if (index .Alerts 0).Annotations.dashboardUid -}}
+{{ if or ((index .Alerts 0).Annotations.__dashboardUid__) ((index .Alerts 0).Annotations.dashboardExternalUrl) -}}
 📈 Dashboard: {{ template "__dashboard_url" . }}
 {{ else -}}
 📈 Dashboard: ⚠️ There is no **dashboard** for this alert, time to sketch.
 {{ end -}}
-👀 Query: {{ template "__queryurl" . }}
+👀 Query: {{ template "__query_url" . }}
 🔔 Silence: {{ template "__alert_silence_link" . }}
 
 ---
