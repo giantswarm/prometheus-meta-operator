@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.87.0] - 2025-02-25
+
 ### Changed
 
 - update the notification template to take into account the changes in the alert annotations
@@ -2730,7 +2732,8 @@ This release was created on release-v3.5.x branch to fix release 3.6.0 see PR#99
 
 - First release.
 
-[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.86.0...HEAD
+[Unreleased]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.87.0...HEAD
+[4.87.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.86.0...v4.87.0
 [4.86.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.85.0...v4.86.0
 [4.85.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.84.0...v4.85.0
 [4.84.0]: https://github.com/giantswarm/prometheus-meta-operator/compare/v4.83.0...v4.84.0
