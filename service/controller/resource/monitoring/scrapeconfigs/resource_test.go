@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	appsv1alpha1 "github.com/giantswarm/apiextensions-application/api/v1alpha1"
-	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
-	fakek8sclient "github.com/giantswarm/k8sclient/v7/pkg/k8sclient/fake"
+	"github.com/giantswarm/k8sclient/v8/pkg/k8sclient"
+	fakek8sclient "github.com/giantswarm/k8sclient/v8/pkg/k8sclient/fake"
 	"github.com/giantswarm/micrologger"
 	corev1 "k8s.io/api/core/v1"
 	apiextensionsv1 "k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1"
