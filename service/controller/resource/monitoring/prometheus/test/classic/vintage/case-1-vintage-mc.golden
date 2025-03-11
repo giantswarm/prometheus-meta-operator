@@ -73,6 +73,10 @@ spec:
       - workload_cluster
     - key: application.giantswarm.io/team
       operator: Exists
+    - key: application.giantswarm.io/prometheus-rule-kind
+      operator: NotIn
+      values:
+      - loki
   rules:
     alert: {}
   scrapeInterval: 60s
