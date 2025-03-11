@@ -285,6 +285,11 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 					Key:      key.TeamLabel,
 					Operator: metav1.LabelSelectorOpExists,
 				},
+				{
+					Key:      "application.giantswarm.io/prometheus-rule-kind",
+					Operator: metav1.LabelSelectorOpNotIn,
+					Values:   []string{"loki"},
+				},
 			},
 		}
 
@@ -335,6 +340,11 @@ func toPrometheus(ctx context.Context, v interface{}, config Config) (metav1.Obj
 				{
 					Key:      key.TeamLabel,
 					Operator: metav1.LabelSelectorOpExists,
+				},
+				{
+					Key:      "application.giantswarm.io/prometheus-rule-kind",
+					Operator: metav1.LabelSelectorOpNotIn,
+					Values:   []string{"loki"},
 				},
 			},
 		}
