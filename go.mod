@@ -23,7 +23,7 @@ require (
 	github.com/prometheus/client_golang v1.21.1
 	github.com/prometheus/common v0.63.0
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/viper v1.20.0
+	github.com/spf13/viper v1.20.1
 	golang.org/x/crypto v0.36.0
 	golang.org/x/net v0.37.0
 	k8s.io/api v0.32.3
