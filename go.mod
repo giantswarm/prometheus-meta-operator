@@ -2,7 +2,7 @@ module github.com/giantswarm/prometheus-meta-operator/v2
 
 go 1.23.0
 
-toolchain go1.24.1
+toolchain go1.24.2
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
