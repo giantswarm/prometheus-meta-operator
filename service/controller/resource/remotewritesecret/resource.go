@@ -1,7 +1,7 @@
 package remotewritesecret
 
 import (
-	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v8/pkg/k8sclient"
 	"github.com/giantswarm/micrologger"
 	promclient "github.com/prometheus-operator/prometheus-operator/pkg/client/versioned"
 	corev1 "k8s.io/api/core/v1"
