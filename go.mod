@@ -9,7 +9,7 @@ require (
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/giantswarm/apiextensions-application v0.6.1
 	github.com/giantswarm/apiextensions/v6 v6.6.0
-	github.com/giantswarm/k8sclient/v7 v7.2.0
+	github.com/giantswarm/k8sclient/v8 v8.0.0
 	github.com/giantswarm/microendpoint v1.1.2
 	github.com/giantswarm/microerror v0.4.1
 	github.com/giantswarm/microkit v1.0.3
@@ -51,6 +51,7 @@ require (
 	github.com/getsentry/sentry-go v0.31.1 // indirect
 	github.com/giantswarm/backoff v1.0.1 // indirect
 	github.com/giantswarm/exporterkit v1.2.0 // indirect
+	github.com/giantswarm/k8sclient/v7 v7.2.0 // indirect
 	github.com/giantswarm/k8smetadata v0.23.0 // indirect
 	github.com/giantswarm/to v0.4.2 // indirect
 	github.com/go-kit/kit v0.13.0 // indirect

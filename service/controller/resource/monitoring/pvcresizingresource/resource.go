@@ -3,7 +3,7 @@ package pvcresizingresource
 import (
 	"fmt"
 
-	"github.com/giantswarm/k8sclient/v7/pkg/k8sclient"
+	"github.com/giantswarm/k8sclient/v8/pkg/k8sclient"
 	"github.com/giantswarm/micrologger"
 )
 
